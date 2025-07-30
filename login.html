@@ -107,8 +107,73 @@
       display: none;
     }
   </style>
-</head>
+<meta content="width=device-width, initial-scale=1" name="viewport"/><style>
+@media (max-width: 768px) {
+    .card {
+        padding: 12px !important;
+        margin: 12px 0 !important;
+        font-size: 14px !important;
+    }
+    .card h3 {
+        font-size: 18px !important;
+    }
+    .card p {
+        font-size: 13px !important;
+    }
+    .card a {
+        padding: 6px 12px !important;
+        font-size: 13px !important;
+    }
+}
+</style><style>
+body {
+    background-color: #f4f4f4;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+.login-wrapper {
+    max-width: 400px;
+    margin: 80px auto;
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    text-align: center;
+}
+.login-wrapper h2 {
+    color: #1e3a8a;
+    margin-bottom: 24px;
+}
+.login-wrapper input[type="text"],
+.login-wrapper input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+.login-wrapper button {
+    width: 100%;
+    background-color: #3b82f6;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+</style></head>
 <body>
+<nav class="bg-white shadow p-4 flex justify-between items-center">
+<a class="text-xl font-bold text-blue-600" href="index.html">Project.PAW</a>
+<div class="space-x-4">
+<a class="text-gray-700 hover:text-blue-600" href="index.html">홈</a>
+<a class="text-gray-700 hover:text-blue-600" href="project_list.html">후원하기</a>
+<a class="text-gray-700 hover:text-blue-600" href="create.html">후원등록하기</a>
+<a class="text-gray-700 hover:text-blue-600" href="login.html">로그인</a>
+</div>
+</nav>
 <div class="sidebar">
 <div class="sidebar-logo">
       PAW <i class="fas fa-paw"></i>
@@ -123,9 +188,9 @@
 <div class="content">
 <nav style="margin-bottom: 2rem;">
 <a href="index.html">Home</a> |
-  <a href="about.html">About</a> |
    |
-  <a href="Donation.html">Donation</a>
+   |
+  
 <a href="create.html">프로젝트 등록</a></nav>
 <h2>SNS계정으로 간편로그인하기</h2>
 <div class="sns-buttons">
