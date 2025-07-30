@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 
 <html lang="ko">
@@ -156,5 +157,30 @@ form textarea {
             "책임의 끝과 공감의 시작이 만나는 곳."
         </div>
 </main>
-</body>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const name = document.querySelector('input[name="name"]').value;
+        const description = document.querySelector('textarea[name="description"]').value;
+        const goal = document.querySelector('input[name="goal"]').value;
+
+        const newProject = {
+            name: name,
+            description: description,
+            goal: goal,
+            current: 0
+        };
+
+        const stored = JSON.parse(localStorage.getItem("projects") || "[]");
+        stored.push(newProject);
+        localStorage.setItem("projects", JSON.stringify(stored));
+
+        alert("등록이 완료되었습니다!");
+        window.location.href = "index.html";
+    });
+});
+</script></body>
 </html>

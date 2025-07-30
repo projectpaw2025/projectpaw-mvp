@@ -55,6 +55,47 @@
 <!-- 텍스트 영역 -->
 <div class="md:w-1/2 p-6 flex flex-col justify-between">
 <div>
+<!-- Project.PAW 철학 슬라이드 -->
+<div class="philosophy-carousel">
+<div class="carousel-track">
+<div class="slide">“도움은 본능, 연결은 선택.”</div>
+<div class="slide">책임 있는 구조자에게만 직접 연결됩니다.</div>
+<div class="slide">100% 후원금은 구조자에게 전달됩니다.</div>
+<div class="slide">숫자가 아닌, 연결된 마음의 수를 남깁니다.</div>
+</div>
+</div>
+<style>
+.philosophy-carousel {
+  width: 100%;
+  max-width: 1000px;
+  overflow: hidden;
+  margin: 40px auto;
+  border-radius: 16px;
+  background-color: #f4f6fc;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+}
+.carousel-track {
+  display: flex;
+  animation: slideAnimation 20s infinite linear;
+}
+.slide {
+  min-width: 100%;
+  padding: 32px 20px;
+  text-align: center;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #1e3a8a;
+  box-sizing: border-box;
+}
+@keyframes slideAnimation {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-100%); }
+  50% { transform: translateX(-200%); }
+  75% { transform: translateX(-300%); }
+  100% { transform: translateX(0); }
+}
+</style>
 <h2 class="text-xl font-semibold text-gray-800">[치즈냥이]</h2>
 <p class="text-sm text-gray-600 mt-1">“아직 걷지도 못해요...”</p>
 <div class="mt-4 text-sm space-y-1">
@@ -137,5 +178,25 @@
 </div>
 <!-- 운영철학 섹션 -->
 </main>
-</body>
+<div class="projects"></div><script>
+document.addEventListener("DOMContentLoaded", function () {
+    const projects = JSON.parse(localStorage.getItem("projects") || "[]");
+    const container = document.querySelector(".projects");
+
+    projects.forEach(proj => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.style = "border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 16px; margin: 16px 0; background-color: #ffffff; font-family: 'Noto Sans KR', sans-serif;";
+
+        card.innerHTML = `
+            <h3 style="font-size: 20px; color: #1e3a8a; margin-bottom: 8px;">${proj.name}</h3>
+            <p style="margin: 4px 0; color: #374151; font-size: 14px;">${proj.description}</p>
+            <p style="margin: 4px 0; color: #374151; font-size: 14px;">목표금액: ${proj.goal}원</p>
+            <p style="margin: 4px 0; color: #374151; font-size: 14px;">현재 모금액: ${proj.current}원</p>
+        `;
+
+        container.appendChild(card);
+    });
+});
+</script></body>
 </html>
