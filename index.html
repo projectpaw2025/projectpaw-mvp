@@ -1,30 +1,57 @@
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>메인 히어로 배너 + 네비게이션 포함 | Project.PAW</title>
-<link href="style.css" rel="stylesheet"/>
+  <meta charset="UTF-8">
+  <title>Project.PAW</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<header>
-<div class="logo"><a href="index.html">Project.PAW</a></div>
-<nav>
-<a href="index.html">Home</a>
-<a href="donation.html">Donation</a>
+<body class="bg-pink-50 text-gray-800 font-sans">
+  <header class="text-center py-10 bg-white shadow">
+    <h1 class="text-3xl font-bold">나누고 싶은 마음, 우리가 연결합니다.</h1>
+    <p class="text-gray-500 mt-2">구조자의 책임과 후원자의 본능을 직접 연결해주는 플랫폼</p>
+    <button onclick="location.href='create.html'" class="mt-6 bg-pink-400 text-white px-6 py-2 rounded-xl hover:bg-pink-500 transition">
+      + 프로젝트 등록하기
+    </button>
+  </header>
 
-<a href="about.html">About</a>
-<a href="login.html">Login</a>
-<a href="create.html">프로젝트 등록</a></nav>
-</header>
-<section class="hero">
-<h1>도움은 본능, 연결은 선택</h1>
-<p>Project.PAW는 따뜻한 마음과 마음이 연결되는 곳입니다.<br/>지금 당신의 선택이 한 생명을 살립니다.</p>
-<a class="btn" href="donation.html">후원 프로젝트 보기</a>
-</section>
-<footer class="footer">
-    © 2025 Project.PAW | 따뜻한 마음을 이어주는 플랫폼
-  </footer>
+  <main class="max-w-5xl mx-auto py-12 px-4 grid gap-8 md:grid-cols-2">
+    <!-- Sample project cards -->
+    <div class="bg-white rounded-2xl shadow-md p-6">
+      <h2 class="text-xl font-bold text-pink-500">[치즈냥이]</h2>
+      <p class="text-gray-700 italic">“아직 걷지도 못해요...”</p>
+      <p class="mt-2">✅ 목표: 600,000원</p>
+      <p>💸 모금 현황: 350,000원</p>
+      <p>👤 구조자 부담액: 200,000원</p>
+      <a href="https://pf.kakao.com/_example" target="_blank"
+         class="inline-block mt-4 bg-pink-400 text-white px-5 py-2 rounded-full hover:bg-pink-500 transition">
+        📮 톡으로 바로 연결
+      </a>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-md p-6">
+      <h2 class="text-xl font-bold text-pink-500">[두부냥이]</h2>
+      <p class="text-gray-700 italic">“찻길 옆에서 구조됐어요”</p>
+      <p class="mt-2">✅ 목표: 480,000원</p>
+      <p>💸 모금 현황: 150,000원</p>
+      <p>👤 구조자 부담액: 100,000원</p>
+      <a href="https://pf.kakao.com/_example" target="_blank"
+         class="inline-block mt-4 bg-pink-400 text-white px-5 py-2 rounded-full hover:bg-pink-500 transition">
+        📮 톡으로 바로 연결
+      </a>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-md p-6">
+      <h2 class="text-xl font-bold text-pink-500">[나비]</h2>
+      <p class="text-gray-700 italic">“긴급 수혈이 필요한 아이예요”</p>
+      <p class="mt-2">✅ 목표: 700,000원</p>
+      <p>💸 모금 현황: 300,000원</p>
+      <p>👤 구조자 부담액: 250,000원</p>
+      <a href="https://pf.kakao.com/_example" target="_blank"
+         class="inline-block mt-4 bg-pink-400 text-white px-5 py-2 rounded-full hover:bg-pink-500 transition">
+        📮 톡으로 바로 연결
+      </a>
+    </div>
+  </main>
 </body>
 </html>
