@@ -2,26 +2,17 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Project.PAW - 구조 프로젝트</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project.PAW - 홈</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
 </head>
-<body class="bg-gray-50 text-gray-800 pt-20 pb-20">
+<body class="bg-gray-100">
 
-  <!-- ✅ 상단 소개 -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm mb-4">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
     <div class="container">
-      <div class="text-center py-5">
-        <h1 class="display-5 fw-bold">Project.PAW</h1>
-        <p class="lead text-muted">
-          우리는 따뜻한 선택을 돕습니다.<br/>
-          Project.PAW는 구조자와 후원자를 연결하는 새로운 방식의 구조 플랫폼입니다.
-        </p>
-        <hr class="my-4" style="max-width: 300px; margin: auto;" />
-      </div>
       <a class="navbar-brand fw-bold" href="index.html">🐾 Project.PAW</a>
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link active" href="index.html">🏠 홈</a></li>
         <li class="nav-item"><a class="nav-link" href="project_list.html">📋 후원하기</a></li>
         <li class="nav-item"><a class="nav-link" href="create.html">➕ 프로젝트 등록</a></li>
@@ -30,22 +21,18 @@
     </div>
   </nav>
 
-  <header class="text-center py-10">
-    <h1 class="text-3xl font-bold text-blue-700">진행 중인 구조 프로젝트</h1>
-  </header>
-
-  <!-- ✅ Bootstrap 카드 리스트 -->
-  <section class="max-w-6xl mx-auto px-4" id="philosophy">
-    <div class="row" id="project-card-container"></div>
-  </section>
+  <div class="container pt-5 mt-5">
+    <h1 class="text-center my-5 text-3xl font-bold text-blue-700">진행 중인 구조 프로젝트</h1>
+    <div class="row" id="projectContainer"></div>
+  </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const listContainer = document.getElementById("project-card-container");
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById("projectContainer");
       const projects = JSON.parse(localStorage.getItem("projects") || "[]").reverse();
 
       if (projects.length === 0) {
-        listContainer.innerHTML = "<p class='text-center text-gray-500'>등록된 구조 프로젝트가 없습니다.</p>";
+        container.innerHTML = "<p class='text-center text-muted'>등록된 구조 프로젝트가 없습니다.</p>";
         return;
       }
 
@@ -67,30 +54,19 @@
 
         const body = document.createElement("div");
         body.className = "card-body";
-
-        const title = document.createElement("h5");
-        title.className = "card-title";
-        title.textContent = project.name || "이름 없음";
-
-        const desc = document.createElement("p");
-        desc.className = "card-text";
-        desc.textContent = project.situation || "상황 설명 없음";
-
-        const list = document.createElement("ul");
-        list.className = "list-unstyled small";
-        list.innerHTML = `
-          <li><strong>목표:</strong> ${project.goalAmount || 0}원</li>
-          <li><strong>구조자 부담:</strong> ${project.ownerAmount || 0}원</li>
+        body.innerHTML = `
+          <h5 class="card-title">${project.name || "이름 없음"}</h5>
+          <p class="card-text">${project.situation || "상황 설명 없음"}</p>
+          <ul class="list-unstyled small">
+            <li><strong>목표:</strong> ${project.goalAmount || 0}원</li>
+            <li><strong>구조자 부담:</strong> ${project.ownerAmount || 0}원</li>
+          </ul>
         `;
-
-        body.appendChild(title);
-        body.appendChild(desc);
-        body.appendChild(list);
 
         card.appendChild(img);
         card.appendChild(body);
         col.appendChild(card);
-        listContainer.appendChild(col);
+        container.appendChild(col);
       });
     });
   </script>
