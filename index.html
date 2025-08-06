@@ -6,9 +6,12 @@
   <title>Project.PAW - 홈</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
-    .project-image {
+    .card-img-top {
       height: 200px;
       object-fit: cover;
+    }
+    .philosophy-card {
+      min-height: 200px;
     }
   </style>
 </head>
@@ -27,59 +30,61 @@
   </nav>
 
   <div class="container pt-5 mt-5">
-    <h1 class="text-center my-5 text-3xl fw-bold text-primary">Project.PAW의 철학</h1>
-    <p class="text-center text-muted mb-5 fs-5">Project.PAW는 <strong>개인과 개인을 연결합니다.</strong><br>감정과 책임이 만나는 순간, 그 연결이 진짜 변화를 만들어냅니다.</p>
-    
+    <!-- 철학 카드 영역 -->
+    <h2 class="text-center my-5 text-primary fw-bold">🐾 이건 단순한 기부 플랫폼이 아닙니다</h2>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
-
       <div class="col">
-        <div class="card h-100 shadow-sm border-start border-primary border-3">
+        <div class="card h-100 shadow-sm philosophy-card border-start border-4 border-primary">
           <div class="card-body">
-            <h5 class="card-title text-primary">1. 연결이 본질입니다</h5>
-            <p class="card-text">Project.PAW는 기부가 아닌, 감정의 연결을 추구합니다.</p>
+            <h5 class="card-title fw-bold">1. 돈만 주는 기부, 질렸잖아</h5>
+            <p class="card-text">우린 개인과 개인이 ‘직접 연결’되는 구조야. 따뜻함도 직거래로.</p>
           </div>
         </div>
       </div>
-
       <div class="col">
-        <div class="card h-100 shadow-sm border-start border-success border-3">
+        <div class="card h-100 shadow-sm philosophy-card border-start border-4 border-success">
           <div class="card-body">
-            <h5 class="card-title text-success">2. 도움은 본능, 연결은 선택</h5>
-            <p class="card-text">선택은 어렵습니다. 하지만 한 사람의 선택이 누군가의 삶을 바꿉니다.</p>
+            <h5 class="card-title fw-bold">2. 모두 돕고 싶어 해</h5>
+            <p class="card-text">근데 누가 ‘실행’하게 만드냐고. 우리는 그걸 설계해.</p>
           </div>
         </div>
       </div>
-
       <div class="col">
-        <div class="card h-100 shadow-sm border-start border-warning border-3">
+        <div class="card h-100 shadow-sm philosophy-card border-start border-4 border-warning">
           <div class="card-body">
-            <h5 class="card-title text-warning">3. 망설임을 용기로</h5>
-            <p class="card-text">주저하는 순간에 용기를 줄 수 있다면, 우리는 존재할 이유가 있습니다.</p>
+            <h5 class="card-title fw-bold">3. 구조자도 30% 내야 등록 가능</h5>
+            <p class="card-text">공동책임, 이게 우리 구조의 기본값. 책임지는 구조자만 등록됩니다.</p>
           </div>
         </div>
       </div>
-
       <div class="col">
-        <div class="card h-100 shadow-sm border-start border-danger border-3">
+        <div class="card h-100 shadow-sm philosophy-card border-start border-4 border-danger">
           <div class="card-body">
-            <h5 class="card-title text-danger">4. 숫자보다 감정</h5>
-            <p class="card-text">우리는 구조 건수보다 연결된 마음의 수를 더 중요하게 생각합니다.</p>
+            <h5 class="card-title fw-bold">4. 후원금 100% 전달</h5>
+            <p class="card-text">PG 수수료는 우리가 처리. 여러분 돈은 구조자에게 100% 갑니다.</p>
           </div>
         </div>
       </div>
-
       <div class="col">
-        <div class="card h-100 shadow-sm border-start border-info border-3">
+        <div class="card h-100 shadow-sm philosophy-card border-start border-4 border-info">
           <div class="card-body">
-            <h5 class="card-title text-info">5. 주는 사람도, 받는 사람도 행복하게</h5>
-            <p class="card-text">이 연결은 누군가를 위한 ‘의무’가 아닌, 우리 모두의 ‘기쁨’입니다.</p>
+            <h5 class="card-title fw-bold">5. 다음 목표는 병원 direct 송금</h5>
+            <p class="card-text">신뢰 쌓이면, 구조자 건너뛰고 병원에 바로 쏩니다. 설계 중입니다.</p>
           </div>
         </div>
       </div>
-
+      <div class="col">
+        <div class="card h-100 shadow-sm philosophy-card border-start border-4 border-dark">
+          <div class="card-body">
+            <h5 class="card-title fw-bold">6. 이건 구조가 아니라 연결이야</h5>
+            <p class="card-text">숫자 말고 감정. 마음과 마음이 닿는 구조, 그게 Project.PAW야.</p>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <h1 class="text-center my-5 text-3xl fw-bold text-primary">진행 중인 구조 프로젝트</h1>
+    <!-- 프로젝트 카드 영역 -->
+    <h1 class="text-center my-5 text-3xl fw-bold text-blue-700">진행 중인 구조 프로젝트</h1>
     <div class="row" id="projectContainer"></div>
   </div>
 
@@ -105,7 +110,7 @@
         };
 
         const img = document.createElement("img");
-        img.className = "card-img-top project-image";
+        img.className = "card-img-top";
         img.src = project.representativeImage || "https://placekitten.com/400/250";
         img.alt = "대표 이미지";
 
