@@ -1,67 +1,31 @@
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("projectForm");
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Project.PAW - 프로젝트 등록</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="bg-light py-5">
 
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault();
-
-    const name = document.getElementById("animalName").value;
-    const situation = document.getElementById("situation").value;
-    const goalAmount = parseInt(document.getElementById("goalAmount").value);
-    const ownerAmount = parseInt(document.getElementById("ownerAmount").value);
-    const kakaoLink = document.getElementById("kakaoLink").value;
-
-    // 이미지들을 base64로 변환
-    async function toBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    }
-
-    // 대표사진
-    const representativeImageInput = document.getElementById("representativeImage");
-    const representativeImage = representativeImageInput.files.length > 0
-      ? await toBase64(representativeImageInput.files[0])
-      : "https://placekitten.com/400/250"; // 기본 이미지
-
-    // 구조상황 사진들
-    const situationImagesInput = document.getElementById("situationImages");
-    const situationImages = [];
-    for (let file of situationImagesInput.files) {
-      situationImages.push(await toBase64(file));
-    }
-
-    // 영수증 사진들
-    const receiptImagesInput = document.getElementById("receiptImages");
-    const receiptImages = [];
-    for (let file of receiptImagesInput.files) {
-      receiptImages.push(await toBase64(file));
-    }
-
-    // 최종 프로젝트 객체 생성
-    const project = {
-      id: new Date().getTime(),
-      name,
-      situation,
-      goalAmount,
-      ownerAmount,
-      currentAmount: 0,
-      kakaoLink,
-      representativeImage,
-      situationImages,
-      receiptImages
-    };
-
-    // localStorage에 저장
-    const existing = JSON.parse(localStorage.getItem("projects") || "[]");
-    existing.push(project);
-    localStorage.setItem("projects", JSON.stringify(existing));
-
-    alert("프로젝트가 등록되었습니다!");
-    window.location.href = "index.html";
-  });
-});
-</script>
+  <div class="container">
+    <h1 class="text-center mb-4">🐾 구조 프로젝트 등록하기</h1>
+    <form id="projectForm" class="bg-white p-4 rounded shadow">
+      <div class="mb-3">
+        <label for="animalName" class="form-label">동물 이름</label>
+        <input type="text" class="form-control" id="animalName" required />
+      </div>
+      <div class="mb-3">
+        <label for="situation" class="form-label">구조 상황 설명</label>
+        <textarea class="form-control" id="situation" rows="3" required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="goalAmount" class="form-label">목표 금액 (원)</label>
+        <input type="number" class="form-control" id="goalAmount" required />
+      </div>
+      <div class="mb-3">
+        <label for="ownerAmount" class="form-label">구조자 부담액 (원)</label>
+        <input type="number" class="form-control" id="ownerAmount" required />
+      </div>
+      <div class="mb-3">
+        <label for="kakaoLink" class="form-l
