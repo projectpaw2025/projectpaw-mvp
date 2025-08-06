@@ -2,30 +2,126 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Project.PAW - 프로젝트 등록</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>구조 프로젝트 등록</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-light py-5">
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">🐾 Project.PAW</a>
+      <div>
+        <a class="nav-link d-inline" href="index.html">홈</a>
+        <a class="nav-link d-inline" href="project_list.html">후원하기</a>
+        <a class="nav-link d-inline" href="create.html">프로젝트 등록</a>
+        <a class="nav-link d-inline" href="#">로그인</a>
+      </div>
+    </div>
+  </nav>
 
   <div class="container">
-    <h1 class="text-center mb-4">🐾 구조 프로젝트 등록하기</h1>
-    <form id="projectForm" class="bg-white p-4 rounded shadow">
+    <h2 class="mb-4 text-center">구조 프로젝트 등록</h2>
+    <p class="text-center text-muted mb-4">“도움은 본능, 연결은 선택 - 당신의 따뜻한 선택을 기다립니다.”</p>
+    <form id="rescueForm">
       <div class="mb-3">
-        <label for="animalName" class="form-label">동물 이름</label>
-        <input type="text" class="form-control" id="animalName" required />
+        <label for="name" class="form-label">동물 이름</label>
+        <input type="text" class="form-control" id="name" required />
       </div>
       <div class="mb-3">
-        <label for="situation" class="form-label">구조 상황 설명</label>
-        <textarea class="form-control" id="situation" rows="3" required></textarea>
+        <label for="description" class="form-label">구조 상황 설명</label>
+        <textarea class="form-control" id="description" rows="3" required></textarea>
       </div>
       <div class="mb-3">
-        <label for="goalAmount" class="form-label">목표 금액 (원)</label>
-        <input type="number" class="form-control" id="goalAmount" required />
+        <label for="amount" class="form-label">목표 금액 (₩)</label>
+        <input type="number" class="form-control" id="amount" required />
       </div>
       <div class="mb-3">
-        <label for="ownerAmount" class="form-label">구조자 부담액 (원)</label>
-        <input type="number" class="form-control" id="ownerAmount" required />
+        <label for="contribution" class="form-label">구조자 부담금 (₩)</label>
+        <input type="number" class="form-control" id="contribution" required />
       </div>
       <div class="mb-3">
-        <label for="kakaoLink" class="form-l
+        <label for="kakao" class="form-label">카카오톡 링크</label>
+        <input type="url" class="form-control" id="kakao" required />
+      </div>
+      <div class="mb-3">
+        <label for="mainImage" class="form-label">대표 이미지 업로드</label>
+        <input class="form-control" type="file" id="mainImage" accept="image/*" required>
+      </div>
+      <div class="mb-3">
+        <label for="situationImages" class="form-label">구조 상황 사진 (여러 장)</label>
+        <input class="form-control" type="file" id="situationImages" accept="image/*" multiple>
+      </div>
+      <div class="mb-3">
+        <label for="receiptImages" class="form-label">영수증 사진 (여러 장)</label>
+        <input class="form-control" type="file" id="receiptImages" accept="image/*" multiple>
+      </div>
+      <div class="d-grid">
+        <button type="submit" class="btn btn-primary">등록하기</button>
+      </div>
+      <p class="text-center text-muted mt-2">등록 후 메인 화면으로 이동됩니다.</p>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("rescueForm");
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value;
+        const situation = document.getElementById("description").value;
+        const goalAmount = parseInt(document.getElementById("amount").value);
+        const ownerAmount = parseInt(document.getElementById("contribution").value);
+        const kakaoLink = document.getElementById("kakao").value;
+
+        async function toBase64(file) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+        }
+
+        const mainImageInput = document.getElementById("mainImage");
+        const representativeImage = mainImageInput.files.length > 0
+          ? await toBase64(mainImageInput.files[0])
+          : "https://placekitten.com/400/250";
+
+        const situationImagesInput = document.getElementById("situationImages");
+        const situationImages = [];
+        for (let file of situationImagesInput.files) {
+          situationImages.push(await toBase64(file));
+        }
+
+        const receiptImagesInput = document.getElementById("receiptImages");
+        const receiptImages = [];
+        for (let file of receiptImagesInput.files) {
+          receiptImages.push(await toBase64(file));
+        }
+
+        const project = {
+          id: new Date().getTime(),
+          name,
+          situation,
+          goalAmount,
+          ownerAmount,
+          currentAmount: 0,
+          kakaoLink,
+          representativeImage,
+          situationImages,
+          receiptImages
+        };
+
+        const existing = JSON.parse(localStorage.getItem("projects") || "[]");
+        existing.push(project);
+        localStorage.setItem("projects", JSON.stringify(existing));
+
+        alert("프로젝트가 등록되었습니다!");
+        window.location.href = "index.html";
+      });
+    });
+  </script>
+</body>
+</html>
