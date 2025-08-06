@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>프로젝트 상세보기 - Project.PAW</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Navbar -->
+  
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm mb-4">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="index.html">🐾 Project.PAW</a>
+    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+      <li class="nav-item">
+        <a class="nav-link " href="index.html">🏠 홈</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="project_list.html">📋 후원하기</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="create.html">➕ 프로젝트 등록</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="login.html">🔑 로그인</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+  <!-- 메인 컨테이너 -->
+  <div class="container my-5">
+    <div class="row">
+      <!-- 이미지 + 카카오 -->
+      <div class="col-md-6">
+        <img id="mainImage" src="" alt="대표 이미지" class="img-fluid rounded mb-3" style="max-height: 400px;" />
+        <a id="kakaoLink" href="#" class="btn btn-warning w-100" target="_blank">💬 카카오톡으로 구조자에게 연락하기</a>
+      </div>
+
+      <!-- 설명 영역 -->
+      <div class="col-md-6">
+        <h2 id="animalName" class="fw-bold">동물 이름</h2>
+        <p id="description" class="lead"></p>
+
+        <ul class="list-group mb-3">
+          <li class="list-group-item"><strong>목표 금액:</strong> <span id="goalAmount"></span> 원</li>
+          <li class="list-group-item"><strong>구조자 부담:</strong> <span id="burdenAmount"></span> 원</li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="my-4" />
+
+    <!-- 후기 영역 -->
+    <div class="mt-5">
+      <h4 class="mb-3">📚 후원자 후기</h4>
+      <ul id="reviewList" class="list-group mb-3"></ul>
+      <textarea id="reviewText" class="form-control mb-2" rows="3" placeholder="후기를 작성해 주세요."></textarea>
+      <button class="btn btn-primary" onclick="submitReview()">후기 등록</button>
+    </div>
+  </div>
+
+  <!-- 스크립트: 프로젝트 데이터 렌더링 + 후기 로직 -->
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id");
+    const projects = JSON.parse(localStorage.getItem("projects") || "[]");
+    const project = projects.find(p => p.id === id);
+
+    if (project) {
+      document.getElementById("animalName").textContent = project.animal;
+      document.getElementById("mainImage").src = project.mainImage || "";
+      document.getElementById("description").textContent = project.description || "";
+      document.getElementById("goalAmount").textContent = project.amount || 0;
+      document.getElementById("burdenAmount").textContent = project.burden || 0;
+      document.getElementById("kakaoLink").href = project.kakao || "#";
+    }
+
+    const REVIEW_KEY = "review_" + id;
+
+    function loadReviews() {
+      const list = document.getElementById("reviewList");
+      const stored = localStorage.getItem(REVIEW_KEY);
+      if (stored) {
+        const reviews = JSON.parse(stored);
+        reviews.forEach((r) => {
+          const li = document.createElement("li");
+          li.className = "list-group-item";
+          li.textContent = r;
+          list.appendChild(li);
+        });
+      }
+    }
+
+    function submitReview() {
+      const text = document.getElementById("reviewText").value.trim();
+      if (!text) return;
+
+      const stored = localStorage.getItem(REVIEW_KEY);
+      const reviews = stored ? JSON.parse(stored) : [];
+      reviews.push(text);
+      localStorage.setItem(REVIEW_KEY, JSON.stringify(reviews));
+
+      const li = document.createElement("li");
+      li.className = "list-group-item";
+      li.textContent = text;
+      document.getElementById("reviewList").appendChild(li);
+      document.getElementById("reviewText").value = "";
+    }
+
+    document.addEventListener("DOMContentLoaded", loadReviews);
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
