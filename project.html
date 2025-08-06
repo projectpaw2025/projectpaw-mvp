@@ -1,33 +1,52 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project.PAW - 상세 페이지</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project.PAW - 프로젝트 상세</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
-    .gallery-img {
-      height: 180px;
+    .project-header {
+      background: linear-gradient(90deg, #e0f7fa, #fff);
+      padding: 2rem 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    .project-image {
+      max-height: 400px;
       object-fit: cover;
-      border-radius: 8px;
+      border-radius: 0.5rem;
+    }
+    .tagline {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #666;
+    }
+    .amount-box {
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      text-align: center;
+      margin-bottom: 1rem;
     }
   </style>
 </head>
 <body class="bg-light">
-  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
     <div class="container">
       <a class="navbar-brand fw-bold" href="index.html">🐾 Project.PAW</a>
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="index.html">🏠 홈</a></li>
         <li class="nav-item"><a class="nav-link" href="project_list.html">📋 후원하기</a></li>
         <li class="nav-item"><a class="nav-link" href="create.html">➕ 등록</a></li>
-        <li class="nav-item"><a class="nav-link" href="login.html">🔑 로그인</a></li>
       </ul>
     </div>
   </nav>
 
-  <div class="container mt-5 pt-4">
-    <div id="projectDetail"></div>
+  <div class="container my-5" id="projectDetail">
+    <!-- JS가 내용 채워줌 -->
   </div>
 
   <script>
@@ -36,51 +55,46 @@
     const projects = JSON.parse(localStorage.getItem("projects") || "[]");
     const project = projects.find(p => p.id == id);
 
-    const detailEl = document.getElementById("projectDetail");
-
     if (!project) {
-      detailEl.innerHTML = `<p class='text-center text-muted'>해당 프로젝트를 찾을 수 없습니다.</p>`;
+      document.getElementById("projectDetail").innerHTML = `
+        <div class="alert alert-warning text-center">해당 프로젝트를 찾을 수 없습니다.</div>
+      `;
     } else {
-      detailEl.innerHTML = `
-        <div class="card shadow-sm">
-          <div class="row g-0">
-            <div class="col-md-6">
-              <img src="${project.representativeImage}" class="img-fluid rounded-start" alt="대표 이미지">
+      const detail = `
+        <div class="project-header text-center">
+          <h1 class="fw-bold mb-3">${project.name}</h1>
+          <p class="tagline">“도움은 본능, 연결은 선택 – 당신의 따뜻한 선택을 기다립니다.”</p>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <img src="${project.representativeImage || 'https://placekitten.com/600/400'}" alt="대표 이미지" class="img-fluid project-image shadow-sm">
+          </div>
+          <div class="col-md-6 d-flex flex-column justify-content-between">
+            <div>
+              <h4 class="mb-3 text-primary">📌 구조 상황</h4>
+              <p>${project.situation}</p>
             </div>
-            <div class="col-md-6 p-4">
-              <h2>${project.name}</h2>
-              <p>${project.description}</p>
-              <ul class="list-unstyled">
-                <li><strong>목표 금액:</strong> ${project.goalAmount}원</li>
-                <li><strong>구조자 부담금:</strong> ${project.ownerAmount}원</li>
-                <li><strong>카카오톡:</strong> <a href="${project.kakaoLink}" target="_blank">연결하기</a></li>
-              </ul>
-              <p class="text-muted small mt-3">“도움은 본능, 연결은 선택.”<br>책임의 끝과 공감의 시작이 만나는 곳에서, 당신의 따뜻한 연결이 시작됩니다.</p>
+
+            <div class="amount-box mt-4">
+              <p><strong>🎯 목표 금액:</strong> ${project.goalAmount}원</p>
+              <p><strong>🧾 구조자 부담:</strong> ${project.ownerAmount}원</p>
+              <p><strong>📍 현재 모금:</strong> ${project.currentAmount || 0}원</p>
             </div>
+
+            <a href="${project.kakaoLink}" target="_blank" class="btn btn-warning btn-lg mt-2">💬 카카오톡으로 문의하기</a>
           </div>
         </div>
 
-        <h4 class="mt-5 mb-3">구조 상황 사진</h4>
-        <div class="row">
-          ${(project.situationImages || []).map(url => `
-            <div class="col-6 col-md-4 mb-3">
-              <img src="${url}" class="gallery-img w-100" alt="상황 이미지">
-            </div>`).join('')}
-        </div>
-
-        <h4 class="mt-4 mb-3">영수증 사진</h4>
-        <div class="row">
-          ${(project.receiptImages || []).map(url => `
-            <div class="col-6 col-md-4 mb-3">
-              <img src="${url}" class="gallery-img w-100" alt="영수증 이미지">
-            </div>`).join('')}
-        </div>
-
-        <div class="mt-5 text-center">
-          <a href="#" class="btn btn-outline-secondary">후기 보러가기 (준비 중)</a>
+        <div class="mt-5">
+          <h5 class="text-muted">📸 추가 이미지 (향후 구현 예정)</h5>
+          <p class="text-secondary">추가 구조 상황 이미지 / 영수증 사진은 다음 버전에서 갤러리 형태로 제공될 예정입니다.</p>
         </div>
       `;
+
+      document.getElementById("projectDetail").innerHTML = detail;
     }
   </script>
+
 </body>
 </html>
