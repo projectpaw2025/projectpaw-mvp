@@ -1,78 +1,85 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>프로젝트 상세보기 | Project.PAW</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <title>Project.PAW - 상세 페이지</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .gallery-img {
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body class="bg-light">
-
   <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold" href="index.html">🐾 Project.PAW</a>
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="index.html">🏠 홈</a></li>
         <li class="nav-item"><a class="nav-link" href="project_list.html">📋 후원하기</a></li>
-        <li class="nav-item"><a class="nav-link" href="create.html">➕ 프로젝트 등록</a></li>
+        <li class="nav-item"><a class="nav-link" href="create.html">➕ 등록</a></li>
+        <li class="nav-item"><a class="nav-link" href="login.html">🔑 로그인</a></li>
       </ul>
     </div>
   </nav>
 
   <div class="container mt-5 pt-4">
-    <div id="projectDetail" class="bg-white p-4 shadow rounded"></div>
-
-    <div class="text-center mt-5 text-muted">
-      <p>“도움은 본능, 연결은 선택”<br>Project.PAW는 책임의 끝과 공감의 시작이 만나는 곳입니다.</p>
-    </div>
+    <div id="projectDetail"></div>
   </div>
 
   <script>
-    function getQueryParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
-    }
-
-    function renderGallery(images) {
-      if (!images || images.length === 0) return '<p class="text-muted">이미지가 없습니다.</p>';
-      return images.map(img => `<img src="${img}" class="img-thumbnail m-1" style="max-width: 200px;" />`).join("");
-    }
-
-    const id = getQueryParam("id");
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
     const projects = JSON.parse(localStorage.getItem("projects") || "[]");
-    const project = projects.find(p => p.id === id);
+    const project = projects.find(p => p.id == id);
 
-    if (project) {
-      document.getElementById("projectDetail").innerHTML = `
-        <div class="row">
-          <div class="col-md-6">
-            <img src="${project.representativeImage}" class="img-fluid rounded shadow-sm" alt="대표 이미지">
-          </div>
-          <div class="col-md-6">
-            <h2>${project.name}</h2>
-            <p>${project.description}</p>
-            <ul class="list-group mb-3">
-              <li class="list-group-item"><strong>목표 금액:</strong> ${project.goalAmount}원</li>
-              <li class="list-group-item"><strong>구조자 부담금:</strong> ${project.ownerAmount}원</li>
-            </ul>
-            <a href="${project.kakaoLink}" target="_blank" class="btn btn-warning">💬 카카오톡 문의</a>
+    const detailEl = document.getElementById("projectDetail");
+
+    if (!project) {
+      detailEl.innerHTML = `<p class='text-center text-muted'>해당 프로젝트를 찾을 수 없습니다.</p>`;
+    } else {
+      detailEl.innerHTML = `
+        <div class="card shadow-sm">
+          <div class="row g-0">
+            <div class="col-md-6">
+              <img src="${project.representativeImage}" class="img-fluid rounded-start" alt="대표 이미지">
+            </div>
+            <div class="col-md-6 p-4">
+              <h2>${project.name}</h2>
+              <p>${project.description}</p>
+              <ul class="list-unstyled">
+                <li><strong>목표 금액:</strong> ${project.goalAmount}원</li>
+                <li><strong>구조자 부담금:</strong> ${project.ownerAmount}원</li>
+                <li><strong>카카오톡:</strong> <a href="${project.kakaoLink}" target="_blank">연결하기</a></li>
+              </ul>
+              <p class="text-muted small mt-3">“도움은 본능, 연결은 선택.”<br>책임의 끝과 공감의 시작이 만나는 곳에서, 당신의 따뜻한 연결이 시작됩니다.</p>
+            </div>
           </div>
         </div>
 
-        <hr class="my-4" />
-        <h5>구조 상황 사진</h5>
-        <div class="d-flex flex-wrap">${renderGallery(project.situationImages)}</div>
+        <h4 class="mt-5 mb-3">구조 상황 사진</h4>
+        <div class="row">
+          ${(project.situationImages || []).map(url => `
+            <div class="col-6 col-md-4 mb-3">
+              <img src="${url}" class="gallery-img w-100" alt="상황 이미지">
+            </div>`).join('')}
+        </div>
 
-        <hr class="my-4" />
-        <h5>영수증 사진</h5>
-        <div class="d-flex flex-wrap">${renderGallery(project.receiptImages)}</div>
+        <h4 class="mt-4 mb-3">영수증 사진</h4>
+        <div class="row">
+          ${(project.receiptImages || []).map(url => `
+            <div class="col-6 col-md-4 mb-3">
+              <img src="${url}" class="gallery-img w-100" alt="영수증 이미지">
+            </div>`).join('')}
+        </div>
 
-        <div class="mt-4 text-end">
-          <a href="feedback.html?id=${project.id}" class="btn btn-outline-primary">📸 후기 등록</a>
+        <div class="mt-5 text-center">
+          <a href="#" class="btn btn-outline-secondary">후기 보러가기 (준비 중)</a>
         </div>
       `;
-    } else {
-      document.getElementById("projectDetail").innerHTML = `<p class="text-danger text-center">해당 프로젝트를 찾을 수 없습니다.</p>`;
     }
   </script>
 </body>
