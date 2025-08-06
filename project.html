@@ -2,99 +2,104 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Project.PAW - 프로젝트 상세</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project.PAW - 상세 페이지</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
-    .project-header {
-      background: linear-gradient(90deg, #e0f7fa, #fff);
-      padding: 2rem 1rem;
-      border-radius: 0.5rem;
-      margin-bottom: 2rem;
-    }
-    .project-image {
-      max-height: 400px;
+    .carousel-item img {
       object-fit: cover;
-      border-radius: 0.5rem;
-    }
-    .tagline {
-      font-size: 1rem;
-      font-weight: 500;
-      color: #666;
-    }
-    .amount-box {
-      background-color: #f8f9fa;
-      border: 1px solid #dee2e6;
-      border-radius: 0.5rem;
-      padding: 1rem;
-      text-align: center;
-      margin-bottom: 1rem;
+      height: 350px;
     }
   </style>
 </head>
 <body class="bg-light">
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
     <div class="container">
       <a class="navbar-brand fw-bold" href="index.html">🐾 Project.PAW</a>
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="index.html">🏠 홈</a></li>
         <li class="nav-item"><a class="nav-link" href="project_list.html">📋 후원하기</a></li>
-        <li class="nav-item"><a class="nav-link" href="create.html">➕ 등록</a></li>
+        <li class="nav-item"><a class="nav-link" href="create.html">➕ 프로젝트 등록</a></li>
+        <li class="nav-item"><a class="nav-link" href="login.html">🔑 로그인</a></li>
       </ul>
     </div>
   </nav>
 
-  <div class="container my-5" id="projectDetail">
-    <!-- JS가 내용 채워줌 -->
+  <div class="container pt-5 mt-5">
+    <div id="approvalStatus" class="alert alert-warning text-center d-none" role="alert">
+      ⏳ 관리자 승인 대기 중인 프로젝트입니다.
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="row g-0">
+        <div class="col-md-6">
+          <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner" id="carouselImages"></div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon"></span>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card-body">
+            <h3 id="projectName" class="card-title fw-bold"></h3>
+            <p id="projectDescription" class="card-text"></p>
+            <ul class="list-unstyled mb-3">
+              <li><strong>🎯 목표 금액:</strong> <span id="goalAmount"></span>원</li>
+              <li><strong>💸 구조자 부담:</strong> <span id="ownerAmount"></span>원</li>
+              <li><strong>💬 문의:</strong> <a id="kakaoLink" href="#" target="_blank">카카오톡으로 이동</a></li>
+            </ul>
+            <div class="d-grid gap-2">
+              <a id="donateBtn" href="#" class="btn btn-primary">💖 지금 후원하기</a>
+              <a id="reviewBtn" href="#" class="btn btn-outline-secondary">📝 후기 보기</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-muted text-center mt-4 small">“책임의 끝과 공감의 시작이 만나는 곳, Project.PAW”</p>
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get("id");
     const projects = JSON.parse(localStorage.getItem("projects") || "[]");
-    const project = projects.find(p => p.id == id);
+    const project = projects.find(p => p.id === projectId);
 
     if (!project) {
-      document.getElementById("projectDetail").innerHTML = `
-        <div class="alert alert-warning text-center">해당 프로젝트를 찾을 수 없습니다.</div>
-      `;
+      document.body.innerHTML = "<div class='container pt-5 mt-5 text-center'><h3>프로젝트를 찾을 수 없습니다.</h3></div>";
     } else {
-      const detail = `
-        <div class="project-header text-center">
-          <h1 class="fw-bold mb-3">${project.name}</h1>
-          <p class="tagline">“도움은 본능, 연결은 선택 – 당신의 따뜻한 선택을 기다립니다.”</p>
-        </div>
+      document.getElementById("projectName").innerText = project.name;
+      document.getElementById("projectDescription").innerText = project.situation;
+      document.getElementById("goalAmount").innerText = project.goalAmount;
+      document.getElementById("ownerAmount").innerText = project.ownerAmount;
+      document.getElementById("kakaoLink").href = project.kakaoLink;
+      document.getElementById("donateBtn").href = project.kakaoLink;
+      document.getElementById("reviewBtn").href = `review.html?id=${project.id}`;
 
-        <div class="row mb-4">
-          <div class="col-md-6">
-            <img src="${project.representativeImage || 'https://placekitten.com/600/400'}" alt="대표 이미지" class="img-fluid project-image shadow-sm">
-          </div>
-          <div class="col-md-6 d-flex flex-column justify-content-between">
-            <div>
-              <h4 class="mb-3 text-primary">📌 구조 상황</h4>
-              <p>${project.situation}</p>
-            </div>
+      if (project.status !== "approved") {
+        document.getElementById("approvalStatus").classList.remove("d-none");
+      }
 
-            <div class="amount-box mt-4">
-              <p><strong>🎯 목표 금액:</strong> ${project.goalAmount}원</p>
-              <p><strong>🧾 구조자 부담:</strong> ${project.ownerAmount}원</p>
-              <p><strong>📍 현재 모금:</strong> ${project.currentAmount || 0}원</p>
-            </div>
-
-            <a href="${project.kakaoLink}" target="_blank" class="btn btn-warning btn-lg mt-2">💬 카카오톡으로 문의하기</a>
-          </div>
-        </div>
-
-        <div class="mt-5">
-          <h5 class="text-muted">📸 추가 이미지 (향후 구현 예정)</h5>
-          <p class="text-secondary">추가 구조 상황 이미지 / 영수증 사진은 다음 버전에서 갤러리 형태로 제공될 예정입니다.</p>
-        </div>
-      `;
-
-      document.getElementById("projectDetail").innerHTML = detail;
+      const imageContainer = document.getElementById("carouselImages");
+      const allImages = [project.representativeImage, ...(project.situationImages || []), ...(project.receiptImages || [])];
+      allImages.forEach((src, i) => {
+        const item = document.createElement("div");
+        item.className = "carousel-item" + (i === 0 ? " active" : "");
+        const img = document.createElement("img");
+        img.className = "d-block w-100";
+        img.src = src || "https://placekitten.com/400/300";
+        item.appendChild(img);
+        imageContainer.appendChild(item);
+      });
     }
   </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
