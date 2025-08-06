@@ -30,9 +30,6 @@
     </div>
   </nav>
 
-  <!-- ✅ 최신 프로젝트 슬라이더 카드 -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4" id="projectContainer"></div>
-
   <header class="text-center py-10">
     <h1 class="text-3xl font-bold text-blue-700">진행 중인 구조 프로젝트</h1>
   </header>
@@ -44,66 +41,13 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      // ✅ 상단 슬라이더 카드
-      const container = document.getElementById("projectContainer");
+      const listContainer = document.getElementById("project-card-container");
       const projects = JSON.parse(localStorage.getItem("projects") || "[]").reverse();
 
       if (projects.length === 0) {
-        container.innerHTML = "<p class='text-gray-500'>등록된 구조 프로젝트가 없습니다.</p>";
+        listContainer.innerHTML = "<p class='text-center text-gray-500'>등록된 구조 프로젝트가 없습니다.</p>";
         return;
       }
-
-      projects.slice(0, 4).forEach((project, idx) => {
-        const card = document.createElement("div");
-        card.className = "bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden";
-
-        const images = [project.representativeImage || "https://placekitten.com/400/250", ...(project.situationImages || [])];
-        const sliderId = `slider-${idx}`;
-
-        const imageSlides = images.map(img => `
-          <div class="flex-shrink-0 w-full h-52 snap-start">
-            <img src="${img}" class="w-full h-full object-cover" />
-          </div>
-        `).join("");
-
-        card.innerHTML = `
-          <div class="relative">
-            <div id="${sliderId}" class="w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth">
-              ${imageSlides}
-            </div>
-            <button class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 bg-opacity-50 text-white px-2 py-1 rounded-l" onclick="slideLeft('${sliderId}')">←</button>
-            <button class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 bg-opacity-50 text-white px-2 py-1 rounded-r" onclick="slideRight('${sliderId}')">→</button>
-          </div>
-          <div class="p-4 space-y-1">
-            <h3 class="text-xl font-semibold text-gray-900">${project.name}</h3>
-            <p class="text-sm text-gray-600 line-clamp-2">${project.situation}</p>
-            <div class="text-sm text-gray-500">
-              🎯 목표: <strong>${project.goalAmount}</strong>원<br/>
-              📊 현황: ${project.currentAmount}원<br/>
-              🧾 구조자 부담: ${project.ownerAmount}원
-            </div>
-            <a href="${project.kakaoLink}" target="_blank"
-              class="inline-block mt-2 bg-yellow-400 hover:bg-yellow-500 text-white text-sm font-medium px-4 py-2 rounded-xl shadow transition">
-              💬 카카오톡 문의
-            </a>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-
-      // ✅ 슬라이더 기능
-      window.slideLeft = function (id) {
-        const slider = document.getElementById(id);
-        slider.scrollBy({ left: -slider.clientWidth, behavior: 'smooth' });
-      };
-
-      window.slideRight = function (id) {
-        const slider = document.getElementById(id);
-        slider.scrollBy({ left: slider.clientWidth, behavior: 'smooth' });
-      };
-
-      // ✅ 하단 카드 리스트
-      const listContainer = document.getElementById("project-card-container");
 
       projects.forEach(project => {
         const col = document.createElement("div");
