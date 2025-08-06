@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project.PAW - 상세 페이지</title>
+  <title>Project.PAW - 프로젝트 상세</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
-    .carousel-item img {
+    .project-image {
+      width: 100%;
+      max-height: 300px;
       object-fit: cover;
-      height: 350px;
+      border-radius: 10px;
+    }
+    .image-gallery img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      margin-bottom: 15px;
+      border-radius: 5px;
     }
   </style>
 </head>
@@ -27,79 +36,59 @@
   </nav>
 
   <div class="container pt-5 mt-5">
-    <div id="approvalStatus" class="alert alert-warning text-center d-none" role="alert">
-      ⏳ 관리자 승인 대기 중인 프로젝트입니다.
-    </div>
-
-    <div class="card shadow-sm">
-      <div class="row g-0">
-        <div class="col-md-6">
-          <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner" id="carouselImages"></div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
-              <span class="carousel-control-next-icon"></span>
-            </button>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="card-body">
-            <h3 id="projectName" class="card-title fw-bold"></h3>
-            <p id="projectDescription" class="card-text"></p>
-            <ul class="list-unstyled mb-3">
-              <li><strong>🎯 목표 금액:</strong> <span id="goalAmount"></span>원</li>
-              <li><strong>💸 구조자 부담:</strong> <span id="ownerAmount"></span>원</li>
-              <li><strong>💬 문의:</strong> <a id="kakaoLink" href="#" target="_blank">카카오톡으로 이동</a></li>
-            </ul>
-            <div class="d-grid gap-2">
-              <a id="donateBtn" href="#" class="btn btn-primary">💖 지금 후원하기</a>
-              <a id="reviewBtn" href="#" class="btn btn-outline-secondary">📝 후기 보기</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <p class="text-muted text-center mt-4 small">“책임의 끝과 공감의 시작이 만나는 곳, Project.PAW”</p>
+    <div id="projectDetail"></div>
   </div>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const projectId = urlParams.get("id");
-    const projects = JSON.parse(localStorage.getItem("projects") || "[]");
-    const project = projects.find(p => p.id === projectId);
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      const projects = JSON.parse(localStorage.getItem("projects") || "[]");
+      const project = projects.find(p => p.id == id);
 
-    if (!project) {
-      document.body.innerHTML = "<div class='container pt-5 mt-5 text-center'><h3>프로젝트를 찾을 수 없습니다.</h3></div>";
-    } else {
-      document.getElementById("projectName").innerText = project.name;
-      document.getElementById("projectDescription").innerText = project.situation;
-      document.getElementById("goalAmount").innerText = project.goalAmount;
-      document.getElementById("ownerAmount").innerText = project.ownerAmount;
-      document.getElementById("kakaoLink").href = project.kakaoLink;
-      document.getElementById("donateBtn").href = project.kakaoLink;
-      document.getElementById("reviewBtn").href = `review.html?id=${project.id}`;
+      const container = document.getElementById("projectDetail");
 
-      if (project.status !== "approved") {
-        document.getElementById("approvalStatus").classList.remove("d-none");
+      if (!project) {
+        container.innerHTML = `<div class="text-center mt-5"><h3>⚠️ 프로젝트를 찾을 수 없습니다.</h3></div>`;
+        return;
       }
 
-      const imageContainer = document.getElementById("carouselImages");
-      const allImages = [project.representativeImage, ...(project.situationImages || []), ...(project.receiptImages || [])];
-      allImages.forEach((src, i) => {
-        const item = document.createElement("div");
-        item.className = "carousel-item" + (i === 0 ? " active" : "");
-        const img = document.createElement("img");
-        img.className = "d-block w-100";
-        img.src = src || "https://placekitten.com/400/300";
-        item.appendChild(img);
-        imageContainer.appendChild(item);
-      });
-    }
-  </script>
+      container.innerHTML = `
+        <h1 class="text-center mb-4 text-primary fw-bold">${project.name}</h1>
+        <img src="${project.representativeImage}" class="project-image mb-4" alt="대표 이미지">
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <div class="row">
+          <div class="col-md-6">
+            <h5 class="fw-bold">구조 상황</h5>
+            <p>${project.situation || "상황 설명이 없습니다."}</p>
+            <h5 class="fw-bold mt-4">구조자 정보</h5>
+            <p><strong>구조자 이름:</strong> ${project.ownerName || "익명"}</p>
+            <p><strong>카카오톡 연락처:</strong> <a href="${project.kakaoLink}" target="_blank">${project.kakaoLink}</a></p>
+          </div>
+          <div class="col-md-6">
+            <h5 class="fw-bold">목표 및 비용</h5>
+            <ul class="list-group mb-4">
+              <li class="list-group-item"><strong>목표 금액:</strong> ${project.goalAmount}원</li>
+              <li class="list-group-item"><strong>구조자 부담금:</strong> ${project.ownerAmount}원</li>
+            </ul>
+
+            <h5 class="fw-bold">후원금 사용 계획</h5>
+            <p>${project.usagePlan || "작성된 내용이 없습니다."}</p>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <h5 class="fw-bold">사진 갤러리</h5>
+          <div class="row image-gallery">
+            ${(project.additionalImages || []).map(img => `
+              <div class="col-md-4">
+                <img src="${img}" alt="추가 이미지">
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    });
+  </script>
 </body>
 </html>
