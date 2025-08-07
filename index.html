@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project.PAW - 홈</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <title>Project.PAW - 함께 만드는 구조</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .card-img-top {
+    .project-image {
+      width: 100%;
       height: 200px;
       object-fit: cover;
+      border-radius: 10px;
     }
-    .philosophy-card {
-      min-height: 200px;
+    .philosophy-card .card {
+      transition: transform 0.2s ease;
+    }
+    .philosophy-card .card:hover {
+      transform: translateY(-5px);
     }
   </style>
 </head>
 <body class="bg-light">
-
   <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
     <div class="container">
       <a class="navbar-brand fw-bold" href="index.html">🐾 Project.PAW</a>
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link active" href="index.html">🏠 홈</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html">🏠 홈</a></li>
         <li class="nav-item"><a class="nav-link" href="project_list.html">📋 후원하기</a></li>
         <li class="nav-item"><a class="nav-link" href="create.html">➕ 프로젝트 등록</a></li>
         <li class="nav-item"><a class="nav-link" href="login.html">🔑 로그인</a></li>
@@ -29,106 +33,101 @@
     </div>
   </nav>
 
-  <div class="container pt-5 mt-5">
-    <!-- 철학 카드 영역 -->
-    <h2 class="text-center my-5 text-primary fw-bold">🐾 이건 단순한 기부 플랫폼이 아닙니다</h2>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
-      <div class="col">
-        <div class="card h-100 shadow-sm philosophy-card border-start border-4 border-primary">
-          <div class="card-body">
-            <h5 class="card-title fw-bold">1. 돈만 주는 기부, 질렸잖아</h5>
-            <p class="card-text">우린 개인과 개인이 ‘직접 연결’되는 구조야. 따뜻함도 직거래로.</p>
+  <main class="container pt-5 mt-5">
+    <h1 class="text-center fw-bold mb-5">진행 중인 구조 프로젝트</h1>
+    <div id="projectCards" class="row g-4"></div>
+  </main>
+
+  <!-- 철학 카드 섹션 -->
+  <section class="py-5 bg-light philosophy-card">
+    <div class="container">
+      <h2 class="text-center fw-bold mb-5">🐾 Project.PAW는 이렇게 다릅니다</h2>
+      <div class="row g-4">
+
+        <div class="col-md-4">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+              <h5 class="card-title fw-bold text-primary">🔗 “돈만 주는 기부, 질렸잖아. 우리는 ‘직접 연결’이야.”</h5>
+              <p class="card-text text-muted">중간단체 없는 개인↔개인 직접 연결 플랫폼. 정서적 피로감에서 벗어나요.</p>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col">
-        <div class="card h-100 shadow-sm philosophy-card border-start border-4 border-success">
-          <div class="card-body">
-            <h5 class="card-title fw-bold">2. 모두 돕고 싶어 해</h5>
-            <p class="card-text">근데 누가 ‘실행’하게 만드냐고. 우리는 그걸 설계해.</p>
+
+        <div class="col-md-4">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+              <h5 class="card-title fw-bold text-primary">🚀 “모두가 돕고 싶어 해. 근데 누가 ‘실행’하게 만들 건데?”</h5>
+              <p class="card-text text-muted">기부를 ‘실행’으로 바꾸는 트리거 설계. 따뜻함은 구조로 설계됩니다.</p>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col">
-        <div class="card h-100 shadow-sm philosophy-card border-start border-4 border-warning">
-          <div class="card-body">
-            <h5 class="card-title fw-bold">3. 구조자도 30% 내야 등록 가능</h5>
-            <p class="card-text">공동책임, 이게 우리 구조의 기본값. 책임지는 구조자만 등록됩니다.</p>
+
+        <div class="col-md-4">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+              <h5 class="card-title fw-bold text-primary">📌 “구조자도 30% 내야 등록 가능. 우리, 책임 묻는 플랫폼이야.”</h5>
+              <p class="card-text text-muted">책임 없는 구조는 없어요. 구조자도 공동책임자로서 기여합니다.</p>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col">
-        <div class="card h-100 shadow-sm philosophy-card border-start border-4 border-danger">
-          <div class="card-body">
-            <h5 class="card-title fw-bold">4. 후원금 100% 전달</h5>
-            <p class="card-text">PG 수수료는 우리가 처리. 여러분 돈은 구조자에게 100% 갑니다.</p>
+
+        <div class="col-md-4">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+              <h5 class="card-title fw-bold text-primary">💯 “후원금 100% 전달. 수수료? 그건 우리가 알아서 해.”</h5>
+              <p class="card-text text-muted">기부자는 감동만, 수수료는 PAW가 부담합니다. 완전 투명 구조.</p>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col">
-        <div class="card h-100 shadow-sm philosophy-card border-start border-4 border-info">
-          <div class="card-body">
-            <h5 class="card-title fw-bold">5. 다음 목표는 병원 direct 송금</h5>
-            <p class="card-text">신뢰 쌓이면, 구조자 건너뛰고 병원에 바로 쏩니다. 설계 중입니다.</p>
+
+        <div class="col-md-4">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+              <h5 class="card-title fw-bold text-primary">🏥 “다음 목표: 동물병원으로 직접 송금. 믿음, 끝까지 설계 중.”</h5>
+              <p class="card-text text-muted">신뢰가 쌓이면 구조자 거치지 않고 병원으로 바로 송금됩니다.</p>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col">
-        <div class="card h-100 shadow-sm philosophy-card border-start border-4 border-dark">
-          <div class="card-body">
-            <h5 class="card-title fw-bold">6. 이건 구조가 아니라 연결이야</h5>
-            <p class="card-text">숫자 말고 감정. 마음과 마음이 닿는 구조, 그게 Project.PAW야.</p>
+
+        <div class="col-md-4">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+              <h5 class="card-title fw-bold text-primary">💌 “이건 구조가 아니라 연결이야. 마음과 마음이 닿는 구조.”</h5>
+              <p class="card-text text-muted">숫자보다 감정. 후원이 아니라 ‘연결’이 남도록 설계합니다.</p>
+            </div>
           </div>
         </div>
+
       </div>
     </div>
-
-    <!-- 프로젝트 카드 영역 -->
-    <h1 class="text-center my-5 text-3xl fw-bold text-blue-700">진행 중인 구조 프로젝트</h1>
-    <div class="row" id="projectContainer"></div>
-  </div>
+  </section>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const container = document.getElementById("projectContainer");
-      const projects = JSON.parse(localStorage.getItem("projects") || "[]").reverse();
+      const projectContainer = document.getElementById("projectCards");
+      const projects = JSON.parse(localStorage.getItem("projects") || "[]");
 
       if (projects.length === 0) {
-        container.innerHTML = "<p class='text-center text-muted'>등록된 구조 프로젝트가 없습니다.</p>";
+        projectContainer.innerHTML = '<div class="text-center">아직 등록된 프로젝트가 없습니다.</div>';
         return;
       }
 
-      projects.forEach(project => {
-        const col = document.createElement("div");
-        col.className = "col-md-6 col-lg-4 mb-4";
-
+      projects.slice().reverse().forEach(project => {
         const card = document.createElement("div");
-        card.className = "card h-100 shadow-sm";
-        card.style.cursor = "pointer";
-        card.onclick = () => {
-          window.location.href = `project.html?id=${project.id}`;
-        };
-
-        const img = document.createElement("img");
-        img.className = "card-img-top";
-        img.src = project.representativeImage || "https://placekitten.com/400/250";
-        img.alt = "대표 이미지";
-
-        const body = document.createElement("div");
-        body.className = "card-body";
-        body.innerHTML = `
-          <h5 class="card-title">${project.name || "이름 없음"}</h5>
-          <p class="card-text">${project.situation || "상황 설명 없음"}</p>
-          <ul class="list-unstyled small">
-            <li><strong>목표:</strong> ${project.goalAmount || 0}원</li>
-            <li><strong>구조자 부담:</strong> ${project.ownerAmount || 0}원</li>
-          </ul>
+        card.className = "col-md-3";
+        card.innerHTML = `
+          <div class="card h-100 shadow-sm">
+            <img src="${project.representativeImage}" class="project-image" alt="대표 이미지">
+            <div class="card-body">
+              <h5 class="card-title fw-bold">${project.name}</h5>
+              <p class="card-text text-muted">${project.situation?.substring(0, 50) || "상황 설명 없음"}...</p>
+              <p class="mb-1"><strong>목표:</strong> ${project.goalAmount}원</p>
+              <p class="mb-2"><strong>구조자 부담:</strong> ${project.ownerAmount}원</p>
+              <a href="project.html?id=${project.id}" class="btn btn-outline-primary btn-sm w-100">📌 상세 보기</a>
+            </div>
+          </div>
         `;
-
-        card.appendChild(img);
-        card.appendChild(body);
-        col.appendChild(card);
-        container.appendChild(col);
+        projectContainer.appendChild(card);
       });
     });
   </script>
