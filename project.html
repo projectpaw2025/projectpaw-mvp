@@ -50,7 +50,13 @@
         return;
       }
 
-      const galleryImages = [project.representativeImage, ...project.sceneImages, ...project.receiptImages];
+      // ⚠️ 방어 코드 추가
+      const galleryImages = [
+        project.representativeImage,
+        ...(project.sceneImages || []),
+        ...(project.receiptImages || [])
+      ];
+
       const galleryHTML = galleryImages.map(src => `<div class="col-md-4"><img src="${src}" class="gallery-image mb-3" /></div>`).join('');
 
       container.innerHTML = `
