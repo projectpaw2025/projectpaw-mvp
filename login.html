@@ -1,250 +1,87 @@
 <!DOCTYPE html>
 <html lang="ko">
- <head>
-  <meta charset="utf-8"/>
-  <title>
-   로그인 페이지
-  </title>
-  <!-- Google Identity Services -->
-  <script async="" defer="" src="https://accounts.google.com/gsi/client">
-  </script>
-  <!-- Kakao SDK -->
-  <script src="https://developers.kakao.com/sdk/js/kakao.js">
-  </script>
-  <script>
-   Kakao.init('9917e1abbf40830145f513dc1121157b');
-  </script>
-  <!-- Naver SDK -->
-  <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js">
-  </script>
-  <!-- FontAwesome -->
+<head>
+  <meta charset="UTF-8">
+  <title>Project.PAW - 로그인</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+  <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js"></script>
+  <script>Kakao.init('9917e1abbf40830145f513dc1121157b');</script>
   <style>
-   body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      height: 100vh;
-      display: flex;
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Noto Sans KR', sans-serif;
     }
-
-    .sidebar {
-      width: 30%;
-      background: #f5f5f5;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border-top-left-radius: 20px;
-      border-bottom-left-radius: 20px;
-    }
-
-    .sidebar-logo {
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 40px;
-    }
-
-    .sidebar-logo i {
-      margin-left: 5px;
-    }
-
-    .decor {
-      height: 100px;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .decor span {
-      width: 10px;
-      height: 10px;
-      background: #3daef3;
-      border-radius: 50%;
-    }
-
-    .content {
-      width: 70%;
+    .login-box {
+      max-width: 960px;
+      margin: 60px auto;
       background: #fff;
-      border-top-right-radius: 20px;
-      border-bottom-right-radius: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      position: relative;
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      overflow: hidden;
     }
-
-    .content h2 {
-      color: #777;
-      font-weight: normal;
-      margin-bottom: 30px;
+    .login-image {
+      background: url('images/login_cat2.jpg') center/cover no-repeat;
+      min-height: 400px;
     }
-
+    .login-form {
+      padding: 40px;
+    }
     .sns-buttons {
       display: flex;
+      justify-content: center;
       gap: 20px;
     }
-
     .login-button {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #fff;
-      font-size: 20px;
+      font-size: 22px;
       cursor: pointer;
       transition: transform 0.2s;
+      color: #fff;
     }
-
     .login-button:hover {
       transform: scale(1.1);
     }
-
     .google { background: #db4437; }
     .kakao  { background: #fee500; color: #000; font-weight: bold; }
     .naver  { background: #1ec800; }
-
-    #naverIdLogin {
-      display: none;
-    }
   </style>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <style>
-   @media (max-width: 768px) {
-    .card {
-        padding: 12px !important;
-        margin: 12px 0 !important;
-        font-size: 14px !important;
-    }
-    .card h3 {
-        font-size: 18px !important;
-    }
-    .card p {
-        font-size: 13px !important;
-    }
-    .card a {
-        padding: 6px 12px !important;
-        font-size: 13px !important;
-    }
-}
-  </style>
-  <style>
-   body {
-    background-color: #f4f4f4;
-    font-family: 'Noto Sans KR', sans-serif;
-}
-.login-wrapper {
-    max-width: 400px;
-    margin: 80px auto;
-    background: white;
-    border-radius: 16px;
-    padding: 32px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    text-align: center;
-}
-.login-wrapper h2 {
-    color: #1e3a8a;
-    margin-bottom: 24px;
-}
-.login-wrapper input[type="text"],
-.login-wrapper input[type="password"] {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    margin-bottom: 16px;
-    font-size: 14px;
-}
-.login-wrapper button {
-    width: 100%;
-    background-color: #3b82f6;
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-}
-  </style>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
- </head>
- <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm mb-4">
-   <div class="container">
-    <a class="navbar-brand fw-bold" href="index.html">
-     🐾 Project.PAW
-    </a>
-    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-     <li class="nav-item">
-      <a class="nav-link" href="index.html">
-       🏠 홈
-      </a>
-     </li>
-     <li class="nav-item">
-      <a class="nav-link" href="project_list.html">
-       📋 후원하기
-      </a>
-     </li>
-     <li class="nav-item">
-      <a class="nav-link" href="create.html">
-       ➕ 프로젝트 등록
-      </a>
-     </li>
-     <li class="nav-item">
-      <a class="nav-link active" href="login.html">
-       🔑 로그인
-      </a>
-     </li>
-    </ul>
-   </div>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">🐾 Project.PAW</a>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">🏠 홈</a></li>
+        <li class="nav-item"><a class="nav-link" href="project_list.html">📋 후원하기</a></li>
+        <li class="nav-item"><a class="nav-link" href="create.html">➕ 프로젝트 등록</a></li>
+        <li class="nav-item"><a class="nav-link active" href="login.html">🔑 로그인</a></li>
+      </ul>
+    </div>
   </nav>
-  <div class="container my-5">
-   <div class="sidebar">
-    <div class="sidebar-logo">
-     PAW
-     <i class="fas fa-paw">
-     </i>
+
+  <div class="container login-box row g-0">
+    <div class="col-md-6 login-image d-none d-md-block"></div>
+    <div class="col-md-6 login-form">
+      <h3 class="text-center mb-4">SNS 계정으로 로그인</h3>
+      <div class="sns-buttons">
+        <div class="login-button google" id="google-login-btn"><i class="fab fa-google"></i></div>
+        <div class="login-button kakao" id="kakao-login-btn">K</div>
+        <div class="login-button naver" id="naver-login-btn">N</div>
+      </div>
+      <div id="naverIdLogin" style="display: none;"></div>
     </div>
-    <img alt="Login Cat" src="images/login_cat2.jpg" style="max-width: 80%; border-radius: 12px; margin-bottom: 20px;"/>
-    <div class="decor">
-     <span>
-     </span>
-     <span>
-     </span>
-     <span>
-     </span>
-    </div>
-   </div>
-   <div class="content">
-    <h2>
-     SNS계정으로 간편로그인하기
-    </h2>
-    <div class="sns-buttons">
-     <!-- Google -->
-     <div class="login-button google" id="google-login-btn">
-      <i class="fab fa-google">
-      </i>
-     </div>
-     <!-- Kakao -->
-     <div class="login-button kakao" id="kakao-login-btn">
-      K
-     </div>
-     <!-- Naver -->
-     <div class="login-button naver" id="naver-login-btn">
-      N
-     </div>
-    </div>
-    <!-- 숨김 네이버 SDK 버튼 -->
-    <div id="naverIdLogin">
-    </div>
-   </div>
-   <script>
-    // Kakao 로그인 (scope 추가 및 팝업 -> 부모창 이동 처리)
+  </div>
+
+  <script>
     document.getElementById('kakao-login-btn').addEventListener('click', function () {
       Kakao.Auth.login({
         scope: 'profile_nickname,account_email',
@@ -252,7 +89,6 @@
           Kakao.API.request({
             url: '/v2/user/me',
             success: function (res) {
-              console.log(res); // 사용자 정보 확인용
               alert(`${res.kakao_account.profile.nickname}님 환영합니다!`);
               if (window.opener) {
                 window.opener.localStorage.setItem("isLoggedIn", "true");
@@ -264,30 +100,24 @@
               }
             },
             fail: function (error) {
-              console.error(error);
               alert('사용자 정보 요청 실패');
             }
           });
         },
         fail: function (err) {
-          console.error(err);
           alert('카카오 로그인 실패');
         }
       });
     });
 
-    // Google 로그인
     window.onload = function () {
       google.accounts.id.initialize({
         client_id: "656866984778-8jsv71j60fsjf4d34d0hav83i4ktf8u7.apps.googleusercontent.com",
         callback: handleCredentialResponse
       });
-
       document.getElementById('google-login-btn').addEventListener('click', function () {
         google.accounts.id.prompt();
       });
-
-      // Naver 로그인 초기화
       const naverLogin = new naver.LoginWithNaverId({
         clientId: "SO07cKed8aScWuacSBqk",
         callbackUrl: window.location.origin + "/naver_callback.html",
@@ -295,7 +125,6 @@
         loginButton: { color: "green", type: 3, height: 40 }
       });
       naverLogin.init();
-
       document.getElementById('naver-login-btn').addEventListener('click', function () {
         document.querySelector('#naverIdLogin a').click();
       });
@@ -308,9 +137,7 @@
       localStorage.setItem("isLoggedIn", "true");
       window.location.assign('https://projectpaw.co.kr');
     }
-   </script>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
   </script>
- </body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
