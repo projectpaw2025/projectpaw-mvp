@@ -1,163 +1,106 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project.PAW - 구조 상세보기</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Pretendard&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Project.PAW 상세 페이지</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      font-family: 'Pretendard', sans-serif;
-      background-color: #fefefe;
-      color: #212529;
-    }
-    .main-image {
-      width: 100%;
-      height: 360px;
-      object-fit: cover;
-      border-radius: 1rem;
-    }
-    .gallery-image {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 0.75rem;
-    }
-    .btn-custom {
-      background-color: #007bff;
-      color: white;
-      padding: 12px 24px;
-      font-weight: 600;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-    }
-    .btn-custom:hover {
-      background-color: #0056b3;
-      transform: scale(1.05);
-    }
-    .card {
-      border: none;
-      border-radius: 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      transition: all 0.3s ease-in-out;
-    }
-    .progress-bar {
-      background-color: #007bff;
-    }
-    footer {
+      font-family: 'Noto Sans KR', sans-serif;
       background-color: #f8f9fa;
-      color: #6c757d;
+      color: #333;
     }
-    footer a { color: #6c757d; }
-    footer a:hover { color: #000; }
+    .project-header {
+      background-color: #fff;
+      border-radius: 16px;
+      padding: 2rem;
+      margin-top: 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    .project-header h2 {
+      font-weight: 700;
+    }
+    .amount-box {
+      background-color: #f1f3f5;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    .badge-custom {
+      font-size: 0.9rem;
+      padding: 0.5em 0.75em;
+      border-radius: 10px;
+    }
   </style>
 </head>
-<body class="bg-light">
-
-  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand fw-bold" href="index.html">🐾 Project.PAW</a>
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="index.html">🏠 홈</a></li>
-        <li class="nav-item"><a class="nav-link" href="project_list.html">📋 후원하기</a></li>
-        <li class="nav-item"><a class="nav-link" href="create.html">➕ 프로젝트 등록</a></li>
-      </ul>
+<body>
+  <div class="container">
+    <div class="project-header text-center">
+      <h2 id="projectName">프로젝트 이름</h2>
+      <p id="projectDescription" class="lead mt-3">상세 설명</p>
     </div>
-  </nav>
 
-  <main class="container pt-5 mt-5">
-    <div id="projectDetail" class="mt-4"></div>
-  </main>
-
-  <footer class="text-center text-muted py-4 mt-5 border-top">
-    <div class="container">
-      <p class="mb-1 fw-semibold">🐾 Project.PAW</p>
-      <p class="mb-2">도움은 본능, 연결은 선택</p>
-      <small>© 2025 Project.PAW. All rights reserved.<br>
-      고유번호: 105-82-89397 (프로젝트파우)</small>
+    <div class="mt-4 row justify-content-center">
+      <div class="col-md-6 text-center">
+        <img id="projectImage" src="" alt="대표 이미지" class="img-fluid rounded shadow-sm"/>
+      </div>
     </div>
-  </footer>
+
+    <div class="row justify-content-center mt-4">
+      <div class="col-md-6 amount-box text-center">
+        <p><strong>목표 금액:</strong> <span id="goalAmount">-</span> 원</p>
+        <p><strong>모금 현황:</strong> <span id="currentAmount">-</span> 원</p>
+        <p><strong>구조자 부담금:</strong> <span id="contributorAmount">-</span> 원</p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center mt-5">
+      <div class="col-md-8" id="gallerySection">
+        <!-- 이미지 갤러리 -->
+      </div>
+    </div>
+
+    <div class="text-center mt-4 mb-5">
+      <a href="index.html" class="btn btn-outline-secondary">← 메인으로</a>
+    </div>
+  </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const id = new URLSearchParams(window.location.search).get("id");
-      const projects = JSON.parse(localStorage.getItem("projects") || "[]");
-      const project = projects.find(p => p.id == id);
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get("id");
+    const project = JSON.parse(localStorage.getItem("projects") || "[]").find(p => p.id === projectId);
 
-      const container = document.getElementById("projectDetail");
+    if (project) {
+      document.getElementById("projectName").textContent = project.name;
+      document.getElementById("projectDescription").textContent = project.description;
+      document.getElementById("goalAmount").textContent = project.goalAmount.toLocaleString();
+      document.getElementById("currentAmount").textContent = project.currentAmount ? project.currentAmount.toLocaleString() : "0";
+      document.getElementById("contributorAmount").textContent = project.contributorAmount ? project.contributorAmount.toLocaleString() : "-";
+      document.getElementById("projectImage").src = project.representativeImage;
 
-      if (!project) {
-        container.innerHTML = '<div class="alert alert-danger">프로젝트를 찾을 수 없습니다.</div>';
-        return;
+      const gallerySection = document.getElementById("gallerySection");
+      const galleryImages = project.galleryImages || [];
+
+      if (galleryImages.length > 0) {
+        const galleryHTML = galleryImages.map(src => `
+          <div class="col-md-4 mb-3">
+            <img src="${src}" class="img-fluid rounded shadow-sm" alt="상세 이미지">
+          </div>
+        `).join('');
+
+        gallerySection.innerHTML = `
+          <h4 class="mb-3">구조 상황 사진</h4>
+          <div class="row">${galleryHTML}</div>
+        `;
       }
-
-      const percent = Math.min(
-        Math.round((parseInt(project.ownerAmount || 0) / parseInt(project.goalAmount || 1)) * 100),
-        100
-      );
-
-      const galleryImages = [
-        project.representativeImage,
-        ...(project.sceneImages || []),
-        ...(project.receiptImages || [])
-      ];
-      const galleryHTML = galleryImages.map(src => \`
-        <div class="col-sm-6 col-md-4 mb-3">
-          <img src="\${src}" class="gallery-image" alt="등록 이미지">
+    } else {
+      document.querySelector(".container").innerHTML = `
+        <div class="alert alert-danger mt-5 text-center">
+          해당 프로젝트를 찾을 수 없습니다.
         </div>
-      \`).join('');
-
-      const shortSituation = project.situation.length > 120 ? 
-        project.situation.slice(0, 120) + '...' : 
-        project.situation;
-
-      container.innerHTML = \`
-        <div class="card p-4">
-          <h2 class="fw-bold mb-3">🐾 \${project.name}</h2>
-          <img src="\${project.representativeImage}" class="main-image mb-4" alt="대표 이미지">
-
-          <div class="mb-3">
-            <div class="d-flex justify-content-between">
-              <span><strong>\${project.ownerAmount}</strong>원 모금됨</span>
-              <span>목표: \${project.goalAmount}원</span>
-            </div>
-            <div class="progress mt-1" style="height: 16px;">
-              <div class="progress-bar" role="progressbar" style="width: \${percent}%;">\${percent}%</div>
-            </div>
-          </div>
-
-          <div class="mb-4">
-            <h5 class="fw-bold">📖 구조 상황</h5>
-            <p id="situation-text">\${shortSituation}</p>
-            \${project.situation.length > 120 
-              ? '<button class="btn btn-sm btn-outline-secondary" onclick="document.getElementById(\'situation-text\').innerText = \'\${project.situation}\'; this.remove()">펼쳐보기</button>' 
-              : ''
-            }
-          </div>
-
-          <div class="mb-4">
-            <h5 class="fw-bold">🖼️ 등록 이미지</h5>
-            <div class="row">\${galleryHTML}</div>
-          </div>
-
-          <div class="mb-4">
-            <h5 class="fw-bold">💬 후기</h5>
-            <p class="text-muted">후기 기능은 추후 연결 예정입니다.</p>
-          </div>
-
-          <div class="mb-4 text-center">
-            <a href="https://pf.kakao.com/_XnxlxjG" target="_blank" class="btn btn-custom mb-3">💌 카카오톡으로 따뜻한 마음 전하기</a>
-          </div>
-
-          <div class="form-group">
-            <label for="adminApproval">🔐 관리자 승인 상태</label>
-            <input type="text" class="form-control" id="adminApproval" value="승인 대기 중" readonly>
-          </div>
-        </div>
-      \`;
-    });
+      `;
+    }
   </script>
 </body>
 </html>
