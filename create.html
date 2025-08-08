@@ -1,73 +1,107 @@
+<!-- create.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Project Detail - Project.PAW</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project.PAW - 구조 프로젝트 등록</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Noto Sans KR', sans-serif;
-      background-color: #f9f9f9;
+      font-family: 'Pretendard', sans-serif;
+      background-color: #fefefe;
+      color: #333;
     }
-    .container {
-      margin-top: 40px;
-      margin-bottom: 40px;
-    }
-    .project-image {
-      max-height: 400px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-    .label {
-      font-weight: bold;
-      color: #444;
-    }
-    .value {
-      margin-bottom: 15px;
+    footer {
+      background-color: #f8f9fa;
+      color: #6c757d;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <a href="index.html" class="btn btn-secondary mb-4">&larr; 홈으로 돌아가기</a>
-    <div id="project-detail"></div>
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="index.html">🐾 Project.PAW</a>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item"><a class="nav-link" href="index.html">🏠 홈</a></li>
+      <li class="nav-item"><a class="nav-link" href="project_list.html">📋 후원하기</a></li>
+      <li class="nav-item"><a class="nav-link active" href="create.html">➕ 등록</a></li>
+    </ul>
   </div>
+</nav>
 
-  <script>
-    function getProjectIdFromUrl() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('id');
-    }
+<main class="container pt-5 mt-5 mb-5">
+  <h2 class="mb-4 text-center">구조 프로젝트 등록</h2>
+  <form id="projectForm">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label for="name" class="form-label">고양이 이름</label>
+        <input type="text" id="name" class="form-control" required />
+      </div>
+      <div class="col-md-6">
+        <label for="goalAmount" class="form-label">목표 금액 (₩)</label>
+        <input type="number" id="goalAmount" class="form-control" required />
+      </div>
+      <div class="col-md-6">
+        <label for="ownerAmount" class="form-label">구조자 부담금 (₩)</label>
+        <input type="number" id="ownerAmount" class="form-control" required />
+      </div>
+      <div class="col-md-6">
+        <label for="currentAmount" class="form-label">현재 모금액 (₩)</label>
+        <input type="number" id="currentAmount" class="form-control" value="0" required />
+      </div>
+      <div class="col-12">
+        <label for="situation" class="form-label">구조 상황 설명</label>
+        <textarea id="situation" class="form-control" rows="4" required></textarea>
+      </div>
+      <div class="col-12">
+        <label for="representativeImage" class="form-label">대표 이미지 URL</label>
+        <input type="url" id="representativeImage" class="form-control" required />
+      </div>
+      <div class="col-12 text-center">
+        <button type="submit" class="btn btn-primary btn-lg px-5 mt-3">등록하기</button>
+      </div>
+    </div>
+  </form>
+</main>
 
-    function loadProjectDetail() {
-      const id = getProjectIdFromUrl();
-      let projects = [];
+<footer class="bg-white text-center text-muted py-4 border-top">
+  <div class="container">
+    <p class="mb-1 fw-semibold">🐾 Project.PAW</p>
+    <p class="mb-2">도움은 본능, 연결은 선택</p>
+    <small>© 2025 Project.PAW. All rights reserved.<br>고유번호: 105-82-89397 (프로젝트파우)</small>
+  </div>
+</footer>
 
-      try {
-        projects = JSON.parse(localStorage.getItem('projects')) || [];
-      } catch (e) {
-        console.error("로컬스토리지 파싱 오류:", e);
-        projects = [];
-      }
+<script>
+  document.getElementById("projectForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const id = Date.now();
+    const name = document.getElementById("name").value;
+    const goalAmount = document.getElementById("goalAmount").value;
+    const currentAmount = document.getElementById("currentAmount").value;
+    const ownerAmount = document.getElementById("ownerAmount").value;
+    const situation = document.getElementById("situation").value;
+    const representativeImage = document.getElementById("representativeImage").value;
 
-      const project = projects.find(p => p.id === id);
+    const newProject = {
+      id,
+      name,
+      goalAmount,
+      currentAmount,
+      ownerAmount,
+      situation,
+      representativeImage
+    };
 
-      const detailDiv = document.getElementById('project-detail');
-      if (!project) {
-        detailDiv.innerHTML = '<div class="alert alert-danger">해당 프로젝트를 찾을 수 없습니다.</div>';
-        return;
-      }
+    const projects = JSON.parse(localStorage.getItem("projects") || "[]");
+    projects.unshift(newProject);
+    localStorage.setItem("projects", JSON.stringify(projects));
 
-      const imagesHtml = (project.additionalImages || []).map(img =>
-        `<img src="${img}" class="img-fluid mb-2 rounded project-image">`
-      ).join('');
-
-      detailDiv.innerHTML = `
-        <h2 class="mb-4">${project.name}</h2>
-        <img src="${project.representativeImage}" class="img-fluid project-image">
-        <p><span class="label">구조 상황:</span><br/> ${project.description}</p>
-        <p><span class="label">목표 금액:</span> ${Number(project.goalAmount).toLocaleString()}원</p>
-        <p><span class="label">구조자 부담금:</span> ${Number(project.selfPay).toLocaleString()}원</p>
-        <p><span class="label">카카오톡:</span> <a href="${project.kakao
+    alert("등록되었습니다!");
+    window.location.href = "project_list.html";
+  });
+</script>
+</body>
+</html>
