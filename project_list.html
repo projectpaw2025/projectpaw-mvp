@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project.PAW - 후원하기</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<!-- Custom Font -->
+<link href="https://fonts.googleapis.com/css2?family=SUIT&display=swap" rel="stylesheet">
+<style>
+  body {
+    font-family: 'SUIT', sans-serif;
+    background-color: #fefefe;
+    color: #212529;
+  }
+
+  .btn-custom {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 24px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-custom:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+
+  .card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+  }
+
+  h2, h3, h4, h5 {
+    font-weight: 700;
+  }
+</style>
+</head>
+<body class="bg-light">
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="index.html">🐾 Project.PAW</a>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">🏠 홈</a></li>
+        <li class="nav-item"><a class="nav-link active" href="project_list.html">📋 후원하기</a></li>
+        <li class="nav-item"><a class="nav-link" href="create.html">➕ 프로젝트 등록</a></li>
+        <li class="nav-item"><a class="nav-link" href="login.html">🔑 로그인</a></li>
+      
+     <li class="nav-item">
+      <a class="nav-link" href="about.html">
+       ℹ️ About
+      </a>
+     </li>
+
+    </ul>
+    </div>
+  </nav>
+
+  <div class="container pt-5 mt-5">
+    <h1 class="text-center my-5 text-3xl fw-bold text-primary">후원 가능한 프로젝트</h1>
+    <div class="row" id="projectListContainer"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById("projectListContainer");
+      const projects = JSON.parse(localStorage.getItem("projects") || "[]").reverse();
+
+      if (projects.length === 0) {
+        container.innerHTML = "<p class='text-center text-muted'>등록된 프로젝트가 없습니다.</p>";
+        return;
+      }
+
+      projects.forEach(project => {
+        const col = document.createElement("div");
+        col.className = "col-sm-6 col-lg-6 mb-4";
+
+        const card = document.createElement("div");
+        card.className = "d-flex flex-row align-items-center border rounded shadow-sm p-3 bg-white h-100";
+        card.style.cursor = "pointer";
+        card.onclick = () => {
+          window.location.href = `project.html?id=${project.id}`;
+        };
+
+        const imageWrapper = document.createElement("div");
+        imageWrapper.className = "flex-shrink-0 me-3";
+        imageWrapper.innerHTML = `
+          <img src="${project.representativeImage || 'https://placekitten.com/300/200'}" alt="대표 이미지" class="rounded" style="width: 140px; height: 100px; object-fit: cover;">
+        `;
+
+        const contentWrapper = document.createElement("div");
+        contentWrapper.className = "flex-grow-1";
+        contentWrapper.innerHTML = `
+          <h5 class="fw-bold mb-1">${project.name}</h5>
+          <p class="text-muted small mb-2">${project.situation}</p>
+          <ul class="list-unstyled small mb-2">
+            <li><strong>목표:</strong> ${project.goalAmount}원</li>
+            <li><strong>현황:</strong> ${project.currentAmount || 0}원</li>
+            <li><strong>구조자 부담:</strong> ${project.ownerAmount || 0}원</li>
+          
+     <li class="nav-item">
+      <a class="nav-link" href="about.html">
+       ℹ️ About
+      </a>
+     </li>
+
+    </ul>
+          <div class="d-flex gap-2">
+            <a href="${project.kakaoLink}" target="_blank" class="btn mb-2 btn-sm btn-outline-warning rounded-pill">💬 카카오톡</a>
+            <button class="btn mb-2 btn-sm btn-outline-primary rounded-pill" onclick="event.stopPropagation(); window.location.href='project.html?id=${project.id}'">🔎 상세보기</button>
+          </div>
+        `;
+
+        card.appendChild(imageWrapper);
+        card.appendChild(contentWrapper);
+        col.appendChild(card);
+        container.appendChild(col);
+      });
+    });
+  </script>
+</body>
+</html>
