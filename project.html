@@ -1,121 +1,84 @@
+<!-- project.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Project.PAW - 상세 보기</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Pretendard&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project.PAW - 프로젝트 상세</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard&display=swap" rel="stylesheet" />
   <style>
     body {
       font-family: 'Pretendard', sans-serif;
       background-color: #f9f9f9;
       color: #333;
     }
-    .gallery img {
+    .gallery-img {
       width: 100%;
-      border-radius: 0.5rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .section-title {
-      font-weight: 700;
-      margin-top: 2rem;
-      margin-bottom: 1rem;
-    }
-    .info-box {
-      background-color: #ffffff;
-      padding: 1.5rem;
-      border-radius: 1rem;
-      box-shadow: 0 0 12px rgba(0,0,0,0.05);
-    }
-    .btn-kakao {
-      background-color: #fee500;
-      color: #3c1e1e;
-      font-weight: 600;
-      border-radius: 6px;
-    }
-    footer {
-      background-color: #f8f9fa;
-      color: #6c757d;
+      height: 200px;
+      object-fit: cover;
+      margin-bottom: 10px;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="index.html">🐾 Project.PAW</a>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item"><a class="nav-link" href="index.html">🏠 홈</a></li>
+      <li class="nav-item"><a class="nav-link" href="project_list.html">📋 후원하기</a></li>
+      <li class="nav-item"><a class="nav-link" href="create.html">➕ 등록</a></li>
+    </ul>
+  </div>
+</nav>
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand fw-bold" href="index.html">🐾 Project.PAW</a>
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="index.html">🏠 홈</a></li>
-        <li class="nav-item"><a class="nav-link" href="project_list.html">📋 후원하기</a></li>
-        <li class="nav-item"><a class="nav-link" href="create.html">➕ 등록</a></li>
-      </ul>
-    </div>
-  </nav>
+<main class="container pt-5 mt-5 mb-5">
+  <div id="projectDetail"></div>
+</main>
 
-  <main class="container pt-5 mt-5">
-    <div id="projectDetail" class="mt-4"></div>
-  </main>
+<footer class="bg-white text-center text-muted py-4 border-top">
+  <div class="container">
+    <p class="mb-1 fw-semibold">🐾 Project.PAW</p>
+    <p class="mb-2">도움은 본능, 연결은 선택</p>
+    <small>© 2025 Project.PAW. All rights reserved.<br>고유번호: 105-82-89397 (프로젝트파우)</small>
+  </div>
+</footer>
 
-  <footer class="text-center text-muted py-4 mt-5 border-top">
-    <div class="container">
-      <p class="mb-1 fw-semibold">🐾 Project.PAW</p>
-      <small>© 2025 Project.PAW. All rights reserved.<br>
-      고유번호: 105-82-89397 (프로젝트파우)</small>
-    </div>
-  </footer>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const projectId = params.get("id");
+  const projects = JSON.parse(localStorage.getItem("projects") || "[]");
+  const project = projects.find(p => p.id === projectId);
 
-  <script>
-    function getProjectById(id) {
-      const projects = JSON.parse(localStorage.getItem("projects") || "[]");
-      return projects.find(p => p.id == id);
-    }
+  const container = document.getElementById("projectDetail");
 
-    function createGallery(images) {
-      return images.map(src => `<div class="col-md-4"><img src="${src}" class="img-fluid" alt="gallery image"></div>`).join("");
-    }
+  if (!project) {
+    container.innerHTML = `<p class="text-center text-danger">해당 프로젝트를 찾을 수 없습니다.</p>`;
+  } else {
+    const galleryImages = [...(project.additionalImages || []), ...(project.receiptImages || [])];
+    const galleryHTML = galleryImages.map(src => `<img src="${src}" class="gallery-img" alt="project image" />`).join("");
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const projectId = urlParams.get("id");
-    const project = getProjectById(projectId);
-
-    if (project) {
-      const gallery = `
-        <div class="row gallery">${createGallery(project.situationImages || [])}</div>
-        <div class="row gallery">${createGallery(project.receiptImages || [])}</div>
-      `;
-
-      document.getElementById("projectDetail").innerHTML = `
-        <div class="row">
-          <div class="col-md-6">
-            <img src="${project.representativeImage}" class="img-fluid rounded shadow-sm mb-3" alt="대표 이미지" />
-          </div>
-          <div class="col-md-6">
-            <div class="info-box">
-              <h3 class="fw-bold">${project.name}</h3>
-              <p class="text-muted">“도움은 본능, 연결은 선택”</p>
-              <p><strong>목표금액:</strong> ₩${project.goalAmount}</p>
-              <p><strong>구조자 부담금:</strong> ₩${project.ownerAmount}</p>
-              <p><strong>현재 모금액:</strong> ₩${project.currentAmount || 0}</p>
-              <a href="${project.kakaoLink}" class="btn btn-kakao mt-3" target="_blank">카카오톡으로 연결하기</a>
-            </div>
-          </div>
+    container.innerHTML = `
+      <div class="row">
+        <div class="col-md-6">
+          <img src="${project.representativeImage}" class="img-fluid rounded shadow-sm mb-3" alt="${project.name}" />
+          ${galleryHTML}
         </div>
-
-        <div class="section-title">구조 상황</div>
-        <p class="lead">${project.situation}</p>
-
-        <div class="section-title">📸 구조 사진</div>
-        <div class="row gallery">${createGallery(project.situationImages || [])}</div>
-
-        <div class="section-title">🧾 영수증 사진</div>
-        <div class="row gallery">${createGallery(project.receiptImages || [])}</div>
-      `;
-    } else {
-      document.getElementById("projectDetail").innerHTML = "<p class='text-danger'>프로젝트를 찾을 수 없습니다.</p>";
-    }
-  </script>
-
+        <div class="col-md-6">
+          <h2 class="mb-3 fw-bold">${project.name}</h2>
+          <p class="mb-4">${project.situation}</p>
+          <ul class="list-group mb-4">
+            <li class="list-group-item"><strong>목표 금액:</strong> ₩${Number(project.goalAmount).toLocaleString()}</li>
+            <li class="list-group-item"><strong>현재 금액:</strong> ₩${Number(project.currentAmount).toLocaleString()}</li>
+            <li class="list-group-item"><strong>구조자 부담:</strong> ₩${Number(project.ownerAmount).toLocaleString()}</li>
+          </ul>
+          <a href="${project.kakaoLink}" target="_blank" class="btn btn-primary btn-lg shadow-sm">카카오톡으로 구조자와 연결하기</a>
+        </div>
+      </div>
+    `;
+  }
+</script>
 </body>
 </html>
