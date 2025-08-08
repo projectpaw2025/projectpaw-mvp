@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>구조 프로젝트 등록</title>
+  <title>Project.PAW - 구조 프로젝트 등록</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">🐾 Project.PAW</a>
-      <div>
-        <a class="nav-link d-inline" href="index.html">홈</a>
-        <a class="nav-link d-inline" href="project_list.html">후원하기</a>
-        <a class="nav-link d-inline" href="create.html">프로젝트 등록</a>
-        <a class="nav-link d-inline" href="#">로그인</a>
-      </div>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">🐾 Project.PAW</a>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">🏠 홈</a></li>
+        <li class="nav-item"><a class="nav-link" href="project_list.html">📋 후원하기</a></li>
+        <li class="nav-item"><a class="nav-link active" href="create.html">➕ 프로젝트 등록</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">🔐 로그인</a></li>
+      </ul>
     </div>
   </nav>
 
-  <div class="container">
+  <main class="container pt-5 mt-5">
     <h2 class="mb-4 text-center">구조 프로젝트 등록</h2>
     <p class="text-center text-muted mb-4">“도움은 본능, 연결은 선택 - 당신의 따뜻한 선택을 기다립니다.”</p>
 
@@ -61,7 +61,7 @@
       </div>
       <p class="text-center text-muted mt-2">등록 후 상세 페이지로 이동됩니다.</p>
     </form>
-  </div>
+  </main>
 
   <script>
     function readFilesAsBase64(fileList) {
