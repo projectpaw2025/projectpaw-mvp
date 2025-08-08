@@ -3,104 +3,119 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Project.PAW 상세 페이지</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Project.PAW - 상세 보기</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Noto Sans KR', sans-serif;
-      background-color: #f8f9fa;
+      font-family: 'Pretendard', sans-serif;
+      background-color: #f9f9f9;
       color: #333;
     }
-    .project-header {
-      background-color: #fff;
-      border-radius: 16px;
-      padding: 2rem;
-      margin-top: 2rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    .gallery img {
+      width: 100%;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    .project-header h2 {
+    .section-title {
       font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
     }
-    .amount-box {
-      background-color: #f1f3f5;
-      border-radius: 10px;
-      padding: 1rem;
-      margin-top: 1rem;
+    .info-box {
+      background-color: #ffffff;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 12px rgba(0,0,0,0.05);
     }
-    .badge-custom {
-      font-size: 0.9rem;
-      padding: 0.5em 0.75em;
-      border-radius: 10px;
+    .btn-kakao {
+      background-color: #fee500;
+      color: #3c1e1e;
+      font-weight: 600;
+      border-radius: 6px;
+    }
+    footer {
+      background-color: #f8f9fa;
+      color: #6c757d;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="project-header text-center">
-      <h2 id="projectName">프로젝트 이름</h2>
-      <p id="projectDescription" class="lead mt-3">상세 설명</p>
-    </div>
 
-    <div class="mt-4 row justify-content-center">
-      <div class="col-md-6 text-center">
-        <img id="projectImage" src="" alt="대표 이미지" class="img-fluid rounded shadow-sm"/>
-      </div>
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="index.html">🐾 Project.PAW</a>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">🏠 홈</a></li>
+        <li class="nav-item"><a class="nav-link" href="project_list.html">📋 후원하기</a></li>
+        <li class="nav-item"><a class="nav-link" href="create.html">➕ 등록</a></li>
+      </ul>
     </div>
+  </nav>
 
-    <div class="row justify-content-center mt-4">
-      <div class="col-md-6 amount-box text-center">
-        <p><strong>목표 금액:</strong> <span id="goalAmount">-</span> 원</p>
-        <p><strong>모금 현황:</strong> <span id="currentAmount">-</span> 원</p>
-        <p><strong>구조자 부담금:</strong> <span id="contributorAmount">-</span> 원</p>
-      </div>
-    </div>
+  <main class="container pt-5 mt-5">
+    <div id="projectDetail" class="mt-4"></div>
+  </main>
 
-    <div class="row justify-content-center mt-5">
-      <div class="col-md-8" id="gallerySection">
-        <!-- 이미지 갤러리 -->
-      </div>
+  <footer class="text-center text-muted py-4 mt-5 border-top">
+    <div class="container">
+      <p class="mb-1 fw-semibold">🐾 Project.PAW</p>
+      <small>© 2025 Project.PAW. All rights reserved.<br>
+      고유번호: 105-82-89397 (프로젝트파우)</small>
     </div>
-
-    <div class="text-center mt-4 mb-5">
-      <a href="index.html" class="btn btn-outline-secondary">← 메인으로</a>
-    </div>
-  </div>
+  </footer>
 
   <script>
+    function getProjectById(id) {
+      const projects = JSON.parse(localStorage.getItem("projects") || "[]");
+      return projects.find(p => p.id == id);
+    }
+
+    function createGallery(images) {
+      return images.map(src => `<div class="col-md-4"><img src="${src}" class="img-fluid" alt="gallery image"></div>`).join("");
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const projectId = urlParams.get("id");
-    const project = JSON.parse(localStorage.getItem("projects") || "[]").find(p => p.id === projectId);
+    const project = getProjectById(projectId);
 
     if (project) {
-      document.getElementById("projectName").textContent = project.name;
-      document.getElementById("projectDescription").textContent = project.description;
-      document.getElementById("goalAmount").textContent = project.goalAmount.toLocaleString();
-      document.getElementById("currentAmount").textContent = project.currentAmount ? project.currentAmount.toLocaleString() : "0";
-      document.getElementById("contributorAmount").textContent = project.contributorAmount ? project.contributorAmount.toLocaleString() : "-";
-      document.getElementById("projectImage").src = project.representativeImage;
-
-      const gallerySection = document.getElementById("gallerySection");
-      const galleryImages = project.galleryImages || [];
-
-      if (galleryImages.length > 0) {
-        const galleryHTML = galleryImages.map(src => `
-          <div class="col-md-4 mb-3">
-            <img src="${src}" class="img-fluid rounded shadow-sm" alt="상세 이미지">
-          </div>
-        `).join('');
-
-        gallerySection.innerHTML = `
-          <h4 class="mb-3">구조 상황 사진</h4>
-          <div class="row">${galleryHTML}</div>
-        `;
-      }
-    } else {
-      document.querySelector(".container").innerHTML = `
-        <div class="alert alert-danger mt-5 text-center">
-          해당 프로젝트를 찾을 수 없습니다.
-        </div>
+      const gallery = `
+        <div class="row gallery">${createGallery(project.situationImages || [])}</div>
+        <div class="row gallery">${createGallery(project.receiptImages || [])}</div>
       `;
+
+      document.getElementById("projectDetail").innerHTML = `
+        <div class="row">
+          <div class="col-md-6">
+            <img src="${project.representativeImage}" class="img-fluid rounded shadow-sm mb-3" alt="대표 이미지" />
+          </div>
+          <div class="col-md-6">
+            <div class="info-box">
+              <h3 class="fw-bold">${project.name}</h3>
+              <p class="text-muted">“도움은 본능, 연결은 선택”</p>
+              <p><strong>목표금액:</strong> ₩${project.goalAmount}</p>
+              <p><strong>구조자 부담금:</strong> ₩${project.ownerAmount}</p>
+              <p><strong>현재 모금액:</strong> ₩${project.currentAmount || 0}</p>
+              <a href="${project.kakaoLink}" class="btn btn-kakao mt-3" target="_blank">카카오톡으로 연결하기</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">구조 상황</div>
+        <p class="lead">${project.situation}</p>
+
+        <div class="section-title">📸 구조 사진</div>
+        <div class="row gallery">${createGallery(project.situationImages || [])}</div>
+
+        <div class="section-title">🧾 영수증 사진</div>
+        <div class="row gallery">${createGallery(project.receiptImages || [])}</div>
+      `;
+    } else {
+      document.getElementById("projectDetail").innerHTML = "<p class='text-danger'>프로젝트를 찾을 수 없습니다.</p>";
     }
   </script>
+
 </body>
 </html>
