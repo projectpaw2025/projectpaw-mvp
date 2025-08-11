@@ -1,142 +1,57 @@
 
-@import url('https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css');
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+:root{
+  --paw-primary:#1e66ff;
+  --paw-bg:#f6f8fb;
 }
+*{ box-sizing:border-box; }
+body{ font-family: "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", sans-serif; }
+.bg-body{ background:var(--paw-bg); }
 
-body {
-    font-family: 'Spoqa Han Sans Neo', 'sans-serif';
-    background-color: #F9F9F9;
-    color: #3C1E1E;
-    line-height: 1.6;
-}
+.navbar-brand{ letter-spacing:.2px; }
+.nav-link{ color:#3b3f45; }
+.nav-link:hover{ color:var(--paw-primary); }
 
-/* Container */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
+.hero{ background:linear-gradient(180deg, #fff, var(--paw-bg)); }
+.eyebrow{ text-transform:uppercase; font-weight:700; letter-spacing:.12em; color:#5177ff; font-size:.8rem; }
+.highlight{ color:var(--paw-primary); }
+.hero-card{ background:#fff; border-radius:1.25rem; overflow:hidden; border:1px solid rgba(17,24,39,.08); }
+.hero-points{ list-style:none; padding:0; margin:0; display:grid; gap:.4rem; }
+.hero-points li{ display:flex; align-items:center; gap:.5rem; color:#5a5f66; }
+.hero-points i{ font-size:1rem; }
 
-/* Navbar */
-.navbar {
-    background-color: #FFE500;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #f0f0f0;
+.card-paw{
+  background:#fff;
+  border:1px solid rgba(17,24,39,.08);
+  border-radius:1rem;
+  overflow:hidden;
+  transition: transform .15s ease, box-shadow .2s ease;
 }
+.card-paw:hover{ transform: translateY(-2px); box-shadow: 0 .75rem 2rem rgba(0,0,0,.06); }
+.card-img-top{ width:100%; height:220px; object-fit:cover; }
+.badge-soft{ background:#eef3ff; color:#3157d1; font-weight:600; border:1px solid #dce7ff; }
+.btn-primary{
+  --bs-btn-bg: var(--paw-primary);
+  --bs-btn-border-color: var(--paw-primary);
+  --bs-btn-hover-bg:#164ddb;
+  --bs-btn-hover-border-color:#164ddb;
+}
+.btn-outline-primary{
+  --bs-btn-color: var(--paw-primary);
+  --bs-btn-border-color: var(--paw-primary);
+  --bs-btn-hover-bg: var(--paw-primary);
+  --bs-btn-hover-border-color: var(--paw-primary);
+}
+.progress{ background:#eef1f7; }
 
-.navbar a {
-    color: #3C1E1E;
-    text-decoration: none;
-    margin-left: 20px;
-    font-weight: 600;
-}
+.skeleton{ background:linear-gradient(90deg, #f1f4fa, #fafbff, #f1f4fa); background-size:200% 100%; animation:shine 1.5s linear infinite; }
+@keyframes shine{0%{background-position:0 0}100%{background-position:200% 0}}
 
-.navbar a:hover {
-    text-decoration: underline;
-}
+.two-lines{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 
-/* Buttons */
-.btn {
-    display: inline-block;
-    padding: 12px 20px;
-    background-color: #FFE500;
-    color: #3C1E1E;
-    text-decoration: none;
-    border-radius: 16px;
-    font-weight: 600;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+.carousel-control-prev, .carousel-control-next{
+  width: 12%;
 }
-
-.btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+.carousel-control-prev-icon, .carousel-control-next-icon{
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.4));
 }
-
-/* Cards */
-.card {
-    background-color: #fff;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-}
-
-.card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-
-.card-body {
-    padding: 20px;
-}
-
-.card-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-
-.card-text {
-    font-size: 0.95rem;
-    margin-bottom: 15px;
-}
-
-/* Progress bar */
-.progress-container {
-    background-color: #f0f0f0;
-    border-radius: 50px;
-    height: 12px;
-    overflow: hidden;
-    margin-bottom: 10px;
-}
-
-.progress-bar {
-    height: 12px;
-    background-color: #FFE500;
-    width: 0;
-    transition: width 0.5s ease;
-}
-
-/* Grid Layout */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-}
-
-/* Search & Filter */
-.search-filter {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.search-filter input, .search-filter select {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    flex: 1;
-}
-
-/* Footer */
-.footer {
-    background-color: #fff;
-    padding: 20px;
-    text-align: center;
-    font-size: 0.9rem;
-    color: #777;
-    margin-top: 40px;
-}
+.card-dim.pending{ opacity:.9; }
