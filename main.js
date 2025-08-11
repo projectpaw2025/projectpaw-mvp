@@ -14,7 +14,7 @@ return `<div id="carousel-${id}" class="carousel slide" data-bs-ride="carousel">
 function makeCard(p){const id=p.id,pr=percent(p.currentAmount,p.goalAmount);const item=document.createElement("div");item.className="masonry-item";item.innerHTML=`
 <div class="card-paw h-100 card-dim ${p.status==="pending"?"pending":""} position-relative">
   <div class="position-absolute m-2">${badgeFor(p.status)}</div>
-  <a class="d-block" href="project.html?id=${encodeURIComponent(p.id)}">${makeCarousel(p.images,id)}</a>
+  <a class="d-block" href="p/${encodeURIComponent(p.id)}.html">${makeCarousel(p.images,id)}</a>
   <div class="p-3">
     <div class="d-flex justify-content-between align-items-center mb-2">
       <small class="text-secondary">자기부담 ₩${fmt.format(+p.ownerAmount||0)}</small>
@@ -26,7 +26,7 @@ function makeCard(p){const id=p.id,pr=percent(p.currentAmount,p.goalAmount);cons
     <div class="d-flex justify-content-between small text-secondary"><div>₩${fmt.format(+p.currentAmount||0)}</div><div>${pr}%</div></div>
     <div class="d-flex justify-content-end mt-2 gap-2">
       ${isAdmin()?`<button data-id="${id}" class="btn btn-sm btn-outline-dark btn-toggle-status">승인/대기</button>`:""}
-      <a class="btn btn-sm btn-primary" href="project.html?id=${encodeURIComponent(p.id)}"><i class="bi bi-heart me-1"></i>후원하기</a>
+      <a class="btn btn-sm btn-primary" href="p/${encodeURIComponent(p.id)}.html"><i class="bi bi-heart me-1"></i>후원하기</a>
     </div>
   </div>
 </div>`;return item}
@@ -81,5 +81,20 @@ chips.forEach(btn=>btn.addEventListener("click",()=>{chips.forEach(b=>b.classLis
       const pr=Math.min(100,Math.round(((+p.currentAmount||0)/(+p.goalAmount||1))*100)); ctx.fillStyle='#e5e7ef'; ctx.fillRect(48,490,W-96,16); ctx.fillStyle='#6552FF'; ctx.fillRect(48,490,(W-96)*pr/100,16);
       const url=c.toDataURL('image/png'); const a=document.createElement('a'); a.href=url; a.download='projectpaw_share_card.png'; a.click(); showToast('공유 카드 이미지를 저장했어요.'); };
     img.src=(p.images&&p.images[0])||'images/login_cat2.jpg';
+  });
+})();
+// Export projects.json file for committing to repo (used by GH Actions build)
+(function exportJsonHook(){
+  const btn = document.getElementById('btnExportJson');
+  if(!btn) return;
+  if(!isAdmin()) { btn.style.display='none'; return; }
+  btn.addEventListener('click', ()=>{
+    const data = JSON.stringify(getProjects(), null, 2);
+    const blob = new Blob([data], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'projects.json';
+    a.click();
+    showToast('data/projects.json 파일을 내려받았어요. 리포의 /data에 업로드하세요.');
   });
 })();
