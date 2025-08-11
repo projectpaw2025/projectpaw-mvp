@@ -1,0 +1,85 @@
+const $=(s,c=document)=>c.querySelector(s),$$=(s,c=document)=>Array.from(c.querySelectorAll(s));const fmt=new Intl.NumberFormat('ko-KR');
+function getProjects(){try{return JSON.parse(localStorage.getItem("projects")||"[]")}catch(_){return []}}function saveProjects(l){localStorage.setItem("projects",JSON.stringify(l))}
+function getUpdates(){try{return JSON.parse(localStorage.getItem("updates")||"[]")}catch(_){return []}}function saveUpdates(l){localStorage.setItem("updates",JSON.stringify(l))}
+function isAdmin(){return localStorage.getItem("paw_admin")==="1"}function setAdmin(on){localStorage.setItem("paw_admin",on?"1":"0");location.reload()}
+$("#adminToggle")?.addEventListener("click",()=>setAdmin(!isAdmin()));if(isAdmin()){$("#adminToggle")?.classList.replace("btn-dark","btn-success")}
+(function(){const list=getProjects().map(p=>{if(!p.images)p.images=p.image?[p.image]:[];if(typeof p.currentAmount==="undefined")p.currentAmount=0;if(!p.status)p.status="pending";return p});saveProjects(list)})();
+function badgeFor(s){return s==="approved"?'<span class="badge bg-success-subtle text-success">승인됨</span>':'<span class="badge bg-warning-subtle text-warning">대기</span>'}
+function barClass(p){if(p>=80)return"bg-success";if(p>=50)return"bg-warning";return"bg-danger"}function percent(c,g){g=+g||0;c=+c||0;if(g<=0)return 0;return Math.min(100,Math.round((c/g)*100))}
+function makeCarousel(imgs,id){if(!imgs||!imgs.length){return `<img src="" class="card-img-top" loading="lazy" width="1200" height="800" alt="no image">`}if(imgs.length===1){return `<img src="${imgs[0]}" class="card-img-top" loading="lazy" width="1200" height="800" alt="project image" loading="lazy">`}
+const items=imgs.map((src,i)=>`<div class="carousel-item ${i===0?"active":""}"><img src="${src}" class="d-block w-100 card-img-top" loading="lazy" width="1200" height="800" alt="slide ${i+1}" loading="lazy"></div>`).join("");
+return `<div id="carousel-${id}" class="carousel slide" data-bs-ride="carousel"><div class="carousel-inner">${items}</div>
+<button class="carousel-control-prev" type="button" data-bs-target="#carousel-${id}" data-bs-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="visually-hidden">Previous</span></button>
+<button class="carousel-control-next" type="button" data-bs-target="#carousel-${id}" data-bs-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span><span class="visually-hidden">Next</span></button></div>`}
+function makeCard(p){const id=p.id,pr=percent(p.currentAmount,p.goalAmount);const item=document.createElement("div");item.className="masonry-item";item.innerHTML=`
+<div class="card-paw h-100 card-dim ${p.status==="pending"?"pending":""} position-relative">
+  <div class="position-absolute m-2">${badgeFor(p.status)}</div>
+  <a class="d-block" href="project.html?id=${encodeURIComponent(p.id)}">${makeCarousel(p.images,id)}</a>
+  <div class="p-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <small class="text-secondary">자기부담 ₩${fmt.format(+p.ownerAmount||0)}</small>
+      <small class="text-secondary">목표 ₩${fmt.format(+p.goalAmount||0)}</small>
+    </div>
+    <h5 class="mb-1 text-truncate">${p.name||""}</h5>
+    <p class="text-secondary small mb-2 two-lines">${p.description||""}</p>
+    <div class="progress mb-2" style="height:8px;"><div class="progress-bar ${barClass(pr)}" style="width:0%"></div></div>
+    <div class="d-flex justify-content-between small text-secondary"><div>₩${fmt.format(+p.currentAmount||0)}</div><div>${pr}%</div></div>
+    <div class="d-flex justify-content-end mt-2 gap-2">
+      ${isAdmin()?`<button data-id="${id}" class="btn btn-sm btn-outline-dark btn-toggle-status">승인/대기</button>`:""}
+      <a class="btn btn-sm btn-primary" href="project.html?id=${encodeURIComponent(p.id)}"><i class="bi bi-heart me-1"></i>후원하기</a>
+    </div>
+  </div>
+</div>`;return item}
+(function(){const wrap=$("#home-projects");if(!wrap)return;const list=getProjects();if(!list.length){wrap.innerHTML='<div class="col-12"><div class="alert alert-light border">아직 등록된 프로젝트가 없습니다. 첫 번째 이야기를 만들어 주세요.</div></div>';return}
+list.slice(0,4).forEach(p=>{const col=document.createElement("div");col.className="col-12 col-sm-6 col-lg-4";const card=makeCard(p).firstElementChild.outerHTML;col.innerHTML=card;wrap.appendChild(col)})})();
+(function(){const wrap=$("#project-list");if(!wrap)return;let source=getProjects();let list=source;const apply=()=>{wrap.innerHTML="";if(!list.length){wrap.innerHTML='<div class="alert alert-light border">프로젝트가 없습니다.</div>';return}list.forEach(p=>wrap.appendChild(makeCard(p)));
+if(isAdmin()){$$(".btn-toggle-status",wrap).forEach(btn=>{btn.addEventListener("click",()=>{const id=btn.getAttribute("data-id");const all=getProjects();const idx=all.findIndex(x=>String(x.id)===String(id));if(idx>-1){all[idx].status=all[idx].status==="approved"?"pending":"approved";saveProjects(all);apply()}})})}};apply();
+const search=$("#searchInput"),clear=$("#clearSearch"),filter=$("#statusFilter");const doFilter=()=>{const q=(search?.value||"").trim().toLowerCase();const st=filter?.value||"";
+list=source.filter(p=>{const okText=!q||(p.name||"").toLowerCase().includes(q)||(p.description||"").toLowerCase().includes(q);const okSt=!st||p.status===st;return okText&&okSt});apply()};
+search?.addEventListener("input",doFilter);filter?.addEventListener("change",doFilter);clear?.addEventListener("click",()=>{if(search)search.value="";if(filter)filter.value="";list=source;apply()})})();
+(function(){const wrap=$("#project-detail");if(!wrap)return;const id=new URLSearchParams(location.search).get("id");const projects=getProjects();let project=projects.find(x=>String(x.id)===String(id));
+if(!project){wrap.innerHTML='<div class="col-12"><div class="alert alert-danger">프로젝트를 찾을 수 없습니다.</div></div>';return}const pr=percent(project.currentAmount,project.goalAmount);
+wrap.innerHTML=`<div class="col-lg-6">${makeCarousel(project.images,"detail-"+project.id)}</div>
+<div class="col-lg-6"><div class="d-flex align-items-center gap-2 mb-2">${badgeFor(project.status)}<small class="text-secondary">자기부담 ₩${fmt.format(+project.ownerAmount||0)}</small></div>
+<h1 class="h3 fw-bold">${project.name||""}</h1><p class="text-secondary">${project.description||""}</p>
+<div class="d-flex flex-wrap gap-4 align-items-center my-3"><div><div class="text-secondary small">목표 금액</div><div class="h5 mb-0">₩${fmt.format(+project.goalAmount||0)}</div></div>
+<div><div class="text-secondary small">현재 모금액</div><div class="h5 mb-0">₩${fmt.format(+project.currentAmount||0)}</div></div></div>
+<div class="progress mb-2" style="height:10px;"><div class="progress-bar ${barClass(pr)}" style="width:0%"></div></div>
+<div class="small text-secondary mb-3">${pr}% 달성</div>
+${project.kakaoLink?`<a class="btn btn-primary btn-lg" href="${project.kakaoLink}" target="_blank" rel="noopener"><i class="bi bi-chat-dots-fill me-1"></i>카카오톡으로 연결</a>`:`<div class="alert alert-light border small">카카오톡 링크가 등록되지 않았습니다.</div>`}
+<hr class="my-4"><div class="small text-secondary">철학</div><p class="mb-0">책임의 끝과 공감의 시작이 만나는 곳. Project.PAW는 따뜻한 마음을 안전하게 연결합니다.</p></div>`;
+if(isAdmin()){ $("#adminPanel")?.classList.remove("d-none"); $("#progressAdmin")?.classList.remove("d-none");
+  $("#toggleApproval")?.addEventListener("click",()=>{const all=getProjects();const idx=all.findIndex(x=>String(x.id)===String(project.id));if(idx>-1){all[idx].status=all[idx].status==="approved"?"pending":"approved";saveProjects(all);showToast('상태가 변경되었습니다.');location.reload()}});
+  $("#fundForm")?.addEventListener("submit",e=>{e.preventDefault();const delta=+(($("#fundDelta").value)||0);const files=$("#fundReceipts").files;const receipts=[];
+    const done=()=>{const all=getProjects();const idx=all.findIndex(x=>String(x.id)===String(project.id));if(idx>-1){all[idx].currentAmount=Math.max(0,(+all[idx].currentAmount||0)+Math.max(0,delta));saveProjects(all)}
+      const ups=getUpdates();ups.push({id:Date.now(),projectId:project.id,date:new Date().toISOString(),content:`모금 진행 업데이트: ₩${fmt.format(delta)} 추가 반영`,images:receipts,tag:"정산",author:"관리자"});
+      saveUpdates(ups);alert("모금 업데이트가 반영되었습니다.");location.reload()};
+    if(files&&files.length){let pending=files.length;Array.from(files).forEach(f=>{const r=new FileReader();r.onload=()=>{receipts.push(r.result);if(--pending===0)done()};r.readAsDataURL(f)})}else{done()}});
+}
+$("#intro-content").innerHTML=`<div class="alert alert-light border small">등록자 후기와 영수증 요약은 <strong>후기</strong> 탭에서 확인하세요.</div>${isAdmin()?'<div class="alert alert-info small mt-2">관리자 모드 ON — 상세 상단/하단에 토글과 모금 업데이트 기능이 활성화되었습니다.</div>':""}`;
+const updatesWrap=$("#updates-list"),chips=$$("#updates .btn[data-tag]");const renderUpdates=(tag="")=>{const all=getUpdates().filter(u=>String(u.projectId)===String(project.id)).sort((a,b)=>new Date(b.date)-new Date(a.date));
+const list=tag?all.filter(u=>(u.tag||"")===tag):all;if(!list.length){updatesWrap.innerHTML='<div class="alert alert-light border">해당 태그의 후기가 없습니다.</div>';return}
+updatesWrap.innerHTML="";list.forEach(u=>{const imgs=(u.images||[]).map(src=>`<img src="${src}" class="rounded" style="width:90px;height:90px;object-fit:cover">`).join("");
+const item=document.createElement("div");item.className="p-3 border rounded-3 bg-white shadow-sm";item.innerHTML=`<div class="d-flex justify-content-between align-items-center mb-1">
+<div class="d-flex align-items-center gap-2"><strong>${new Date(u.date).toLocaleDateString("ko-KR")}</strong>${u.tag?`<span class="badge bg-secondary-subtle text-secondary update-badge">${u.tag}</span>`:""}</div>
+<small class="text-secondary">${u.author||"등록자"}</small></div><div class="mb-2">${(u.content||"").replace(/\n/g,"<br>")}</div><div class="d-flex gap-2 flex-wrap">${imgs}</div>`;updatesWrap.appendChild(item)})};
+chips.forEach(btn=>btn.addEventListener("click",()=>{chips.forEach(b=>b.classList.remove("active"));btn.classList.add("active");renderUpdates(btn.getAttribute("data-tag")||"")}));renderUpdates("")})();
+(function(){ const d=document.getElementById('navDash'); if(d && isAdmin()){ d.classList.remove('d-none'); }})();
+
+// Minimal share-card generator (download PNG)
+(function(){
+  const pd=document.getElementById('project-detail'); if(!pd) return;
+  const btn=document.createElement('button'); btn.className='btn btn-outline-dark'; btn.innerHTML='<i class="bi bi-card-image"></i> 공유 카드 이미지';
+  const rc=pd.querySelector('.col-lg-6:last-child'); if(rc) rc.appendChild(btn);
+  btn.addEventListener('click',()=>{
+    const id=new URLSearchParams(location.search).get('id'); const p=getProjects().find(x=>String(x.id)===String(id));
+    if(!p) return;
+    const W=1200,H=630; const c=document.createElement('canvas'); c.width=W;c.height=H; const ctx=c.getContext('2d');
+    ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H);
+    const img=new Image(); img.onload=()=>{ let iw=img.naturalWidth, ih=img.naturalHeight; let s=Math.max(W/iw,350/ih); ctx.drawImage(img,(W-iw*s)/2,(350-ih*s)/2,iw*s,ih*s);
+      ctx.fillStyle='#1b1f27'; ctx.font='700 44px Poppins, Noto Sans KR, sans-serif'; ctx.fillText((p.name||'').slice(0,26),48,420);
+      const pr=Math.min(100,Math.round(((+p.currentAmount||0)/(+p.goalAmount||1))*100)); ctx.fillStyle='#e5e7ef'; ctx.fillRect(48,490,W-96,16); ctx.fillStyle='#6552FF'; ctx.fillRect(48,490,(W-96)*pr/100,16);
+      const url=c.toDataURL('image/png'); const a=document.createElement('a'); a.href=url; a.download='projectpaw_share_card.png'; a.click(); showToast('공유 카드 이미지를 저장했어요.'); };
+    img.src=(p.images&&p.images[0])||'images/login_cat2.jpg';
+  });
+})();

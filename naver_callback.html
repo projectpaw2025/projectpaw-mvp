@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Naver Login Callback</title></head>
+<body>
+<script>
+  // Naver SDK handles this page; on success, just mark login and redirect home.
+  try {
+    localStorage.setItem("isLoggedIn","true");
+  } catch (e) {}
+  // Redirect to site root. Adjust if hosting under subpath.
+  location.replace("index.html");
+</script>
+</body></html>
