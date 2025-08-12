@@ -4,3 +4,26 @@
 @media (max-width:576px){.card-img-top{height:120px}}
 #project-detail .carousel-item>img,.project-hero img{width:100%;max-height:280px;object-fit:cover;object-position:center;display:block;border-radius:12px}
 @media (max-width:576px){#project-detail .carousel-item>img,.project-hero img{max-height:220px}}
+
+
+/* === V8.3 Image polish === */
+/* Project list thumbnails already capped via .card-img-top (150/120). Ensure list grid images (if any) inherit */
+.masonry .card .card-img-top{height:150px;object-fit:cover}
+
+/* Detail page main visuals: avoid overly wide/long images */
+#project-detail .carousel-item>img,
+#project-detail .card-img-top,
+.project-hero img,
+.detail-hero img{
+  width:100%;
+  max-height:260px;  /* ↓ was 280, now a bit tighter */
+  object-fit:cover;
+  object-position:center;
+  border-radius:12px;
+}
+@media (min-width:992px){
+  #project-detail .carousel-item>img,
+  #project-detail .card-img-top,
+  .project-hero img,
+  .detail-hero img{ max-height:300px; }
+}
