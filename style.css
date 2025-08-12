@@ -1,138 +1,26 @@
-
-/* ======================
-   Global Reset & Fonts
-====================== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background-color: #f8f9fa;
-  color: #333;
-  line-height: 1.6;
 }
 
-/* ======================
-   Navbar
-====================== */
-.navbar-brand {
-  font-weight: 700;
-  font-size: 1.3rem;
-}
-
-/* ======================
-   Card Image Styling
-====================== */
-.card-img-top {
-  height: 150px;
-  object-fit: cover;
-  object-position: center;
-}
-
-@media (max-width: 768px) {
-  .card-img-top {
-    height: 130px;
-  }
-}
-
-/* ======================
-   Detail Page Hero / Carousel Images
-====================== */
-.hero-image,
-.carousel-item img {
-  max-height: 280px;
+/* 카드 이미지 크기 통일 */
+.card img,
+.project-card img {
   width: 100%;
-  object-fit: cover;
-  object-position: center;
+  height: 150px; /* 고정 높이 */
+  object-fit: cover; /* 비율 유지하며 잘림 */
+  border-radius: 8px 8px 0 0;
 }
 
-@media (max-width: 768px) {
-  .hero-image,
-  .carousel-item img {
-    max-height: 220px;
-  }
-}
-
-/* ======================
-   Card Layout & Masonry
-====================== */
-.card {
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  overflow: hidden;
-}
-
-.card-body {
-  padding: 1rem;
-}
-
-.card-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.card-text {
-  font-size: 0.9rem;
-  color: #555;
-}
-
-/* Masonry effect using CSS grid */
-.card-columns {
-  column-count: 3;
-}
-@media (max-width: 992px) {
-  .card-columns {
-    column-count: 2;
-  }
-}
 @media (max-width: 576px) {
-  .card-columns {
-    column-count: 1;
+  .card img,
+  .project-card img {
+    height: 120px;
   }
 }
 
-/* ======================
-   Progress Bar
-====================== */
-.progress {
-  height: 6px;
-  border-radius: 3px;
-}
-
-.progress-bar {
-  background-color: #2a7de1;
-}
-
-/* ======================
-   Status Badge
-====================== */
-.badge-status {
-  font-size: 0.75rem;
-  padding: 0.4em 0.6em;
-  border-radius: 0.5rem;
-}
-
-.badge-approved {
-  background-color: #28a745;
-  color: #fff;
-}
-
-.badge-pending {
-  background-color: #ffc107;
-  color: #000;
-}
-
-/* ======================
-   Footer
-====================== */
-footer {
-  font-size: 0.85rem;
-  text-align: center;
-  padding: 1rem 0;
-  color: #777;
+/* 네비게이션 브랜드 */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
 }
