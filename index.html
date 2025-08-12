@@ -1,61 +1,127 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Project.PAW</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="app.min.css?v=v6-2025-08-11" rel="stylesheet">
+  <meta name="theme-color" content="#6552FF">
+  <meta property="og:title" content="Project.PAW">
+  <meta property="og:description" content="기부보다 연결에 집중한 구조 플랫폼">
+  <meta property="og:image" content="images/login_cat2.jpg">
+  <link rel="icon" href="images/favicon.svg">
+  <style>
+    /* 카드 이미지 크기 통일 */
+    .project-card-img {
+      height: 200px;
+      object-fit: cover;
+      width: 100%;
+    }
+  </style>
 </head>
-<body>
-  <!-- 네비게이션 -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="#">
-        <img src="paw-logo.svg" alt="Project.PAW" height="24" class="me-2">
-        Project.PAW
-      </a>
-      <div>
-        <a href="project_list.html" class="btn btn-primary me-2">지금 돕기</a>
-        <a href="create.html" class="btn btn-outline-primary me-2">후원 등록</a>
-        <a href="dashboard.html" class="btn btn-secondary">대시보드</a>
+<body class="bg-body">
+  <header class="border-bottom bg-white sticky-top">
+    <nav class="container navbar navbar-expand-lg py-3">
+      <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="index.html"><img src="images/logo_wordmark.svg" alt="Project.PAW" height="24"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="project_list.html">후원하기</a></li>
+          <li class="nav-item"><a class="nav-link" href="create.html">후원 등록</a></li>
+          <li class="nav-item"><a class="btn btn-primary px-3" href="project_list.html"><i class="bi bi-heart-fill me-1"></i>지금 돕기</a></li>
+        </ul>
+        <a id="navDash" class="btn btn-outline-secondary ms-lg-3 d-none" href="dashboard.html">대시보드</a>
+      </div>
+    </nav>
+  </header>
+
+  <button id="adminToggle" class="btn btn-dark shadow admin-fab" title="관리자 모드 토글">
+    <i class="bi bi-sliders"></i>
+  </button>
+
+  <section class="hero">
+    <div class="container py-5 py-lg-6">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-6">
+          <div class="eyebrow">DIRECT SUPPORT • 개인↔개인</div>
+          <h1 class="display-5 fw-bold lh-sm mb-3">기부보다 <span class="highlight">연결</span>에 집중한 구조 플랫폼</h1>
+          <p class="lead text-secondary">구조자는 30%를 먼저 부담하고, 후원금은 <strong>100%</strong> 전달됩니다. 숫자보다 마음의 연결을 디자인했습니다.</p>
+          <div class="d-flex gap-2">
+            <a href="project_list.html" class="btn btn-primary btn-lg">진행중인 프로젝트 보기</a>
+            <a href="create.html" class="btn btn-outline-primary btn-lg">프로젝트 등록</a>
+          </div>
+          <ul class="mt-4 hero-points">
+            <li><i class="bi bi-lightning-charge-fill"></i> 망설임을 행동으로 바꾸는 트리거 설계</li>
+            <li><i class="bi bi-check-circle-fill"></i> 구조자 책임(30%) + 후기 공유</li>
+            <li><i class="bi bi-cash-coin"></i> PG 수수료 제외, 후원금 100% 전달</li>
+          </ul>
+        </div>
+        <div class="col-lg-6">
+          <div class="hero-card">
+            <div class="ratio ratio-16x9 rounded-4 overflow-hidden shadow-sm skeleton"></div>
+            <div class="p-4">
+              <h5 class="mb-1">책임의 끝과 공감의 시작이 만나는 곳.</h5>
+              <p class="text-secondary mb-0">Project.PAW는 따뜻한 마음을 안전하게 연결합니다.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </nav>
+  </section>
 
-  <div class="container my-5">
-    <h4 class="fw-bold mb-4">진행중인 구조 프로젝트</h4>
-    <div id="project-list" class="row g-4">
-      <!-- JS에서 카드 생성 -->
+  <section class="container py-5">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h2 class="h4 fw-bold mb-0">진행중인 구조 프로젝트</h2>
+      <a class="link-primary small" href="project_list.html">전체 보기</a>
     </div>
-  </div>
+    <div id="home-projects" class="row g-4"></div>
+  </section>
 
+  <footer class="border-top mt-5 py-4">
+    <div class="container small text-muted d-flex flex-wrap justify-content-between gap-2">
+      <div>© 2025 Project.PAW · 도움은 본능, 연결은 선택</div>
+      <div class="d-flex gap-3">
+        <a class="link-secondary text-decoration-none" href="about.html">About</a>
+        <a class="link-secondary text-decoration-none" href="login.html">Login</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    // 홈 화면 프로젝트 카드 렌더링
+    document.addEventListener("DOMContentLoaded", () => {
       const projects = JSON.parse(localStorage.getItem("projects")) || [];
-      const container = document.getElementById("project-list");
+      const container = document.getElementById("home-projects");
 
       if (projects.length === 0) {
-        container.innerHTML = `<p>등록된 프로젝트가 없습니다.</p>`;
+        container.innerHTML = `<p class="text-muted">아직 등록된 프로젝트가 없습니다.</p>`;
         return;
       }
 
-      projects.forEach((project, index) => {
-        const card = `
-          <div class="col-md-3 col-sm-6">
-            <div class="card shadow-sm h-100">
-              <img src="${project.mainImage}" alt="${project.title}" class="card-img-top">
-              <div class="card-body">
-                <h6 class="fw-bold">${project.title}</h6>
-                <p class="text-muted small">${project.description || ''}</p>
-                <p class="mb-1"><small>목표 ₩${Number(project.goalAmount).toLocaleString()}</small></p>
-                <p class="mb-1"><small>자기부담 ₩${Number(project.selfAmount).toLocaleString()}</small></p>
-                <a href="project.html?id=${index}" class="btn btn-sm btn-outline-primary w-100">자세히 보기</a>
+      projects.slice(0, 4).forEach(project => {
+        const col = document.createElement("div");
+        col.className = "col-md-6 col-lg-3";
+        col.innerHTML = `
+          <div class="card shadow-sm border-0 h-100">
+            <img src="${project.mainImage}" alt="${project.name}" class="project-card-img">
+            <div class="card-body">
+              <h5 class="card-title fw-bold">${project.name}</h5>
+              <p class="card-text text-truncate">${project.description}</p>
+              <div class="d-flex justify-content-between small text-muted">
+                <span>목표: ${project.goalAmount}원</span>
+                <span>자기부담: ${project.selfAmount}원</span>
               </div>
+              <a href="project.html?id=${project.id}" class="btn btn-outline-primary btn-sm w-100 mt-2">상세보기</a>
             </div>
           </div>
         `;
-        container.innerHTML += card;
+        container.appendChild(col);
       });
     });
   </script>
