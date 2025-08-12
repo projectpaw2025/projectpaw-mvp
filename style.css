@@ -102,3 +102,34 @@ a{text-decoration:none}
 .modal-content{background:var(--surface)}
 
 .masonry-item{will-change:transform}
+
+/* === Card image normalization (Home/List & sliders) === */
+.card-img-top {
+  width: 100%;
+  height: 220px;           /* 기본 높이 */
+  object-fit: cover;       /* 비율 유지 + 잘라서 채우기 */
+  object-position: center; /* 중앙 기준 크롭 */
+  display: block;          /* CLS 안정화 */
+}
+
+/* 카드 안 캐러셀(슬라이더) 이미지도 동일 규칙 적용 */
+.carousel-item > img.card-img-top {
+  height: 220px;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* 반응형 높이 튜닝 */
+@media (max-width: 576px) {
+  .card-img-top,
+  .carousel-item > img.card-img-top { height: 180px; }
+}
+@media (min-width: 992px) {
+  .card-img-top,
+  .carousel-item > img.card-img-top { height: 240px; }
+}
+
+/* 혹시 가로로 긴 이미지를 업로드해도 레이아웃이 안 밀리도록 여유 */
+.masonry-item .card-paw .card-img-top { border-radius: 12px 12px 0 0; }
+
