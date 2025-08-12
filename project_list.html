@@ -42,7 +42,7 @@
         <h1 class="h3 fw-bold mb-1">모든 프로젝트</h1>
         <p class="text-secondary mb-0">실시간 등록된 구조 요청을 확인하고 직접 연결하세요.</p>
       </div>
-      <div class="d-flex gap-2">
+      <div class="d-flex gap-2"><select id="sortSelect" class="form-select" style="max-width:170px"><option value="">정렬 없음</option><option value="recent">최신 등록</option><option value="progress">달성률 높은순</option></select>
         <input id="searchInput" class="form-control" placeholder="이름/설명 검색">
         <select id="statusFilter" class="form-select" style="max-width:150px">
           <option value="">상태 전체</option>
@@ -84,5 +84,25 @@
       </div>
     </div>
   </div>
+
+<script>
+(function v8Sort(){
+  document.addEventListener('DOMContentLoaded',()=>{
+    const sel = document.getElementById('sortSelect');
+    if(!sel) return;
+    sel.addEventListener('change', ()=>{
+      const sortBy = sel.value;
+      const listEl = document.getElementById('project-list');
+      if(!listEl) return;
+      const cards = Array.from(listEl.children);
+      const projects = (typeof getProjects==='function') ? getProjects().slice() : [];
+      function percent(p){ const g=Math.max(1,+p.goalAmount||+p.targetAmount||1); const c=+p.currentAmount||+p.raisedAmount||0; return c/g; }
+      if(sortBy==='recent'){ cards.sort((a,b)=> b.dataset.ts - a.dataset.ts); }
+      else if(sortBy==='progress'){ cards.sort((a,b)=> (percent(projects.find(p=>String(p.id)===b.dataset.id)||{}) - percent(projects.find(p=>String(p.id)===a.dataset.id)||{}))); }
+      cards.forEach(c=> listEl.appendChild(c));
+    });
+  });
+})();
+</script>
 </body>
 </html>

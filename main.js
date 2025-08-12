@@ -6,7 +6,7 @@ $("#adminToggle")?.addEventListener("click",()=>setAdmin(!isAdmin()));if(isAdmin
 (function(){const list=getProjects().map(p=>{if(!p.images)p.images=p.image?[p.image]:[];if(typeof p.currentAmount==="undefined")p.currentAmount=0;if(!p.status)p.status="pending";return p});saveProjects(list)})();
 function badgeFor(s){return s==="approved"?'<span class="badge bg-success-subtle text-success">승인됨</span>':'<span class="badge bg-warning-subtle text-warning">대기</span>'}
 function barClass(p){if(p>=80)return"bg-success";if(p>=50)return"bg-warning";return"bg-danger"}function percent(c,g){g=+g||0;c=+c||0;if(g<=0)return 0;return Math.min(100,Math.round((c/g)*100))}
-function makeCarousel(imgs,id){if(!imgs||!imgs.length){return `<img src="" class="card-img-top" loading="lazy" decoding="async" loading="lazy" width="1200" height="800" alt="no image">`}if(imgs.length===1){return `<img src="${imgs[0]}" class="card-img-top" loading="lazy" decoding="async" loading="lazy" width="1200" height="800" alt="project image" loading="lazy">`}
+function makeCarousel(imgs,id){if(!imgs||!imgs.length){return `<img src="" class="card-img-top" loading="lazy" width="1200" height="800" alt="no image">`}if(imgs.length===1){return `<img src="${imgs[0]}" class="card-img-top" loading="lazy" width="1200" height="800" alt="project image" loading="lazy">`}
 const items=imgs.map((src,i)=>`<div class="carousel-item ${i===0?"active":""}"><img src="${src}" class="d-block w-100 card-img-top" loading="lazy" width="1200" height="800" alt="slide ${i+1}" loading="lazy"></div>`).join("");
 return `<div id="carousel-${id}" class="carousel slide" data-bs-ride="carousel"><div class="carousel-inner">${items}</div>
 <button class="carousel-control-prev" type="button" data-bs-target="#carousel-${id}" data-bs-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="visually-hidden">Previous</span></button>
@@ -96,5 +96,60 @@ chips.forEach(btn=>btn.addEventListener("click",()=>{chips.forEach(b=>b.classLis
     a.download = 'projects.json';
     a.click();
     showToast('data/projects.json 파일을 내려받았어요. 리포의 /data에 업로드하세요.');
+  });
+})();
+
+
+/* === V8 Image Hotfix & UX tweaks === */
+(function imageHotfix(){
+  const FALLBACK = "images/login_cat2.jpg";
+  function normUrl(u){
+    if(!u || typeof u!=="string") return FALLBACK;
+    try{
+      if(u.startsWith("http:")) return "https:"+u.slice(5);
+      return u;
+    }catch(e){ return FALLBACK; }
+  }
+  function pickImage(obj){
+    if(!obj) return FALLBACK;
+    const arr = Array.isArray(obj.images)?obj.images:[];
+    const first = arr.length?arr[0]:null;
+    return normUrl(first || obj.mainImage || obj.image || FALLBACK);
+  }
+  // Global onerror fallback for any <img>
+  window.addEventListener("error", (e)=>{
+    const t = e.target;
+    if(t && t.tagName==="IMG"){
+      t.onerror = null;
+      t.src = FALLBACK;
+    }
+  }, true);
+  // Post-render normalizer: run after DOM updates
+  document.addEventListener("DOMContentLoaded", ()=>{
+    const fixAll = () => {
+      document.querySelectorAll("img.card-img-top, #project-detail img, .project-hero img").forEach(img=>{
+        if(!img.getAttribute("src") || img.naturalWidth===0){
+          const dataId = img.getAttribute("data-id");
+          if(dataId){
+            try{
+              const p = (typeof getProjects==="function") ? getProjects().find(x=> String(x.id)===String(dataId)) : null;
+              const src = pickImage(p);
+              img.setAttribute("src", src);
+            }catch(_){ img.setAttribute("src", FALLBACK); }
+          } else {
+            img.setAttribute("src", img.getAttribute("src") || FALLBACK);
+          }
+        }
+        // Enforce lazy & decoding hints
+        img.setAttribute("loading","lazy");
+        img.setAttribute("decoding","async");
+        // Normalize http->https
+        const src = img.getAttribute("src")||"";
+        if(/^http:/.test(src)) img.setAttribute("src","https:"+src.slice(5));
+      });
+    };
+    // Run now and after small delay (in case of dynamic render)
+    fixAll();
+    setTimeout(fixAll, 600);
   });
 })();
