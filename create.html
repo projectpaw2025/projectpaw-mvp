@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>후원 등록 · Project.PAW</title>
+<meta name="description" content="책임 기반 구조 원칙에 따라 프로젝트를 등록해주세요. 대표/상황/영수증 사진과 카카오 링크를 포함할 수 있습니다." />
+<link rel="icon" href="img/placeholder.svg" />
+
   <link rel="stylesheet" href="css/app.css" />
 </head>
 <body>
@@ -71,6 +74,10 @@
 
   <script type="module">
     import { SCHEMA, storage, uid } from "./js/app.js";
+    import { toast } from "./js/utils.js";
+    import "./js/uploader.js";
+
+    import { SCHEMA, storage, uid } from "./js/app.js";
     import "./js/uploader.js";
 
     document.querySelector("#saveBtn").addEventListener("click", (e) => {
@@ -95,7 +102,7 @@
         return;
       }
       storage.add(data);
-      alert("등록 완료! 홈으로 이동합니다.");
+      toast('등록 완료! 홈으로 이동합니다.');
       location.href = "index.html";
     });
   </script>

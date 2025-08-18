@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>후원하기 · Project.PAW</title>
+<meta name="description" content="후원 프로젝트를 최신/달성률순으로 살펴보고 직접 연결로 참여하세요." />
+<link rel="icon" href="img/placeholder.svg" />
+
   <link rel="stylesheet" href="css/app.css" />
 </head>
 <body>
@@ -31,6 +34,56 @@
   </section>
 
   <script type="module">
+    import { storage, fmt } from "./js/app.js";
+    import { percent, esc } from "./js/utils.js";
+    const wrap = document.querySelector("#list");
+    const sortSel = document.querySelector("#sort");
+    const onlyApproved = document.querySelector("#onlyApproved");
+
+    const skeletons = () => { wrap.innerHTML = Array.from({length:6}).map(()=>`<div class="card row skeleton"></div>`).join(""); };
+    const render = () => {
+      skeletons();
+      let items = storage.getAll();
+      if (onlyApproved.checked) items = items.filter(p => p.status === "approved");
+
+      if (sortSel.value === "latest")   items.sort((a,b)=>b.createdAt - a.createdAt);
+      if (sortSel.value === "progress") items.sort((a,b)=>{
+        const pa = a.targetAmount ? (a.raisedAmount||0)/a.targetAmount : 0;
+        const pb = b.targetAmount ? (b.raisedAmount||0)/b.targetAmount : 0;
+        return pb - pa;
+      });
+
+      if (!items.length) {
+        wrap.innerHTML = `<div class="empty">표시할 프로젝트가 없습니다. 필터를 조정하거나 새로운 프로젝트를 등록해보세요.</div>`;
+        return;
+      }
+
+      wrap.innerHTML = items.slice(0,6).map(p=>{
+        const badge = p.status === "approved" ? '<span class="badge approved">승인</span>' : '<span class="badge pending">대기</span>';
+        const pct = percent(p.raisedAmount, p.targetAmount);
+        return `
+        <a class="card row" href="project.html?id=${p.id}" aria-label="프로젝트 ${esc(p.title)} 상세 보기">
+          <img class="thumb" src="${p.images?.cover || 'img/placeholder.svg'}" alt="대표 이미지">
+          <div class="info">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+              <h3 style="margin:0">${esc(p.title || '')}</h3>
+              ${badge}
+            </div>
+            <p>${esc(p.summary || '')}</p>
+            <div class="progress" style="margin-top:10px; margin-bottom:6px;"><i style="width:${pct}%"></i></div>
+            <div class="line" style="display:flex; gap:12px; margin-top:6px; color:#334;">
+              <span>목표 ${fmt(p.targetAmount)}원</span>
+              <span>구조자 ${fmt(p.selfPayAmount)}원</span>
+            </div>
+          </div>
+        </a>`;
+      }).join("");
+    };
+    sortSel.addEventListener("change", render);
+    onlyApproved.addEventListener("change", render);
+    render();
+  </script>
+
     import { storage, fmt } from "./js/app.js";
     const wrap = document.querySelector("#list");
     const sortSel = document.querySelector("#sort");
