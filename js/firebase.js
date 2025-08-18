@@ -18,7 +18,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyCNguz8K5MehFR5nyd2Z93hT6fO9Jh5Tk",
   authDomain: "projectpaw-bf042.firebaseapp.com",
   projectId: "projectpaw-bf042",
-  storageBucket: "projectpaw-bf042.firebasestorage.app",
+  storageBucket: "projectpaw-bf042.appspot.com",
   messagingSenderId: "340056180297",
   appId: "1:340056180297:web:414156a3716e5594862198",
   measurementId: "G-YMXR48Q4FL"
