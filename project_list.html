@@ -1,111 +1,76 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Project.PAW - 후원하기</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="app.min.css?v=v6-2025-08-11" rel="stylesheet">
-  <meta name="theme-color" content="#6552FF">
-  <meta property="og:title" content="Project.PAW">
-  <meta property="og:description" content="기부보다 연결에 집중한 구조 플랫폼">
-  <meta property="og:image" content="images/login_cat2.jpg">
-  <link rel="icon" href="images/favicon.svg">
-  <link rel="stylesheet" href="style_patch.css?v=2025-08-12">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>후원하기 · Project.PAW</title>
+  <link rel="stylesheet" href="css/app.css" />
 </head>
-<body class="bg-body">
-  <header class="border-bottom bg-white sticky-top">
-    <nav class="container navbar navbar-expand-lg py-3">
-      <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="index.html"><img src="images/logo_wordmark.svg" alt="Project.PAW" height="24"></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="nav">
-        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-          <li class="nav-item"><a class="nav-link" href="project_list.html">후원하기</a></li>
-          <li class="nav-item"><a class="nav-link" href="create.html">후원 등록</a></li>
-          <li class="nav-item"><a class="btn btn-primary px-3" href="project_list.html"><i class="bi bi-heart-fill me-1"></i>지금 돕기</a></li>
-        </ul>
-        <a id="navDash" class="btn btn-outline-secondary ms-lg-3 d-none" href="dashboard.html">대시보드</a>
-      </div>
-    </nav>
-  </header>
-
-  <button id="adminToggle" class="btn btn-dark shadow admin-fab" title="관리자 모드 토글">
-    <i class="bi bi-sliders"></i>
-  </button>
-
-  <section class="container py-5">
-    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
-      <div>
-        <h1 class="h3 fw-bold mb-1">모든 프로젝트</h1>
-        <p class="text-secondary mb-0">실시간 등록된 구조 요청을 확인하고 직접 연결하세요.</p>
-      </div>
-      <div class="d-flex gap-2"><select id="sortSelect" class="form-select" style="max-width:170px"><option value="">정렬 없음</option><option value="recent">최신 등록</option><option value="progress">달성률 높은순</option></select>
-        <input id="searchInput" class="form-control" placeholder="이름/설명 검색">
-        <select id="statusFilter" class="form-select" style="max-width:150px">
-          <option value="">상태 전체</option>
-          <option value="approved">승인됨</option>
-          <option value="pending">대기</option>
-        </select>
-        <button id="clearSearch" class="btn btn-outline-secondary">초기화</button>
-      </div>
+<body>
+  <nav class="nav">
+    <div class="container">
+      <div class="brand"><a href="index.html">Project<span class="dot">.PAW</span></a></div>
+      <ul>
+        <li><a href="index.html">홈</a></li>
+        <li><a href="project_list.html">후원하기</a></li>
+        <li><a href="create.html" class="btn">후원 등록</a></li>
+      </ul>
     </div>
-    <div id="project-list" class="masonry"></div>
+  </nav>
+  <main class="container">
+  <section class="section">
+    <h2>후원 프로젝트 목록</h2>
+    <div class="toolbar">
+      <label><input id="onlyApproved" type="checkbox" checked> 승인만 보기</label>
+      <select id="sort" class="input">
+        <option value="latest">최신순</option>
+        <option value="progress">달성률순</option>
+      </select>
+    </div>
+    <div id="list" class="grid list"></div>
   </section>
 
-  <footer class="border-top mt-5 py-4">
-    <div class="container small text-muted d-flex flex-wrap justify-content-between gap-2">
-      <div>© 2025 Project.PAW · 도움은 본능, 연결은 선택</div>
-      <div class="d-flex gap-3">
-        <a class="link-secondary text-decoration-none" href="about.html">About</a>
-        <a class="link-secondary text-decoration-none" href="login.html">Login</a>
-      </div>
+  <script type="module">
+    import { storage, fmt } from "./js/app.js";
+    const wrap = document.querySelector("#list");
+    const sortSel = document.querySelector("#sort");
+    const onlyApproved = document.querySelector("#onlyApproved");
+
+    const render = () => {
+      let items = storage.getAll();
+      if (onlyApproved.checked) items = items.filter(p => p.status === "approved");
+
+      if (sortSel.value === "latest")   items.sort((a,b)=>b.createdAt - a.createdAt);
+      if (sortSel.value === "progress") items.sort((a,b)=>{
+        const pa = a.targetAmount ? (a.raisedAmount||0)/a.targetAmount : 0;
+        const pb = b.targetAmount ? (b.raisedAmount||0)/b.targetAmount : 0;
+        return pb - pa;
+      });
+
+      wrap.innerHTML = items.slice(0,6).map(p=>`
+        <a class="card row" href="project.html?id=${p.id}">
+          <img class="thumb" src="${p.images?.cover || 'img/placeholder.svg'}" alt="cover">
+          <div class="info">
+            <h3>${p.title || ''}</h3>
+            <p>${p.summary || ''}</p>
+            <div class="line" style="display:flex; gap:12px; margin-top:10px; color:#334;">
+              <span>목표 ${fmt(p.targetAmount)}원</span>
+              <span>구조자 ${fmt(p.selfPayAmount)}원</span>
+            </div>
+          </div>
+        </a>
+      `).join("");
+    };
+    sortSel.addEventListener("change", render);
+    onlyApproved.addEventListener("change", render);
+    render();
+  </script>
+
+  </main>
+  <footer class="footer">
+    <div class="container">
+      <small>Project.PAW — “도움은 본능, 연결은 선택.” 100% 전달 · 책임 구조 · 직접 연결</small>
     </div>
   </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="app.min.js?v=v6-2025-08-11" defer></script>
-
-  <div id="pawToast" class="toast align-items-center text-bg-dark border-0" role="status" aria-live="polite" aria-atomic="true">
-    <div class="d-flex">
-      <div class="toast-body">완료되었습니다.</div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-  </div>
-  <!-- Lightbox Modal -->
-  <div class="modal fade" id="lightboxModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-      <div class="modal-content border-0 shadow-lg rounded-4">
-        <div class="modal-body p-0">
-          <img id="lightboxTarget" src="" alt="미리보기" class="w-100" style="object-fit:contain;max-height:80vh">
-        </div>
-      </div>
-    </div>
-  </div>
-
-<script>
-(function v8Sort(){
-  document.addEventListener('DOMContentLoaded',()=>{
-    const sel = document.getElementById('sortSelect');
-    if(!sel) return;
-    sel.addEventListener('change', ()=>{
-      const sortBy = sel.value;
-      const listEl = document.getElementById('project-list');
-      if(!listEl) return;
-      const cards = Array.from(listEl.children);
-      const projects = (typeof getProjects==='function') ? getProjects().slice() : [];
-      function percent(p){ const g=Math.max(1,+p.goalAmount||+p.targetAmount||1); const c=+p.currentAmount||+p.raisedAmount||0; return c/g; }
-      if(sortBy==='recent'){ cards.sort((a,b)=> b.dataset.ts - a.dataset.ts); }
-      else if(sortBy==='progress'){ cards.sort((a,b)=> (percent(projects.find(p=>String(p.id)===b.dataset.id)||{}) - percent(projects.find(p=>String(p.id)===a.dataset.id)||{}))); }
-      cards.forEach(c=> listEl.appendChild(c));
-    });
-  });
-})();
-</script>
-  <script src="normalize.v8.2.js?v=2025-08-12" defer></script>
-  <script src="augment.v8.3.js?v=2025-08-12" defer></script>
 </body>
 </html>
