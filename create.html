@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/app.css" />
 </head>
 <body>
+  <!-- 상단 내비 -->
   <nav class="nav">
     <div class="container">
       <div class="brand"><a href="index.html">Project<span class="dot">.PAW</span></a></div>
@@ -49,34 +50,34 @@
         <label class="title">카카오톡 연결 링크</label>
         <input id="kakao" class="input" placeholder="https://open.kakao.com/o/..." />
 
-        <div class="switch">
+        <div class="switch" style="margin:10px 0 18px;">
           <input id="status" type="checkbox">
           <span>관리자 승인</span>
         </div>
 
         <label class="title">대표 이미지</label>
         <input id="cover" type="file" accept="image/*" class="input"/>
-        <div class="img-preview"><img id="coverPreview" alt="대표 미리보기" /></div>
+        <div class="img-preview"><img id="coverPreview" alt="대표 이미지 미리보기" /></div>
 
         <label class="title">상황 사진 (여러 장)</label>
         <input id="gallery" type="file" accept="image/*" multiple class="input"/>
-        <div class="gallery-preview grid"></div>
+        <div class="gallery-preview grid" aria-live="polite"></div>
 
         <label class="title">영수증 사진 (여러 장)</label>
         <input id="receipts" type="file" accept="image/*" multiple class="input"/>
-        <div class="receipt-preview grid"></div>
+        <div class="receipt-preview grid" aria-live="polite"></div>
 
-        <div>
+        <div style="margin-top:18px;">
           <button id="saveBtn" class="btn primary">등록하기</button>
         </div>
       </div>
     </section>
 
-    <!-- ✅ 수정된 스크립트 -->
+    <!-- 동작 스크립트: 인증 완료 대기 → 업로드 → Firestore 저장 -->
     <script type="module">
       import { SCHEMA, storage as dbStorage, uid } from "./js/app.js";
       import { toast } from "./js/utils.js";
-      import "./js/uploader.js";
+      import "./js/uploader.js";                 // 미리보기 바인딩(사이드이펙트)
       import { uploadFile } from "./js/uploader.js";
       import { authReady, auth } from "./js/firebase.js";
 
@@ -85,7 +86,7 @@
       $("#saveBtn").addEventListener("click", async (e) => {
         e.preventDefault();
 
-        // ✅ 익명 로그인 완료까지 대기
+        // ✅ 업로드/쓰기 전에 익명 로그인 완료 보장
         await authReady;
         console.log("[auth] currentUser:", auth.currentUser?.uid);
 
@@ -101,23 +102,30 @@
         data.createdAt = Date.now();
 
         if (!data.title || !data.summary) {
-          toast("프로젝트명과 요약을 입력해주세요."); 
+          toast("프로젝트명과 요약을 입력해주세요.");
           return;
         }
 
+        // 파일 업로드 → 반환된 URL을 data.images에 저장
         const coverFile = $("#cover")?.files?.[0];
         const galleryFiles = Array.from($("#gallery")?.files || []);
         const receiptFiles = Array.from($("#receipts")?.files || []);
 
         try {
           if (coverFile) data.images.cover = await uploadFile("covers", coverFile);
+
           data.images.gallery = [];
-          for (const f of galleryFiles) data.images.gallery.push(await uploadFile("gallery", f));
+          for (const f of galleryFiles) {
+            data.images.gallery.push(await uploadFile("gallery", f));
+          }
+
           data.images.receipts = [];
-          for (const f of receiptFiles) data.images.receipts.push(await uploadFile("receipts", f));
+          for (const f of receiptFiles) {
+            data.images.receipts.push(await uploadFile("receipts", f));
+          }
         } catch (err) {
-          console.error(err);
-          toast("이미지 업로드 실패. 다시 시도해주세요.");
+          console.error("[upload] failed:", err);
+          toast("이미지 업로드 실패(네트워크/권한). 다시 시도해주세요.");
           return;
         }
 
@@ -126,8 +134,8 @@
           toast("등록 완료! 홈으로 이동합니다.");
           location.href = "index.html";
         } catch (err) {
-          console.error(err);
-          toast("등록 실패. 잠시 후 다시 시도해주세요.");
+          console.error("[firestore] write failed:", err);
+          toast("등록 실패(데이터 저장). 잠시 후 다시 시도해주세요.");
         }
       });
     </script>
