@@ -15,13 +15,15 @@ import {
 
 // TODO: Paste your real config here
 const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY",
-  authDomain: "PASTE_YOUR_AUTH_DOMAIN",
-  projectId: "PASTE_YOUR_PROJECT_ID",
-  storageBucket: "PASTE_YOUR_STORAGE_BUCKET",
-  messagingSenderId: "PASTE_YOUR_SENDER_ID",
-  appId: "PASTE_YOUR_APP_ID"
+  apiKey: "AIzaSyCNguz8K5MehFR5nyd2Z93hT6fO9Jh5Tk",
+  authDomain: "projectpaw-bf042.firebaseapp.com",
+  projectId: "projectpaw-bf042",
+  storageBucket: "projectpaw-bf042.firebasestorage.app",
+  messagingSenderId: "340056180297",
+  appId: "1:340056180297:web:414156a3716e5594862198",
+  measurementId: "G-YMXR48Q4FL"
 };
+
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
