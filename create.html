@@ -9,115 +9,87 @@
   <link rel="icon" href="img/favicon.ico" />
 </head>
 <body>
-  <!-- 헤더 / 네비게이션 -->
-  <header class="site-header">
-    <nav class="nav">
+  <header>
+    <nav class="navbar">
       <a href="index.html" class="logo">Project.<strong>PAW</strong></a>
-      <div class="nav-links">
-        <a href="index.html">홈</a>
-        <a href="project_list.html">후원하기</a>
-        <a href="create.html" aria-current="page"><strong>후원 등록</strong></a>
-      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">홈</a></li>
+        <li><a href="project_list.html">후원하기</a></li>
+        <li><a href="create.html" class="active">후원 등록</a></li>
+      </ul>
     </nav>
   </header>
 
   <main class="container">
-    <h1 class="page-title">후원 등록</h1>
+    <h1>후원 등록</h1>
 
-    <!-- 입력 폼 -->
-    <section class="card">
-      <div class="grid">
-        <label class="form-control">
-          <span class="label">프로젝트 제목</span>
-          <input id="title" type="text" placeholder="예) 병원비가 급한 콩이" />
-        </label>
+    <form id="createForm" class="form">
+      <label>프로젝트 제목
+        <input id="title" type="text" placeholder="예) 병원비가 급한 콩이" required />
+      </label>
 
-        <label class="form-control">
-          <span class="label">요약 설명</span>
-          <input id="summary" type="text" placeholder="한 줄 요약을 적어주세요" />
-        </label>
+      <label>요약 설명
+        <input id="summary" type="text" placeholder="한 줄 요약을 적어주세요" required />
+      </label>
 
-        <label class="form-control">
-          <span class="label">상세 설명</span>
-          <textarea id="description" rows="6" placeholder="상세한 상황, 필요 비용, 타임라인 등을 적어주세요"></textarea>
-        </label>
+      <label>상세 설명
+        <textarea id="description" rows="6" placeholder="상세한 상황을 적어주세요"></textarea>
+      </label>
 
-        <div class="grid grid-2">
-          <label class="form-control">
-            <span class="label">목표 금액</span>
-            <input id="target" type="number" min="0" step="1000" placeholder="예) 1000000" />
-          </label>
+      <label>목표 금액
+        <input id="target" type="number" min="0" step="1000" placeholder="1000000" />
+      </label>
 
-          <label class="form-control">
-            <span class="label">자부담 금액</span>
-            <input id="selfpay" type="number" min="0" step="1000" placeholder="예) 300000" />
-          </label>
-        </div>
+      <label>자부담 금액
+        <input id="selfpay" type="number" min="0" step="1000" placeholder="300000" />
+      </label>
 
-        <label class="form-control">
-          <span class="label">카카오톡 연결 링크</span>
-          <input id="kakao" type="url" placeholder="https://open.kakao.com/..." />
-        </label>
+      <label>카카오톡 링크
+        <input id="kakao" type="url" placeholder="https://open.kakao.com/..." />
+      </label>
 
-        <label class="checkbox">
-          <input id="status" type="checkbox" />
-          <span>관리자 승인(노출 허용)</span>
-        </label>
-      </div>
-    </section>
+      <label class="checkbox">
+        <input id="status" type="checkbox" />
+        <span>관리자 승인(노출 허용)</span>
+      </label>
 
-    <!-- 이미지 업로드 -->
-    <section class="card">
-      <h2 class="section-title">이미지 업로드</h2>
-
-      <div class="form-control">
-        <span class="label">대표 이미지</span>
+      <label>대표 이미지
         <input id="cover" type="file" accept="image/*" />
-        <div class="preview-box">
-          <img id="coverPreview" src="img/placeholder.svg" alt="대표 이미지 미리보기" />
-        </div>
-      </div>
+      </label>
 
-      <div class="form-control">
-        <span class="label">상황 사진 (여러 장)</span>
+      <label>상황 사진 (여러 장)
         <input id="gallery" type="file" accept="image/*" multiple />
-        <div class="preview-grid gallery-preview" aria-live="polite"></div>
-      </div>
+      </label>
 
-      <div class="form-control">
-        <span class="label">영수증 사진 (여러 장)</span>
+      <label>영수증 사진 (여러 장)
         <input id="receipts" type="file" accept="image/*" multiple />
-        <div class="preview-grid receipt-preview" aria-live="polite"></div>
-      </div>
-    </section>
+      </label>
 
-    <div class="actions">
       <button id="saveBtn" type="button" class="btn primary">등록하기</button>
-    </div>
+    </form>
   </main>
 
-  <footer class="site-footer">
-    <small>Project.<strong>PAW</strong> — 도움은 본능, 연결은 선택. 100% 전달 · 책임 연결</small>
+  <footer>
+    <small>Project.<strong>PAW</strong> — 도움은 본능, 연결은 선택.</small>
   </footer>
 
-  <!-- 스크립트 -->
+  <!-- ✅ 수정된 스크립트 -->
   <script type="module">
     import { SCHEMA, storage as dbStorage, uid } from "./js/app.js";
     import { toast } from "./js/utils.js";
-    import { uploadFile } from "./js/uploader.js";     // 미리보기 바인딩 포함
+    import { uploadFile } from "./js/uploader.js";
     import { authReady, auth } from "./js/firebase.js";
 
     const $ = (s) => document.querySelector(s);
 
-    // 저장 핸들러
+    // 등록 버튼 이벤트
     $("#saveBtn").addEventListener("click", async (e) => {
       e.preventDefault();
 
-      // ✅ 업로드/쓰기 전 인증 완료 대기 (익명 로그인)
+      // ✅ 업로드/쓰기 전에 인증 완료 기다림
       await authReady;
       console.log("[auth] currentUser:", auth.currentUser?.uid);
 
-      // 필드 수집
       const data = structuredClone(SCHEMA);
       data.id = uid();
       data.title = $("#title").value.trim();
@@ -134,15 +106,12 @@
         return;
       }
 
-      // 파일 업로드 → URL 수집
       const coverFile = $("#cover")?.files?.[0];
       const galleryFiles = Array.from($("#gallery")?.files || []);
       const receiptFiles = Array.from($("#receipts")?.files || []);
 
       try {
-        if (coverFile) {
-          data.images.cover = await uploadFile("covers", coverFile);
-        }
+        if (coverFile) data.images.cover = await uploadFile("covers", coverFile);
         data.images.gallery = [];
         for (const f of galleryFiles) {
           data.images.gallery.push(await uploadFile("gallery", f));
@@ -157,7 +126,6 @@
         return;
       }
 
-      // Firestore 저장
       try {
         await dbStorage.add(data);
         toast("등록 완료! 홈으로 이동합니다.");
