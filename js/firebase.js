@@ -1,7 +1,4 @@
-/* Firebase SDK bootstrap for Project.PAW
-   Firebase Console → Project Settings → General → Web API Key & SDK Config 복사해서 넣어야 함
-*/
-
+/* Firebase SDK bootstrap for Project.PAW */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import {
   getFirestore, collection, getDocs, getDoc, addDoc, doc, serverTimestamp, query, orderBy
@@ -13,15 +10,15 @@ import {
   getAuth, signInAnonymously
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
 
-// 🔥 반드시 Firebase Console에서 복사한 최신 설정값 붙여넣기
+// ✅ Firebase Console → SDK snippet (Config)에서 복사한 값
 const firebaseConfig = {
   apiKey: "AIzaSyCNguz8K5MehFR5nydZ293hI60FQ9Jh5Tk",
-  authDomain: "projectpaw-bf042.firebaseapp.com",      // 프로젝트 ID 맞는지 확인
+  authDomain: "projectpaw-bf042.firebaseapp.com",
   projectId: "projectpaw-bf042",
-  storageBucket: "projectpaw-bf042.appspot.com",       // 반드시 .appspot.com 이어야 함
+  storageBucket: "projectpaw-bf042.appspot.com",   // 🔥 반드시 이렇게 수정해야 함
   messagingSenderId: "340056180297",
-  appId: "1:340056180297:web:414156a3716e5594862198",
-  measurementId: "G-YMXR48Q4FL"
+  appId: "1:340056180297:web:20ae730ee45b0563062198",
+  measurementId: "G-FEMJ80972P"
 };
 
 // Firebase 초기화
@@ -30,7 +27,7 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 const auth = getAuth(app);
 
-// ✅ GitHub Pages에서 쓸 수 있도록 익명 로그인 (사용자 없이도 read/write 가능하게)
+// ✅ 익명 로그인 (필수: 업로드/쓰기 전에 인증 필요)
 try {
   const userCred = await signInAnonymously(auth);
   console.log("[auth] signed in:", userCred.user.uid);
