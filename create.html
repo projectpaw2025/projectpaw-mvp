@@ -72,42 +72,54 @@
     </div>
   </section>
 
+  
   <script type="module">
-    import { SCHEMA, storage, uid } from "./js/app.js";
+    import { SCHEMA, storage as dbStorage, uid } from "./js/app.js";
     import { toast } from "./js/utils.js";
     import "./js/uploader.js";
+    import { uploadFile } from "./js/uploader.js";
+    import "./js/firebase.js";
 
-    import { SCHEMA, storage, uid } from "./js/app.js";
-    import "./js/uploader.js";
+    const $ = s => document.querySelector(s);
 
-    document.querySelector("#saveBtn").addEventListener("click", (e) => {
+    $("#saveBtn").addEventListener("click", async (e) => {
       e.preventDefault();
+
       const data = structuredClone(SCHEMA);
       data.id = uid();
-      data.title = document.querySelector("#title").value.trim();
-      data.summary = document.querySelector("#summary").value.trim();
-      data.description = document.querySelector("#description").value.trim();
-      data.targetAmount = Number(document.querySelector("#target").value || 0);
-      data.selfPayAmount = Number(document.querySelector("#selfpay").value || 0);
-      data.kakaoLink = document.querySelector("#kakao").value.trim();
-      data.status = document.querySelector("#status").checked ? "approved" : "pending";
-      const coverEl = document.querySelector("#coverPreview");
-      data.images.cover = coverEl?.dataset?.src || "";
-      data.images.gallery = [...document.querySelectorAll(".gallery-preview img")].map(img => img.dataset.src);
-      data.images.receipts = [...document.querySelectorAll(".receipt-preview img")].map(img => img.dataset.src);
+      data.title = $("#title").value.trim();
+      data.summary = $("#summary").value.trim();
+      data.description = $("#description").value.trim();
+      data.targetAmount = Number($("#target").value || 0);
+      data.selfPayAmount = Number($("#selfpay").value || 0);
+      data.kakaoLink = $("#kakao").value.trim();
+      data.status = $("#status").checked ? "approved" : "pending";
       data.createdAt = Date.now();
 
-      if (!data.title || !data.summary) {
-        alert("프로젝트명과 요약을 입력해주세요.");
-        return;
+      if (!data.title || !data.summary) { toast("프로젝트명과 요약을 입력해주세요."); return; }
+
+      // Files
+      const coverFile = $("#cover")?.files?.[0];
+      const galleryFiles = Array.from($("#gallery")?.files || []);
+      const receiptFiles = Array.from($("#receipts")?.files || []);
+
+      try {
+        if (coverFile) data.images.cover = await uploadFile("covers", coverFile);
+        data.images.gallery = [];
+        for (const f of galleryFiles) data.images.gallery.push(await uploadFile("gallery", f));
+        data.images.receipts = [];
+        for (const f of receiptFiles) data.images.receipts.push(await uploadFile("receipts", f));
+      } catch (e) {
+        console.error(e); toast("이미지 업로드 실패. 다시 시도해주세요."); return;
       }
-      storage.add(data);
-      toast('등록 완료! 홈으로 이동합니다.');
+
+      await dbStorage.add(data);
+      toast("등록 완료! 홈으로 이동합니다.");
       location.href = "index.html";
     });
   </script>
-
   </main>
+
   <footer class="footer">
     <div class="container">
       <small>Project.PAW — “도움은 본능, 연결은 선택.” 100% 전달 · 책임 구조 · 직접 연결</small>

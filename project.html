@@ -51,11 +51,12 @@
   </section>
 
   <script type="module">
+    import "./js/firebase.js";
     import { storage, fmt } from "./js/app.js";
     const $ = (s, p=document) => p.querySelector(s);
 
     const id = new URLSearchParams(location.search).get("id");
-    const p = storage.byId(id);
+    const p = await storage.byId(id);
     if (!p) {
       document.body.innerHTML = "<main class='container'><p>프로젝트를 찾을 수 없습니다.</p></main>";
       throw new Error("Project not found");

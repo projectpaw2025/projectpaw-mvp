@@ -18,22 +18,25 @@ export const SCHEMA = {
   createdAt: 0
 };
 
+import { db, collection, getDocs, getDoc, addDoc, doc, serverTimestamp, query, orderBy } from "./firebase.js";
+
 export const storage = {
-  getAll() {
-    try { return JSON.parse(localStorage.getItem("projects") || "[]"); }
-    catch { return []; }
+  async getAll() {
+    const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   },
-  saveAll(list) {
-    localStorage.setItem("projects", JSON.stringify(list));
+  async saveAll(_) {
+    console.warn("saveAll is not used in Firestore mode.");
   },
-  add(p) {
-    const list = storage.getAll();
-    list.push(p);
-    storage.saveAll(list);
-    return p;
+  async add(p) {
+    const payload = { ...p, createdAt: serverTimestamp() };
+    const refDoc = await addDoc(collection(db, "projects"), payload);
+    return { ...p, id: refDoc.id };
   },
-  byId(id) {
-    return storage.getAll().find(p => p.id === id);
+  async byId(id) {
+    const s = await getDoc(doc(db, "projects", id));
+    return s.exists() ? { id, ...s.data() } : null;
   }
 };
 

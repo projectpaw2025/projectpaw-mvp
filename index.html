@@ -39,9 +39,10 @@
   </section>
 
   <script type="module">
+    import "./js/firebase.js";
     import { storage, fmt } from "./js/app.js";
     const container = document.querySelector("#homeList");
-    const all = storage.getAll()
+    const all = await storage.getAll()
       .filter(p => p.status === "approved")
       .sort((a,b)=>b.createdAt - a.createdAt)
       .slice(0,4);
