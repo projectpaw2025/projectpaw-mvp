@@ -15,7 +15,7 @@ import {
 
 // 🔥 반드시 Firebase Console에서 복사한 최신 설정값 붙여넣기
 const firebaseConfig = {
-  apiKey: "AIzaSy... <=== 네 Web API Key",             // Firebase 콘솔에서 복사
+  apiKey: "AIzaSyCNguz8K5MehFR5nydZ293hI60FQ9Jh5Tk",
   authDomain: "projectpaw-bf042.firebaseapp.com",      // 프로젝트 ID 맞는지 확인
   projectId: "projectpaw-bf042",
   storageBucket: "projectpaw-bf042.appspot.com",       // 반드시 .appspot.com 이어야 함
