@@ -1,90 +1,123 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>후원 등록 · Project.PAW</title>
-<meta name="description" content="책임 기반 구조 원칙에 따라 프로젝트를 등록해주세요. 대표/상황/영수증 사진과 카카오 링크를 포함할 수 있습니다." />
-<link rel="icon" href="img/placeholder.svg" />
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Project.PAW — 후원 등록</title>
   <link rel="stylesheet" href="css/app.css" />
+  <meta name="description" content="Project.PAW 프로젝트 등록" />
+  <link rel="icon" href="img/favicon.ico" />
 </head>
 <body>
-  <nav class="nav">
-    <div class="container">
-      <div class="brand"><a href="index.html">Project<span class="dot">.PAW</span></a></div>
-      <ul>
-        <li><a href="index.html">홈</a></li>
-        <li><a href="project_list.html">후원하기</a></li>
-        <li><a href="create.html" class="btn">후원 등록</a></li>
-      </ul>
-    </div>
-  </nav>
+  <!-- 헤더 / 네비게이션 -->
+  <header class="site-header">
+    <nav class="nav">
+      <a href="index.html" class="logo">Project.<strong>PAW</strong></a>
+      <div class="nav-links">
+        <a href="index.html">홈</a>
+        <a href="project_list.html">후원하기</a>
+        <a href="create.html" aria-current="page"><strong>후원 등록</strong></a>
+      </div>
+    </nav>
+  </header>
+
   <main class="container">
-  <section class="section">
-    <h2>후원 등록</h2>
-    <p style="color:#445;">실제 사례만 등록해주세요. <b>구조자 30% 자부담</b>과 <b>영수증/후기 공개</b>가 원칙입니다.</p>
+    <h1 class="page-title">후원 등록</h1>
 
-    <div class="form">
-      <label class="title">프로젝트명 / 고양이 이름</label>
-      <input id="title" class="input" placeholder="예: 나비 – 교통사고 치료비" />
+    <!-- 입력 폼 -->
+    <section class="card">
+      <div class="grid">
+        <label class="form-control">
+          <span class="label">프로젝트 제목</span>
+          <input id="title" type="text" placeholder="예) 병원비가 급한 콩이" />
+        </label>
 
-      <label class="title">상황 요약 (한 줄)</label>
-      <input id="summary" class="input" placeholder="예: 수술비 60만원 중 40만원 모금 요청" />
+        <label class="form-control">
+          <span class="label">요약 설명</span>
+          <input id="summary" type="text" placeholder="한 줄 요약을 적어주세요" />
+        </label>
 
-      <label class="title">상세 설명</label>
-      <textarea id="description" placeholder="상세 상황과 필요한 치료/비용을 적어주세요. 후기 공개를 약속합니다."></textarea>
+        <label class="form-control">
+          <span class="label">상세 설명</span>
+          <textarea id="description" rows="6" placeholder="상세한 상황, 필요 비용, 타임라인 등을 적어주세요"></textarea>
+        </label>
 
-      <div class="grid-2">
-        <div>
-          <label class="title">목표 금액 (원)</label>
-          <input id="target" type="number" class="input" placeholder="예: 400000" />
+        <div class="grid grid-2">
+          <label class="form-control">
+            <span class="label">목표 금액</span>
+            <input id="target" type="number" min="0" step="1000" placeholder="예) 1000000" />
+          </label>
+
+          <label class="form-control">
+            <span class="label">자부담 금액</span>
+            <input id="selfpay" type="number" min="0" step="1000" placeholder="예) 300000" />
+          </label>
         </div>
-        <div>
-          <label class="title">구조자 부담금 (원)</label>
-          <input id="selfpay" type="number" class="input" placeholder="예: 200000" />
+
+        <label class="form-control">
+          <span class="label">카카오톡 연결 링크</span>
+          <input id="kakao" type="url" placeholder="https://open.kakao.com/..." />
+        </label>
+
+        <label class="checkbox">
+          <input id="status" type="checkbox" />
+          <span>관리자 승인(노출 허용)</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- 이미지 업로드 -->
+    <section class="card">
+      <h2 class="section-title">이미지 업로드</h2>
+
+      <div class="form-control">
+        <span class="label">대표 이미지</span>
+        <input id="cover" type="file" accept="image/*" />
+        <div class="preview-box">
+          <img id="coverPreview" src="img/placeholder.svg" alt="대표 이미지 미리보기" />
         </div>
       </div>
 
-      <label class="title">카카오톡 연결 링크</label>
-      <input id="kakao" class="input" placeholder="https://open.kakao.com/o/..." />
-
-      <div class="switch">
-        <input id="status" type="checkbox">
-        <span>관리자 승인</span>
+      <div class="form-control">
+        <span class="label">상황 사진 (여러 장)</span>
+        <input id="gallery" type="file" accept="image/*" multiple />
+        <div class="preview-grid gallery-preview" aria-live="polite"></div>
       </div>
 
-      <label class="title">대표 이미지</label>
-      <input id="cover" type="file" accept="image/*" class="input"/>
-      <div class="img-preview"><img id="coverPreview" alt="대표 미리보기" /></div>
-
-      <label class="title">상황 사진 (여러 장)</label>
-      <input id="gallery" type="file" accept="image/*" multiple class="input"/>
-      <div class="gallery-preview grid"></div>
-
-      <label class="title">영수증 사진 (여러 장)</label>
-      <input id="receipts" type="file" accept="image/*" multiple class="input"/>
-      <div class="receipt-preview grid"></div>
-
-      <div>
-        <button id="saveBtn" class="btn primary">등록하기</button>
+      <div class="form-control">
+        <span class="label">영수증 사진 (여러 장)</span>
+        <input id="receipts" type="file" accept="image/*" multiple />
+        <div class="preview-grid receipt-preview" aria-live="polite"></div>
       </div>
+    </section>
+
+    <div class="actions">
+      <button id="saveBtn" type="button" class="btn primary">등록하기</button>
     </div>
-  </section>
+  </main>
 
-  
+  <footer class="site-footer">
+    <small>Project.<strong>PAW</strong> — 도움은 본능, 연결은 선택. 100% 전달 · 책임 연결</small>
+  </footer>
+
+  <!-- 스크립트 -->
   <script type="module">
     import { SCHEMA, storage as dbStorage, uid } from "./js/app.js";
     import { toast } from "./js/utils.js";
-    import "./js/uploader.js";
-    import { uploadFile } from "./js/uploader.js";
-    import "./js/firebase.js";
+    import { uploadFile } from "./js/uploader.js";     // 미리보기 바인딩 포함
+    import { authReady, auth } from "./js/firebase.js";
 
-    const $ = s => document.querySelector(s);
+    const $ = (s) => document.querySelector(s);
 
+    // 저장 핸들러
     $("#saveBtn").addEventListener("click", async (e) => {
       e.preventDefault();
 
+      // ✅ 업로드/쓰기 전 인증 완료 대기 (익명 로그인)
+      await authReady;
+      console.log("[auth] currentUser:", auth.currentUser?.uid);
+
+      // 필드 수집
       const data = structuredClone(SCHEMA);
       data.id = uid();
       data.title = $("#title").value.trim();
@@ -96,34 +129,44 @@
       data.status = $("#status").checked ? "approved" : "pending";
       data.createdAt = Date.now();
 
-      if (!data.title || !data.summary) { toast("프로젝트명과 요약을 입력해주세요."); return; }
+      if (!data.title || !data.summary) {
+        toast("프로젝트명과 요약을 입력해주세요.");
+        return;
+      }
 
-      // Files
+      // 파일 업로드 → URL 수집
       const coverFile = $("#cover")?.files?.[0];
       const galleryFiles = Array.from($("#gallery")?.files || []);
       const receiptFiles = Array.from($("#receipts")?.files || []);
 
       try {
-        if (coverFile) data.images.cover = await uploadFile("covers", coverFile);
+        if (coverFile) {
+          data.images.cover = await uploadFile("covers", coverFile);
+        }
         data.images.gallery = [];
-        for (const f of galleryFiles) data.images.gallery.push(await uploadFile("gallery", f));
+        for (const f of galleryFiles) {
+          data.images.gallery.push(await uploadFile("gallery", f));
+        }
         data.images.receipts = [];
-        for (const f of receiptFiles) data.images.receipts.push(await uploadFile("receipts", f));
-      } catch (e) {
-        console.error(e); toast("이미지 업로드 실패. 다시 시도해주세요."); return;
+        for (const f of receiptFiles) {
+          data.images.receipts.push(await uploadFile("receipts", f));
+        }
+      } catch (err) {
+        console.error("[upload] failed:", err);
+        toast("이미지 업로드 실패(네트워크/권한). 다시 시도해주세요.");
+        return;
       }
 
-      await dbStorage.add(data);
-      toast("등록 완료! 홈으로 이동합니다.");
-      location.href = "index.html";
+      // Firestore 저장
+      try {
+        await dbStorage.add(data);
+        toast("등록 완료! 홈으로 이동합니다.");
+        location.href = "index.html";
+      } catch (err) {
+        console.error("[firestore] write failed:", err);
+        toast("등록 실패(데이터 저장). 잠시 후 다시 시도해주세요.");
+      }
     });
   </script>
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      <small>Project.PAW — “도움은 본능, 연결은 선택.” 100% 전달 · 책임 구조 · 직접 연결</small>
-    </div>
-  </footer>
 </body>
 </html>
