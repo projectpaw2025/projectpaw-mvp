@@ -1,25 +1,47 @@
 <!-- partials/header.html -->
+<header class="paw-nav">
+  <div class="paw-nav__inner">
+    <a class="paw-logo" href="index.html" aria-label="Project.PAW Home">
+      <span class="paw-logo__mark">🐾</span>
+      <span class="paw-logo__text">Project.PAW</span>
+    </a>
+
+    <nav class="paw-menu" aria-label="Primary">
+      <a class="paw-link" data-match="project_list.html" href="project_list.html">프로젝트</a>
+      <a class="paw-link" data-match="create.html" href="create.html">등록하기</a>
+      <a class="paw-link" data-match="about.html" href="about.html">소개</a>
+    </nav>
+  </div>
+</header>
+
 <style>
-  .pp-header {
-    display:flex;justify-content:space-between;align-items:center;
-    padding:1rem 2rem;background:#fff;border-bottom:1px solid #eee;
-    position:sticky;top:0;z-index:10
+  .paw-nav { position: sticky; top:0; z-index: 50; backdrop-filter: blur(6px);
+             background: rgba(255,255,255,.75); border-bottom:1px solid #eef2f7; }
+  .paw-nav__inner { max-width: 1120px; margin:0 auto; padding: 12px 16px;
+                    display:flex; align-items:center; justify-content:space-between; }
+  .paw-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .paw-logo__mark { font-size: 1.25rem; }
+  .paw-logo__text { font-weight: 800; color:#111827; letter-spacing:-.02em; }
+  .paw-menu { display:flex; gap: 14px; align-items:center; }
+  .paw-link { padding:10px 14px; border-radius: 12px; text-decoration:none; color:#374151;
+              font-weight: 700; border:1px solid transparent; transition: all .15s ease; }
+  .paw-link:hover { background:#f8fafc; border-color:#eef2f7; color:#111827; }
+  .paw-link.is-active { background:#111827; color:#fff; border-color:#111827; }
+  @media (max-width:640px){
+    .paw-logo__text{ display:none; }
+    .paw-link{ padding:8px 10px; font-weight:700; }
   }
-  .pp-header h1{margin:0;font-size:1.5rem;color:#222}
-  .pp-nav{display:flex;gap:1rem;align-items:center}
-  .pp-nav a,.pp-nav button{
-    background:none;border:none;cursor:pointer;font-size:1rem;
-    color:#333;text-decoration:none;transition:color .2s
-  }
-  .pp-nav a:hover,.pp-nav button:hover{color:#ff6b6b}
-  .pp-nav a.is-active{font-weight:700;color:#ff6b6b}
 </style>
 
-<header class="pp-header">
-  <h1>🐾 Project.PAW</h1>
-  <nav class="pp-nav">
-    <a href="index.html" data-nav="index">홈</a>
-    <a href="project_list.html" data-nav="project_list">후원하기</a>
-    <a href="create.html" data-nav="create">등록하기</a>
-  </nav>
-</header>
+<script>
+  // 활성 메뉴 하이라이트: 현재 경로와 data-match 비교
+  (function(){
+    try {
+      const path = (location.pathname.split('/').pop() || 'index.html');
+      document.querySelectorAll('.paw-link').forEach(a=>{
+        if (a.dataset.match === path) a.classList.add('is-active');
+        // index.html일 때는 '프로젝트'를 기본 노출로 유지 (원하면 여기서 index도 매칭 가능)
+      });
+    } catch(e){}
+  })();
+</script>
