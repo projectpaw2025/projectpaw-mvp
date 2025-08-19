@@ -4,54 +4,52 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>프로젝트 상세 — Project.PAW</title>
-
-  <!-- 페이지 전용 스타일 -->
   <style>
     :root{
-      --paw-primary:#1f6feb; --ink:#0b1220; --muted:#6b7280; --bg:#f7f9fc; --card:#fff;
-      --line:#e5e7eb; --radius:16px; --shadow:0 10px 24px rgba(16,24,40,.08);
+      --primary:#1f6feb; --muted:#6b7280; --bg:#f8fafc; --card:#fff; --line:#e5e7eb;
+      --radius:18px; --shadow:0 12px 30px rgba(16,24,40,.08);
     }
     *{box-sizing:border-box}
-    html,body{margin:0;background:var(--bg);color:#111827;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    html,body{margin:0;background:var(--bg);color:#0f172a;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
     a{text-decoration:none;color:inherit}
-    .container{max-width:1000px;margin:0 auto;padding:0 16px}
+    .container{max-width:1100px;margin:0 auto;padding:0 16px}
     .topbar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line)}
     .topbar .inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
-    .brand{font-weight:800}
+    .brand{font-weight:900}
     .nav{display:flex;gap:8px}
     .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
-    .btn.primary{background:var(--paw-primary);color:#fff}
+    .btn.primary{background:var(--primary);color:#fff}
     .btn.ghost{background:#11182710}
     .btn.disabled{opacity:.5;pointer-events:none}
-    .detail{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;padding:24px 0}
-    @media (max-width: 900px){ .detail{grid-template-columns:1fr} }
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .layout{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;padding:26px 0}
+    @media(max-width:900px){.layout{grid-template-columns:1fr}}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
     .pad{padding:16px}
-    .cover{border-radius:var(--radius);overflow:hidden;background:#eef2ff}
-    .cover img{width:100%;height:420px;object-fit:cover;display:block}
-    @media (max-width: 600px){ .cover img{height:240px} }
-    h1{margin:0 0 8px 0;font-size:clamp(20px,3.4vw,30px);font-weight:900}
+    .cover img{width:100%;height:440px;object-fit:cover;border-top-left-radius:var(--radius);border-top-right-radius:var(--radius);background:#eef2ff}
+    @media(max-width:640px){.cover img{height:240px}}
+    h1{margin:0 0 6px 0;font-size:clamp(22px,3.6vw,32px);font-weight:900}
     .muted{color:#6b7280}
     .kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:6px}
-    .progress{width:100%;height:10px;background:#f3f4f6;border-radius:999px;overflow:hidden}
-    .progress i{display:block;height:100%;background:var(--paw-primary);width:0%}
+    .progress{width:100%;height:10px;background:#f3f4f6;border-radius:999px;overflow:hidden;margin:10px 0 6px}
+    .progress i{display:block;height:100%;background:var(--primary);width:0%}
     .chip{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;background:#eef2ff;color:#1f3b7a}
-    .stack{display:flex;flex-direction:column;gap:10px}
+    .stack{display:flex;flex-direction:column;gap:12px}
     .row{display:flex;gap:10px;align-items:center}
-    .actions{display:flex;gap:8px;flex-wrap:wrap}
     .section-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .gallery .slide img{width:100%;height:340px;object-fit:cover;border-radius:12px}
+    @media(max-width:640px){.gallery .slide img{height:220px}}
     .slider{position:relative}
     .track{display:flex;transition:transform .25s ease}
     .slide{min-width:100%}
-    .slide img{width:100%;height:340px;object-fit:cover;border-radius:12px}
-    @media (max-width: 600px){ .slide img{height:220px} }
     .navbtn{position:absolute;top:50%;transform:translateY(-50%);border:0;background:#fff;border-radius:999px;width:36px;height:36px;box-shadow:var(--shadow);cursor:pointer}
-    .navbtn.prev{left:8px} .navbtn.next{right:8px}
+    .navbtn.prev{left:8px}.navbtn.next{right:8px}
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
     .img-cell{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#fff}
     .img-cell img{width:100%;height:140px;object-fit:cover;display:block}
-    .empty{padding:18px;text-align:center;border:1px dashed #cbd5e1;border-radius:12px;background:#fff;color:#64748b}
-    footer{padding:40px 0;color:#94a3b8;font-size:14px;text-align:center}
+    footer{border-top:1px solid var(--line);margin-top:28px}
+    .footer-inner{display:flex;justify-content:space-between;align-items:center;padding:24px 0;color:#94a3b8;font-size:14px}
+    .footer-nav{display:flex;gap:12px}
+    .footer-link{color:#64748b}
   </style>
 </head>
 <body>
@@ -66,53 +64,54 @@
   </header>
 
   <main class="container">
-    <article class="detail">
-      <!-- 좌측: 커버 + 상세설명 + 갤러리 -->
-      <div class="stack">
-        <div class="cover card">
-          <img class="project-cover" src="img/placeholder.svg" alt="대표 이미지" />
+    <article class="layout">
+      <div>
+        <div class="card cover">
+          <img class="project-cover" src="img/placeholder.svg" alt="대표 이미지"/>
         </div>
 
-        <div class="section-card pad">
+        <div class="section-card pad" style="margin-top:12px">
           <div class="kicker">프로젝트</div>
           <h1 class="project-title"></h1>
-          <p class="project-summary muted" style="margin:6px 0 8px 0"></p>
+          <p class="muted project-summary" style="margin:6px 0 8px 0"></p>
           <div class="progress"><i id="bar" style="width:0%"></i></div>
-          <div class="row muted" style="gap:12px; margin-top:6px">
+          <div class="row muted" style="gap:12px;margin-top:6px">
             <span id="money"></span>
             <span class="chip" id="statusChip">대기</span>
           </div>
         </div>
 
-        <div class="section-card pad">
+        <div class="section-card pad" style="margin-top:12px">
           <div class="kicker">상세 설명</div>
-          <div class="project-description" style="line-height:1.6"></div>
+          <div class="project-description" style="line-height:1.65"></div>
         </div>
 
-        <div class="section-card pad">
+        <div class="section-card pad" style="margin-top:12px">
           <div class="kicker">상황 갤러리</div>
-          <div class="slider">
+          <div class="slider gallery">
             <button class="navbtn prev" type="button" aria-label="이전">‹</button>
             <div class="track"></div>
             <button class="navbtn next" type="button" aria-label="다음">›</button>
           </div>
         </div>
 
-        <div class="section-card pad">
+        <div class="section-card pad" style="margin-top:12px">
           <div class="kicker">영수증</div>
           <div class="grid receipt-preview"></div>
         </div>
       </div>
 
-      <!-- 우측: 액션 / 정보 요약 -->
       <aside class="section-card pad">
         <div class="stack">
           <div>
             <div class="kicker">연결</div>
-            <div class="actions" style="margin-top:8px">
+            <div class="row" style="flex-wrap:wrap;margin-top:8px">
               <a class="btn primary" id="kakaoBtn" target="_blank" rel="noopener">카카오톡 연결</a>
               <button class="btn ghost" id="shareBtn">공유</button>
             </div>
+            <p class="muted" id="kakaoNotice" style="margin-top:8px;display:none">
+              관리자 승인 후 카카오 오픈채팅 링크가 공개됩니다.
+            </p>
           </div>
 
           <div>
@@ -124,7 +123,7 @@
             </div>
           </div>
 
-          <div class="muted" style="font-size:13px">
+          <div class="muted" style="font-size:13px;margin-top:6px">
             “책임의 끝과 공감의 시작이 만나는 곳.”
           </div>
         </div>
@@ -132,23 +131,28 @@
     </article>
   </main>
 
-  <footer>© Project.PAW</footer>
+  <footer>
+    <div class="container footer-inner">
+      <span>© Project.PAW</span>
+      <nav class="footer-nav">
+        <a class="footer-link" href="about.html">About</a>
+        <a class="footer-link" href="login.html">로그인</a>
+      </nav>
+    </div>
+  </footer>
 
-  <!-- 기능 스크립트 -->
   <script type="module">
     import "./js/firebase.js";
     import { storage, fmt } from "./js/app.js";
     import { esc, percent } from "./js/utils.js";
 
     const $ = (sel, root=document) => root.querySelector(sel);
-
     const id = new URLSearchParams(location.search).get("id");
 
-    function toDateText(createdAt){
+    function createdAtText(createdAt){
       const sec = (createdAt && typeof createdAt==='object' && 'seconds' in createdAt) ? createdAt.seconds : 0;
       if(!sec) return "-";
-      const d = new Date(sec*1000);
-      return d.toLocaleString("ko-KR");
+      return new Date(sec*1000).toLocaleString("ko-KR");
     }
 
     async function main(){
@@ -163,20 +167,36 @@
         return;
       }
 
-      // 헤더/요약/상태
+      // 텍스트
       $(".project-title").textContent = p.title || "";
       $(".project-summary").textContent = p.summary || "";
 
+      // 금액/진행률
       const target = fmt(p.targetAmount||0);
       const selfPay = fmt(p.selfPayAmount||0);
       const pct = Math.max(0, Math.min(100, percent(p.raisedAmount||0, p.targetAmount||1)));
-
       $("#money").textContent = `목표 ${target}원 · 구조자 ${selfPay}원 (달성률 ${pct}%)`;
       $("#bar").style.width = pct + "%";
 
+      // 상태 뱃지 / 카카오 버튼
       const chip = $("#statusChip");
-      if((p.status||"pending")==="approved"){ chip.textContent="승인"; chip.style.background="#eafff2"; chip.style.color="#0a6b3c"; }
-      else { chip.textContent="대기"; chip.style.background="#fff6e6"; chip.style.color="#a15a00"; }
+      chip.textContent = (p.status==="approved")? "승인" : "대기";
+      chip.style.background = (p.status==="approved")? "#eafff2" : "#fff6e6";
+      chip.style.color = (p.status==="approved")? "#0a6b3c" : "#a15a00";
+
+      const kakaoBtn = $("#kakaoBtn");
+      const kakaoNotice = $("#kakaoNotice");
+      const kakao = (p.kakaoLink||"").trim();
+      if(p.status==="approved" && kakao){
+        kakaoBtn.href = kakao;
+        kakaoNotice.style.display = "none";
+        kakaoBtn.classList.remove("disabled");
+      }else{
+        kakaoBtn.classList.add("disabled");
+        kakaoBtn.setAttribute("aria-disabled","true");
+        kakaoBtn.addEventListener("click", e=> e.preventDefault());
+        kakaoNotice.style.display = "block";
+      }
 
       // 커버
       const cover = (p.images && p.images.cover) ? p.images.cover : "img/placeholder.svg";
@@ -187,7 +207,7 @@
       $(".project-description").innerHTML = desc;
 
       // 등록 정보
-      $("#createdAtText").textContent = toDateText(p.createdAt);
+      $("#createdAtText").textContent = createdAtText(p.createdAt);
       $("#goalText").textContent = `${target}원`;
       $("#selfText").textContent = `${selfPay}원`;
 
@@ -197,7 +217,7 @@
       if(g.length){
         track.innerHTML = g.map(src => `<div class="slide"><img src="${src}" alt="gallery"></div>`).join("");
       }else{
-        track.innerHTML = `<div class="empty" style="width:100%">등록된 사진이 없습니다.</div>`;
+        track.innerHTML = `<div class="slide"><div class="pad muted" style="text-align:center">등록된 사진이 없습니다.</div></div>`;
       }
       let idx = 0;
       const total = Math.max(track.children.length, 1);
@@ -210,13 +230,7 @@
       const r = Array.isArray(p.images?.receipts) ? p.images.receipts : [];
       const rwrap = document.querySelector(".receipt-preview");
       rwrap.innerHTML = (r.length ? r : []).map(src => `<div class="img-cell"><img src="${src}" alt="receipt"></div>`).join("")
-        || `<div class="empty" style="width:100%">등록된 영수증이 없습니다.</div>`;
-
-      // 카카오 링크
-      const kakao = (p.kakaoLink||"").trim();
-      const kakaoBtn = $("#kakaoBtn");
-      if(kakao){ kakaoBtn.href = kakao; }
-      else { kakaoBtn.classList.add("disabled"); kakaoBtn.setAttribute("aria-disabled","true"); }
+        || `<div class="img-cell"><div class="pad muted" style="text-align:center;height:140px;display:flex;align-items:center;justify-content:center">등록된 영수증이 없습니다.</div></div>`;
 
       // 공유
       $("#shareBtn").addEventListener("click", async ()=>{
