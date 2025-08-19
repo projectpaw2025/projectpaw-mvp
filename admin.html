@@ -1,164 +1,244 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Admin — Project.PAW</title>
+  <title>관리자 — Project.PAW</title>
+  <link rel="stylesheet" href="common.css"/>
+  <link rel="stylesheet" href="app.min.css"/>
   <style>
-    :root{--primary:#1f6feb;--muted:#64748b;--bg:#ffffff;--card:#ffffff;--line:#e5e7eb;--radius:14px}
-    *{box-sizing:border-box} html,body{margin:0;background:#fff;color:#0f172a;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
-    a{text-decoration:none;color:inherit}
-    .container{max-width:1100px;margin:0 auto;padding:0 16px}
-    header{position:sticky;top:0;background:#ffffffcc;border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
-    header .inner{display:flex;justify-content:space-between;align-items:center;padding:12px 0}
-    .btn{appearance:none;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-weight:700;cursor:pointer;background:#fff}
-    .btn.primary{background:var(--primary);color:#fff;border-color:transparent}
-    .grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:14px}
-    @media(max-width:900px){.grid{grid-template-columns:1fr}}
-    .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
-    input,select{width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:#fff}
-    label{font-size:13px;color:#475569;font-weight:700}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:10px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
-    .badge{font-size:11px;padding:3px 7px;border-radius:999px}
-    .badge.approved{background:#eafff2;color:#0a6b3c;border:1px solid #b7f0cf}
-    .badge.pending{background:#fff6e6;color:#a15a00;border:1px solid #f3d6a3}
-    .muted{color:#64748b}
-    .mono{font-family:ui-monospace,Consolas,monospace}
+    .container-narrow { max-width: 1040px; margin: 0 auto; padding: 16px; }
+    .admin-toolbar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin: 8px 0 16px; }
+    .admin-toolbar input, .admin-toolbar select { padding:10px; border:1px solid #e5e7eb; border-radius:8px; }
+    .cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:12px; }
+    .card { border:1px solid #eee; border-radius:12px; padding:12px; background:#fff; display:flex; flex-direction:column; gap:10px; }
+    .card h3 { margin:0; font-size:1.1rem; }
+    .row { display:flex; gap:8px; }
+    .row > * { flex:1; }
+    label { display:block; font-weight:600; margin-bottom:6px; }
+    input[type="text"], input[type="number"], input[type="url"] { width:100%; padding:10px; border:1px solid #e5e7eb; border-radius:8px; }
+    .tag { display:inline-block; padding:2px 8px; border-radius:999px; font-size:.8rem; border:1px solid #ddd; }
+    .tag.pending { background:#fff7ed; border-color:#fed7aa; color:#9a3412; }
+    .tag.ok { background:#ecfdf5; border-color:#bbf7d0; color:#065f46; }
+    .btn { padding:10px 12px; border-radius:10px; border:1px solid #111; background:#111; color:#fff; cursor:pointer; }
+    .btn.secondary { background:#fff; color:#111; border:1px solid #ddd; }
+    .card-actions { display:flex; gap:8px; justify-content:flex-end; }
+    .meta { font-size:.85rem; color:#6b7280; }
+    .divider { height:1px; background:#f1f5f9; margin:6px 0; }
+    .note { font-size:.85rem; color:#6b7280; }
+    .danger { color:#b91c1c; }
   </style>
 </head>
 <body>
-  <header>
-    <div class="container inner">
-      <strong>Project.PAW Admin</strong>
-      <nav style="display:flex;gap:8px;align-items:center">
-        <button id="loginBtn" class="btn">관리자 로그인</button>
-        <a class="btn" href="index.html">사이트 보기</a>
-      </nav>
-    </div>
-  </header>
+  <div data-include="header"></div>
 
-  <main class="container" style="padding:18px 0 28px">
-    <div class="grid">
-      <section class="card">
-        <h3 style="margin:4px 0 12px 0">프로젝트 승인/수정</h3>
-        <div style="display:grid;gap:10px">
-          <div>
-            <label>프로젝트 ID</label>
-            <input id="pid" class="mono" type="text" placeholder="project id (?id=...)"/>
-          </div>
-          <div>
-            <label>상태</label>
-            <select id="status">
-              <option value="pending">대기</option>
-              <option value="approved">승인</option>
-            </select>
-          </div>
-          <div>
-            <label>카카오 오픈채팅 링크</label>
-            <input id="kakao" type="url" placeholder="https://open.kakao.com/o/xxxxxx"/>
-            <small class="muted">형식: open.kakao.com</small>
-          </div>
-          <div>
-            <button id="loadBtn" class="btn" type="button">불러오기</button>
-            <button id="saveBtn" class="btn primary" type="button">저장</button>
-          </div>
-          <p class="muted" id="msg"></p>
-        </div>
-      </section>
+  <main class="container-narrow" style="padding: 8px 0 24px">
+    <h2>관리자 대시보드</h2>
+    <p class="note">⚠️ 이 페이지는 클라이언트에서만 동작하는 임시 관리자 화면입니다. 실제 운영 시 서버/인증을 붙이세요.</p>
 
-      <section class="card">
-        <h3 style="margin:4px 0 12px 0">심사 대기 목록</h3>
-        <table>
-          <thead><tr><th>ID</th><th>제목</th><th>등록일</th><th>상태</th></tr></thead>
-        <tbody id="pending"></tbody>
-        </table>
-      </section>
+    <div class="admin-toolbar">
+      <input id="search" type="text" placeholder="이름/요약/설명/등록자 카카오ID 검색"/>
+      <select id="filter">
+        <option value="all">전체</option>
+        <option value="pending">대기</option>
+        <option value="approved">승인</option>
+      </select>
+      <button id="refresh" class="btn secondary">새로고침</button>
     </div>
+
+    <div id="cards" class="cards"></div>
   </main>
 
+  <div data-include="footer"></div>
+
   <script type="module">
-    import "./js/firebase.js";
-    import { storage } from "./js/app.js";
-    import { auth } from "./js/firebase.js";
-    import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider } 
-      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { injectLayout } from "./js/include.js";
+    injectLayout({ active: "about" }); // 헤더 활성표시는 아무거나, 어차피 관리자 전용
+  </script>
 
-    const provider = new GoogleAuthProvider();
-    const loginBtn = document.getElementById('loginBtn');
+  <script>
+    // ====== 매우 단순한 프론트 보안 (진짜 보안 아님) ======
+    (function adminGate() {
+      const EXPECT = "paw-admin"; // 🔒 임시 비번 — 배포 전 바꾸세요
+      const viaQuery = new URL(location.href).searchParams.get("key");
+      if (viaQuery === EXPECT) return;
+      const input = prompt("관리자 페이지 접속 비밀번호를 입력하세요:");
+      if (input !== EXPECT) {
+        alert("접근 거부");
+        location.href = "index.html";
+      }
+    })();
+  </script>
 
-    loginBtn.onclick = async () => {
-      try{ await signInWithPopup(auth, provider); }
-      catch(e){ alert("로그인 실패: " + (e?.message||"")); }
-    };
-
-    // --- Admin Guard (Custom Claims: role=admin) ---
-    function guardAdmin(){
-      return new Promise((resolve,reject)=>{
-        onAuthStateChanged(auth, async (user)=>{
-          if(!user) return reject(new Error("로그인이 필요합니다."));
-          const token = await user.getIdTokenResult(true);
-          if(token.claims.role !== 'admin') return reject(new Error("관리자 권한이 없습니다."));
-          resolve(user);
-        });
-      });
+  <script>
+    // ====== 데이터 접근 유틸 ======
+    function readProjects() {
+      try {
+        const raw = localStorage.getItem("projects");
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr : [];
+      } catch (e) { return []; }
+    }
+    function writeProjects(arr) {
+      localStorage.setItem("projects", JSON.stringify(arr || []));
+    }
+    function updateProject(patch) {
+      const arr = readProjects();
+      const idx = arr.findIndex(x => x.id === patch.id);
+      if (idx >= 0) arr[idx] = { ...arr[idx], ...patch };
+      writeProjects(arr);
+    }
+    function deleteProject(id) {
+      const arr = readProjects().filter(x => x.id !== id);
+      writeProjects(arr);
     }
 
-    const $ = (s, r=document)=>r.querySelector(s);
-    const pid = $("#pid"), status = $("#status"), kakao = $("#kakao");
-    const msg = $("#msg");
-    const ok = t => { msg.textContent = t; msg.style.color = "#166534"; };
-    const err = t => { msg.textContent = t; msg.style.color = "#b91c1c"; };
+    // ====== 렌더링 ======
+    const $cards = document.getElementById("cards");
+    const $search = document.getElementById("search");
+    const $filter = document.getElementById("filter");
+    const $refresh = document.getElementById("refresh");
 
-    const isKakaoLink = (u)=>{
-      if(!u) return true;
-      try { const url = new URL(u); return /(^|\\.)open\\.kakao\\.com$/i.test(url.hostname); }
-      catch { return false; }
-    };
-
-    async function refreshPending(){
-      try{
-        await guardAdmin();
-        const all = await storage.getAll();
-        const pend = all.filter(p=> (p.status||"pending")==="pending");
-        $("#pending").innerHTML = pend.map(p=>{
-          const sec = p.createdAt?.seconds ? new Date(p.createdAt.seconds*1000).toLocaleString("ko-KR") : "-";
-          return `<tr>
-            <td class="mono">${p.id}</td>
-            <td>${(p.title||"")}</td>
-            <td class="muted">${sec}</td>
-            <td><span class="badge pending">대기</span></td>
-          </tr>`;
-        }).join("") || `<tr><td colspan="4" class="muted">대기 중인 프로젝트가 없습니다.</td></tr>`;
-      }catch(e){ err(e.message); }
+    function matchesFilter(p, query, filter) {
+      if (filter === "pending" && p.adminApproved) return false;
+      if (filter === "approved" && !p.adminApproved) return false;
+      if (!query) return true;
+      const hay = [
+        p.name, p.rescuerName, p.summary, p.description,
+        p.registrantKakaoId, p.hospitalName, p.bankAccount, p.kakaoInviteLink
+      ].map(v => (v ?? "") + "").join(" ").toLowerCase();
+      return hay.includes(query.toLowerCase());
     }
 
-    $("#loadBtn").onclick = async ()=>{
-      try{
-        await guardAdmin();
-        if(!pid.value) return err("프로젝트 ID를 입력하세요");
-        const p = await storage.byId(pid.value);
-        if(!p) return err("해당 ID의 프로젝트가 없습니다");
-        status.value = (p.status||"pending"); kakao.value = (p.kakaoLink||"");
-        ok("불러왔습니다.");
-      }catch(e){ err("불러오기 실패: "+e.message); }
-    };
+    function fmtKRW(n) {
+      const x = Number(n || 0);
+      return x.toLocaleString("ko-KR") + "원";
+    }
 
-    $("#saveBtn").onclick = async ()=>{
-      try{
-        await guardAdmin();
-        if(!pid.value) return err("프로젝트 ID를 입력하세요");
+    function render() {
+      const projects = readProjects()
+        .sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+      const q = $search.value.trim();
+      const f = $filter.value;
 
-        const link = kakao.value.trim();
-        if(!isKakaoLink(link)) return err("카카오 오픈채팅 링크 형식을 확인하세요");
+      const list = projects.filter(p => matchesFilter(p, q, f));
+      if (!list.length) {
+        $cards.innerHTML = `<div class="note">표시할 프로젝트가 없습니다.</div>`;
+        return;
+      }
 
-        await storage.update(pid.value, { status: status.value, kakaoLink: link });
-        ok("저장 완료 (승인/링크 반영)");
-        refreshPending();
-      }catch(e){ err("저장 실패: "+e.message); }
-    };
+      $cards.innerHTML = list.map(p => {
+        const statusTag = p.adminApproved
+          ? `<span class="tag ok">승인</span>`
+          : `<span class="tag pending">대기</span>`;
 
-    refreshPending();
+        const cover = p.representativeImage || "img/placeholder.svg";
+        const goal = fmtKRW(p.goalAmount);
+        const contrib = fmtKRW(p.rescuerContribution);
+
+        return `
+        <div class="card" data-id="${p.id}">
+          <div class="row" style="gap:12px; align-items:center">
+            <img src="${cover}" alt="cover" style="width:88px;height:88px;object-fit:cover;border-radius:10px;border:1px solid #eee"/>
+            <div style="flex:1">
+              <h3>${p.name ?? "(이름 없음)"} <small class="meta">by ${p.rescuerName ?? "-"}</small></h3>
+              <div class="meta">${p.summary ?? ""}</div>
+              <div class="meta">목표 ${goal} · 구조자 부담 ${contrib}</div>
+              <div>${statusTag}</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <div>
+              <label>병원명</label>
+              <input type="text" name="hospitalName" placeholder="예: ○○동물병원" value="${p.hospitalName ?? ""}"/>
+            </div>
+            <div>
+              <label>계좌번호</label>
+              <input type="text" name="bankAccount" placeholder="예: 국민 000000-00-000000" value="${p.bankAccount ?? ""}"/>
+            </div>
+          </div>
+          <div>
+            <label>카카오톡 초대링크</label>
+            <input type="url" name="kakaoInviteLink" placeholder="https://open.kakao.com/o/xxxxxx" value="${p.kakaoInviteLink ?? ""}"/>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <div>
+              <label>등록자 카카오톡 ID</label>
+              <input type="text" name="registrantKakaoId" value="${p.registrantKakaoId ?? ""}" disabled/>
+              <div class="note">등록 시 제출된 정보(읽기 전용)</div>
+            </div>
+            <div>
+              <label>프로젝트 ID</label>
+              <input type="text" value="${p.id}" disabled/>
+              <div class="note">내부 식별자</div>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <button class="btn secondary" data-action="preview">상세보기</button>
+            <button class="btn secondary" data-action="toggle">${p.adminApproved ? "승인 해제" : "승인하기"}</button>
+            <button class="btn" data-action="save">저장</button>
+            <button class="btn secondary danger" data-action="delete">삭제</button>
+          </div>
+        </div>`;
+      }).join("");
+    }
+
+    // ====== 이벤트 바인딩 ======
+    $cards.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-action]");
+      if (!btn) return;
+
+      const card = btn.closest(".card");
+      const id = card?.dataset?.id;
+      if (!id) return;
+
+      const action = btn.dataset.action;
+
+      if (action === "preview") {
+        location.href = "project.html?id=" + encodeURIComponent(id);
+        return;
+      }
+
+      if (action === "toggle") {
+        const arr = readProjects();
+        const p = arr.find(x => x.id === id);
+        if (!p) return;
+        p.adminApproved = !p.adminApproved;
+        writeProjects(arr);
+        render();
+        return;
+      }
+
+      if (action === "save") {
+        const hospitalName = card.querySelector('input[name="hospitalName"]').value.trim();
+        const bankAccount = card.querySelector('input[name="bankAccount"]').value.trim();
+        const kakaoInviteLink = card.querySelector('input[name="kakaoInviteLink"]').value.trim();
+        updateProject({ id, hospitalName, bankAccount, kakaoInviteLink });
+        alert("저장되었습니다.");
+        return;
+      }
+
+      if (action === "delete") {
+        if (!confirm("정말 삭제할까요? 이 작업은 되돌릴 수 없습니다.")) return;
+        deleteProject(id);
+        render();
+        return;
+      }
+    });
+
+    $search.addEventListener("input", render);
+    $filter.addEventListener("change", render);
+    $refresh.addEventListener("click", render);
+
+    // 초기 렌더
+    render();
   </script>
 </body>
 </html>
