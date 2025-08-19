@@ -4,21 +4,20 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Project.PAW — 직접 연결되는 따뜻함</title>
-  <meta name="description" content="도움은 본능, 연결은 선택. Project.PAW는 구조자와 후원자를 직접 연결하는 따뜻한 플랫폼입니다.">
+  <meta name="description" content="도움은 본능, 연결은 선택. Project.PAW는 구조자와 후원자를 직접 연결하는 플랫폼입니다.">
   <style>
     :root{
       --primary:#1f6feb; --ink:#0f172a; --muted:#64748b;
-      --bg:#f8fafc; --surface:#ffffff; --line:#e5e7eb;
-      --radius:16px; --shadow:0 10px 25px rgba(16,24,40,.08);
+      --bg:#ffffff; --bg-soft:#f8fafc; --surface:#ffffff; --line:#e5e7eb;
+      --radius:16px; --shadow:0 8px 20px rgba(16,24,40,.08);
     }
     *{box-sizing:border-box}
     html,body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
     a{text-decoration:none;color:inherit}
-    .clamp-1{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
-    .clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .clamp-1{-webkit-line-clamp:1}.clamp-2{-webkit-line-clamp:2}
+    .clamp-1,.clamp-2{display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
 
-    /* Topbar */
-    .topbar{position:fixed;top:0;left:0;right:0;z-index:50;background:#ffffffcc;border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
+    .topbar{position:sticky;top:0;left:0;right:0;z-index:50;background:#ffffffcc;border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
     .topbar .inner{max-width:1120px;margin:0 auto;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
     .brand{font-weight:900;letter-spacing:.2px}
     .nav{display:flex;gap:8px}
@@ -26,29 +25,27 @@
     .btn.primary{background:var(--primary);color:#fff;border-color:transparent}
     .btn:hover{box-shadow:0 4px 12px rgba(2,6,23,.08)}
 
-    /* Hero (압축, 화이트) */
-    .hero{min-height:70svh;display:grid;place-items:center;padding-top:64px;background:
-      radial-gradient(900px 420px at 70% -10%, #eaf2ff 0%, transparent 60%),
-      radial-gradient(700px 480px at -10% 90%, #e6fff5 0%, transparent 60%)}
-    .hero-inner{max-width:1120px;width:100%;padding:18px 14px;display:grid;grid-template-columns:1.05fr .95fr;gap:16px}
-    @media (max-width: 960px){ .hero-inner{grid-template-columns:1fr} }
-    .panel{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
-    .pad{padding:18px}
+    /* Hero: 세로 과장 제거(상단/하단 패딩 최소화) */
+    .hero{padding:66px 0 18px;background:var(--bg-soft)}
+    .hero-inner{max-width:1120px;margin:0 auto;padding:0 14px;display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+    @media (max-width:960px){.hero-inner{grid-template-columns:1fr}}
+
+    .panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+    .pad{padding:16px}
     .kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#475569;font-weight:800;margin-bottom:6px}
-    .t-hero{font-size:clamp(24px,4vw,40px);line-height:1.1;font-weight:900;margin:0}
-    .subtitle{color:var(--muted);font-size:15px;margin:8px 0 0}
+    .t-hero{font-size:clamp(22px,3.4vw,32px);line-height:1.15;font-weight:900;margin:0}
+    .subtitle{color:var(--muted);font-size:14px;margin:8px 0 0}
     .pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
     .pill{padding:6px 10px;border-radius:999px;background:#f1f5ff;border:1px solid #dbe7ff;color:#1d4ed8;font-weight:800;font-size:12px}
-    .cta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .cta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
     .cta .btn{padding:10px 12px;border-radius:10px}
 
-    /* Cards (4:3, 화이트) */
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-    .card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:transform .12s ease, box-shadow .12s}
+    .card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:transform .12s, box-shadow .12s}
     .card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
     .media{position:relative;background:#eef2ff;border-bottom:1px solid var(--line)}
     .media::before{content:"";display:block;padding-top:75%} /* 4:3 */
-    .media > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 38%}
+    .media>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 38%}
     .body{padding:12px}
     .row{display:flex;gap:8px;align-items:center;justify-content:space-between}
     .title-sm{margin:0;font-size:16px}
@@ -59,14 +56,13 @@
     .progress{width:100%;height:6px;background:#f1f5f9;border-radius:999px;overflow:hidden;margin:8px 0 4px;border:1px solid var(--line)}
     .progress i{display:block;height:100%;background:linear-gradient(90deg,#4f7fff,#6bd3ff);width:0%}
 
-    /* Section spacing */
-    .section{max-width:1120px;margin:0 auto;padding:0 14px 24px}
+    .section{max-width:1120px;margin:0 auto;padding:12px 14px 24px}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    @media(max-width:900px){.steps{grid-template-columns:1fr}}
 
-    /* Footer */
     footer{border-top:1px solid var(--line);background:#fff}
-    .footer-inner{max-width:1120px;margin:0 auto;padding:16px 14px;display:flex;justify-content:space-between;align-items:center;color:#64748b;font-size:13px}
+    .footer-inner{max-width:1120px;margin:0 auto;padding:14px;display:flex;justify-content:space-between;align-items:center;color:#64748b;font-size:13px}
     .footer-nav{display:flex;gap:10px}
-    .footer-link{color:#64748b}
   </style>
 </head>
 <body>
@@ -80,7 +76,7 @@
     </div>
   </header>
 
-  <section class="hero">
+  <section class="hero" aria-label="인트로">
     <div class="hero-inner">
       <div class="panel pad">
         <div class="kicker">운영철학</div>
@@ -105,21 +101,12 @@
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" aria-label="연결 과정">
     <div class="kicker">어떻게 연결되나요</div>
-    <div class="grid" style="grid-template-columns:repeat(3,1fr);gap:12px">
-      <div class="panel pad">
-        <strong>1. 후원 등록</strong>
-        <p class="muted" style="margin:6px 0 0">구조자가 상황·금액·사진을 등록합니다.</p>
-      </div>
-      <div class="panel pad">
-        <strong>2. 관리자 승인</strong>
-        <p class="muted" style="margin:6px 0 0">승인 시 <b>오픈채팅 링크</b>가 입력됩니다.</p>
-      </div>
-      <div class="panel pad">
-        <strong>3. 직접 연결</strong>
-        <p class="muted" style="margin:6px 0 0">후원자는 카톡 오픈채팅으로 구조자와 직접 연결됩니다.</p>
-      </div>
+    <div class="steps">
+      <div class="panel pad"><strong>1. 후원 등록</strong><p class="muted" style="margin:6px 0 0">구조자가 상황·금액·사진을 등록합니다.</p></div>
+      <div class="panel pad"><strong>2. 관리자 승인</strong><p class="muted" style="margin:6px 0 0">승인 시 <b>오픈채팅 링크</b>가 입력됩니다.</p></div>
+      <div class="panel pad"><strong>3. 직접 연결</strong><p class="muted" style="margin:6px 0 0">후원자는 카톡 오픈채팅으로 구조자와 직접 연결됩니다.</p></div>
     </div>
   </section>
 
@@ -127,8 +114,8 @@
     <div class="footer-inner">
       <span>© Project.PAW — “발바닥 하나가, 마음 하나다.”</span>
       <nav class="footer-nav">
-        <a class="footer-link" href="about.html">About</a>
-        <a class="footer-link" href="login.html">로그인</a>
+        <a href="about.html">About</a>
+        <a href="login.html">로그인</a>
       </nav>
     </div>
   </footer>
@@ -136,7 +123,7 @@
   <script type="module">
     import "./js/firebase.js";
     import { storage, fmt } from "./js/app.js";
-    import { percent, esc } from "./js/utils.js";
+    import { safePercent, esc } from "./js/utils.js";
 
     const wrap = document.querySelector("#home-cards");
     const createdAtSec = x => (x && typeof x==='object' && 'seconds' in x) ? x.seconds : 0;
@@ -159,18 +146,18 @@
         .slice(0,4);
 
       wrap.innerHTML = list.map(p=>{
-        const pct = Math.max(0, Math.min(100, percent(p.raisedAmount||0, p.targetAmount||1)));
+        const pct = safePercent(p.raisedAmount, p.targetAmount);
         const cover = (p.images && p.images.cover) ? p.images.cover : "img/placeholder.svg";
         const badge = (p.status==="approved")
           ? '<span class="badge approved">승인</span>'
           : '<span class="badge pending">대기</span>';
-
+        const title = esc(p.title || '이름 미정');
         return `
-          <a class="card" href="project.html?id=${encodeURIComponent(p.id)}" aria-label="프로젝트 ${esc(p.title||'')} 상세 보기">
-            <div class="media"><img src="${cover}" alt="${esc(p.title||'대표 이미지')}" loading="lazy" decoding="async"/></div>
+          <a class="card" href="project.html?id=${encodeURIComponent(p.id)}" aria-label="프로젝트 ${title} 상세 보기">
+            <div class="media"><img src="${cover}" alt="${title} 대표 이미지" loading="lazy" decoding="async"/></div>
             <div class="body">
               <div class="row">
-                <h3 class="title-sm clamp-1">${esc(p.title || '이름 미정')}</h3>
+                <h3 class="title-sm clamp-1">${title}</h3>
                 ${badge}
               </div>
               <p class="muted clamp-2" style="margin:4px 0">${esc(p.summary || '')}</p>
@@ -180,11 +167,9 @@
                 <span>구조자 ${fmt(p.selfPayAmount)}원</span>
               </div>
             </div>
-          </a>
-        `;
+          </a>`;
       }).join("");
     }
-
     render();
   </script>
 </body>
