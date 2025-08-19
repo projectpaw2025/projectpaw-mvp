@@ -5,49 +5,82 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>About — Project.PAW</title>
   <style>
-    :root{--primary:#1f6feb;--bg:#f8fafc;--line:#e5e7eb;--radius:18px}
-    *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:#0f172a;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
+    :root{--bg:#0a0f1d;--line:#1a2342;--primary:#1f6feb}
+    *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:#e6ecff;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
     a{text-decoration:none;color:inherit}
     .container{max-width:900px;margin:0 auto;padding:0 16px}
-    .topbar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line)}
-    .topbar .inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
-    .brand{font-weight:900}
-    .nav{display:flex;gap:8px}
+    header{position:sticky;top:0;background:#0b1222;border-bottom:1px solid var(--line)}
+    header .inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
     .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
-    .btn.ghost{background:#11182710}
-    main{padding:28px 0}
+    .btn.primary{background:var(--primary);color:#fff}
+    .btn.ghost{background:#ffffff12}
+    .section{padding:28px 0}
     h1{margin:0 0 8px 0;font-size:clamp(22px,3.4vw,30px);font-weight:900}
-    p{line-height:1.7}
-    ul{line-height:1.7}
-    footer{border-top:1px solid var(--line);margin-top:28px}
-    .footer-inner{display:flex;justify-content:space-between;align-items:center;padding:24px 0;color:#94a3b8;font-size:14px}
-    .footer-nav{display:flex;gap:12px}
+    h2{margin:16px 0 8px;font-size:18px}
+    blockquote{margin:8px 0;padding-left:12px;border-left:3px solid #2947a3;color:#cfe0ff}
+    li{line-height:1.7}
+    footer{border-top:1px solid var(--line);margin-top:28px;color:#9aa8c7}
+    .foot{display:flex;justify-content:space-between;align-items:center;padding:24px 0}
   </style>
 </head>
 <body>
-  <header class="topbar">
+  <header>
     <div class="container inner">
       <a class="brand" href="index.html">Project.PAW</a>
       <nav class="nav">
         <a class="btn ghost" href="project_list.html">후원하기</a>
-        <a class="btn" href="create.html" style="background:#1f6feb;color:#fff">등록하기</a>
+        <a class="btn primary" href="create.html">등록하기</a>
       </nav>
     </div>
   </header>
 
   <main class="container">
-    <h1>About Project.PAW</h1>
-    <p>Project.PAW는 구조자와 후원자를 직접 연결하는 개인↔개인 플랫폼입니다. 책임의 끝과 공감의 시작이 만나는 지점에서, 더 투명하고 따뜻한 연결을 지향합니다.</p>
-    <ul>
-      <li>100% 전달</li>
-      <li>구조자 30% 책임</li>
-      <li>직접 연결</li>
-    </ul>
-    <p>PG 연동 전까지는 관리자 승인을 통해 카카오 오픈채팅 링크가 공개됩니다.</p>
+    <section class="section">
+      <h1>운영철학 v2 (7.30)</h1>
+
+      <h2>🪢 철학적 한 줄들</h2>
+      <h3>1. "도움은 본능, 연결은 선택"</h3>
+      <blockquote>Project.PAW의 핵심 정신. 모두가 돕고 싶은 본능은 있지만, 실제로 행동하게 만드는 건 '선택'입니다.</blockquote>
+
+      <h3>2. "망설임을 용기로 바꾸는 플랫폼"</h3>
+      <blockquote>구조할까 말까 망설이던 순간, 마음을 행동으로 바꿔주는 트리거가 되는 플랫폼을 지향합니다.</blockquote>
+
+      <h3>3. "책임의 끝과 공감의 시작이 만나는 곳."</h3>
+      <blockquote>구조자의 책임감과 후원자의 공감이 교차하는 지점을 표현한 압축형 문장입니다.</blockquote>
+
+      <h3>4. "숫자보다 감정."</h3>
+      <blockquote>구조한 수보다 연결된 ‘마음의 수’를 더 중요하게 여깁니다.</blockquote>
+
+      <h3>5. "주는 사람도, 받는 사람도 행복하게."</h3>
+      <blockquote>베풂이 고통이 아닌 기쁨이 되도록 설계하는 구조를 추구합니다.</blockquote>
+
+      <h3>6. "발바닥 하나가, 마음 하나다."</h3>
+      <blockquote>고양이 발바닥 시각 상징은 단순 귀여움이 아니라, 연결된 마음을 나타내는 감정의 아이콘입니다.</blockquote>
+
+      <h2>🧱 구조 및 운영 설계 철학</h2>
+      <ol>
+        <li>초기에는 병원 직접결제 없이, 구조자에게 전달. 신뢰가 쌓이면 병원 direct payment로.</li>
+        <li>기부금은 100% 구조자에게 전달. PG 수수료는 플랫폼이 부담.</li>
+        <li>기존 복지 시스템이 닿지 못하는 사각지대를, 개인 대 개인의 연결로 메운다.</li>
+        <li>플랫폼의 본질은 구조된 동물 수가 아니라, 구조자와 후원자가 얼마나 연결됐는가다.</li>
+        <li>도움은 전달되지만, 그보다 더 깊은 건 연결의 흔적이다.</li>
+        <li>신뢰는 설계되는 것이다 — 후기/자기부담 증빙/이행률/후속 모금/병원 direct 등 단계적 신뢰 전환.</li>
+        <li>자격 있는 구조자만 구조 요청할 수 있다.</li>
+        <li>기부는 돈이지만, 후기는 연결이다.</li>
+      </ol>
+
+      <h2>🌱 브랜딩, 디자인, 확장 방향</h2>
+      <ol>
+        <li>동물에서 시작하지만, 결국 사람까지 닿는 구조.</li>
+        <li>Social Appreciation Level을 올리는 플랫폼.</li>
+        <li>정부가 부러워할 플랫폼 — 민간이 만든 새로운 복지 연결 인프라.</li>
+        <li>Simple & 감성.</li>
+      </ol>
+    </section>
   </main>
 
   <footer>
-    <div class="container footer-inner">
+    <div class="container foot">
       <span>© Project.PAW</span>
       <nav class="footer-nav">
         <a href="about.html">About</a>
