@@ -24,15 +24,16 @@ export const storage = {
   async getAll() {
     const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
     const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  },
+    return snap.docs.map(d => ({ ...d.data(), id: d.id }));
+},
   async saveAll(_) {
     console.warn("saveAll is not used in Firestore mode.");
   },
   async add(p) {
-    const payload = { ...p, createdAt: serverTimestamp() };
+    const { id: _drop, ...rest } = p; // ensure Firestore owns the id
+    const payload = { ...rest, createdAt: serverTimestamp() };
     const refDoc = await addDoc(collection(db, "projects"), payload);
-    return { ...p, id: refDoc.id };
+    return { ...rest, id: refDoc.id };
   },
   async byId(id) {
     const s = await getDoc(doc(db, "projects", id));
