@@ -1,0 +1,28 @@
+<!-- partials/header.html -->
+<style>
+  .pp-header {
+    display:flex;justify-content:space-between;align-items:center;
+    padding:1rem 2rem;background:#fff;border-bottom:1px solid #eee;
+    position:sticky;top:0;z-index:10
+  }
+  .pp-header h1{margin:0;font-size:1.5rem;color:#222}
+  .pp-nav{display:flex;gap:1rem;align-items:center}
+  .pp-nav a,.pp-nav button{
+    background:none;border:none;cursor:pointer;font-size:1rem;
+    color:#333;text-decoration:none;transition:color .2s
+  }
+  .pp-nav a:hover,.pp-nav button:hover{color:#ff6b6b}
+  .pp-nav a.is-active{font-weight:700;color:#ff6b6b}
+</style>
+
+<header class="pp-header">
+  <h1>🐾 Project.PAW</h1>
+  <nav class="pp-nav">
+    <a href="index.html" data-nav="index">홈</a>
+    <a href="project_list.html" data-nav="project_list">후원하기</a>
+    <a href="create.html" data-nav="create">등록하기</a>
+    <a href="about.html" data-nav="about">About</a>
+    <a href="login.html" data-nav="login">로그인</a>
+    <button id="logoutBtn" type="button">로그아웃</button>
+  </nav>
+</header>
