@@ -1,150 +1,169 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>후원 등록 · Project.PAW</title>
-  <meta name="description" content="책임 기반 구조 원칙에 따라 프로젝트를 등록해주세요. 대표/상황/영수증 사진과 카카오 링크를 포함할 수 있습니다." />
-  <link rel="icon" href="img/placeholder.svg" />
-  <link rel="stylesheet" href="css/app.css" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>프로젝트 등록 — Project.PAW</title>
+  <style>
+    :root{--primary:#1f6feb;--muted:#6b7280;--bg:#f8fafc;--card:#fff;--line:#e5e7eb;--radius:18px;--shadow:0 12px 30px rgba(16,24,40,.08)}
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:#0f172a;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
+    a{text-decoration:none;color:inherit}
+    .container{max-width:920px;margin:0 auto;padding:0 16px}
+    .topbar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line)}
+    .topbar .inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{font-weight:900}
+    .nav{display:flex;gap:8px}
+    .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .btn.ghost{background:#11182710}
+    .btn.primary{background:var(--primary);color:#fff}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin:24px 0}
+    h1{margin:0 0 8px 0;font-size:clamp(22px,3.4vw,30px);font-weight:900}
+    .muted{color:#6b7280}
+    form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .full{grid-column:1/-1}
+    label{font-weight:700;font-size:14px}
+    input[type="text"],input[type="number"],textarea,input[type="file"]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    textarea{min-height:120px}
+    .hint{font-size:12px;color:#64748b}
+    .row{display:flex;gap:8px;align-items:center}
+    footer{border-top:1px solid var(--line)}
+    .footer-inner{display:flex;justify-content:space-between;align-items:center;padding:24px 0;color:#94a3b8;font-size:14px}
+    .footer-nav{display:flex;gap:12px}
+    .footer-link{color:#64748b}
+  </style>
 </head>
 <body>
-  <!-- 상단 내비 -->
-  <nav class="nav">
-    <div class="container">
-      <div class="brand"><a href="index.html">Project<span class="dot">.PAW</span></a></div>
-      <ul>
-        <li><a href="index.html">홈</a></li>
-        <li><a href="project_list.html">후원하기</a></li>
-        <li><a href="create.html" class="btn">후원 등록</a></li>
-      </ul>
+  <header class="topbar">
+    <div class="container inner">
+      <a class="brand" href="index.html">Project.PAW</a>
+      <nav class="nav">
+        <a class="btn ghost" href="index.html">홈</a>
+        <a class="btn primary" href="project_list.html">후원하기</a>
+      </nav>
     </div>
-  </nav>
+  </header>
 
   <main class="container">
-    <section class="section">
-      <h2>후원 등록</h2>
-      <p style="color:#445;">실제 사례만 등록해주세요. <b>구조자 30% 자부담</b>과 <b>영수증/후기 공개</b>가 원칙입니다.</p>
+    <div class="card">
+      <h1>프로젝트 등록</h1>
+      <p class="muted" style="margin:4px 0 14px 0">PG 연동 전: 등록 후 <b>관리자 승인</b> 시 카카오 오픈채팅 링크가 공개됩니다.</p>
 
-      <div class="form">
-        <label class="title">프로젝트명 / 고양이 이름</label>
-        <input id="title" class="input" placeholder="예: 나비 – 교통사고 치료비" />
-
-        <label class="title">상황 요약 (한 줄)</label>
-        <input id="summary" class="input" placeholder="예: 수술비 60만원 중 40만원 모금 요청" />
-
-        <label class="title">상세 설명</label>
-        <textarea id="description" placeholder="상세 상황과 필요한 치료/비용을 적어주세요. 후기 공개를 약속합니다."></textarea>
-
-        <div class="grid-2">
-          <div>
-            <label class="title">목표 금액 (원)</label>
-            <input id="target" type="number" class="input" placeholder="예: 400000" />
-          </div>
-          <div>
-            <label class="title">구조자 부담금 (원)</label>
-            <input id="selfpay" type="number" class="input" placeholder="예: 200000" />
-          </div>
+      <form id="form">
+        <div class="full">
+          <label>프로젝트 제목</label>
+          <input name="title" type="text" placeholder="예: 교통사고로 다친 나비 치료비 모금" required/>
         </div>
 
-        <label class="title">카카오톡 연결 링크</label>
-        <input id="kakao" class="input" placeholder="https://open.kakao.com/o/..." />
-
-        <div class="switch" style="margin:10px 0 18px;">
-          <input id="status" type="checkbox">
-          <span>관리자 승인</span>
+        <div>
+          <label>동물 이름</label>
+          <input name="animalName" type="text" placeholder="예: 나비" required/>
+        </div>
+        <div>
+          <label>구조자 이름</label>
+          <input name="rescuerName" type="text" placeholder="예: 홍길동" required/>
         </div>
 
-        <label class="title">대표 이미지</label>
-        <input id="cover" type="file" accept="image/*" class="input"/>
-        <div class="img-preview"><img id="coverPreview" alt="대표 이미지 미리보기" /></div>
-
-        <label class="title">상황 사진 (여러 장)</label>
-        <input id="gallery" type="file" accept="image/*" multiple class="input"/>
-        <div class="gallery-preview grid" aria-live="polite"></div>
-
-        <label class="title">영수증 사진 (여러 장)</label>
-        <input id="receipts" type="file" accept="image/*" multiple class="input"/>
-        <div class="receipt-preview grid" aria-live="polite"></div>
-
-        <div style="margin-top:18px;">
-          <button id="saveBtn" class="btn primary">등록하기</button>
+        <div class="full">
+          <label>상황 요약</label>
+          <input name="summary" type="text" placeholder="짧은 한 줄 요약" required/>
         </div>
-      </div>
-    </section>
 
-    <!-- 동작 스크립트: 인증 완료 대기 → 업로드 → Firestore 저장 -->
-    <script type="module">
-      import { SCHEMA, storage as dbStorage, uid } from "./js/app.js";
-      import { toast } from "./js/utils.js";
-      import "./js/uploader.js";                 // 미리보기 바인딩(사이드이펙트)
-      import { uploadFile } from "./js/uploader.js";
-      import { authReady, auth } from "./js/firebase.js";
+        <div class="full">
+          <label>상세 설명</label>
+          <textarea name="description" placeholder="무슨 일이 있었는지, 필요한 치료와 비용 등을 적어주세요." required></textarea>
+        </div>
 
-      const $ = s => document.querySelector(s);
+        <div>
+          <label>목표 금액(원)</label>
+          <input name="targetAmount" type="number" min="0" step="1000" placeholder="예: 600000" required/>
+        </div>
+        <div>
+          <label>구조자 부담액(원)</label>
+          <input name="selfPayAmount" type="number" min="0" step="1000" placeholder="예: 180000" required/>
+        </div>
 
-      $("#saveBtn").addEventListener("click", async (e) => {
-        e.preventDefault();
+        <div class="full">
+          <label>대표 사진 (1장)</label>
+          <input id="coverFile" type="file" accept="image/*" required/>
+          <div class="hint">JPG/PNG 권장, 5MB 이하</div>
+        </div>
 
-        // ✅ 업로드/쓰기 전에 익명 로그인 완료 보장
-        await authReady;
-        console.log("[auth] currentUser:", auth.currentUser?.uid);
+        <div class="full">
+          <label>상황 사진 (여러 장)</label>
+          <input id="galleryFiles" type="file" accept="image/*" multiple/>
+        </div>
 
-        const data = structuredClone(SCHEMA);
-        data.id = uid();
-        data.title = $("#title").value.trim();
-        data.summary = $("#summary").value.trim();
-        data.description = $("#description").value.trim();
-        data.targetAmount = Number($("#target").value || 0);
-        data.selfPayAmount = Number($("#selfpay").value || 0);
-        data.kakaoLink = $("#kakao").value.trim();
-        data.status = $("#status").checked ? "approved" : "pending";
-        data.createdAt = Date.now();
+        <div class="full">
+          <label>영수증 사진 (여러 장)</label>
+          <input id="receiptFiles" type="file" accept="image/*" multiple/>
+        </div>
 
-        if (!data.title || !data.summary) {
-          toast("프로젝트명과 요약을 입력해주세요.");
-          return;
-        }
-
-        // 파일 업로드 → 반환된 URL을 data.images에 저장
-        const coverFile = $("#cover")?.files?.[0];
-        const galleryFiles = Array.from($("#gallery")?.files || []);
-        const receiptFiles = Array.from($("#receipts")?.files || []);
-
-        try {
-          if (coverFile) data.images.cover = await uploadFile("covers", coverFile);
-
-          data.images.gallery = [];
-          for (const f of galleryFiles) {
-            data.images.gallery.push(await uploadFile("gallery", f));
-          }
-
-          data.images.receipts = [];
-          for (const f of receiptFiles) {
-            data.images.receipts.push(await uploadFile("receipts", f));
-          }
-        } catch (err) {
-          console.error("[upload] failed:", err);
-          toast("이미지 업로드 실패(네트워크/권한). 다시 시도해주세요.");
-          return;
-        }
-
-        try {
-          await dbStorage.add(data);
-          toast("등록 완료! 홈으로 이동합니다.");
-          location.href = "index.html";
-        } catch (err) {
-          console.error("[firestore] write failed:", err);
-          toast("등록 실패(데이터 저장). 잠시 후 다시 시도해주세요.");
-        }
-      });
-    </script>
+        <div class="full row" style="justify-content:flex-end;margin-top:8px">
+          <a class="btn ghost" href="index.html">취소</a>
+          <button class="btn primary" type="submit">등록하기</button>
+        </div>
+      </form>
+    </div>
   </main>
 
-  <footer class="footer">
-    <div class="container">
-      <small>Project.PAW — “도움은 본능, 연결은 선택.” 100% 전달 · 책임 구조 · 직접 연결</small>
+  <footer>
+    <div class="container footer-inner">
+      <span>© Project.PAW</span>
+      <nav class="footer-nav">
+        <a class="footer-link" href="about.html">About</a>
+        <a class="footer-link" href="login.html">로그인</a>
+      </nav>
     </div>
   </footer>
+
+  <script type="module">
+    import "./js/firebase.js";
+    import { storage } from "./js/app.js";
+    import { pick, readFilesAsDataURL } from "./js/utils.js";
+    import { uploadImageToStorage } from "./js/uploader.js";
+
+    const form = document.querySelector('#form');
+    const coverFile = document.querySelector('#coverFile');
+    const galleryFiles = document.querySelector('#galleryFiles');
+    const receiptFiles = document.querySelector('#receiptFiles');
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+
+      // 필수 이미지
+      const cover = coverFile.files[0];
+      if(!cover){ alert("대표 사진을 선택해주세요."); return; }
+
+      // 업로드
+      const coverUrl = await uploadImageToStorage(cover, "covers/");
+      const gallery = await Promise.all(Array.from(galleryFiles.files||[]).map(f=>uploadImageToStorage(f,"gallery/")));
+      const receipts = await Promise.all(Array.from(receiptFiles.files||[]).map(f=>uploadImageToStorage(f,"receipts/")));
+
+      const fd = new FormData(form);
+      const data = {
+        // 필수 입력
+        title: fd.get("title"),
+        animalName: fd.get("animalName"),
+        rescuerName: fd.get("rescuerName"),
+        summary: fd.get("summary"),
+        description: fd.get("description"),
+        targetAmount: Number(fd.get("targetAmount")||0),
+        selfPayAmount: Number(fd.get("selfPayAmount")||0),
+
+        // 이미지
+        images: { cover: coverUrl, gallery, receipts },
+
+        // PG 전 플로우: 등록 시에는 관리자 승인 대기 & kakaoLink 없음
+        status: "pending",
+        kakaoLink: "",
+
+        raisedAmount: 0
+      };
+
+      const saved = await storage.add(data); // Firestore add (serverTimestamp 포함)
+      location.href = 'project.html?id=' + encodeURIComponent(saved.id);
+    });
+  </script>
 </body>
 </html>
