@@ -1,99 +1,84 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Project.PAW</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project.PAW - 로그인</title>
+  <link rel="stylesheet" href="styles.css">
   <script type="module">
-    import { auth, signOut } from "./js/firebase.js";
+    import { auth, signInWithEmailAndPassword, signOut } from "./js/firebase.js";
 
-    // 로그아웃 버튼 이벤트 등록
+    window.login = async () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("로그인 성공!");
+        location.href = "index.html";
+      } catch (e) {
+        alert("로그인 실패: " + e.message);
+      }
+    };
+
     window.logout = async () => {
       try {
         await signOut(auth);
-        alert("로그아웃 완료! 다시 로그인 해주세요.");
-        location.href = "index.html"; // 홈으로 이동
+        alert("로그아웃 완료!");
+        location.href = "index.html";
       } catch (e) {
         console.error("로그아웃 실패:", e);
       }
     };
   </script>
   <style>
-    body {
-      margin: 0;
-      font-family: "Noto Sans KR", sans-serif;
-      background-color: #fff;
-      color: #333;
-    }
+    body { margin: 0; font-family: "Noto Sans KR", sans-serif; background: #fff; color: #333; }
     header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background: #ffffff;
-      border-bottom: 1px solid #eee;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 2rem; background: #ffffff; border-bottom: 1px solid #eee;
+      position: sticky; top: 0; z-index: 10;
     }
-    header h1 {
-      font-size: 1.5rem;
-      color: #222;
-    }
-    nav {
-      display: flex;
-      gap: 1rem;
-    }
+    nav { display: flex; gap: 1rem; }
     nav a, nav button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      color: #333;
-      text-decoration: none;
-      transition: color 0.2s;
+      background: none; border: none; cursor: pointer;
+      font-size: 1rem; color: #333; text-decoration: none; transition: color 0.2s;
     }
-    nav a:hover, nav button:hover {
-      color: #ff6b6b;
+    nav a:hover, nav button:hover { color: #ff6b6b; }
+    main { padding: 2rem; max-width: 400px; margin: auto; }
+    form {
+      display: flex; flex-direction: column; gap: 1rem;
+      padding: 2rem; background: #fafafa; border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
-    .hero {
-      text-align: center;
-      padding: 4rem 2rem;
-      background: linear-gradient(to right, #fff, #fdfdfd);
+    input {
+      padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;
     }
-    .hero h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
+    button {
+      padding: 0.8rem; background: #ff6b6b; border: none; border-radius: 8px;
+      font-size: 1rem; font-weight: bold; color: #fff; cursor: pointer;
+      transition: background 0.2s;
     }
-    .hero p {
-      font-size: 1.2rem;
-      color: #666;
-    }
+    button:hover { background: #ff4c4c; }
   </style>
 </head>
 <body>
   <header>
     <h1>🐾 Project.PAW</h1>
     <nav>
+      <a href="index.html">홈</a>
       <a href="project_list.html">후원하기</a>
       <a href="create.html">등록하기</a>
       <a href="about.html">About</a>
-      <!-- 로그아웃 버튼 -->
       <button onclick="logout()">로그아웃</button>
     </nav>
   </header>
 
-  <section class="hero">
-    <h2>도움은 본능, 연결은 선택</h2>
-    <p>망설임을 용기로 바꾸는 플랫폼</p>
-  </section>
-
-  <main style="padding:2rem; max-width:1200px; margin:auto;">
-    <h3 style="margin-bottom:1rem;">최근 등록된 프로젝트</h3>
-    <div id="projects" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:1.5rem;">
-      <!-- JS로 카드 로드 -->
-    </div>
+  <main>
+    <h2 style="text-align:center;margin-bottom:1rem;">로그인</h2>
+    <form onsubmit="event.preventDefault(); login();">
+      <input type="email" id="email" placeholder="이메일" required>
+      <input type="password" id="password" placeholder="비밀번호" required>
+      <button type="submit">로그인</button>
+    </form>
   </main>
 
   <footer style="margin-top:3rem; padding:2rem; background:#fafafa; text-align:center; font-size:0.9rem; color:#666;">
@@ -103,38 +88,5 @@
       <a href="login.html">로그인</a>
     </p>
   </footer>
-
-  <script type="module">
-    import { db } from "./js/firebase.js";
-    import { collection, getDocs, orderBy, query, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    const projectContainer = document.getElementById("projects");
-
-    async function loadProjects() {
-      const q = query(collection(db, "projects"), orderBy("createdAt", "desc"), limit(6));
-      const snapshot = await getDocs(q);
-      snapshot.forEach(doc => {
-        const p = doc.data();
-        const card = document.createElement("div");
-        card.style.border = "1px solid #eee";
-        card.style.borderRadius = "12px";
-        card.style.overflow = "hidden";
-        card.style.background = "#fff";
-        card.style.boxShadow = "0 2px 6px rgba(0,0,0,0.05)";
-
-        card.innerHTML = `
-          <img src="${p.imageUrl || 'img/default.jpg'}" style="width:100%;height:200px;object-fit:cover;">
-          <div style="padding:1rem;">
-            <h4 style="margin:0 0 0.5rem 0;font-size:1.1rem;color:#222;">${p.title}</h4>
-            <p style="margin:0;font-size:0.9rem;color:#555;">${p.description?.slice(0,60) || ''}...</p>
-            <a href="project.html?id=${doc.id}" style="display:inline-block;margin-top:0.8rem;color:#ff6b6b;font-weight:bold;">상세보기 →</a>
-          </div>
-        `;
-        projectContainer.appendChild(card);
-      });
-    }
-
-    loadProjects();
-  </script>
 </body>
 </html>
