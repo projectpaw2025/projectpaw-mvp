@@ -6,52 +6,93 @@
   <title>Project.PAW — 직접 연결되는 따뜻함</title>
   <style>
     :root{
-      --primary:#1f6feb; --ink:#0b1220; --muted:#6b7280; --bg:#f8fafc; --card:#fff;
-      --line:#e5e7eb; --radius:18px; --shadow:0 12px 30px rgba(16,24,40,.08);
+      --primary:#1f6feb; --ink:#0b1220; --muted:#6b7280; --bg:#0a0f1d; --card:#0f1629; --line:#1c2540;
+      --radius:18px; --shadow:0 16px 40px rgba(10,15,29,.35);
+      --glow: radial-gradient(60% 60% at 70% 10%, rgba(84,132,255,.25) 0%, rgba(84,132,255,0) 70%),
+              radial-gradient(40% 40% at 20% 80%, rgba(80,250,180,.18) 0%, rgba(80,250,180,0) 70%);
     }
     *{box-sizing:border-box}
-    html,body{margin:0;background:var(--bg);color:#0f172a;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
+    html,body{margin:0;background:var(--bg);color:#e5e7eb;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
     a{text-decoration:none;color:inherit}
-    .container{max-width:1120px;margin:0 auto;padding:0 16px}
-    .topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
-    .topbar .inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+
+    /* Topbar */
+    .topbar{position:fixed;top:0;inset-inline:0;z-index:50;backdrop-filter:saturate(160%) blur(8px);
+      background:color-mix(in oklab, #0a0f1d 85%, transparent); border-bottom:1px solid #111a33}
+    .topbar .inner{max-width:1200px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
     .brand{font-weight:900;letter-spacing:.2px}
     .nav{display:flex;gap:8px}
     .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
-    .btn.ghost{background:#11182710}
-    .btn.primary{background:var(--primary);color:#fff}
-    .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;padding:36px 0 18px}
-    @media(max-width:900px){.hero{grid-template-columns:1fr}}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
-    .pad{padding:18px}
-    .title{font-size:clamp(24px,3.4vw,40px);font-weight:900;margin:0 0 8px 0;line-height:1.08}
-    .subtitle{color:var(--muted);font-size:16px;margin:6px 0 0 0}
-    .commit{margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-    .commit .pill{background:#f1f5ff;border:1px solid #dbe7ff;padding:10px 12px;border-radius:12px;font-weight:700;color:#2947a3;text-align:center}
-    .notice{margin-top:14px;border-radius:12px;background:#0b1220;color:#e5e7eb;padding:14px;font-weight:600}
-    .kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800}
-    h2{margin:0 0 10px 0;font-size:20px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-    .thumb{width:100%;height:180px;object-fit:cover;border-bottom:1px solid var(--line);background:#eef2ff;border-top-left-radius:var(--radius);border-top-right-radius:var(--radius)}
-    .card-link{display:block;overflow:hidden;border-radius:var(--radius);transition:transform .12s}
-    .card-link:hover{transform:translateY(-2px)}
-    .muted{color:#6b7280}
-    .badge{font-size:12px;padding:4px 8px;border-radius:999px}
-    .badge.approved{background:#eafff2;color:#0a6b3c}
-    .badge.pending{background:#fff6e6;color:#a15a00}
-    .progress{width:100%;height:8px;background:#f3f4f6;border-radius:999px;overflow:hidden;margin:10px 0 6px}
-    .progress i{display:block;height:100%;background:var(--primary);width:0%}
-    .skeleton{position:relative;min-height:260px;background:linear-gradient(90deg,#f4f6fb 25%,#eef2f7 37%,#f4f6fb 63%);background-size:400% 100%;animation:shimmer 1.4s infinite;border-radius:var(--radius)}
-    @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
-    footer{border-top:1px solid var(--line);margin-top:28px}
-    .footer-inner{display:flex;justify-content:space-between;align-items:center;padding:24px 0;color:#94a3b8;font-size:14px}
-    .footer-nav{display:flex;gap:12px}
-    .footer-link{color:#64748b}
+    .btn.ghost{background:#ffffff12;color:#dbeafe;border:1px solid #ffffff14}
+    .btn.primary{background:var(--primary);color:#fff;box-shadow:0 8px 24px rgba(31,111,235,.35)}
+    .btn.ghost:hover{background:#ffffff1f}
+    .btn.primary:hover{filter:brightness(1.05)}
+
+    /* Hero (Full viewport) */
+    .hero{
+      min-height:100svh; display:grid; place-items:center; padding-top:72px; /* space for topbar */
+      background:
+        radial-gradient(1200px 600px at 70% -10%, #112149 0%, transparent 60%),
+        radial-gradient(800px 600px at -10% 90%, #0c2130 0%, transparent 60%),
+        var(--glow);
+    }
+    .hero-inner{max-width:1200px; width:100%; padding:24px 16px; display:grid; grid-template-columns:1.1fr .9fr; gap:24px}
+    @media (max-width: 920px){ .hero-inner{grid-template-columns:1fr; gap:18px} }
+
+    .panel{background:linear-gradient(180deg, #0e1730, #0b1327); border:1px solid var(--line);
+      border-radius:28px; box-shadow:var(--shadow); position:relative; overflow:hidden}
+    .panel::after{
+      content:""; position:absolute; inset:0; pointer-events:none;
+      background: radial-gradient(400px 200px at 10% 10%, rgba(255,255,255,.06), transparent 60%);
+      mix-blend:screen;
+    }
+    .pad{padding:28px}
+    .title{font-size:clamp(28px,4.2vw,54px); line-height:1.05; font-weight:900; margin:0 0 10px 0; letter-spacing:.2px}
+    .accent{color:#c7d7ff; text-shadow:0 6px 30px rgba(91,136,255,.35)}
+    .subtitle{color:#a8b3cf; font-size:17px; margin:8px 0 0 0}
+    .commit{margin-top:16px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+    .pill{background:#0e2039; border:1px solid #1c2a4d; padding:10px 12px; border-radius:12px; font-weight:800; color:#bcd0ff; text-align:center}
+    .notice{margin-top:16px; border-radius:12px; background:#0b1220; color:#e5e7eb; padding:14px; font-weight:700; border:1px solid #141e36}
+
+    .kicker{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:#90a0c0; font-weight:800; margin-bottom:8px}
+    h2{margin:0 0 10px 0; font-size:20px}
+
+    /* Cards */
+    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px}
+    .card{background:linear-gradient(180deg, #0f1629, #0d1527); border:1px solid #1b2547; border-radius:18px; overflow:hidden; transition:transform .12s ease, box-shadow .12s ease}
+    .card:hover{transform:translateY(-2px); box-shadow:0 14px 36px rgba(22,35,78,.5)}
+    .media{position:relative; background:#0a1020; border-bottom:1px solid #1b2547}
+    /* Aspect-ratio frame: keeps thumbnails uniform across random sizes */
+    .media::before{content:""; display:block; padding-top:56.25%;} /* 16:9 */
+    .media > img{
+      position:absolute; inset:0; width:100%; height:100%;
+      object-fit:cover; object-position:center 35%;
+      /* If you want letterboxed (no crop) for a specific card, set data-fit="contain" on .media parent via JS */
+    }
+    .media[data-fit="contain"] > img{ object-fit:contain; background:#0a1020 }
+    .body{padding:14px 14px 16px}
+    .row{display:flex; gap:10px; align-items:center; justify-content:space-between}
+    .title-sm{margin:0; font-size:18px; color:#ecf0ff}
+    .muted{color:#9aa8c7}
+    .badge{font-size:12px; padding:4px 8px; border-radius:999px}
+    .badge.approved{background:#09291a; color:#4ae39b; border:1px solid #153a27}
+    .badge.pending{background:#2a1e05; color:#ffcc6b; border:1px solid #3e2b08}
+    .progress{width:100%; height:8px; background:#111a33; border-radius:999px; overflow:hidden; margin:10px 0 6px; border:1px solid #1e2b50}
+    .progress i{display:block; height:100%; background:linear-gradient(90deg, #4f7fff, #6bd3ff); width:0%}
+
+    /* Section spacing */
+    .section{max-width:1200px; margin:0 auto; padding:0 16px 40px}
+
+    /* Footer */
+    footer{border-top:1px solid #111a33; background:#0a0f1d}
+    .footer-inner{max-width:1200px; margin:0 auto; padding:22px 16px; display:flex; justify-content:space-between; align-items:center; color:#7f8fb3; font-size:14px}
+    .footer-nav{display:flex; gap:12px}
+    .footer-link{color:#9aa8c7}
   </style>
 </head>
 <body>
+  <!-- Topbar -->
   <header class="topbar">
-    <div class="container inner">
+    <div class="inner">
       <a class="brand" href="index.html">Project.PAW</a>
       <nav class="nav">
         <a href="project_list.html" class="btn ghost">후원하기</a>
@@ -60,11 +101,15 @@
     </div>
   </header>
 
-  <main class="container">
-    <section class="hero">
-      <div class="card pad">
-        <h1 class="title">도움은 본능, <span style="color:var(--primary)">연결</span>은 선택.</h1>
-        <p class="subtitle">숫자보다 마음. 구조자는 책임을, 후원자는 신뢰를. 우리는 <b>개인↔개인</b> 직접 연결 플랫폼입니다.</p>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="panel pad">
+        <h1 class="title">도움은 본능, <span class="accent">연결</span>은 선택.</h1>
+        <p class="subtitle">
+          숫자보다 마음. 구조자는 책임을, 후원자는 신뢰를. <b>개인↔개인</b> 직접 연결 플랫폼.<br/>
+          책임의 끝과 공감의 시작이 만나는 곳 — <b>Project.PAW</b>
+        </p>
         <div class="commit">
           <div class="pill">100% 전달</div>
           <div class="pill">구조자 30% 책임</div>
@@ -72,7 +117,8 @@
         </div>
         <div class="notice">PG 연동 전: 후원 등록 → <b>관리자 승인</b> 시 카카오 오픈채팅 링크가 공개됩니다.</div>
       </div>
-      <div class="card pad">
+
+      <div class="panel pad">
         <div class="kicker">지금 진행중</div>
         <h2>추천 프로젝트</h2>
         <div id="home-cards" class="grid" style="margin-top:8px"></div>
@@ -80,11 +126,14 @@
           <a class="btn ghost" href="project_list.html">모두 보기</a>
         </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
+  <!-- (Optional) More sections can go here -->
+
+  <!-- Footer -->
   <footer>
-    <div class="container footer-inner">
+    <div class="footer-inner">
       <span>© Project.PAW</span>
       <nav class="footer-nav">
         <a class="footer-link" href="about.html">About</a>
@@ -93,40 +142,59 @@
     </div>
   </footer>
 
+  <!-- Logic -->
   <script type="module">
     import "./js/firebase.js";
     import { storage, fmt } from "./js/app.js";
     import { percent, esc } from "./js/utils.js";
 
     const wrap = document.querySelector("#home-cards");
+
+    // Skeleton shimmer while loading
     const skeletons = () => {
-      wrap.innerHTML = Array.from({ length: 4 }).map(()=>`<div class="skeleton"></div>`).join("");
+      wrap.innerHTML = Array.from({ length: 4 }).map(()=>`
+        <div class="card">
+          <div class="media"><!-- aspect frame --></div>
+          <div class="body">
+            <div class="row"><h3 class="title-sm" style="opacity:.4">Loading…</h3><span class="badge pending">…</span></div>
+            <p class="muted" style="margin:6px 0; opacity:.6">로딩 중</p>
+            <div class="progress"><i style="width:0%"></i></div>
+            <div class="muted" style="display:flex;gap:12px;opacity:.6"><span>—</span><span>—</span></div>
+          </div>
+        </div>
+      `).join("");
     };
 
-    function createdAtSeconds(x){
-      return (x && typeof x==='object' && 'seconds' in x) ? x.seconds : 0;
-    }
+    // Normalize createdAt (serverTimestamp) to seconds
+    const createdAtSec = x => (x && typeof x==='object' && 'seconds' in x) ? x.seconds : 0;
 
     async function render(){
       skeletons();
       let list = await storage.getAll();
-      list.sort((a,b)=> createdAtSeconds(b.createdAt) - createdAtSeconds(a.createdAt));
+      list.sort((a,b)=> createdAtSec(b.createdAt) - createdAtSec(a.createdAt));
       list = list.slice(0,4);
 
       wrap.innerHTML = list.map(p=>{
         const pct = Math.max(0, Math.min(100, percent(p.raisedAmount||0, p.targetAmount||1)));
         const cover = (p.images && p.images.cover) ? p.images.cover : "img/placeholder.svg";
-        const badge = (p.status==="approved")? '<span class="badge approved">승인</span>' : '<span class="badge pending">대기</span>';
+        const badge = (p.status==="approved")
+          ? '<span class="badge approved">승인</span>'
+          : '<span class="badge pending">대기</span>';
+
+        // 기본은 cover(감각적 균일 비주얼). 레터박스 보길 원하면 data-fit="contain"으로 토글 가능.
+        const mediaFit = "cover"; // change to "contain" if you prefer letterboxed global look
 
         return `
-          <a class="card-link" href="project.html?id=${encodeURIComponent(p.id)}">
-            <img class="thumb" src="${cover}" alt="대표 이미지"/>
-            <div class="pad">
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <strong>${esc(p.title||"이름 미정")}</strong>
+          <a class="card" href="project.html?id=${encodeURIComponent(p.id)}" aria-label="프로젝트 ${esc(p.title||'')} 상세 보기">
+            <div class="media" ${mediaFit === 'contain' ? 'data-fit="contain"' : ''}>
+              <img src="${cover}" alt="대표 이미지"/>
+            </div>
+            <div class="body">
+              <div class="row">
+                <h3 class="title-sm">${esc(p.title || '이름 미정')}</h3>
                 ${badge}
               </div>
-              <p class="muted" style="margin:6px 0">${esc(p.summary||"")}</p>
+              <p class="muted" style="margin:6px 0">${esc(p.summary || '')}</p>
               <div class="progress"><i style="width:${pct}%"></i></div>
               <div class="muted" style="display:flex;gap:12px">
                 <span>목표 ${fmt(p.targetAmount)}원</span>
@@ -137,6 +205,7 @@
         `;
       }).join("");
     }
+
     render();
   </script>
 </body>
