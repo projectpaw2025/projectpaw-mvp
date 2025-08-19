@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Transparency — Project.PAW</title>
+  <style>
+    :root{--bg:#0a0f1d;--line:#1a2342;--primary:#1f6feb}
+    *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:#e6ecff;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
+    .container{max-width:1000px;margin:0 auto;padding:0 16px}
+    header{position:sticky;top:0;background:#0b1222;border-bottom:1px solid var(--line)}
+    header .inner{display:flex;justify-content:space-between;align-items:center;padding:14px 0}
+    .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .btn.ghost{background:#ffffff12}.btn.primary{background:#1f6feb;color:#fff}
+    section{padding:28px 0}
+    h1{margin:0 0 8px 0;font-size:clamp(22px,3.4vw,30px);font-weight:900}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
+    .card{background:#0f1629;border:1px solid #1a2342;border-radius:16px;padding:16px}
+    .muted{color:#9aa8c7}
+    ul{line-height:1.7}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container inner">
+      <a href="index.html">Project.PAW</a>
+      <nav>
+        <a class="btn ghost" href="project_list.html">후원하기</a>
+        <a class="btn primary" href="create.html">등록하기</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section>
+      <h1>투명성 리포트</h1>
+      <div class="grid">
+        <div class="card">
+          <h3>이번 분기 전달율</h3>
+          <p class="muted">100% (PG 수수료는 플랫폼 부담)</p>
+        </div>
+        <div class="card">
+          <h3>승인율/후기 이행률</h3>
+          <p class="muted">승인율 — %, 후기 이행 — %</p>
+        </div>
+        <div class="card">
+          <h3>신뢰 레벨링</h3>
+          <p class="muted">후기 → 자기부담 증빙 → 이행률 → 후속 모금/병원 direct</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h3>원칙</h3>
+      <ul>
+        <li>기부금은 100% 구조자에게 전달합니다. PG 수수료는 플랫폼이 부담합니다.</li>
+        <li>승인 전에는 공개되지 않습니다. 승인 시 오픈채팅 링크가 활성화됩니다.</li>
+        <li>모든 데이터는 익명/프라이버시 가이드를 준수합니다.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
