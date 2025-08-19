@@ -4,20 +4,26 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Project.PAW — 직접 연결되는 따뜻함</title>
+  <meta name="description" content="도움은 본능, 연결은 선택. Project.PAW는 구조자와 후원자를 직접 연결하는 따뜻한 플랫폼입니다.">
   <style>
     :root{
-      --primary:#1f6feb; --ink:#0b1220; --muted:#6b7280; --bg:#0a0f1d; --card:#0f1629; --line:#1c2540;
-      --radius:18px; --shadow:0 16px 40px rgba(10,15,29,.35);
-      --glow: radial-gradient(60% 60% at 70% 10%, rgba(84,132,255,.25) 0%, rgba(84,132,255,0) 70%),
-              radial-gradient(40% 40% at 20% 80%, rgba(80,250,180,.18) 0%, rgba(80,250,180,0) 70%);
+      --primary:#1f6feb; --ink:#0b1220; --muted:#8ea0c8; --muted-2:#a8b3cf;
+      --bg:#0a0f1d; --surface:#0f1629; --surface-2:#0c1224; --line:#1a2342;
+      --radius:20px; --shadow:0 18px 50px rgba(10,15,29,.42);
+      --glow: radial-gradient(50% 60% at 80% 0%, rgba(84,132,255,.28) 0%, rgba(84,132,255,0) 65%),
+              radial-gradient(45% 50% at 10% 90%, rgba(72,226,173,.18) 0%, rgba(72,226,173,0) 60%);
     }
     *{box-sizing:border-box}
-    html,body{margin:0;background:var(--bg);color:#e5e7eb;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
+    html,body{margin:0;background:var(--bg);color:#e6ecff;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
     a{text-decoration:none;color:inherit}
 
     /* Topbar */
-    .topbar{position:fixed;top:0;inset-inline:0;z-index:50;backdrop-filter:saturate(160%) blur(8px);
-      background:color-mix(in oklab, #0a0f1d 85%, transparent); border-bottom:1px solid #111a33}
+    .topbar{
+      position:fixed; top:0; inset-inline:0; z-index:50;
+      backdrop-filter:saturate(160%) blur(8px);
+      background:color-mix(in oklab, #0a0f1d 85%, transparent);
+      border-bottom:1px solid #111a33;
+    }
     .topbar .inner{max-width:1200px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
     .brand{font-weight:900;letter-spacing:.2px}
     .nav{display:flex;gap:8px}
@@ -27,34 +33,42 @@
     .btn.ghost:hover{background:#ffffff1f}
     .btn.primary:hover{filter:brightness(1.05)}
 
-    /* Hero (Full viewport) */
+    /* Hero - Full viewport (전화면) */
     .hero{
-      min-height:100svh; display:grid; place-items:center; padding-top:72px; /* space for topbar */
+      min-height:100svh; display:grid; place-items:center; padding-top:82px; /* space for topbar */
       background:
         radial-gradient(1200px 600px at 70% -10%, #112149 0%, transparent 60%),
         radial-gradient(800px 600px at -10% 90%, #0c2130 0%, transparent 60%),
         var(--glow);
     }
-    .hero-inner{max-width:1200px; width:100%; padding:24px 16px; display:grid; grid-template-columns:1.1fr .9fr; gap:24px}
-    @media (max-width: 920px){ .hero-inner{grid-template-columns:1fr; gap:18px} }
+    .hero-inner{max-width:1200px; width:100%; padding:28px 16px; display:grid; grid-template-columns:1.08fr .92fr; gap:24px}
+    @media (max-width: 980px){ .hero-inner{grid-template-columns:1fr; gap:18px} }
 
-    .panel{background:linear-gradient(180deg, #0e1730, #0b1327); border:1px solid var(--line);
-      border-radius:28px; box-shadow:var(--shadow); position:relative; overflow:hidden}
+    .panel{
+      background:linear-gradient(180deg, var(--surface), var(--surface-2));
+      border:1px solid var(--line);
+      border-radius:28px; box-shadow:var(--shadow); position:relative; overflow:hidden
+    }
     .panel::after{
       content:""; position:absolute; inset:0; pointer-events:none;
-      background: radial-gradient(400px 200px at 10% 10%, rgba(255,255,255,.06), transparent 60%);
+      background: radial-gradient(420px 220px at 12% 10%, rgba(255,255,255,.06), transparent 60%);
       mix-blend:screen;
     }
     .pad{padding:28px}
-    .title{font-size:clamp(28px,4.2vw,54px); line-height:1.05; font-weight:900; margin:0 0 10px 0; letter-spacing:.2px}
-    .accent{color:#c7d7ff; text-shadow:0 6px 30px rgba(91,136,255,.35)}
-    .subtitle{color:#a8b3cf; font-size:17px; margin:8px 0 0 0}
-    .commit{margin-top:16px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
-    .pill{background:#0e2039; border:1px solid #1c2a4d; padding:10px 12px; border-radius:12px; font-weight:800; color:#bcd0ff; text-align:center}
-    .notice{margin-top:16px; border-radius:12px; background:#0b1220; color:#e5e7eb; padding:14px; font-weight:700; border:1px solid #141e36}
 
-    .kicker{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:#90a0c0; font-weight:800; margin-bottom:8px}
-    h2{margin:0 0 10px 0; font-size:20px}
+    /* Hero Copy */
+    .t-hero{font-size:clamp(30px,4.6vw,56px); line-height:1.05; font-weight:900; margin:0 0 10px 0; letter-spacing:.2px}
+    .accent{color:#cfe0ff; text-shadow:0 8px 32px rgba(91,136,255,.35)}
+    .subtitle{color:var(--muted-2); font-size:17px; margin:10px 0 0 0}
+    .kicker{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:#90a0c0; font-weight:800; margin-bottom:10px}
+
+    .pills{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px}
+    .pill{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+      background:#0e2039; border:1px solid #1c2a4d; color:#bcd0ff; font-weight:800; font-size:13px}
+    .pill svg{width:16px;height:16px;opacity:.9}
+
+    .cta{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px}
+    .cta .btn{padding:12px 16px; border-radius:14px}
 
     /* Cards */
     .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px}
@@ -66,9 +80,10 @@
     .media > img{
       position:absolute; inset:0; width:100%; height:100%;
       object-fit:cover; object-position:center 35%;
-      /* If you want letterboxed (no crop) for a specific card, set data-fit="contain" on .media parent via JS */
     }
+    /* If you want NO crop globally, set mediaFit='contain' in script. */
     .media[data-fit="contain"] > img{ object-fit:contain; background:#0a1020 }
+
     .body{padding:14px 14px 16px}
     .row{display:flex; gap:10px; align-items:center; justify-content:space-between}
     .title-sm{margin:0; font-size:18px; color:#ecf0ff}
@@ -79,8 +94,19 @@
     .progress{width:100%; height:8px; background:#111a33; border-radius:999px; overflow:hidden; margin:10px 0 6px; border:1px solid #1e2b50}
     .progress i{display:block; height:100%; background:linear-gradient(90deg, #4f7fff, #6bd3ff); width:0%}
 
+    .empty{
+      padding:24px; text-align:center; border:1px dashed #344065; border-radius:16px; color:#9aa8c7; background:#0b1224
+    }
+
     /* Section spacing */
     .section{max-width:1200px; margin:0 auto; padding:0 16px 40px}
+
+    /* How it works */
+    .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+    @media (max-width: 820px){ .steps{grid-template-columns:1fr} }
+    .step{background:linear-gradient(180deg, #0f1629, #0d1527); border:1px solid #1b2547; border-radius:16px; padding:16px}
+    .step h3{margin:0 0 6px 0; font-size:16px}
+    .step p{margin:0; color:#9aa8c7; line-height:1.6}
 
     /* Footer */
     footer{border-top:1px solid #111a33; background:#0a0f1d}
@@ -91,7 +117,7 @@
 </head>
 <body>
   <!-- Topbar -->
-  <header class="topbar">
+  <header class="topbar" role="navigation" aria-label="주요">
     <div class="inner">
       <a class="brand" href="index.html">Project.PAW</a>
       <nav class="nav">
@@ -101,26 +127,40 @@
     </div>
   </header>
 
-  <!-- Hero -->
+  <!-- Hero (전화면) -->
   <section class="hero">
     <div class="hero-inner">
+      <!-- Left: Philosophy -->
       <div class="panel pad">
-        <h1 class="title">도움은 본능, <span class="accent">연결</span>은 선택.</h1>
+        <div class="kicker">운영철학</div>
+        <h1 class="t-hero">도움은 본능, <span class="accent">연결</span>은 선택.</h1>
         <p class="subtitle">
-          숫자보다 마음. 구조자는 책임을, 후원자는 신뢰를. <b>개인↔개인</b> 직접 연결 플랫폼.<br/>
-          책임의 끝과 공감의 시작이 만나는 곳 — <b>Project.PAW</b>
+          망설임을 <b>용기</b>로 바꾸는 플랫폼. <br/>
+          책임의 끝과 공감의 시작이 만나는 곳. <br/>
+          <b>숫자보다 감정</b>을 더 소중히 여깁니다.
         </p>
-        <div class="commit">
-          <div class="pill">100% 전달</div>
-          <div class="pill">구조자 30% 책임</div>
-          <div class="pill">직접 연결</div>
+
+        <div class="pills">
+          <span class="pill">
+            <!-- paw icon -->
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.5 10c1.2 0 2.2-1.35 2.2-3s-1-3-2.2-3S5.3 5.35 5.3 7s1 3 2.2 3Zm4.3-1.5c1.3 0 2.3-1.35 2.3-3s-1-3-2.3-3-2.3 1.35-2.3 3 1 3 2.3 3Zm4.7 1.5c1.2 0 2.2-1.35 2.2-3s-1-3-2.2-3-2.2 1.35-2.2 3 1 3 2.2 3ZM6.5 12.5c-2.5 1.8-3.2 5.1-1.1 6.8 1.6 1.3 3.5.7 5.1-.4 1.5-1 3.8-1.1 5.4 0 1.6 1.1 3.4 1.7 5.1.4 2.1-1.7 1.4-5-1.1-6.8-2.1-1.5-5.4-1.5-6.7-.2-1.3-1.3-4.6-1.3-6.7.2Z"/></svg>
+            발바닥 하나 = 마음 하나
+          </span>
+          <span class="pill">100% 전달</span>
+          <span class="pill">구조자 30% 책임</span>
+          <span class="pill">직접 연결</span>
         </div>
-        <div class="notice">PG 연동 전: 후원 등록 → <b>관리자 승인</b> 시 카카오 오픈채팅 링크가 공개됩니다.</div>
+
+        <div class="cta">
+          <a class="btn primary" href="project_list.html" aria-label="후원 가능한 프로젝트 보기">후원하기</a>
+          <a class="btn ghost" href="create.html" aria-label="새 프로젝트 등록">등록하기</a>
+        </div>
       </div>
 
+      <!-- Right: Featured Projects -->
       <div class="panel pad">
         <div class="kicker">지금 진행중</div>
-        <h2>추천 프로젝트</h2>
+        <h2 style="margin:0 0 10px 0">추천 프로젝트</h2>
         <div id="home-cards" class="grid" style="margin-top:8px"></div>
         <div style="margin-top:12px;display:flex;justify-content:flex-end">
           <a class="btn ghost" href="project_list.html">모두 보기</a>
@@ -129,12 +169,31 @@
     </div>
   </section>
 
-  <!-- (Optional) More sections can go here -->
+  <!-- How it works (PG 전 플로우) -->
+  <section class="section">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="kicker">어떻게 연결되나요</div>
+      <div class="steps">
+        <div class="step">
+          <h3>1. 후원 등록</h3>
+          <p>구조자가 상황·금액·사진을 등록합니다.</p>
+        </div>
+        <div class="step">
+          <h3>2. 관리자 승인</h3>
+          <p>검토 후 승인되면 <b>오픈채팅 링크</b>가 입력됩니다.</p>
+        </div>
+        <div class="step">
+          <h3>3. 직접 연결</h3>
+          <p>후원자는 카카오 오픈채팅으로 구조자와 직접 연결됩니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Footer -->
   <footer>
     <div class="footer-inner">
-      <span>© Project.PAW</span>
+      <span>© Project.PAW — “발바닥 하나가, 마음 하나다.”</span>
       <nav class="footer-nav">
         <a class="footer-link" href="about.html">About</a>
         <a class="footer-link" href="login.html">로그인</a>
@@ -154,7 +213,7 @@
     const skeletons = () => {
       wrap.innerHTML = Array.from({ length: 4 }).map(()=>`
         <div class="card">
-          <div class="media"><!-- aspect frame --></div>
+          <div class="media"></div>
           <div class="body">
             <div class="row"><h3 class="title-sm" style="opacity:.4">Loading…</h3><span class="badge pending">…</span></div>
             <p class="muted" style="margin:6px 0; opacity:.6">로딩 중</p>
@@ -165,14 +224,20 @@
       `).join("");
     };
 
-    // Normalize createdAt (serverTimestamp) to seconds
+    // Uniform frame behavior: change 'cover' to 'contain' for global letterbox look
+    const mediaFit = "cover"; // "cover" | "contain"
+
     const createdAtSec = x => (x && typeof x==='object' && 'seconds' in x) ? x.seconds : 0;
 
     async function render(){
       skeletons();
       let list = await storage.getAll();
-      list.sort((a,b)=> createdAtSec(b.createdAt) - createdAtSec(a.createdAt));
-      list = list.slice(0,4);
+
+      // home은 기본 '승인된 것' 우선 노출 → 없으면 최신순으로 대체
+      const approved = list.filter(p => p.status === "approved");
+      list = (approved.length ? approved : list)
+        .sort((a,b)=> createdAtSec(b.createdAt) - createdAtSec(a.createdAt))
+        .slice(0,4);
 
       wrap.innerHTML = list.map(p=>{
         const pct = Math.max(0, Math.min(100, percent(p.raisedAmount||0, p.targetAmount||1)));
@@ -180,9 +245,6 @@
         const badge = (p.status==="approved")
           ? '<span class="badge approved">승인</span>'
           : '<span class="badge pending">대기</span>';
-
-        // 기본은 cover(감각적 균일 비주얼). 레터박스 보길 원하면 data-fit="contain"으로 토글 가능.
-        const mediaFit = "cover"; // change to "contain" if you prefer letterboxed global look
 
         return `
           <a class="card" href="project.html?id=${encodeURIComponent(p.id)}" aria-label="프로젝트 ${esc(p.title||'')} 상세 보기">
@@ -204,6 +266,13 @@
           </a>
         `;
       }).join("");
+
+      if(!list.length){
+        wrap.innerHTML = `
+          <div class="empty">
+            아직 표시할 프로젝트가 없습니다. <br/>첫 프로젝트를 <a href="create.html" style="color:#cfe0ff;text-decoration:underline">등록</a>해보세요.
+          </div>`;
+      }
     }
 
     render();
