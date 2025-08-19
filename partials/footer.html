@@ -1,15 +1,31 @@
 <!-- partials/footer.html -->
+<footer class="paw-footer">
+  <div class="paw-footer__inner">
+    <p class="tagline">
+      법인 없는 개인↔개인 직연결 · 책임 없는 구조는 등록 불가 · 돈보다 연결
+    </p>
+
+    <p class="links">
+      <a href="about.html">About</a> |
+      <a href="login.html">로그인</a> |
+      <button id="logoutBtn" type="button" class="as-link">로그아웃</button>
+    </p>
+
+    <p class="copy">© Project.PAW</p>
+  </div>
+</footer>
+
 <style>
-  .pp-footer{margin-top:3rem;padding:2rem;background:#fafafa;text-align:center;font-size:.9rem;color:#666}
-  .pp-footer a{color:inherit;text-decoration:none}
-  .pp-footer a:hover{color:#ff6b6b}
+  .paw-footer { border-top:1px solid #eef2f7; background:#fff; margin-top:40px; }
+  .paw-footer__inner { max-width:1120px; margin:0 auto; padding:16px; text-align:center; }
+  .tagline { font-weight:700; color:#111827; margin:6px 0 10px; }
+  .links { color:#4b5563; }
+  .links a, .as-link { color:#4b5563; text-decoration:none; font-weight:700; }
+  .as-link { background:none; border:none; padding:0; cursor:pointer; }
+  .links a:hover, .as-link:hover { color:#111827; text-decoration:underline; }
+  .copy { font-size:.9rem; color:#9ca3af; margin-top:6px; }
 </style>
 
-<footer class="pp-footer">
-  <p>© 2025 Project.PAW — “발바닥 하나가, 마음 하나다.”</p>
-    <p>
-    <a href="about.html">About</a> | 
-    <a href="login.html">로그인</a> | 
-    <button id="logoutBtn" type="button" style="background:none;border:none;cursor:pointer;">로그아웃</button>
-  </p>
-</footer>
+<script>
+  // 로그아웃 버튼은 include.js의 기존 로직(id="logoutBtn")이 핸들링
+</script>
