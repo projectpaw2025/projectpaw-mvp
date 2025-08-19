@@ -20,11 +20,12 @@
     input,select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0c1326;color:#e5e7eb}
     label{font-size:13px;color:#9aa8c7;font-weight:700}
     table{width:100%;border-collapse:collapse}
-    th,td{padding:10px;border-bottom:1px solid var(--line);font-size:14px}
+    th,td{padding:10px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
     .badge{font-size:12px;padding:4px 8px;border-radius:999px}
     .badge.approved{background:#09291a;color:#4ae39b;border:1px solid #153a27}
     .badge.pending{background:#2a1e05;color:#ffcc6b;border:1px solid #3e2b08}
     .muted{color:#9aa8c7}
+    .mono{font-family:ui-monospace,Consolas,monospace}
   </style>
 </head>
 <body>
@@ -49,7 +50,7 @@
           </div>
           <div>
             <label>프로젝트 ID</label>
-            <input id="pid" type="text" placeholder="project id (URL의 ?id=... 값)"/>
+            <input id="pid" class="mono" type="text" placeholder="project id (?id=...)"/>
           </div>
           <div>
             <label>상태</label>
@@ -61,6 +62,7 @@
           <div>
             <label>카카오 오픈채팅 링크</label>
             <input id="kakao" type="url" placeholder="https://open.kakao.com/o/xxxxxx"/>
+            <small class="muted">승인 후 공개됩니다. 형식 검증: <code class="mono">open.kakao.com</code></small>
           </div>
           <div>
             <button id="loadBtn" class="btn ghost" type="button">불러오기</button>
@@ -83,9 +85,9 @@
 
   <script type="module">
     import "./js/firebase.js";
-    import { storage } from "./js/app.js";
+    import { storage, fmt } from "./js/app.js";
 
-    // ⚠️ 임시 운영 암호 — 실제 운영에서는 Firebase Auth(구글 로그인)으로 대체
+    // ⚠️ 임시 보호 — 실제 운영은 Firebase Auth로 교체하세요.
     const ADMIN_PASS = "CHANGE_ME";
 
     const $ = (s, r=document)=>r.querySelector(s);
@@ -95,13 +97,21 @@
     function ok(t){ msg.textContent = t; msg.style.color = "#a7f3d0"; }
     function err(t){ msg.textContent = t; msg.style.color = "#fecaca"; }
 
+    function isKakaoLink(u){
+      if(!u) return true; // 빈 값은 허용(승인만 먼저 가능)
+      try {
+        const url = new URL(u);
+        return /(^|\.)open\.kakao\.com$/i.test(url.hostname);
+      } catch { return false; }
+    }
+
     async function refreshPending(){
       const all = await storage.getAll();
       const pend = all.filter(p=> (p.status||"pending")==="pending");
       $("#pending").innerHTML = pend.map(p=>{
         const sec = p.createdAt?.seconds ? new Date(p.createdAt.seconds*1000).toLocaleString("ko-KR") : "-";
         return `<tr>
-          <td style="font-family:ui-monospace">${p.id}</td>
+          <td class="mono">${p.id}</td>
           <td>${(p.title||"")}</td>
           <td class="muted">${sec}</td>
           <td><span class="badge pending">대기</span></td>
@@ -124,17 +134,13 @@
       try{
         if(pass.value !== ADMIN_PASS) return err("관리자 암호가 올바르지 않습니다");
         if(!pid.value) return err("프로젝트 ID를 입력하세요");
-        // 간단 검증
+
         const link = kakao.value.trim();
-        if(link && !/^https?:\/\/open\.kakao\.com\//.test(link)) return err("카카오 오픈채팅 링크 형식을 확인하세요");
-        const p = await storage.byId(pid.value);
-        if(!p) return err("해당 ID의 프로젝트가 없습니다");
-        // 업데이트: app.js에 update 메서드가 없다면, add로 upsert하는 대신 Firestore SDK 직접 사용 권장
-        // 여기서는 간단히 add처럼 병합 저장 로직을 storage에 위임했다고 가정
-        const updated = { ...p, status: status.value, kakaoLink: link };
-        // 임시: storage.add가 upsert라면 그대로 사용, 아니라면 app.js에 update(id,partial) 추가 권장
-        const saved = await storage.add(updated);
-        ok("저장 완료");
+        if(!isKakaoLink(link)) return err("카카오 오픈채팅 링크 형식을 확인하세요");
+
+        const payload = { status: status.value, kakaoLink: link };
+        await storage.update(pid.value, payload);   // ✅ 부분 업데이트
+        ok("저장 완료 (승인/링크 반영)");
         refreshPending();
       }catch(e){ err("저장 실패: "+e.message); }
     };
