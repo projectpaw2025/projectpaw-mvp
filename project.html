@@ -3,105 +3,148 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>프로젝트 상세 · Project.PAW</title>
-<meta name="description" content="프로젝트 상세 정보, 갤러리, 영수증, 그리고 직접 연결 안내를 확인하세요." />
-<link rel="icon" href="img/placeholder.svg" />
+  <title>프로젝트 상세 — Project.PAW</title>
 
-  <link rel="stylesheet" href="css/app.css" />
+  <!-- 디자인은 기존 CSS를 그대로 사용하세요 -->
+  <link rel="stylesheet" href="css/common.css" />
+  <link rel="stylesheet" href="css/detail.css" />
 </head>
 <body>
-  <nav class="nav">
+  <header class="topbar">
     <div class="container">
-      <div class="brand"><a href="index.html">Project<span class="dot">.PAW</span></a></div>
-      <ul>
-        <li><a href="index.html">홈</a></li>
-        <li><a href="project_list.html">후원하기</a></li>
-        <li><a href="create.html" class="btn">후원 등록</a></li>
-      </ul>
+      <a class="brand" href="index.html">Project.PAW</a>
+      <nav class="nav">
+        <a href="project_list.html" class="btn ghost">후원하기</a>
+        <a href="create.html" class="btn primary">등록하기</a>
+      </nav>
     </div>
-  </nav>
+  </header>
+
   <main class="container">
-  <section class="project-hero">
-    <img class="project-cover cover" alt="cover">
-    <h1 class="project-title"></h1>
-    <p class="project-summary"></p>
-    <p class="project-money"></p>
-    <div class="fixed-actions sticky-cta">
-      <a id="kakaoBtn" class="btn primary hidden" target="_blank" rel="noopener">카카오톡으로 연결</a>
-    </div>
-  </section>
+    <article class="detail">
+      <img class="project-cover" src="img/placeholder.svg" alt="대표 이미지" />
+      <div class="head">
+        <h1 class="project-title"></h1>
+        <p class="project-summary muted"></p>
+        <div class="money muted project-money"></div>
+      </div>
 
-  <section class="project-gallery section">
-    <h2>상황 갤러리</h2>
-    <div class="slider">
-      <button class="btn-prev" aria-label="이전">‹</button>
-      <div class="slider-window"><div class="slider-track"></div></div>
-      <button class="btn-next" aria-label="다음">›</button>
-    </div>
-  </section>
+      <section class="desc">
+        <h2>상세 설명</h2>
+        <div class="project-description"></div>
+      </section>
 
-  <section class="section">
-    <h2>상세 내용</h2>
-    <div class="desc"></div>
-  </section>
+      <section class="gallery">
+        <h2>상황 갤러리</h2>
+        <div class="slider">
+          <button class="btn-prev" type="button" aria-label="이전">‹</button>
+          <div class="track"></div>
+          <button class="btn-next" type="button" aria-label="다음">›</button>
+        </div>
+      </section>
 
-  <section class="section">
-    <h2>영수증</h2>
-    <div class="receipt-preview grid"></div>
-  </section>
+      <section class="receipts">
+        <h2>영수증</h2>
+        <div class="receipt-preview grid"></div>
+      </section>
 
+      <section class="actions">
+        <a class="btn primary" id="kakaoBtn" target="_blank" rel="noopener">카카오톡 연결</a>
+        <button class="btn ghost" id="shareBtn">공유</button>
+      </section>
+    </article>
+  </main>
+
+  <footer class="container muted" style="padding:40px 0;">
+    “책임의 끝과 공감의 시작이 만나는 곳.” — Project.PAW
+  </footer>
+
+  <!-- ✅ 백엔드/스토리지 모듈 -->
   <script type="module">
     import "./js/firebase.js";
     import { storage, fmt } from "./js/app.js";
-    const $ = (s, p=document) => p.querySelector(s);
+    import { esc, percent } from "./js/utils.js";
 
+    const $ = (sel, root = document) => root.querySelector(sel);
+
+    // URL에서 id 추출
     const id = new URLSearchParams(location.search).get("id");
-    const p = await storage.byId(id);
-    if (!p) {
-      document.body.innerHTML = "<main class='container'><p>프로젝트를 찾을 수 없습니다.</p></main>";
-      throw new Error("Project not found");
+
+    async function main() {
+      if (!id) {
+        document.body.innerHTML = "<main class='container'><p>잘못된 접근입니다 (id 없음)</p></main>";
+        return;
+      }
+
+      const p = await storage.byId(id);
+      if (!p) {
+        document.body.innerHTML = "<main class='container'><p>프로젝트를 찾을 수 없습니다.</p></main>";
+        return;
+      }
+
+      // 헤더/요약
+      $(".project-title").textContent = p.title || "";
+      $(".project-summary").textContent = p.summary || "";
+
+      // 금액
+      const target = fmt(p.targetAmount);
+      const selfPay = fmt(p.selfPayAmount);
+      const pct = percent(p.raisedAmount || 0, p.targetAmount || 1);
+      $(".project-money").textContent = `목표 ${target}원 · 구조자 ${selfPay}원 (달성률 ${pct}%)`;
+
+      // 커버
+      const cover = (p.images && p.images.cover) ? p.images.cover : "img/placeholder.svg";
+      $(".project-cover").src = cover;
+
+      // 상세 설명 (줄바꿈 처리)
+      const desc = (p.description || "").replace(/\n/g, "<br/>");
+      $(".project-description").innerHTML = desc;
+
+      // 갤러리 슬라이더
+      const g = Array.isArray(p.images?.gallery) ? p.images.gallery : [];
+      const track = document.querySelector(".track");
+      if (g.length) {
+        track.innerHTML = g.map(src => `<div class="slide"><img src="${src}" alt="gallery"></div>`).join("");
+      } else {
+        track.innerHTML = `<div class="empty">등록된 사진이 없습니다.</div>`;
+      }
+
+      let idx = 0;
+      const total = track.children.length || 1;
+      const update = () => { track.style.transform = `translateX(${-idx * 100}%)`; };
+      $(".btn-prev").onclick = () => { idx = (idx - 1 + total) % total; update(); };
+      $(".btn-next").onclick = () => { idx = (idx + 1) % total; update(); };
+      update();
+
+      // 영수증
+      const r = Array.isArray(p.images?.receipts) ? p.images.receipts : [];
+      const rwrap = document.querySelector(".receipt-preview.grid");
+      rwrap.innerHTML = (r.length ? r : []).map(src => `<div class="img-cell"><img src="${src}" alt="receipt"></div>`).join("")
+        || `<div class="empty">등록된 영수증이 없습니다.</div>`;
+
+      // 카카오 링크
+      const kakao = (p.kakaoLink || "").trim();
+      const kakaoBtn = document.getElementById("kakaoBtn");
+      if (kakao) {
+        kakaoBtn.href = kakao;
+      } else {
+        kakaoBtn.classList.add("disabled");
+        kakaoBtn.setAttribute("aria-disabled", "true");
+        kakaoBtn.addEventListener("click", e => e.preventDefault());
+      }
+
+      // 공유
+      document.getElementById("shareBtn").addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(location.href);
+          alert("링크가 복사되었습니다.");
+        } catch {
+          prompt("복사 실패. 수동으로 복사하세요:", location.href);
+        }
+      });
     }
 
-    $(".project-title").textContent = p.title || "";
-    $(".project-summary").textContent = p.summary || "";
-    $(".project-cover").src = p.images?.cover || "img/placeholder.svg";
-    $(".project-money").textContent = `목표 ${fmt(p.targetAmount)}원 · 구조자 ${fmt(p.selfPayAmount)}원`;
-    $(".desc").textContent = p.description || "";
-
-    const kakaoBtn = $("#kakaoBtn");
-    if (p.kakaoLink) {
-      kakaoBtn.href = p.kakaoLink;
-      kakaoBtn.classList.remove("hidden");
-    }
-
-    // Gallery slider
-    const g = Array.isArray(p.images?.gallery) ? p.images.gallery : [];
-    const track = document.querySelector(".slider-track");
-    if (g.length === 0) {
-      track.innerHTML = `<img src="${p.images?.cover || 'img/placeholder.svg'}" class="slide" alt="cover" />`;
-    } else {
-      track.innerHTML = g.map(src => `<img src="${src}" class="slide" alt="gallery" />`).join("");
-    }
-    let idx = 0;
-    const total = track.children.length;
-    const update = () => {
-      track.style.transform = `translateX(${-idx*100}%)`;
-    };
-    document.querySelector(".btn-prev").onclick = () => { idx = (idx-1+total)%total; update(); };
-    document.querySelector(".btn-next").onclick = () => { idx = (idx+1)%total; update(); };
-    update();
-
-    // Receipts grid
-    const r = Array.isArray(p.images?.receipts) ? p.images.receipts : [];
-    const rwrap = document.querySelector(".receipt-preview.grid");
-    rwrap.innerHTML = (r.length ? r : []).map(src => \`<div class="img-cell"><img src="\${src}" alt="receipt"></div>\`).join("");
+    main();
   </script>
-
-  </main>
-  <footer class="footer">
-    <div class="container">
-      <small>Project.PAW — “도움은 본능, 연결은 선택.” 100% 전달 · 책임 구조 · 직접 연결</small>
-    </div>
-  </footer>
 </body>
 </html>
