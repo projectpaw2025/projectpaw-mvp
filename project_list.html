@@ -1,170 +1,121 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>후원하기 — Project.PAW</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project.PAW - 후원하기</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module">
+    import { auth, signOut } from "./js/firebase.js";
+
+    window.logout = async () => {
+      try {
+        await signOut(auth);
+        alert("로그아웃 완료! 다시 로그인 해주세요.");
+        location.href = "index.html";
+      } catch (e) {
+        console.error("로그아웃 실패:", e);
+      }
+    };
+  </script>
   <style>
-    :root{--primary:#1f6feb;--muted:#64748b;--bg:#f8fafc;--card:#ffffff;--line:#e5e7eb;--radius:16px}
-    *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:#0f172a;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
-    a{text-decoration:none;color:inherit}
-    .clamp-1{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
-    .clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-
-    .container{max-width:1120px;margin:0 auto;padding:0 14px}
-    .topbar{position:sticky;top:0;z-index:10;background:#ffffffcc;border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
-    .topbar .inner{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
-    .brand{font-weight:900}.nav{display:flex;gap:8px}
-    .btn{appearance:none;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-weight:700;cursor:pointer;background:#fff}
-    .btn.primary{background:var(--primary);color:#fff;border-color:transparent}
-
-    .section{padding:22px 0}
-    .kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#475569;font-weight:800}
-    h1{margin:0 0 6px 0;font-size:clamp(20px,3.2vw,26px);font-weight:900}
-    .controls{display:flex;gap:8px;align-items:center}
-    select,input[type="checkbox"]{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:#fff}
-
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:transform .12s}
-    .card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(16,24,40,.08)}
-    .media{position:relative;background:#eef2ff;border-bottom:1px solid var(--line)}
-    .media::before{content:"";display:block;padding-top:75%} /* 4:3 */
-    .media > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 38%}
-    .pad{padding:12px}
-    .muted{color:var(--muted)}
-    .badge{font-size:11px;padding:3px 7px;border-radius:999px}
-    .badge.approved{background:#eafff2;color:#0a6b3c;border:1px solid #b7f0cf}
-    .badge.pending{background:#fff6e6;color:#a15a00;border:1px solid #f3d6a3}
-    .progress{width:100%;height:6px;background:#f1f5f9;border-radius:999px;overflow:hidden;margin:8px 0 4px;border:1px solid var(--line)}
-    .progress i{display:block;height:100%;background:linear-gradient(90deg,#4f7fff,#6bd3ff);width:0%}
-    .tools{display:flex;justify-content:center;margin-top:14px}
-    .empty{padding:24px;text-align:center;border:1px dashed #cbd5e1;border-radius:14px;background:#fff;color:#64748b}
-
-    footer{border-top:1px solid var(--line);margin-top:20px;background:#fff}
-    .footer-inner{display:flex;justify-content:space-between;align-items:center;padding:16px 0;color:#64748b;font-size:13px}
-    .footer-nav{display:flex;gap:10px}
+    body {
+      margin: 0;
+      font-family: "Noto Sans KR", sans-serif;
+      background: #fff;
+      color: #333;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #ffffff;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      color: #222;
+    }
+    nav {
+      display: flex;
+      gap: 1rem;
+    }
+    nav a, nav button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      color: #333;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav button:hover {
+      color: #ff6b6b;
+    }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="container inner">
-      <a class="brand" href="index.html">Project.PAW</a>
-      <nav class="nav">
-        <a href="index.html" class="btn">홈</a>
-        <a href="create.html" class="btn primary">등록하기</a>
-      </nav>
-    </div>
+  <header>
+    <h1>🐾 Project.PAW</h1>
+    <nav>
+      <a href="index.html">홈</a>
+      <a href="create.html">등록하기</a>
+      <a href="about.html">About</a>
+      <button onclick="logout()">로그아웃</button>
+    </nav>
   </header>
 
-  <main class="container">
-    <section class="section">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-        <div>
-          <div class="kicker">Explore</div>
-          <h1>모든 프로젝트</h1>
-        </div>
-        <div class="controls">
-          <label style="display:flex;align-items:center;gap:6px">
-            <input id="onlyApproved" type="checkbox"/> 승인만 보기
-          </label>
-          <select id="sort">
-            <option value="latest">최신순</option>
-            <option value="progress">달성률순</option>
-            <option value="goal">목표금액 높은순</option>
-          </select>
-        </div>
-      </div>
-
-      <div id="list" class="grid" style="margin-top:12px"></div>
-      <div class="tools"><button id="moreBtn" class="btn">더 보기</button></div>
-    </section>
+  <main style="padding:2rem; max-width:1200px; margin:auto;">
+    <h2 style="margin-bottom:1.5rem;">후원 가능한 프로젝트</h2>
+    <div id="project-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;">
+      <!-- JS에서 불러온 카드 표시 -->
+    </div>
   </main>
 
-  <footer>
-    <div class="container footer-inner">
-      <span>© Project.PAW — “발바닥 하나가, 마음 하나다.”</span>
-      <nav class="footer-nav">
-        <a href="about.html">About</a>
-        <a href="login.html">로그인</a>
-      </nav>
-    </div>
+  <footer style="margin-top:3rem; padding:2rem; background:#fafafa; text-align:center; font-size:0.9rem; color:#666;">
+    <p>© 2025 Project.PAW</p>
+    <p>
+      <a href="about.html">About</a> | 
+      <a href="login.html">로그인</a>
+    </p>
   </footer>
 
   <script type="module">
-    import "./js/firebase.js";
-    import { storage, fmt } from "./js/app.js";
-    import { percent, esc } from "./js/utils.js";
+    import { db } from "./js/firebase.js";
+    import { collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const wrap = document.querySelector("#list");
-    const sortSel = document.querySelector("#sort");
-    const onlyApproved = document.querySelector("#onlyApproved");
-    const moreBtn = document.querySelector("#moreBtn");
+    const container = document.getElementById("project-list");
 
-    let all = []; let page = 0;
-    const PAGE_SIZE = 12;
+    async function loadProjects() {
+      const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
 
-    const createdAtSeconds = x => (x && typeof x==='object' && 'seconds' in x) ? x.seconds : 0;
+      snapshot.forEach(doc => {
+        const p = doc.data();
+        const card = document.createElement("div");
+        card.style.border = "1px solid #eee";
+        card.style.borderRadius = "12px";
+        card.style.overflow = "hidden";
+        card.style.background = "#fff";
+        card.style.boxShadow = "0 2px 6px rgba(0,0,0,0.05)";
 
-    function renderPage(){
-      const start = page * PAGE_SIZE;
-      const items = all.slice(start, start + PAGE_SIZE);
-
-      const chunk = items.map(p=>{
-        const badge = (p.status === "approved")
-          ? '<span class="badge approved">승인</span>'
-          : '<span class="badge pending">대기</span>';
-
-        const pct = Math.max(0, Math.min(100, percent(p.raisedAmount||0, p.targetAmount||1)));
-        const cover = (p.images && p.images.cover) ? p.images.cover : "img/placeholder.svg";
-        const title = esc(p.title||'');
-
-        return `
-          <a class="card" href="project.html?id=${encodeURIComponent(p.id)}" aria-label="프로젝트 ${title} 상세 보기">
-            <div class="media"><img src="${cover}" alt="${title} 대표 이미지" loading="lazy" decoding="async"/></div>
-            <div class="pad">
-              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-                <h3 class="clamp-1" style="margin:0;font-size:16px">${title}</h3>
-                ${badge}
-              </div>
-              <p class="muted clamp-2" style="margin:4px 0 6px 0">${esc(p.summary || '')}</p>
-              <div class="progress"><i style="width:${pct}%"></i></div>
-              <div class="muted" style="display:flex;gap:10px;font-size:13px">
-                <span>목표 ${fmt(p.targetAmount)}원</span>
-                <span>구조자 ${fmt(p.selfPayAmount)}원</span>
-              </div>
-            </div>
-          </a>`;
-      }).join("");
-
-      if(page===0) wrap.innerHTML = chunk; else wrap.insertAdjacentHTML("beforeend", chunk);
-      page++;
-      moreBtn.style.display = (page * PAGE_SIZE >= all.length) ? "none" : "inline-block";
-
-      if(all.length===0){
-        wrap.innerHTML = `<div class="empty">표시할 프로젝트가 없습니다.</div>`;
-        moreBtn.style.display = "none";
-      }
+        card.innerHTML = `
+          <img src="${p.imageUrl || 'img/default.jpg'}" style="width:100%;height:200px;object-fit:cover;">
+          <div style="padding:1rem;">
+            <h3 style="margin:0 0 0.5rem 0;font-size:1.1rem;color:#222;">${p.title}</h3>
+            <p style="margin:0;font-size:0.9rem;color:#555;">${p.description?.slice(0,80) || ''}...</p>
+            <a href="project.html?id=${doc.id}" style="display:inline-block;margin-top:0.8rem;color:#ff6b6b;font-weight:bold;">상세보기 →</a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
     }
 
-    async function apply(){
-      page = 0;
-      let items = await storage.getAll();
-      if(onlyApproved?.checked) items = items.filter(p => (p.status || "pending") === "approved");
-
-      const mode = sortSel?.value || "latest";
-      if(mode === "latest") items.sort((a,b)=> createdAtSeconds(b.createdAt) - createdAtSeconds(a.createdAt));
-      if(mode === "progress") items.sort((a,b)=> percent(b.raisedAmount||0,b.targetAmount||0) - percent(a.raisedAmount||0,a.targetAmount||0));
-      if(mode === "goal") items.sort((a,b)=> Number(b.targetAmount||0) - Number(a.targetAmount||0));
-
-      all = items;
-      renderPage();
-    }
-
-    sortSel?.addEventListener("change", apply);
-    onlyApproved?.addEventListener("change", apply);
-    moreBtn?.addEventListener("click", renderPage);
-
-    apply();
+    loadProjects();
   </script>
 </body>
 </html>
