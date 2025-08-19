@@ -3,62 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>홈 · Project.PAW</title>
-<meta name="description" content="Project.PAW — 도움은 본능, 연결은 선택. 100% 전달, 책임 기반 구조의 직접 연결 플랫폼." />
-<link rel="icon" href="img/placeholder.svg" />
-
+  <title>Project.PAW · 진행 중인 구조 프로젝트</title>
+  <meta name="description" content="Project.PAW — 100% 전달과 책임 기반 구조. 진행 중인 구조 프로젝트를 확인하고 직접 연결로 참여하세요." />
+  <link rel="icon" href="img/placeholder.svg" />
   <link rel="stylesheet" href="css/app.css" />
 </head>
 <body>
+  <!-- 상단 내비 -->
   <nav class="nav">
     <div class="container">
       <div class="brand"><a href="index.html">Project<span class="dot">.PAW</span></a></div>
       <ul>
-        <li><a href="index.html">홈</a></li>
+        <li><a href="index.html" class="btn">홈</a></li>
         <li><a href="project_list.html">후원하기</a></li>
-        <li><a href="create.html" class="btn">후원 등록</a></li>
+        <li><a href="create.html">후원 등록</a></li>
       </ul>
     </div>
   </nav>
+
   <main class="container">
-  <section class="hero">
-    <div class="hero-card">
+    <!-- 히어로 -->
+    <section class="section">
       <h2>지금은 Pilot Run</h2>
-      <p>PG 연동 전까지는 <b>카카오톡 연결</b>로 직접 돕습니다. Project.PAW는 <b>100% 전달</b>과 <b>책임 기반</b> 구조(구조자 30% 자부담, 후기 필수)를 지향합니다.</p>
-      <ul>
-        <li>직접 연결: 중간 단체 없이 개인↔개인</li>
+      <p>PG 연동 전까지는 <b>카카오톡 연결로 직접</b> 돕습니다. Project.PAW는 <b>100% 전달</b>과 <b>책임 기반 구조(구조자 30% 자부담, 후기 필수)</b>를 지향합니다.</p>
+      <ul style="margin:8px 0 0 16px; color:#445;">
+        <li>직접 연결: 중간 단체 없이 개인↔️개인</li>
         <li>책임 구조: 구조자 자부담 + 후기 공개</li>
-        <li>투명 표시: 목표/현황, 영수증 갤러리</li>
+        <li>투명 공개: 목표/현황, 영수증 갤러리</li>
       </ul>
-    </div>
-  </section>
+    </section>
 
-  <section class="section">
-    <h2>진행 중인 구조 프로젝트</h2>
-    <div id="homeList" class="grid home"></div>
-  </section>
+    <h3 style="margin-top:28px;">진행 중인 구조 프로젝트</h3>
+    <section class="section">
+      <div id="list" class="grid list"></div>
+    </section>
 
-  <script type="module">
-    import "./js/firebase.js";
-    import { storage, fmt } from "./js/app.js";
-    const container = document.querySelector("#homeList");
-    const all = await storage.getAll()
-      .filter(p => p.status === "approved")
-      .sort((a,b)=>b.createdAt - a.createdAt)
-      .slice(0,4);
-    container.innerHTML = all.map(p => `
-      <a class="card" href="project.html?id=${p.id}">
-        <img class="thumb" src="${p.images?.cover || 'img/placeholder.svg'}" alt="cover">
-        <div class="meta">
-          <h3>${p.title || ''}</h3>
-          <p>${p.summary || ''}</p>
-          <p class="money">목표 ${fmt(p.targetAmount)}원 · 구조자 ${fmt(p.selfPayAmount)}원</p>
-        </div>
-      </a>
-    `).join("");
-  </script>
+    <!-- 목록 렌더 스크립트 -->
+    <script type="module">
+      import "./js/firebase.js"; // 익명 로그인 등 초기화(사이드이펙트)
+      import { storage as pawStore, fmt } from "./js/app.js"; // 이름 충돌 방지 (Firebase Storage와 구분)
+      import { percent, esc } from "./js/utils.js";
 
+      const list = document.querySelector("#list");
+
+      async function render() {
+        // ✅ Firestore 비동기 — 반드시 await
+        let items = await pawStore.getAll();
+
+        // 필요하면 승인만 표시하려면 아래 주석 해제
+        // items = items.filter(p => p.status === "approved");
+
+        // 최신순
+        items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+        if (!items.length) {
+          list.innerHTML = `<div class="empty">표시할 프로젝트가 없습니다. 첫 프로젝트를 등록해보세요.</div>`;
+          return;
+        }
+
+        list.innerHTML = items.slice(0, 6).map(p => `
+          <a class="card row" href="project.html?id=${encodeURIComponent(p.id)}" aria-label="프로젝트 ${esc(p.title || '')} 상세 보기">
+            <img class="thumb" src="${(p.images && p.images.cover) ? p.images.cover : 'img/placeholder.svg'}" alt="대표 이미지">
+            <div class="info">
+              <h3 style="margin:0">${esc(p.title || '')}</h3>
+              <p>${esc(p.summary || '')}</p>
+              <div class="progress" style="margin-top:10px; margin-bottom:6px;">
+                <i style="width:${percent(p.raisedAmount, p.targetAmount)}%"></i>
+              </div>
+              <div class="line" style="display:flex; gap:12px; margin-top:6px; color:#334;">
+                <span>목표 ${fmt(p.targetAmount)}원</span>
+                <span>구조자 ${fmt(p.selfPayAmount)}원</span>
+              </div>
+            </div>
+          </a>
+        `).join("");
+      }
+
+      render();
+    </script>
   </main>
+
   <footer class="footer">
     <div class="container">
       <small>Project.PAW — “도움은 본능, 연결은 선택.” 100% 전달 · 책임 구조 · 직접 연결</small>
