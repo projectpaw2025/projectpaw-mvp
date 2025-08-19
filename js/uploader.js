@@ -1,45 +1,58 @@
+// js/uploader.js
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { app } from "./firebase.js";
 
-// /js/uploader.js — Firebase Storage uploader + previews
-import { storage as fbStorage, ref, uploadBytes, getDownloadURL } from "./firebase.js";
+const storage = getStorage(app);
+const MAX_MB = 5;               // 5MB
+const MAX_W = 1200;             // 최대 가로 1200px (세로는 비율 유지)
+const MIME = "image/jpeg";      // 업로드 포맷 고정 (품질로 용량 제어)
+const QUALITY = 0.82;           // 0~1
 
-const toBase64 = (file) => new Promise(res => {
-  const fr = new FileReader();
-  fr.onload = () => res(fr.result);
-  fr.readAsDataURL(file);
-});
-
-export async function uploadFile(folder, file) {
-  const safeName = `${Date.now()}_${(file.name||'file').replace(/[^a-zA-Z0-9._-]/g,'_')}`;
-  const path = `${folder}/${safeName}`;
-  const fileRef = ref(fbStorage, path);
-  await uploadBytes(fileRef, file);
-  return await getDownloadURL(fileRef);
+export async function uploadImageToStorage(file, folder = "uploads/") {
+  // 용량 선검사
+  if (file.size > MAX_MB * 1024 * 1024) {
+    // 그래도 리사이즈 시도
+    const blob = await resizeImage(file);
+    if (blob.size > MAX_MB * 1024 * 1024) {
+      throw new Error(`이미지 용량이 큽니다(>${MAX_MB}MB). 다른 이미지를 사용해주세요.`);
+    }
+    return await putBlob(blob, folder);
+  } else {
+    // 5MB 이하지만 그래도 리사이즈로 균질화
+    const blob = await resizeImage(file);
+    return await putBlob(blob, folder);
+  }
 }
 
-// Single cover preview
-const coverInput = document.querySelector("#cover");
-const coverPreview = document.querySelector("#coverPreview");
-coverInput?.addEventListener("change", async (e) => {
-  const f = e.target.files?.[0];
-  if(!f) return;
-  const b64 = await toBase64(f);
-  coverPreview.src = b64;
-});
+async function putBlob(blob, folder) {
+  const id = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const path = `${folder}${id}.jpg`;
+  const storageRef = ref(storage, path);
+  await uploadBytes(storageRef, blob, { contentType: MIME, cacheControl: "public,max-age=31536000,immutable" });
+  return await getDownloadURL(storageRef);
+}
 
-// Multi previews
-const mountMulti = (inputSel, boxSel) => {
-  const input = document.querySelector(inputSel);
-  const box = document.querySelector(boxSel);
-  input?.addEventListener("change", async (e) => {
-    box.innerHTML = "";
-    for (const f of e.target.files) {
-      const b64 = await toBase64(f);
-      const img = new Image(); img.src = b64;
-      const wrap = document.createElement("div"); wrap.className = "img-cell"; wrap.appendChild(img);
-      box.appendChild(wrap);
-    }
+function loadImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = reject;
+    img.src = url;
   });
-};
+}
 
-mountMulti("#gallery", ".gallery-preview");
-mountMulti("#receipts", ".receipt-preview");
+async function resizeImage(file) {
+  const img = await loadImage(file);
+  const scale = img.width > MAX_W ? MAX_W / img.width : 1;
+  const w = Math.round(img.width * scale);
+  const h = Math.round(img.height * scale);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0, w, h);
+
+  const blob = await new Promise(res => canvas.toBlob(res, MIME, QUALITY));
+  return blob;
+}
