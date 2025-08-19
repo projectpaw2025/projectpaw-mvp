@@ -12,10 +12,11 @@ import {
 
 /* 콘솔에서 복사한 네 프로젝트 설정 */
 const firebaseConfig = {
-  apiKey: "AIzaSyCNguz8K5MehFR5nydZ293hI60FQ9Jh5Tk",     // ← 네 키
+  apiKey: "AIzaSyCNguz8K5MehFR5nydZ293hI60FQ9Jh5Tk",
   authDomain: "projectpaw-bf042.firebaseapp.com",
   projectId: "projectpaw-bf042",
-  storageBucket: "projectpaw-bf042.appspot.com",         // 꼭 .appspot.com
+  // 🔥 콘솔과 동일하게 firebasestorage.app 로 맞춘다
+  storageBucket: "projectpaw-bf042.firebasestorage.app",
   messagingSenderId: "340056180297",
   appId: "1:340056180297:web:20ae730ee45b0563062198",
   measurementId: "G-FEMJ80972P"
@@ -23,23 +24,18 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 
-/* Storage: 버킷을 명시적으로 지정 (사전요청/CORS 혼동 방지) */
-export const storage = getStorage(app, "gs://projectpaw-bf042.appspot.com");
+// 🔥 버킷도 명시적으로 같은 값으로
+export const storage = getStorage(app, "gs://projectpaw-bf042.firebasestorage.app");
 
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
-/* 익명 로그인 완료까지 기다리기 위한 Promise */
 export const authReady = (async () => {
-  try { await signInAnonymously(auth); }
-  catch (e) { console.warn("[auth] anonymous sign-in failed:", e); }
-  await new Promise((resolve) => {
-    const stop = onAuthStateChanged(auth, (u) => { if (u) { stop(); resolve(); } });
-  });
+  try { await signInAnonymously(auth); } catch(e) { console.warn("[auth] anon fail", e); }
+  await new Promise(res => { const stop = onAuthStateChanged(auth, u => { if (u) { stop(); res(); } }); });
   console.log("[auth] signed in:", auth.currentUser?.uid);
 })();
 
-/* 편의 export */
 export {
   collection, getDocs, getDoc, addDoc, doc, serverTimestamp, query, orderBy,
   ref, uploadBytes, getDownloadURL
