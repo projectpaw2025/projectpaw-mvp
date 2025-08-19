@@ -2,115 +2,175 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project.PAW - 상세보기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project.PAW – 상세보기</title>
   <link rel="stylesheet" href="styles.css">
-  <script type="module">
-    import { auth, signOut } from "./js/firebase.js";
-
-    window.logout = async () => {
-      try {
-        await signOut(auth);
-        alert("로그아웃 완료! 다시 로그인 해주세요.");
-        location.href = "index.html";
-      } catch (e) {
-        console.error("로그아웃 실패:", e);
-      }
-    };
-  </script>
   <style>
-    body {
-      margin: 0;
-      font-family: "Noto Sans KR", sans-serif;
-      background: #fff;
-      color: #333;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background: #ffffff;
-      border-bottom: 1px solid #eee;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    header h1 {
-      font-size: 1.5rem;
-      color: #222;
-    }
-    nav {
-      display: flex;
-      gap: 1rem;
-    }
-    nav a, nav button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      color: #333;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    nav a:hover, nav button:hover {
-      color: #ff6b6b;
-    }
+    body{margin:0;font-family:"Noto Sans KR",system-ui,Segoe UI,Roboto,sans-serif;background:#fff;color:#111827}
+    .wrap{max-width:960px;margin:0 auto;padding:24px 16px}
+    .hero{border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(15,23,42,.05);background:#fff}
+    .media{position:relative;background:#f1f5f9;border-bottom:1px solid #e5e7eb}
+    .media::before{content:"";display:block;padding-top:56.25%} /* 16:9 대표영역(상세는 좀 더 시원하게) */
+    .media>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%}
+    .pad{padding:16px}
+    .title{margin:0 0 6px 0;font-size:22px;font-weight:900}
+    .muted{color:#64748b}
+    .badge{font-size:11px;padding:3px 7px;border-radius:999px;border:1px solid #d1fae5;background:#ecfdf5;color:#065f46}
+    .badge.pending{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
+    .progress{width:100%;height:8px;border-radius:999px;background:#f1f5f9;border:1px solid #e5e7eb;overflow:hidden;margin:10px 0 6px}
+    .progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4f7fff,#6bd3ff)}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn{appearance:none;border:1px solid #e5e7eb;background:#fff;border-radius:10px;padding:10px 12px;font-weight:800;cursor:pointer}
+    .btn.primary{background:#1f6feb;color:#fff;border-color:transparent}
+    .btn.kakao{display:inline-flex;align-items:center;gap:8px}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
   </style>
 </head>
 <body>
-  <header>
-    <h1>🐾 Project.PAW</h1>
-    <nav>
-      <a href="index.html">홈</a>
-      <a href="project_list.html">후원하기</a>
-      <a href="about.html">About</a>
-      <button onclick="logout()">로그아웃</button>
-    </nav>
-  </header>
+  <!-- 공통 헤더 -->
+  <div data-include="header"></div>
 
-  <main style="padding:2rem; max-width:900px; margin:auto;">
-    <div id="project-detail">
-      <!-- JS에서 프로젝트 내용 로드 -->
-    </div>
+  <main class="wrap" aria-live="polite">
+    <article id="view" class="hero">
+      <div class="media"><img id="cover" src="img/placeholder.svg" alt="대표 이미지" loading="lazy" decoding="async"></div>
+      <div class="pad">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+          <h1 id="title" class="title">로딩중…</h1>
+          <span id="badge" class="badge">대기</span>
+        </div>
+        <p id="summary" class="muted" style="margin:2px 0 8px"></p>
+
+        <div class="progress"><i id="bar" style="width:0%"></i></div>
+        <div id="meta" class="muted" style="display:flex;gap:12px;font-size:14px"></div>
+
+        <div class="actions">
+          <a id="kakaoBtn" class="btn kakao" href="#" target="_blank" rel="noopener" style="display:none">카카오 오픈채팅 참여</a>
+          <button id="shareBtn" class="btn">공유하기</button>
+          <a class="btn" href="project_list.html">목록</a>
+        </div>
+
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:14px 0">
+        <section>
+          <h2 style="font-size:16px;margin:0 0 6px 0">상세 설명</h2>
+          <div id="desc" style="white-space:pre-wrap;line-height:1.6"></div>
+        </section>
+
+        <p id="notice" class="muted" style="margin-top:12px;display:none">
+          관리자 승인 후 카카오 오픈채팅 링크가 공개됩니다.
+        </p>
+      </div>
+    </article>
   </main>
 
-  <footer style="margin-top:3rem; padding:2rem; background:#fafafa; text-align:center; font-size:0.9rem; color:#666;">
-    <p>© 2025 Project.PAW</p>
-    <p>
-      <a href="about.html">About</a> | 
-      <a href="login.html">로그인</a>
-    </p>
-  </footer>
+  <!-- 공통 푸터 -->
+  <div data-include="footer"></div>
 
   <script type="module">
+    import { injectLayout } from "./js/include.js";
+    injectLayout({ active: "project" });
+
     import { db } from "./js/firebase.js";
     import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const params = new URLSearchParams(window.location.search);
+    const $ = s => document.querySelector(s);
+    const params = new URLSearchParams(location.search);
     const id = params.get("id");
 
-    async function loadProject() {
-      if (!id) return;
+    const esc = (s='') => String(s).replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+    const pct = (raised, target)=>{
+      const r=Number(raised||0), t=Number(target||0);
+      if(!t || t<=0) return 0;
+      return Math.max(0, Math.min(100, Math.round((r/t)*100)));
+    };
+
+    async function load(){
+      if(!id){
+        $("#title").textContent = "잘못된 접근입니다.";
+        return;
+      }
       const ref = doc(db, "projects", id);
       const snap = await getDoc(ref);
-
-      if (snap.exists()) {
-        const p = snap.data();
-        document.getElementById("project-detail").innerHTML = `
-          <img src="${p.imageUrl || 'img/default.jpg'}" style="width:100%;max-height:400px;object-fit:cover;border-radius:12px;margin-bottom:1rem;">
-          <h2 style="margin-bottom:0.5rem;">${p.title}</h2>
-          <p style="color:#555;">${p.description || ""}</p>
-          <p style="margin-top:1rem;font-weight:bold;color:#ff6b6b;">후원자와 연결되는 카카오톡 오픈채팅방: 
-            <a href="${p.kakaoUrl || '#'}" target="_blank" style="color:#ff6b6b;">참여하기</a>
-          </p>
-        `;
-      } else {
-        document.getElementById("project-detail").innerHTML = "<p>존재하지 않는 프로젝트입니다.</p>";
+      if(!snap.exists()){
+        $("#title").textContent = "존재하지 않는 프로젝트입니다.";
+        return;
       }
+
+      const p = snap.data();
+
+      // 이미지 (원본 어떤 사이즈라도 16:9 영역에 일관 렌더)
+      $("#cover").src = p.imageUrl || p.images?.cover || "img/placeholder.svg";
+      $("#cover").alt = (p.title || "대표 이미지") + " 대표 이미지";
+
+      // 타이틀/요약/설명
+      $("#title").textContent = p.title || "제목 없음";
+      $("#summary").textContent = p.summary || "";
+      $("#desc").textContent = p.description || "";
+
+      // 배지/승인상태
+      const badge = $("#badge");
+      if(p.status === "approved"){
+        badge.className = "badge";
+        badge.textContent = "승인";
+      } else {
+        badge.className = "badge pending";
+        badge.textContent = "대기";
+      }
+
+      // 메타/진행률
+      const progress = pct(p.raisedAmount, p.targetAmount);
+      $("#bar").style.width = progress + "%";
+      const meta = [];
+      if(p.targetAmount) meta.push(`목표 ${Number(p.targetAmount).toLocaleString()}원`);
+      if(p.selfPayAmount) meta.push(`구조자 ${Number(p.selfPayAmount).toLocaleString()}원`);
+      if(p.raisedAmount) meta.push(`현재 ${Number(p.raisedAmount).toLocaleString()}원`);
+      $("#meta").innerHTML = meta.map(m=>`<span>${esc(m)}</span>`).join("");
+
+      // 카카오 버튼 노출
+      const btn = $("#kakaoBtn");
+      const notice = $("#notice");
+      const link = p.kakaoUrl || p.kakaoLink;
+      if(p.status === "approved" && link){
+        btn.href = link;
+        btn.style.display = "inline-flex";
+        notice.style.display = "none";
+      } else {
+        btn.style.display = "none";
+        notice.style.display = "block";
+      }
+
+      // 공유
+      $("#shareBtn").addEventListener("click", async ()=>{
+        try{
+          const shareData = {
+            title: p.title || "Project.PAW",
+            text: (p.summary || p.description || "").slice(0,100),
+            url: location.href
+          };
+          if(navigator.share){ await navigator.share(shareData); }
+          else {
+            await navigator.clipboard.writeText(location.href);
+            alert("링크를 클립보드에 복사했습니다.");
+          }
+        }catch(e){ console.warn(e); }
+      });
+
+      // (선택) 동적 OG 메타 주입 – 크롤러에 바로 먹히진 않지만 SNS 미리보기 개선용
+      try{
+        const head = document.head;
+        const ensure = (name, content, prop=false) => {
+          const sel = prop ? `meta[property="${name}"]` : `meta[name="${name}"]`;
+          let el = head.querySelector(sel);
+          if(!el){ el = document.createElement("meta"); (prop? el.setAttribute("property", name): el.setAttribute("name", name)); head.appendChild(el); }
+          el.setAttribute("content", content);
+        };
+        ensure("og:title", p.title || "Project.PAW", true);
+        ensure("og:description", (p.summary || p.description || "").slice(0,120), true);
+        ensure("og:image", p.imageUrl || p.images?.cover || "", true);
+        ensure("twitter:card", "summary_large_image");
+      }catch{}
     }
 
-    loadProject();
+    load();
   </script>
 </body>
 </html>
