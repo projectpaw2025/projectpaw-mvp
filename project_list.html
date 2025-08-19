@@ -4,45 +4,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>후원하기 — Project.PAW</title>
+  <meta property="og:title" content="Project.PAW — 후원 프로젝트"/>
+  <meta property="og:description" content="도움은 본능, 연결은 선택. 지금 연결을 시작하세요."/>
   <style>
-    :root{
-      --primary:#1f6feb; --muted:#6b7280; --bg:#f8fafc; --card:#fff; --line:#e5e7eb;
-      --radius:18px; --shadow:0 12px 30px rgba(16,24,40,.08);
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;background:var(--bg);color:#0f172a;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
+    :root{--primary:#1f6feb;--muted:#6b7280;--bg:#0a0f1d;--card:#0f1629;--line:#1a2342;--radius:18px}
+    *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:#e6ecff;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
     a{text-decoration:none;color:inherit}
     .container{max-width:1120px;margin:0 auto;padding:0 16px}
-    .topbar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line)}
+    .topbar{position:sticky;top:0;z-index:10;background:#0b1222;border-bottom:1px solid var(--line)}
     .topbar .inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
     .brand{font-weight:900}
     .nav{display:flex;gap:8px}
     .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
-    .btn.ghost{background:#11182710}
+    .btn.ghost{background:#ffffff12}
     .btn.primary{background:var(--primary);color:#fff}
     .section{padding:28px 0}
-    .kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800}
+    .kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#90a0c0;font-weight:800}
     h1{margin:0 0 6px 0;font-size:clamp(22px,3.4vw,30px);font-weight:900}
     .controls{display:flex;gap:10px;align-items:center}
-    select,input[type="checkbox"]{padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    select,input[type="checkbox"]{padding:10px 12px;border:1px solid #243056;border-radius:12px;background:#0c1326;color:#e6ecff}
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;transition:transform .12s}
+    .card{background:linear-gradient(180deg,#0f1629,#0d1527);border:1px solid #1b2547;border-radius:18px;overflow:hidden;transition:transform .12s}
     .card:hover{transform:translateY(-2px)}
-    .thumb{width:100%;height:200px;object-fit:cover;background:#eef2ff}
+    .media{position:relative;background:#0a1020;border-bottom:1px solid #1b2547}
+    .media::before{content:"";display:block;padding-top:56.25%}
+    .media > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%}
     .pad{padding:14px 14px 16px}
-    .muted{color:#6b7280}
+    .muted{color:#9aa8c7}
     .badge{font-size:12px;padding:4px 8px;border-radius:999px}
-    .badge.approved{background:#eafff2;color:#0a6b3c}
-    .badge.pending{background:#fff6e6;color:#a15a00}
-    .progress{width:100%;height:8px;background:#f3f4f6;border-radius:999px;overflow:hidden;margin:10px 0 6px}
-    .progress i{display:block;height:100%;background:var(--primary);width:0%}
-    .skeleton{position:relative;min-height:260px;background:linear-gradient(90deg,#f4f6fb 25%,#eef2f7 37%,#f4f6fb 63%);background-size:400% 100%;animation:shimmer 1.4s infinite;border-radius:var(--radius)}
-    @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
-    .empty{padding:36px;text-align:center;border:1px dashed #cbd5e1;border-radius:16px;background:#fff;color:#64748b}
-    footer{border-top:1px solid var(--line);margin-top:28px}
-    .footer-inner{display:flex;justify-content:space-between;align-items:center;padding:24px 0;color:#94a3b8;font-size:14px}
+    .badge.approved{background:#09291a;color:#4ae39b;border:1px solid #153a27}
+    .badge.pending{background:#2a1e05;color:#ffcc6b;border:1px solid #3e2b08}
+    .progress{width:100%;height:8px;background:#111a33;border-radius:999px;overflow:hidden;margin:10px 0 6px;border:1px solid #1e2b50}
+    .progress i{display:block;height:100%;background:linear-gradient(90deg,#4f7fff,#6bd3ff);width:0%}
+    .tools{display:flex;justify-content:center;margin-top:16px}
+    .empty{padding:36px;text-align:center;border:1px dashed #344065;border-radius:16px;background:#0b1224;color:#9aa8c7}
+    footer{border-top:1px solid #111a33;margin-top:28px}
+    .footer-inner{display:flex;justify-content:space-between;align-items:center;padding:24px 0;color:#7f8fb3;font-size:14px}
     .footer-nav{display:flex;gap:12px}
-    .footer-link{color:#64748b}
   </style>
 </head>
 <body>
@@ -76,15 +74,16 @@
       </div>
 
       <div id="list" class="grid" style="margin-top:16px"></div>
+      <div class="tools"><button id="moreBtn" class="btn ghost">더 보기</button></div>
     </section>
   </main>
 
   <footer>
     <div class="container footer-inner">
-      <span>© Project.PAW</span>
+      <span>© Project.PAW — “발바닥 하나가, 마음 하나다.”</span>
       <nav class="footer-nav">
-        <a class="footer-link" href="about.html">About</a>
-        <a class="footer-link" href="login.html">로그인</a>
+        <a href="about.html">About</a>
+        <a href="login.html">로그인</a>
       </nav>
     </div>
   </footer>
@@ -97,47 +96,33 @@
     const wrap = document.querySelector("#list");
     const sortSel = document.querySelector("#sort");
     const onlyApproved = document.querySelector("#onlyApproved");
+    const moreBtn = document.querySelector("#moreBtn");
 
-    const skeletons = () => {
-      wrap.innerHTML = Array.from({ length: 8 })
-        .map(()=> `<div class="skeleton"></div>`).join("");
-    };
+    let all = [];
+    let page = 0;
+    const PAGE_SIZE = 9;
 
-    function createdAtSeconds(x){
-      return (x && typeof x==='object' && 'seconds' in x) ? x.seconds : 0;
-    }
+    function createdAtSeconds(x){ return (x && typeof x==='object' && 'seconds' in x) ? x.seconds : 0; }
 
-    async function render(){
-      skeletons();
-      let items = await storage.getAll();
+    function renderPage(){
+      const start = page * PAGE_SIZE;
+      const items = all.slice(start, start + PAGE_SIZE);
 
-      if(onlyApproved?.checked){
-        items = items.filter(p => (p.status || "pending") === "approved");
-      }
-
-      const mode = sortSel?.value || "latest";
-      if(mode === "latest"){
-        items.sort((a,b)=> createdAtSeconds(b.createdAt) - createdAtSeconds(a.createdAt));
-      }else if(mode === "progress"){
-        items.sort((a,b)=> percent(b.raisedAmount||0,b.targetAmount||0) - percent(a.raisedAmount||0,a.targetAmount||0));
-      }else if(mode === "goal"){
-        items.sort((a,b)=> Number(b.targetAmount||0) - Number(a.targetAmount||0));
-      }
-
-      wrap.innerHTML = items.map(p=>{
+      const chunk = items.map(p=>{
         const badge = (p.status === "approved")
           ? '<span class="badge approved">승인</span>'
           : '<span class="badge pending">대기</span>';
 
         const pct = Math.max(0, Math.min(100, percent(p.raisedAmount||0, p.targetAmount||1)));
         const cover = (p.images && p.images.cover) ? p.images.cover : "img/placeholder.svg";
+        const title = esc(p.title||'');
 
         return `
-          <a class="card" href="project.html?id=${encodeURIComponent(p.id)}" aria-label="프로젝트 ${esc(p.title||'')} 상세 보기">
-            <img class="thumb" src="${cover}" alt="대표 이미지" />
+          <a class="card" href="project.html?id=${encodeURIComponent(p.id)}" aria-label="프로젝트 ${title} 상세 보기">
+            <div class="media"><img src="${cover}" alt="${title} 대표 이미지"/></div>
             <div class="pad">
               <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-                <h3 style="margin:0;font-size:18px">${esc(p.title || '')}</h3>
+                <h3 style="margin:0;font-size:18px">${title}</h3>
                 ${badge}
               </div>
               <p class="muted" style="margin:6px 0 10px 0">${esc(p.summary || '')}</p>
@@ -151,14 +136,37 @@
         `;
       }).join("");
 
-      if(!items.length){
+      if(page===0) wrap.innerHTML = chunk; else wrap.insertAdjacentHTML("beforeend", chunk);
+
+      page++;
+      moreBtn.style.display = (page * PAGE_SIZE >= all.length) ? "none" : "inline-block";
+
+      if(all.length===0){
         wrap.innerHTML = `<div class="empty">표시할 프로젝트가 없습니다.</div>`;
+        moreBtn.style.display = "none";
       }
     }
 
-    sortSel?.addEventListener("change", render);
-    onlyApproved?.addEventListener("change", render);
-    render();
+    async function apply(){
+      page = 0;
+      let items = await storage.getAll();
+
+      if(onlyApproved?.checked) items = items.filter(p => (p.status || "pending") === "approved");
+
+      const mode = sortSel?.value || "latest";
+      if(mode === "latest") items.sort((a,b)=> createdAtSeconds(b.createdAt) - createdAtSeconds(a.createdAt));
+      if(mode === "progress") items.sort((a,b)=> percent(b.raisedAmount||0,b.targetAmount||0) - percent(a.raisedAmount||0,a.targetAmount||0));
+      if(mode === "goal") items.sort((a,b)=> Number(b.targetAmount||0) - Number(a.targetAmount||0));
+
+      all = items;
+      renderPage();
+    }
+
+    sortSel?.addEventListener("change", apply);
+    onlyApproved?.addEventListener("change", apply);
+    moreBtn?.addEventListener("click", renderPage);
+
+    apply();
   </script>
 </body>
 </html>
