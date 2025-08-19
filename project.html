@@ -5,13 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>프로젝트 상세 — Project.PAW</title>
 
-  <!-- 디자인은 기존 CSS를 그대로 사용하세요 -->
-  <link rel="stylesheet" href="css/common.css" />
-  <link rel="stylesheet" href="css/detail.css" />
+  <!-- 페이지 전용 스타일 -->
+  <style>
+    :root{
+      --paw-primary:#1f6feb; --ink:#0b1220; --muted:#6b7280; --bg:#f7f9fc; --card:#fff;
+      --line:#e5e7eb; --radius:16px; --shadow:0 10px 24px rgba(16,24,40,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:#111827;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    a{text-decoration:none;color:inherit}
+    .container{max-width:1000px;margin:0 auto;padding:0 16px}
+    .topbar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line)}
+    .topbar .inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{font-weight:800}
+    .nav{display:flex;gap:8px}
+    .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .btn.primary{background:var(--paw-primary);color:#fff}
+    .btn.ghost{background:#11182710}
+    .btn.disabled{opacity:.5;pointer-events:none}
+    .detail{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;padding:24px 0}
+    @media (max-width: 900px){ .detail{grid-template-columns:1fr} }
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .pad{padding:16px}
+    .cover{border-radius:var(--radius);overflow:hidden;background:#eef2ff}
+    .cover img{width:100%;height:420px;object-fit:cover;display:block}
+    @media (max-width: 600px){ .cover img{height:240px} }
+    h1{margin:0 0 8px 0;font-size:clamp(20px,3.4vw,30px);font-weight:900}
+    .muted{color:#6b7280}
+    .kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:6px}
+    .progress{width:100%;height:10px;background:#f3f4f6;border-radius:999px;overflow:hidden}
+    .progress i{display:block;height:100%;background:var(--paw-primary);width:0%}
+    .chip{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;background:#eef2ff;color:#1f3b7a}
+    .stack{display:flex;flex-direction:column;gap:10px}
+    .row{display:flex;gap:10px;align-items:center}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .section-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .slider{position:relative}
+    .track{display:flex;transition:transform .25s ease}
+    .slide{min-width:100%}
+    .slide img{width:100%;height:340px;object-fit:cover;border-radius:12px}
+    @media (max-width: 600px){ .slide img{height:220px} }
+    .navbtn{position:absolute;top:50%;transform:translateY(-50%);border:0;background:#fff;border-radius:999px;width:36px;height:36px;box-shadow:var(--shadow);cursor:pointer}
+    .navbtn.prev{left:8px} .navbtn.next{right:8px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+    .img-cell{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#fff}
+    .img-cell img{width:100%;height:140px;object-fit:cover;display:block}
+    .empty{padding:18px;text-align:center;border:1px dashed #cbd5e1;border-radius:12px;background:#fff;color:#64748b}
+    footer{padding:40px 0;color:#94a3b8;font-size:14px;text-align:center}
+  </style>
 </head>
 <body>
   <header class="topbar">
-    <div class="container">
+    <div class="container inner">
       <a class="brand" href="index.html">Project.PAW</a>
       <nav class="nav">
         <a href="project_list.html" class="btn ghost">후원하기</a>
@@ -22,129 +67,15 @@
 
   <main class="container">
     <article class="detail">
-      <img class="project-cover" src="img/placeholder.svg" alt="대표 이미지" />
-      <div class="head">
-        <h1 class="project-title"></h1>
-        <p class="project-summary muted"></p>
-        <div class="money muted project-money"></div>
-      </div>
-
-      <section class="desc">
-        <h2>상세 설명</h2>
-        <div class="project-description"></div>
-      </section>
-
-      <section class="gallery">
-        <h2>상황 갤러리</h2>
-        <div class="slider">
-          <button class="btn-prev" type="button" aria-label="이전">‹</button>
-          <div class="track"></div>
-          <button class="btn-next" type="button" aria-label="다음">›</button>
+      <!-- 좌측: 커버 + 상세설명 + 갤러리 -->
+      <div class="stack">
+        <div class="cover card">
+          <img class="project-cover" src="img/placeholder.svg" alt="대표 이미지" />
         </div>
-      </section>
 
-      <section class="receipts">
-        <h2>영수증</h2>
-        <div class="receipt-preview grid"></div>
-      </section>
-
-      <section class="actions">
-        <a class="btn primary" id="kakaoBtn" target="_blank" rel="noopener">카카오톡 연결</a>
-        <button class="btn ghost" id="shareBtn">공유</button>
-      </section>
-    </article>
-  </main>
-
-  <footer class="container muted" style="padding:40px 0;">
-    “책임의 끝과 공감의 시작이 만나는 곳.” — Project.PAW
-  </footer>
-
-  <!-- ✅ 백엔드/스토리지 모듈 -->
-  <script type="module">
-    import "./js/firebase.js";
-    import { storage, fmt } from "./js/app.js";
-    import { esc, percent } from "./js/utils.js";
-
-    const $ = (sel, root = document) => root.querySelector(sel);
-
-    // URL에서 id 추출
-    const id = new URLSearchParams(location.search).get("id");
-
-    async function main() {
-      if (!id) {
-        document.body.innerHTML = "<main class='container'><p>잘못된 접근입니다 (id 없음)</p></main>";
-        return;
-      }
-
-      const p = await storage.byId(id);
-      if (!p) {
-        document.body.innerHTML = "<main class='container'><p>프로젝트를 찾을 수 없습니다.</p></main>";
-        return;
-      }
-
-      // 헤더/요약
-      $(".project-title").textContent = p.title || "";
-      $(".project-summary").textContent = p.summary || "";
-
-      // 금액
-      const target = fmt(p.targetAmount);
-      const selfPay = fmt(p.selfPayAmount);
-      const pct = percent(p.raisedAmount || 0, p.targetAmount || 1);
-      $(".project-money").textContent = `목표 ${target}원 · 구조자 ${selfPay}원 (달성률 ${pct}%)`;
-
-      // 커버
-      const cover = (p.images && p.images.cover) ? p.images.cover : "img/placeholder.svg";
-      $(".project-cover").src = cover;
-
-      // 상세 설명 (줄바꿈 처리)
-      const desc = (p.description || "").replace(/\n/g, "<br/>");
-      $(".project-description").innerHTML = desc;
-
-      // 갤러리 슬라이더
-      const g = Array.isArray(p.images?.gallery) ? p.images.gallery : [];
-      const track = document.querySelector(".track");
-      if (g.length) {
-        track.innerHTML = g.map(src => `<div class="slide"><img src="${src}" alt="gallery"></div>`).join("");
-      } else {
-        track.innerHTML = `<div class="empty">등록된 사진이 없습니다.</div>`;
-      }
-
-      let idx = 0;
-      const total = track.children.length || 1;
-      const update = () => { track.style.transform = `translateX(${-idx * 100}%)`; };
-      $(".btn-prev").onclick = () => { idx = (idx - 1 + total) % total; update(); };
-      $(".btn-next").onclick = () => { idx = (idx + 1) % total; update(); };
-      update();
-
-      // 영수증
-      const r = Array.isArray(p.images?.receipts) ? p.images.receipts : [];
-      const rwrap = document.querySelector(".receipt-preview.grid");
-      rwrap.innerHTML = (r.length ? r : []).map(src => `<div class="img-cell"><img src="${src}" alt="receipt"></div>`).join("")
-        || `<div class="empty">등록된 영수증이 없습니다.</div>`;
-
-      // 카카오 링크
-      const kakao = (p.kakaoLink || "").trim();
-      const kakaoBtn = document.getElementById("kakaoBtn");
-      if (kakao) {
-        kakaoBtn.href = kakao;
-      } else {
-        kakaoBtn.classList.add("disabled");
-        kakaoBtn.setAttribute("aria-disabled", "true");
-        kakaoBtn.addEventListener("click", e => e.preventDefault());
-      }
-
-      // 공유
-      document.getElementById("shareBtn").addEventListener("click", async () => {
-        try {
-          await navigator.clipboard.writeText(location.href);
-          alert("링크가 복사되었습니다.");
-        } catch {
-          prompt("복사 실패. 수동으로 복사하세요:", location.href);
-        }
-      });
-    }
-
-    main();
-  </script>
-</body>
-</html>
+        <div class="section-card pad">
+          <div class="kicker">프로젝트</div>
+          <h1 class="project-title"></h1>
+          <p class="project-summary muted" style="margin:6px 0 8px 0"></p>
+          <div class="progress"><i id="bar" style="width:0%"></i></div>
+          <div class="row muted" style="gap:12px; margin-top:6px"
