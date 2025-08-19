@@ -2,120 +2,111 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project.PAW - 후원하기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project.PAW – 후원하기</title>
   <link rel="stylesheet" href="styles.css">
-  <script type="module">
-    import { auth, signOut } from "./js/firebase.js";
-
-    window.logout = async () => {
-      try {
-        await signOut(auth);
-        alert("로그아웃 완료! 다시 로그인 해주세요.");
-        location.href = "index.html";
-      } catch (e) {
-        console.error("로그아웃 실패:", e);
-      }
-    };
-  </script>
   <style>
-    body {
-      margin: 0;
-      font-family: "Noto Sans KR", sans-serif;
-      background: #fff;
-      color: #333;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background: #ffffff;
-      border-bottom: 1px solid #eee;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    header h1 {
-      font-size: 1.5rem;
-      color: #222;
-    }
-    nav {
-      display: flex;
-      gap: 1rem;
-    }
-    nav a, nav button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      color: #333;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    nav a:hover, nav button:hover {
-      color: #ff6b6b;
-    }
+    body{margin:0;font-family:"Noto Sans KR",system-ui,Segoe UI,Roboto,sans-serif;background:#fff;color:#111827}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px 16px}
+    h2{margin:0 0 12px 0}
+    .muted{color:#64748b}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(15,23,42,.05);transition:.12s}
+    .card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,.08)}
+    .media{position:relative;background:#f1f5f9;border-bottom:1px solid #e5e7eb}
+    .media::before{content:"";display:block;padding-top:75%} /* 4:3 비율 */
+    .media>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%}
+    .body{padding:12px}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .title{margin:0;font-size:16px;font-weight:800;line-height:1.25}
+    .line2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .badge{font-size:11px;padding:3px 7px;border-radius:999px;border:1px solid #d1fae5;background:#ecfdf5;color:#065f46}
+    .badge.pending{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
+    .progress{width:100%;height:6px;border-radius:999px;background:#f1f5f9;border:1px solid #e5e7eb;overflow:hidden;margin-top:8px}
+    .progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4f7fff,#6bd3ff)}
+    .meta{display:flex;gap:10px;color:#64748b;font-size:13px;margin-top:6px}
   </style>
 </head>
 <body>
-  <header>
-    <h1>🐾 Project.PAW</h1>
-    <nav>
-      <a href="index.html">홈</a>
-      <a href="create.html">등록하기</a>
-      <a href="about.html">About</a>
-      <button onclick="logout()">로그아웃</button>
-    </nav>
-  </header>
+  <!-- 공통 헤더 -->
+  <div data-include="header"></div>
 
-  <main style="padding:2rem; max-width:1200px; margin:auto;">
-    <h2 style="margin-bottom:1.5rem;">후원 가능한 프로젝트</h2>
-    <div id="project-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;">
-      <!-- JS에서 불러온 카드 표시 -->
-    </div>
+  <main class="wrap">
+    <h2>후원 가능한 프로젝트</h2>
+    <p class="muted" style="margin:4px 0 16px">사진은 어떤 사이즈로 올려도 카드에서는 4:3으로 일관되게 보여줘요.</p>
+    <div id="list" class="grid" aria-live="polite"></div>
   </main>
 
-  <footer style="margin-top:3rem; padding:2rem; background:#fafafa; text-align:center; font-size:0.9rem; color:#666;">
-    <p>© 2025 Project.PAW</p>
-    <p>
-      <a href="about.html">About</a> | 
-      <a href="login.html">로그인</a>
-    </p>
-  </footer>
+  <!-- 공통 푸터 -->
+  <div data-include="footer"></div>
 
   <script type="module">
+    import { injectLayout } from "./js/include.js";
+    injectLayout({ active: "project_list" });
+
     import { db } from "./js/firebase.js";
     import { collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const container = document.getElementById("project-list");
+    const wrap = document.getElementById("list");
+    const esc = (s='') => String(s).replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
 
-    async function loadProjects() {
-      const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
-
-      snapshot.forEach(doc => {
-        const p = doc.data();
-        const card = document.createElement("div");
-        card.style.border = "1px solid #eee";
-        card.style.borderRadius = "12px";
-        card.style.overflow = "hidden";
-        card.style.background = "#fff";
-        card.style.boxShadow = "0 2px 6px rgba(0,0,0,0.05)";
-
-        card.innerHTML = `
-          <img src="${p.imageUrl || 'img/default.jpg'}" style="width:100%;height:200px;object-fit:cover;">
-          <div style="padding:1rem;">
-            <h3 style="margin:0 0 0.5rem 0;font-size:1.1rem;color:#222;">${p.title}</h3>
-            <p style="margin:0;font-size:0.9rem;color:#555;">${p.description?.slice(0,80) || ''}...</p>
-            <a href="project.html?id=${doc.id}" style="display:inline-block;margin-top:0.8rem;color:#ff6b6b;font-weight:bold;">상세보기 →</a>
-          </div>
-        `;
-        container.appendChild(card);
-      });
+    function percent(raised, target){
+      const r = Number(raised||0), t = Number(target||0);
+      if(!t || t<=0) return 0;
+      const p = Math.round((r/t)*100);
+      return Math.max(0, Math.min(100, p));
     }
 
-    loadProjects();
+    function card(p, id){
+      const cover = p.imageUrl || (p.images?.cover) || "img/placeholder.svg";
+      const title = esc(p.title || "제목 없음");
+      const desc = esc(p.description || p.summary || "");
+      const pct = percent(p.raisedAmount, p.targetAmount);
+      const badge = (p.status==="approved")
+        ? '<span class="badge">승인</span>'
+        : '<span class="badge pending">대기</span>';
+
+      return `
+        <a class="card" href="project.html?id=${encodeURIComponent(id)}" aria-label="${title} 상세보기">
+          <div class="media"><img src="${cover}" alt="${title} 대표 이미지" loading="lazy" decoding="async"></div>
+          <div class="body">
+            <div class="row">
+              <h3 class="title">${title}</h3>
+              ${badge}
+            </div>
+            <p class="muted line2" style="margin:6px 0">${desc}</p>
+            <div class="progress"><i style="width:${pct}%"></i></div>
+            <div class="meta">
+              ${p.targetAmount ? `<span>목표 ${Number(p.targetAmount).toLocaleString()}원</span>` : ``}
+              ${p.selfPayAmount ? `<span>구조자 ${Number(p.selfPayAmount).toLocaleString()}원</span>` : ``}
+            </div>
+          </div>
+        </a>
+      `;
+    }
+
+    async function render(){
+      wrap.innerHTML = Array.from({length:6}).map(()=>`
+        <div class="card"><div class="media"></div><div class="body">
+          <div class="row"><h3 class="title muted">Loading…</h3><span class="badge pending">…</span></div>
+          <div class="progress"><i style="width:0%"></i></div>
+        </div></div>`).join("");
+
+      const q = query(collection(db, "projects"), orderBy("createdAt","desc"));
+      const snap = await getDocs(q);
+      const items = [];
+      snap.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
+
+      // 승인된 게 있으면 승인만, 아니면 전체
+      const approved = items.filter(x => x.status === "approved");
+      const list = (approved.length ? approved : items);
+
+      wrap.innerHTML = list.map(p => card(p, p.id)).join("") || `
+        <div class="muted">아직 등록된 프로젝트가 없어요.</div>
+      `;
+    }
+
+    render();
   </script>
 </body>
 </html>
