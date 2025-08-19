@@ -5,26 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Admin — Project.PAW</title>
   <style>
-    :root{--primary:#1f6feb;--muted:#6b7280;--bg:#0a0f1d;--card:#0f1629;--line:#1a2342;--radius:14px}
-    *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:#e5e7eb;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
+    :root{--primary:#1f6feb;--muted:#64748b;--bg:#ffffff;--card:#ffffff;--line:#e5e7eb;--radius:14px}
+    *{box-sizing:border-box} html,body{margin:0;background:#fff;color:#0f172a;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
     a{text-decoration:none;color:inherit}
     .container{max-width:1100px;margin:0 auto;padding:0 16px}
-    header{position:sticky;top:0;background:#0b1222;border-bottom:1px solid var(--line)}
-    header .inner{display:flex;justify-content:space-between;align-items:center;padding:14px 0}
-    .btn{appearance:none;border:0;border-radius:10px;padding:10px 12px;font-weight:700;cursor:pointer}
-    .btn.primary{background:var(--primary);color:#fff}
-    .btn.ghost{background:#ffffff12}
-    .grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:16px}
+    header{position:sticky;top:0;background:#ffffffcc;border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
+    header .inner{display:flex;justify-content:space-between;align-items:center;padding:12px 0}
+    .btn{appearance:none;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-weight:700;cursor:pointer;background:#fff}
+    .btn.primary{background:var(--primary);color:#fff;border-color:transparent}
+    .grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:14px}
     @media(max-width:900px){.grid{grid-template-columns:1fr}}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
-    input,select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0c1326;color:#e5e7eb}
-    label{font-size:13px;color:#9aa8c7;font-weight:700}
+    .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+    input,select{width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:#fff}
+    label{font-size:13px;color:#475569;font-weight:700}
     table{width:100%;border-collapse:collapse}
     th,td{padding:10px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
-    .badge{font-size:12px;padding:4px 8px;border-radius:999px}
-    .badge.approved{background:#09291a;color:#4ae39b;border:1px solid #153a27}
-    .badge.pending{background:#2a1e05;color:#ffcc6b;border:1px solid #3e2b08}
-    .muted{color:#9aa8c7}
+    .badge{font-size:11px;padding:3px 7px;border-radius:999px}
+    .badge.approved{background:#eafff2;color:#0a6b3c;border:1px solid #b7f0cf}
+    .badge.pending{background:#fff6e6;color:#a15a00;border:1px solid #f3d6a3}
+    .muted{color:#64748b}
     .mono{font-family:ui-monospace,Consolas,monospace}
   </style>
 </head>
@@ -32,22 +31,18 @@
   <header>
     <div class="container inner">
       <strong>Project.PAW Admin</strong>
-      <nav>
-        <a class="btn ghost" href="index.html">사이트 보기</a>
+      <nav style="display:flex;gap:8px;align-items:center">
+        <button id="loginBtn" class="btn">관리자 로그인</button>
+        <a class="btn" href="index.html">사이트 보기</a>
       </nav>
     </div>
   </header>
 
   <main class="container" style="padding:18px 0 28px">
     <div class="grid">
-      <!-- 좌: 단건 편집 -->
       <section class="card">
         <h3 style="margin:4px 0 12px 0">프로젝트 승인/수정</h3>
         <div style="display:grid;gap:10px">
-          <div>
-            <label>관리자 암호</label>
-            <input id="adminPass" type="password" placeholder="운영용 임시 암호"/>
-          </div>
           <div>
             <label>프로젝트 ID</label>
             <input id="pid" class="mono" type="text" placeholder="project id (?id=...)"/>
@@ -62,22 +57,21 @@
           <div>
             <label>카카오 오픈채팅 링크</label>
             <input id="kakao" type="url" placeholder="https://open.kakao.com/o/xxxxxx"/>
-            <small class="muted">승인 후 공개됩니다. 형식 검증: <code class="mono">open.kakao.com</code></small>
+            <small class="muted">형식: open.kakao.com</small>
           </div>
           <div>
-            <button id="loadBtn" class="btn ghost" type="button">불러오기</button>
+            <button id="loadBtn" class="btn" type="button">불러오기</button>
             <button id="saveBtn" class="btn primary" type="button">저장</button>
           </div>
           <p class="muted" id="msg"></p>
         </div>
       </section>
 
-      <!-- 우: 대기 목록 -->
       <section class="card">
         <h3 style="margin:4px 0 12px 0">심사 대기 목록</h3>
         <table>
           <thead><tr><th>ID</th><th>제목</th><th>등록일</th><th>상태</th></tr></thead>
-          <tbody id="pending"></tbody>
+        <tbody id="pending"></tbody>
         </table>
       </section>
     </div>
@@ -85,61 +79,80 @@
 
   <script type="module">
     import "./js/firebase.js";
-    import { storage, fmt } from "./js/app.js";
+    import { storage } from "./js/app.js";
+    import { auth } from "./js/firebase.js";
+    import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider } 
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    // ⚠️ 임시 보호 — 실제 운영은 Firebase Auth로 교체하세요.
-    const ADMIN_PASS = "CHANGE_ME";
+    const provider = new GoogleAuthProvider();
+    const loginBtn = document.getElementById('loginBtn');
+
+    loginBtn.onclick = async () => {
+      try{ await signInWithPopup(auth, provider); }
+      catch(e){ alert("로그인 실패: " + (e?.message||"")); }
+    };
+
+    // --- Admin Guard (Custom Claims: role=admin) ---
+    function guardAdmin(){
+      return new Promise((resolve,reject)=>{
+        onAuthStateChanged(auth, async (user)=>{
+          if(!user) return reject(new Error("로그인이 필요합니다."));
+          const token = await user.getIdTokenResult(true);
+          if(token.claims.role !== 'admin') return reject(new Error("관리자 권한이 없습니다."));
+          resolve(user);
+        });
+      });
+    }
 
     const $ = (s, r=document)=>r.querySelector(s);
     const pid = $("#pid"), status = $("#status"), kakao = $("#kakao");
-    const msg = $("#msg"), pass = $("#adminPass");
+    const msg = $("#msg");
+    const ok = t => { msg.textContent = t; msg.style.color = "#166534"; };
+    const err = t => { msg.textContent = t; msg.style.color = "#b91c1c"; };
 
-    function ok(t){ msg.textContent = t; msg.style.color = "#a7f3d0"; }
-    function err(t){ msg.textContent = t; msg.style.color = "#fecaca"; }
-
-    function isKakaoLink(u){
-      if(!u) return true; // 빈 값은 허용(승인만 먼저 가능)
-      try {
-        const url = new URL(u);
-        return /(^|\.)open\.kakao\.com$/i.test(url.hostname);
-      } catch { return false; }
-    }
+    const isKakaoLink = (u)=>{
+      if(!u) return true;
+      try { const url = new URL(u); return /(^|\\.)open\\.kakao\\.com$/i.test(url.hostname); }
+      catch { return false; }
+    };
 
     async function refreshPending(){
-      const all = await storage.getAll();
-      const pend = all.filter(p=> (p.status||"pending")==="pending");
-      $("#pending").innerHTML = pend.map(p=>{
-        const sec = p.createdAt?.seconds ? new Date(p.createdAt.seconds*1000).toLocaleString("ko-KR") : "-";
-        return `<tr>
-          <td class="mono">${p.id}</td>
-          <td>${(p.title||"")}</td>
-          <td class="muted">${sec}</td>
-          <td><span class="badge pending">대기</span></td>
-        </tr>`;
-      }).join("") || `<tr><td colspan="4" class="muted">대기 중인 프로젝트가 없습니다.</td></tr>`;
+      try{
+        await guardAdmin();
+        const all = await storage.getAll();
+        const pend = all.filter(p=> (p.status||"pending")==="pending");
+        $("#pending").innerHTML = pend.map(p=>{
+          const sec = p.createdAt?.seconds ? new Date(p.createdAt.seconds*1000).toLocaleString("ko-KR") : "-";
+          return `<tr>
+            <td class="mono">${p.id}</td>
+            <td>${(p.title||"")}</td>
+            <td class="muted">${sec}</td>
+            <td><span class="badge pending">대기</span></td>
+          </tr>`;
+        }).join("") || `<tr><td colspan="4" class="muted">대기 중인 프로젝트가 없습니다.</td></tr>`;
+      }catch(e){ err(e.message); }
     }
 
     $("#loadBtn").onclick = async ()=>{
       try{
+        await guardAdmin();
         if(!pid.value) return err("프로젝트 ID를 입력하세요");
         const p = await storage.byId(pid.value);
         if(!p) return err("해당 ID의 프로젝트가 없습니다");
-        status.value = (p.status||"pending");
-        kakao.value = (p.kakaoLink||"");
+        status.value = (p.status||"pending"); kakao.value = (p.kakaoLink||"");
         ok("불러왔습니다.");
       }catch(e){ err("불러오기 실패: "+e.message); }
     };
 
     $("#saveBtn").onclick = async ()=>{
       try{
-        if(pass.value !== ADMIN_PASS) return err("관리자 암호가 올바르지 않습니다");
+        await guardAdmin();
         if(!pid.value) return err("프로젝트 ID를 입력하세요");
 
         const link = kakao.value.trim();
         if(!isKakaoLink(link)) return err("카카오 오픈채팅 링크 형식을 확인하세요");
 
-        const payload = { status: status.value, kakaoLink: link };
-        await storage.update(pid.value, payload);   // ✅ 부분 업데이트
+        await storage.update(pid.value, { status: status.value, kakaoLink: link });
         ok("저장 완료 (승인/링크 반영)");
         refreshPending();
       }catch(e){ err("저장 실패: "+e.message); }
