@@ -4,41 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>프로젝트 상세 — Project.PAW</title>
-  <meta property="og:title" content="Project.PAW — 프로젝트 상세"/>
-  <meta property="og:description" content="도움은 본능, 연결은 선택. 구조자와 직접 연결되는 따뜻한 플랫폼."/>
   <style>
-    :root{--primary:#1f6feb;--muted:#6b7280;--bg:#0a0f1d;--card:#0f1629;--line:#1a2342;--radius:18px}
+    :root{--primary:#1f6feb;--muted:#9aa8c7;--bg:#0a0f1d;--card:#0f1629;--line:#1a2342;--radius:16px}
     *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:#e6ecff;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
     a{text-decoration:none;color:inherit}
-    .container{max-width:1100px;margin:0 auto;padding:0 16px}
+    .container{max-width:1100px;margin:0 auto;padding:0 14px}
     .topbar{position:sticky;top:0;z-index:10;background:#0b1222;border-bottom:1px solid var(--line)}
-    .topbar .inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .topbar .inner{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
     .brand{font-weight:900}.nav{display:flex;gap:8px}
-    .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .btn{appearance:none;border:0;border-radius:10px;padding:9px 12px;font-weight:700;cursor:pointer}
     .btn.primary{background:var(--primary);color:#fff}.btn.ghost{background:#ffffff12}.btn.disabled{opacity:.5;pointer-events:none}
-    .layout{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;padding:26px 0}
+
+    .layout{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;padding:18px 0}
     @media(max-width:900px){.layout{grid-template-columns:1fr}}
-    .card{background:linear-gradient(180deg,#0f1629,#0d1527);border:1px solid #1b2547;border-radius:18px}
-    .pad{padding:16px}
-    .cover img{width:100%;height:440px;object-fit:cover;border-top-left-radius:18px;border-top-right-radius:18px;background:#0a1020}
-    @media(max-width:640px){.cover img{height:240px}}
-    h1{margin:0 0 6px 0;font-size:clamp(22px,3.6vw,32px);font-weight:900}
-    .muted{color:#9aa8c7}.kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#90a0c0;font-weight:800;margin-bottom:6px}
-    .progress{width:100%;height:10px;background:#111a33;border-radius:999px;overflow:hidden;margin:10px 0 6px;border:1px solid #1e2b50}
+    .card{background:linear-gradient(180deg,#0f1629,#0d1527);border:1px solid #1b2547;border-radius:16px}
+    .pad{padding:12px}
+
+    /* Cover: 높이 320px로 축소 */
+    .cover img{width:100%;height:320px;object-fit:cover;border-top-left-radius:16px;border-top-right-radius:16px;background:#0a1020}
+    @media(max-width:640px){.cover img{height:220px}}
+
+    h1{margin:0 0 6px 0;font-size:clamp(20px,3.2vw,26px);font-weight:900}
+    .muted{color:var(--muted)}
+    .kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#90a0c0;font-weight:800;margin-bottom:6px}
+    .progress{width:100%;height:6px;background:#111a33;border-radius:999px;overflow:hidden;margin:8px 0 4px;border:1px solid #1e2b50}
     .progress i{display:block;height:100%;background:linear-gradient(90deg,#4f7fff,#6bd3ff);width:0%}
-    .chip{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;background:#2a1e05;color:#ffcc6b;border:1px solid #3e2b08}
+    .chip{display:inline-block;font-size:11px;padding:3px 7px;border-radius:999px;background:#2a1e05;color:#ffcc6b;border:1px solid #3e2b08}
     .chip.approved{background:#09291a;color:#4ae39b;border:1px solid #153a27}
-    .slider{position:relative}.track{display:flex;transition:transform .25s ease}.slide{min-width:100%}
-    .slide img{width:100%;height:340px;object-fit:cover;border-radius:12px}
-    @media(max-width:640px){.slide img{height:220px}}
-    .navbtn{position:absolute;top:50%;transform:translateY(-50%);border:0;background:#0f1629;border-radius:999px;width:36px;height:36px;box-shadow:0 8px 20px rgba(0,0,0,.25);cursor:pointer}
-    .navbtn.prev{left:8px}.navbtn.next{right:8px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
-    .img-cell{border-radius:12px;overflow:hidden;border:1px solid #1b2547;background:#0f1629}
-    .img-cell img{width:100%;height:140px;object-fit:cover;display:block}
-    footer{border-top:1px solid #111a33;margin-top:28px}
-    .footer-inner{display:flex;justify-content:space-between;align-items:center;padding:24px 0;color:#7f8fb3;font-size:14px}
-    .footer-nav{display:flex;gap:12px}
+
+    /* Gallery: 240px로 축소 */
+    .slider{position:relative}
+    .track{display:flex;transition:transform .25s ease}
+    .slide{min-width:100%}
+    .slide img{width:100%;height:240px;object-fit:cover;border-radius:10px}
+    @media(max-width:640px){.slide img{height:200px}}
+    .navbtn{position:absolute;top:50%;transform:translateY(-50%);border:0;background:#0f1629;border-radius:999px;width:32px;height:32px;box-shadow:0 8px 20px rgba(0,0,0,.25);cursor:pointer}
+    .navbtn.prev{left:6px}.navbtn.next{right:6px}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+    .img-cell{border-radius:10px;overflow:hidden;border:1px solid #1b2547;background:#0f1629}
+    .img-cell img{width:100%;height:120px;object-fit:cover;display:block}
+
+    footer{border-top:1px solid #111a33;margin-top:18px}
+    .footer-inner{display:flex;justify-content:space-between;align-items:center;padding:14px 0;color:#7f8fb3;font-size:13px}
+    .footer-nav{display:flex;gap:10px}
   </style>
 </head>
 <body>
@@ -55,25 +64,25 @@
   <main class="container">
     <article class="layout">
       <div>
-        <div class="card cover"><img class="project-cover" src="img/placeholder.svg" alt="대표 이미지"/></div>
+        <div class="card cover"><img class="project-cover" src="img/placeholder.svg" alt="대표 이미지" loading="lazy" decoding="async"/></div>
 
-        <div class="card pad" style="margin-top:12px">
+        <div class="card pad" style="margin-top:10px">
           <div class="kicker">프로젝트</div>
           <h1 class="project-title"></h1>
-          <p class="muted project-summary" style="margin:6px 0 8px 0"></p>
+          <p class="muted project-summary" style="margin:4px 0 6px 0"></p>
           <div class="progress"><i id="bar" style="width:0%"></i></div>
-          <div class="muted" style="display:flex;gap:12px;margin-top:6px;align-items:center">
+          <div class="muted" style="display:flex;gap:10px;margin-top:4px;align-items:center;font-size:13px">
             <span id="money"></span>
             <span id="statusChip" class="chip">대기</span>
           </div>
         </div>
 
-        <div class="card pad" style="margin-top:12px">
+        <div class="card pad" style="margin-top:10px">
           <div class="kicker">상세 설명</div>
-          <div class="project-description" style="line-height:1.65"></div>
+          <div class="project-description" style="line-height:1.6"></div>
         </div>
 
-        <div class="card pad" style="margin-top:12px">
+        <div class="card pad" style="margin-top:10px">
           <div class="kicker">상황 갤러리</div>
           <div class="slider">
             <button class="navbtn prev" type="button" aria-label="이전">‹</button>
@@ -82,7 +91,7 @@
           </div>
         </div>
 
-        <div class="card pad" style="margin-top:12px">
+        <div class="card pad" style="margin-top:10px">
           <div class="kicker">영수증</div>
           <div class="grid receipt-preview"></div>
         </div>
@@ -91,25 +100,25 @@
       <aside class="card pad">
         <div>
           <div class="kicker">연결</div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
             <a class="btn primary" id="kakaoBtn" target="_blank" rel="noopener">카카오톡 연결</a>
             <button class="btn ghost" id="shareBtn">공유</button>
           </div>
-          <p class="muted" id="kakaoNotice" style="margin-top:8px;display:none">
+          <p class="muted" id="kakaoNotice" style="margin-top:6px;display:none;font-size:13px">
             관리자 승인 후 카카오 오픈채팅 링크가 공개됩니다.
           </p>
         </div>
 
-        <div style="margin-top:16px">
+        <div style="margin-top:12px">
           <div class="kicker">정보</div>
-          <div style="display:grid;gap:8px;margin-top:6px">
-            <div class="muted"><b>등록일</b> <span id="createdAtText" style="margin-left:8px">-</span></div>
-            <div class="muted"><b>목표 금액</b> <span id="goalText" style="margin-left:8px">-</span></div>
-            <div class="muted"><b>구조자 부담</b> <span id="selfText" style="margin-left:8px">-</span></div>
+          <div style="display:grid;gap:6px;margin-top:4px;font-size:13px" class="muted">
+            <div><b>등록일</b> <span id="createdAtText" style="margin-left:6px">-</span></div>
+            <div><b>목표 금액</b> <span id="goalText" style="margin-left:6px">-</span></div>
+            <div><b>구조자 부담</b> <span id="selfText" style="margin-left:6px">-</span></div>
           </div>
         </div>
 
-        <div class="muted" style="font-size:13px;margin-top:12px">
+        <div class="muted" style="font-size:12px;margin-top:10px">
           “책임의 끝과 공감의 시작이 만나는 곳.”
         </div>
       </aside>
@@ -169,7 +178,7 @@
       const g = Array.isArray(p.images?.gallery) ? p.images.gallery : [];
       const track = document.querySelector(".track");
       if(g.length){
-        track.innerHTML = g.map((src,i)=> `<div class="slide"><img src="${src}" alt="${title} 상황 사진 ${i+1}"></div>`).join("");
+        track.innerHTML = g.map((src,i)=> `<div class="slide"><img src="${src}" alt="${title} 상황 사진 ${i+1}" loading="lazy" decoding="async"></div>`).join("");
       }else{
         track.innerHTML = `<div class="slide"><div class="pad muted" style="text-align:center">등록된 사진이 없습니다.</div></div>`;
       }
@@ -181,8 +190,8 @@
 
       const r = Array.isArray(p.images?.receipts) ? p.images.receipts : [];
       const rwrap = document.querySelector(".receipt-preview");
-      rwrap.innerHTML = (r.length ? r : []).map((src,i)=> `<div class="img-cell"><img src="${src}" alt="${title} 영수증 ${i+1}"></div>`).join("")
-        || `<div class="img-cell"><div class="pad muted" style="text-align:center;height:140px;display:flex;align-items:center;justify-content:center">등록된 영수증이 없습니다.</div></div>`;
+      rwrap.innerHTML = (r.length ? r : []).map((src,i)=> `<div class="img-cell"><img src="${src}" alt="${title} 영수증 ${i+1}" loading="lazy" decoding="async"></div>`).join("")
+        || `<div class="img-cell"><div class="pad muted" style="text-align:center;height:120px;display:flex;align-items:center;justify-content:center">등록된 영수증이 없습니다.</div></div>`;
 
       const kakaoBtn = $("#kakaoBtn");
       const kakaoNotice = $("#kakaoNotice");
