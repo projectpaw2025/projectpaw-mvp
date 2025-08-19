@@ -4,73 +4,37 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Project.PAW — 법인 없는 첫 후원 플랫폼</title>
-
-  <!-- 기존 스타일 우선순위 유지 -->
   <link rel="stylesheet" href="common.css"/>
   <link rel="stylesheet" href="app.min.css"/>
-
   <style>
     /* ===== Hero ===== */
-    .hero {
-      background: linear-gradient(135deg, #fdf2f8, #fefce8);
-      padding: 80px 20px;
-      text-align: center;
-      border-bottom: 1px solid #f3f4f6;
-    }
-    .hero-title {
-      font-size: 2.2rem;
-      font-weight: 800;
-      color: #111827;
-      margin-bottom: 16px;
-      letter-spacing: -0.02em;
-    }
-    .hero-sub {
-      font-size: 1.1rem;
-      color: #374151;
-      line-height: 1.6;
-      margin-bottom: 28px;
-    }
-    .hero-actions .btn {
-      display: inline-block;
-      padding: 14px 28px;
-      border-radius: 999px;
-      font-size: 1rem;
-      font-weight: 700;
-      text-decoration: none;
-      transition: transform .08s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
-      box-shadow: 0 6px 16px rgba(17,24,39,.12);
-    }
-    .btn.primary { background: #111827; color: #fff; border: 1px solid #111827; }
-    .btn.primary:hover { transform: translateY(-1px); background: #374151; border-color: #374151; }
+    .hero { background: linear-gradient(135deg, #fdf2f8, #fefce8);
+            padding: 80px 20px; text-align: center; border-bottom: 1px solid #f3f4f6; }
+    .hero-title { font-size: 2.2rem; font-weight: 800; color: #111827; margin-bottom: 16px; letter-spacing: -0.02em; }
+    .hero-sub { font-size: 1.1rem; color: #374151; line-height: 1.6; margin-bottom: 28px; }
+    .hero-actions .btn { display: inline-block; padding: 14px 28px; border-radius: 999px; font-size: 1rem; font-weight: 700;
+                         text-decoration: none; transition: transform .08s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+                         box-shadow: 0 6px 16px rgba(17,24,39,.12); }
+    .btn.primary { background:#111827; color:#fff; border:1px solid #111827; }
+    .btn.primary:hover { transform: translateY(-1px); background:#374151; border-color:#374151; }
 
-    /* ===== Highlights (3컬럼) ===== */
+    /* ===== Highlights ===== */
     .highlights { padding: 60px 20px; background: #fff; }
-    .highlights-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
-      max-width: 1040px;
-      margin: 0 auto;
-    }
+    .highlights-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                       gap: 24px; max-width: 1040px; margin: 0 auto; }
     .highlight { text-align: center; padding: 20px; border-radius: 16px; border:1px solid #eef2f7; background:#fff; }
     .highlight .icon { font-size: 2rem; margin-bottom: 12px; }
     .highlight h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; color:#111827; }
     .highlight p { font-size: 0.95rem; color: #4b5563; line-height: 1.55; }
 
-    /* ===== 진행중 프로젝트 섹션 (기존 리스트 들어갈 자리) ===== */
+    /* ===== Cards (연결 우선 노출) ===== */
     .section { padding: 50px 20px; }
     .section .container { max-width: 1120px; margin: 0 auto; }
     .section-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 18px; color:#111827; }
-    .cards {
-      display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap:16px;
-    }
-    .card {
-      border:1px solid #eef2f7; border-radius:16px; overflow:hidden; background:#fff;
-      display:flex; flex-direction:column;
-      transition: transform .08s ease, box-shadow .2s ease;
-    }
+
+    .cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:16px; }
+    .card { border:1px solid #eef2f7; border-radius:16px; overflow:hidden; background:#fff;
+            display:flex; flex-direction:column; transition: transform .08s ease, box-shadow .2s ease; }
     .card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(17,24,39,.08); }
     .card img { width:100%; height:180px; object-fit:cover; }
     .card-body { padding:14px; display:flex; flex-direction:column; gap:8px; }
@@ -78,16 +42,18 @@
     .chip { display:inline-block; padding:2px 10px; border-radius:999px; font-size:.8rem; border:1px solid #e5e7eb; color:#374151; }
     .chip.approved { background:#ecfdf5; border-color:#bbf7d0; color:#065f46; }
     .chip.pending { background:#fff7ed; border-color:#fed7aa; color:#9a3412; }
+
+    .hearts { display:flex; align-items:center; gap:8px; font-weight:800; color:#111827; }
+    .hearts .count { font-size:1.1rem; padding:4px 10px; border-radius:10px; background:#f1f5f9; }
+    .money { font-size:.9rem; color:#4b5563; }
     .card-actions { margin-top:8px; display:flex; justify-content:flex-end; gap:8px; }
     .btn.small { padding:8px 12px; border-radius:10px; font-weight:700; border:1px solid #111; background:#111; color:#fff; text-decoration:none; }
     .btn.ghost { background:#fff; color:#111; border:1px solid #e5e7eb; }
 
-    /* ===== 유틸 ===== */
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
   </style>
 </head>
 <body>
-  <!-- 헤더/푸터는 include.js가 주입 -->
   <div data-include="header"></div>
 
   <!-- Hero -->
@@ -105,7 +71,7 @@
     </div>
   </section>
 
-  <!-- 3컬럼 하이라이트 -->
+  <!-- Highlights -->
   <section class="highlights" aria-labelledby="hl-title">
     <h2 id="hl-title" class="sr-only">Project.PAW 핵심 철학</h2>
     <div class="highlights-grid">
@@ -127,7 +93,7 @@
     </div>
   </section>
 
-  <!-- 진행중 프로젝트 (홈 미리보기 4개) -->
+  <!-- 진행중 프로젝트 (미리보기) -->
   <section class="section" aria-labelledby="list-title">
     <div class="container">
       <h2 id="list-title" class="section-title">진행중인 구조 프로젝트</h2>
@@ -140,40 +106,31 @@
 
   <div data-include="footer"></div>
 
-  <!-- 레이아웃 주입 -->
   <script type="module">
     import { injectLayout } from "./js/include.js";
     injectLayout({ active: "index" });
   </script>
 
-  <!-- 홈 카드 렌더링: localStorage "projects"에서 4개 미리보기 -->
   <script>
     (function(){
       const $wrap = document.getElementById('home-cards');
       function readProjects() {
-        try {
-          const raw = localStorage.getItem('projects');
-          const arr = JSON.parse(raw);
-          return Array.isArray(arr) ? arr : [];
-        } catch(e) { return []; }
+        try { const arr = JSON.parse(localStorage.getItem('projects')); return Array.isArray(arr)?arr:[]; }
+        catch(e){ return []; }
       }
-      function fmt(n){ return Number(n||0).toLocaleString('ko-KR'); }
-      function render() {
-        const list = readProjects()
-          .sort((a,b) => (b.createdAt||0) - (a.createdAt||0))
-          .slice(0, 4);
+      const fmt = (n)=> Number(n||0).toLocaleString('ko-KR');
 
+      function render() {
+        const list = readProjects().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,4);
         if (!list.length) {
-          $wrap.innerHTML = `
-            <div class="card" style="padding:16px; align-items:center; justify-content:center;">
-              <div class="meta">아직 등록된 프로젝트가 없습니다.</div>
-            </div>`;
+          $wrap.innerHTML = `<div class="card" style="padding:16px; display:flex; align-items:center; justify-content:center;">
+            <div class="meta">아직 등록된 프로젝트가 없습니다.</div></div>`;
           return;
         }
-
-        $wrap.innerHTML = list.map(p => {
+        $wrap.innerHTML = list.map(p=>{
           const cover = p.representativeImage || "img/placeholder.svg";
           const tag = p.adminApproved ? '<span class="chip approved">승인</span>' : '<span class="chip pending">대기</span>';
+          const hearts = Array.isArray(p.supporters) ? p.supporters.length : 0;
           return `
             <article class="card">
               <img src="${cover}" alt="${p.name || 'project cover'}"/>
@@ -182,8 +139,9 @@
                   <strong>${p.name ?? '(이름 없음)'}</strong>
                   ${tag}
                 </div>
+                <div class="hearts">❤️ <span class="count">연결된 마음 ${hearts}명</span></div>
+                <div class="money">목표 ${fmt(p.goalAmount)}원 · 구조자 부담 ${fmt(p.rescuerContribution)}원</div>
                 <div class="meta">${p.summary ?? ''}</div>
-                <div class="meta">목표 ${fmt(p.goalAmount)}원 · 구조자 부담 ${fmt(p.rescuerContribution)}원</div>
                 <div class="card-actions">
                   <a class="btn small" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a>
                 </div>
