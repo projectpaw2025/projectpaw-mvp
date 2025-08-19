@@ -1,150 +1,66 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>후원 등록 · Project.PAW</title>
-  <meta name="description" content="책임 기반 구조 원칙에 따라 프로젝트를 등록해주세요. 대표/상황/영수증 사진과 카카오 링크를 포함할 수 있습니다." />
-  <link rel="icon" href="img/placeholder.svg" />
-  <link rel="stylesheet" href="css/app.css" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>프로젝트 등록 — Project.PAW</title>
+  <link rel="stylesheet" href="common.css"/>
 </head>
 <body>
-  <!-- 상단 내비 -->
-  <nav class="nav">
-    <div class="container">
-      <div class="brand"><a href="index.html">Project<span class="dot">.PAW</span></a></div>
-      <ul>
-        <li><a href="index.html">홈</a></li>
-        <li><a href="project_list.html">후원하기</a></li>
-        <li><a href="create.html" class="btn">후원 등록</a></li>
-      </ul>
+  <header style="background:white; border-bottom:1px solid #e5e7eb">
+    <div class="container-narrow" style="display:flex; align-items:center; justify-content:space-between; padding:14px 0">
+      <a class="navbar-brand" href="index.html"><strong>Project.PAW</strong></a>
+      <nav class="toolbar">
+        <a class="btn secondary" href="index.html">홈</a>
+        <a class="btn secondary" href="project_list.html">후원하기</a>
+      </nav>
     </div>
-  </nav>
+  </header>
 
-  <main class="container">
-    <section class="section">
-      <h2>후원 등록</h2>
-      <p style="color:#445;">실제 사례만 등록해주세요. <b>구조자 30% 자부담</b>과 <b>영수증/후기 공개</b>가 원칙입니다.</p>
-
-      <div class="form">
-        <label class="title">프로젝트명 / 고양이 이름</label>
-        <input id="title" class="input" placeholder="예: 나비 – 교통사고 치료비" />
-
-        <label class="title">상황 요약 (한 줄)</label>
-        <input id="summary" class="input" placeholder="예: 수술비 60만원 중 40만원 모금 요청" />
-
-        <label class="title">상세 설명</label>
-        <textarea id="description" placeholder="상세 상황과 필요한 치료/비용을 적어주세요. 후기 공개를 약속합니다."></textarea>
-
-        <div class="grid-2">
-          <div>
-            <label class="title">목표 금액 (원)</label>
-            <input id="target" type="number" class="input" placeholder="예: 400000" />
-          </div>
-          <div>
-            <label class="title">구조자 부담금 (원)</label>
-            <input id="selfpay" type="number" class="input" placeholder="예: 200000" />
-          </div>
-        </div>
-
-        <label class="title">카카오톡 연결 링크</label>
-        <input id="kakao" class="input" placeholder="https://open.kakao.com/o/..." />
-
-        <div class="switch" style="margin:10px 0 18px;">
-          <input id="status" type="checkbox">
-          <span>관리자 승인</span>
-        </div>
-
-        <label class="title">대표 이미지</label>
-        <input id="cover" type="file" accept="image/*" class="input"/>
-        <div class="img-preview"><img id="coverPreview" alt="대표 이미지 미리보기" /></div>
-
-        <label class="title">상황 사진 (여러 장)</label>
-        <input id="gallery" type="file" accept="image/*" multiple class="input"/>
-        <div class="gallery-preview grid" aria-live="polite"></div>
-
-        <label class="title">영수증 사진 (여러 장)</label>
-        <input id="receipts" type="file" accept="image/*" multiple class="input"/>
-        <div class="receipt-preview grid" aria-live="polite"></div>
-
-        <div style="margin-top:18px;">
-          <button id="saveBtn" class="btn primary">등록하기</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 동작 스크립트: 인증 완료 대기 → 업로드 → Firestore 저장 -->
-    <script type="module">
-      import { SCHEMA, storage as dbStorage, uid } from "./js/app.js";
-      import { toast } from "./js/utils.js";
-      import "./js/uploader.js";                 // 미리보기 바인딩(사이드이펙트)
-      import { uploadFile } from "./js/uploader.js";
-      import { authReady, auth } from "./js/firebase.js";
-
-      const $ = s => document.querySelector(s);
-
-      $("#saveBtn").addEventListener("click", async (e) => {
-        e.preventDefault();
-
-        // ✅ 업로드/쓰기 전에 익명 로그인 완료 보장
-        await authReady;
-        console.log("[auth] currentUser:", auth.currentUser?.uid);
-
-        const data = structuredClone(SCHEMA);
-        data.id = uid();
-        data.title = $("#title").value.trim();
-        data.summary = $("#summary").value.trim();
-        data.description = $("#description").value.trim();
-        data.targetAmount = Number($("#target").value || 0);
-        data.selfPayAmount = Number($("#selfpay").value || 0);
-        data.kakaoLink = $("#kakao").value.trim();
-        data.status = $("#status").checked ? "approved" : "pending";
-        data.createdAt = Date.now();
-
-        if (!data.title || !data.summary) {
-          toast("프로젝트명과 요약을 입력해주세요.");
-          return;
-        }
-
-        // 파일 업로드 → 반환된 URL을 data.images에 저장
-        const coverFile = $("#cover")?.files?.[0];
-        const galleryFiles = Array.from($("#gallery")?.files || []);
-        const receiptFiles = Array.from($("#receipts")?.files || []);
-
-        try {
-          if (coverFile) data.images.cover = await uploadFile("covers", coverFile);
-
-          data.images.gallery = [];
-          for (const f of galleryFiles) {
-            data.images.gallery.push(await uploadFile("gallery", f));
-          }
-
-          data.images.receipts = [];
-          for (const f of receiptFiles) {
-            data.images.receipts.push(await uploadFile("receipts", f));
-          }
-        } catch (err) {
-          console.error("[upload] failed:", err);
-          toast("이미지 업로드 실패(네트워크/권한). 다시 시도해주세요.");
-          return;
-        }
-
-        try {
-          await dbStorage.add(data);
-          toast("등록 완료! 홈으로 이동합니다.");
-          location.href = "index.html";
-        } catch (err) {
-          console.error("[firestore] write failed:", err);
-          toast("등록 실패(데이터 저장). 잠시 후 다시 시도해주세요.");
-        }
-      });
-    </script>
+  <main class="container-narrow" style="padding:24px 0">
+    <h2 class="section-title">프로젝트 등록</h2>
+    <form id="form" class="form-grid">
+      <div><label>동물 이름</label><input name="name" type="text" placeholder="예: 나비" required/></div>
+      <div><label>구조자 이름</label><input name="rescuerName" type="text" placeholder="예: 홍길동" required/></div>
+      <div class="full"><label>상황 요약</label><input name="summary" type="text" placeholder="짧은 한 줄 요약" required/></div>
+      <div class="full"><label>상세 설명</label><textarea name="description" rows="6" placeholder="무슨 일이 있었는지, 필요한 치료와 비용 등을 적어주세요." required></textarea></div>
+      <div><label>목표 금액(원)</label><input name="goalAmount" type="number" min="0" step="1000" placeholder="예: 600000" required/></div>
+      <div><label>구조자 부담액(원)</label><input name="rescuerContribution" type="number" min="0" step="1000" placeholder="예: 180000" required/></div>
+      <div><label>동물병원 이름</label><input name="hospitalName" type="text" placeholder="예: ○○동물병원" disabled value="베타 단계 — 추후 PG 연동"/></div>
+      <div><label>계좌번호(참고)</label><input name="bankAccount" type="text" placeholder="PG 연동 전까지만 참고용" disabled/></div>
+      <div class="full"><label>카카오톡 초대링크</label><input name="kakaoInviteLink" type="url" placeholder="https://open.kakao.com/o/xxxxxx" required/></div>
+      <div class="full"><label>대표 사진 (1장)</label><input id="repImage" type="file" accept="image/*" required/></div>
+      <div class="full"><label>구조 상황 사진 (여러 장)</label><input id="situationImages" type="file" accept="image/*" multiple/></div>
+      <div class="full"><label>영수증 사진 (여러 장)</label><input id="receiptImages" type="file" accept="image/*" multiple/></div>
+      <div class="full" style="display:flex; gap:8px; justify-content:flex-end"><a class="btn secondary" href="index.html">취소</a><button class="btn" type="submit">등록하기</button></div>
+    </form>
   </main>
 
-  <footer class="footer">
-    <div class="container">
-      <small>Project.PAW — “도움은 본능, 연결은 선택.” 100% 전달 · 책임 구조 · 직접 연결</small>
-    </div>
-  </footer>
+  <script src="paw.js"></script>
+  <script>
+    const form = document.querySelector('#form');
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const fd = new FormData(form);
+      const repFile = document.querySelector('#repImage').files[0];
+      const situationFiles = document.querySelector('#situationImages').files;
+      const receiptFiles = document.querySelector('#receiptImages').files;
+      const repData = repFile ? (await parseFilesToDataURLs([repFile]))[0] : null;
+      const situationData = await parseFilesToDataURLs(situationFiles);
+      const receiptData = await parseFilesToDataURLs(receiptFiles);
+      const p = {
+        id: Date.now().toString(), createdAt: Date.now(),
+        name: fd.get('name'), rescuerName: fd.get('rescuerName'),
+        summary: fd.get('summary'), description: fd.get('description'),
+        goalAmount: Number(fd.get('goalAmount')||0), rescuerContribution: Number(fd.get('rescuerContribution')||0),
+        hospitalName: fd.get('hospitalName'), bankAccount: fd.get('bankAccount'),
+        kakaoInviteLink: fd.get('kakaoInviteLink'),
+        representativeImage: repData, gallery: situationData, receipts: receiptData,
+        raisedAmount: 0, adminApproved: false
+      };
+      upsertProject(p);
+      location.href = 'project.html?id=' + encodeURIComponent(p.id);
+    });
+  </script>
 </body>
 </html>

@@ -1,111 +1,60 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>후원하기 · Project.PAW</title>
-  <meta name="description" content="후원 프로젝트를 최신/달성률순으로 살펴보고 직접 연결로 참여하세요." />
-  <link rel="icon" href="img/placeholder.svg" />
-  <link rel="stylesheet" href="css/app.css" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>후원하기 — Project.PAW</title>
+  <link rel="stylesheet" href="common.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
-  <nav class="nav">
-    <div class="container">
-      <div class="brand"><a href="index.html">Project<span class="dot">.PAW</span></a></div>
-      <ul>
-        <li><a href="index.html">홈</a></li>
-        <li><a href="project_list.html">후원하기</a></li>
-        <li><a href="create.html" class="btn">후원 등록</a></li>
-      </ul>
+  <header style="background:white; border-bottom:1px solid #e5e7eb">
+    <div class="container-narrow" style="display:flex; align-items:center; justify-content:space-between; padding:14px 0">
+      <a class="navbar-brand" href="index.html"><strong>Project.PAW</strong></a>
+      <nav class="toolbar">
+        <a class="btn secondary" href="index.html">홈</a>
+        <a class="btn" href="create.html">등록하기</a>
+      </nav>
     </div>
-  </nav>
+  </header>
 
-  <main class="container">
-    <section class="section">
-      <h2>후원 프로젝트 목록</h2>
-      <div class="toolbar">
-        <label><input id="onlyApproved" type="checkbox" checked> 승인만 보기</label>
-        <select id="sort" class="input">
-          <option value="latest">최신순</option>
-          <option value="progress">달성률순</option>
-        </select>
+  <main class="container-narrow">
+    <section style="padding:24px 0">
+      <div class="toolbar" style="justify-content:space-between">
+        <h2 class="section-title" style="margin:0">모든 프로젝트</h2>
+        <div class="toolbar">
+          <label for="filter-approve" class="kicker" style="margin-right:6px">승인만</label>
+          <input type="checkbox" id="filter-approve"/>
+          <select id="sort">
+            <option value="latest">최신순</option>
+            <option value="progress">달성률순</option>
+            <option value="goal">목표금액 높은순</option>
+          </select>
+        </div>
       </div>
-      <div id="list" class="grid list"></div>
+      <div id="list-cards" class="grid" style="margin-top:16px"></div>
     </section>
-
-    <!-- ✅ 스크립트: 한 블록만 남기고, 비동기/인증 대기 반영 -->
-    <script type="module">
-      import "./js/firebase.js";                          // Firebase 초기화 (익명 로그인은 firebase.js에서 처리)
-      import { storage, fmt } from "./js/app.js";
-      import { percent, esc } from "./js/utils.js";
-
-      const wrap = document.querySelector("#list");
-      const sortSel = document.querySelector("#sort");
-      const onlyApproved = document.querySelector("#onlyApproved");
-
-      const skeletons = () => {
-        wrap.innerHTML = Array.from({ length: 6 })
-          .map(() => `<div class="card row skeleton"></div>`).join("");
-      };
-
-      async function render() {
-        skeletons();
-
-        // 🔸 Firestore 비동기: 반드시 await
-        let items = await storage.getAll();
-
-        if (onlyApproved?.checked) {
-          items = items.filter(p => p.status === "approved");
-        }
-
-        if (sortSel?.value === "latest") {
-          items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-        } else if (sortSel?.value === "progress") {
-          const ratio = p => (p.targetAmount ? (p.raisedAmount || 0) / p.targetAmount : 0);
-          items.sort((a, b) => ratio(b) - ratio(a));
-        }
-
-        if (!items.length) {
-          wrap.innerHTML = `<div class="empty">표시할 프로젝트가 없습니다. 필터를 조정하거나 새로운 프로젝트를 등록해보세요.</div>`;
-          return;
-        }
-
-        wrap.innerHTML = items.slice(0, 12).map(p => {
-          const badge = p.status === "approved"
-            ? '<span class="badge approved">승인</span>'
-            : '<span class="badge pending">대기</span>';
-          const pct = percent(p.raisedAmount, p.targetAmount);
-
-          return `
-            <a class="card row" href="project.html?id=${encodeURIComponent(p.id)}" aria-label="프로젝트 ${esc(p.title || '')} 상세 보기">
-              <img class="thumb" src="${(p.images && p.images.cover) ? p.images.cover : 'img/placeholder.svg'}" alt="대표 이미지">
-              <div class="info">
-                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
-                  <h3 style="margin:0">${esc(p.title || '')}</h3>
-                  ${badge}
-                </div>
-                <p>${esc(p.summary || '')}</p>
-                <div class="progress" style="margin-top:10px; margin-bottom:6px;"><i style="width:${pct}%"></i></div>
-                <div class="line" style="display:flex; gap:12px; margin-top:6px; color:#334;">
-                  <span>목표 ${fmt(p.targetAmount)}원</span>
-                  <span>구조자 ${fmt(p.selfPayAmount)}원</span>
-                </div>
-              </div>
-            </a>
-          `;
-        }).join("");
-      }
-
-      sortSel?.addEventListener("change", render);
-      onlyApproved?.addEventListener("change", render);
-      render();
-    </script>
   </main>
 
-  <footer class="footer">
-    <div class="container">
-      <small>Project.PAW — “도움은 본능, 연결은 선택.” 100% 전달 · 책임 구조 · 직접 연결</small>
-    </div>
+  <footer class="container-narrow">
+    <small>© Project.PAW</small>
   </footer>
+
+  <script src="paw.js"></script>
+  <script>
+    const cards = document.querySelector('#list-cards');
+    const sortSel = document.querySelector('#sort');
+    const approveOnly = document.querySelector('#filter-approve');
+    function render(){
+      let items = getProjects();
+      if(approveOnly.checked){ items = items.filter(p=>p.adminApproved===true); }
+      const mode = sortSel.value;
+      if(mode==='latest') items.sort((a,b)=>b.createdAt - a.createdAt);
+      if(mode==='progress') items.sort((a,b)=>calcProgress(b)-calcProgress(a));
+      if(mode==='goal') items.sort((a,b)=>Number(b.goalAmount||0)-Number(a.goalAmount||0));
+      cards.innerHTML = (items.length? items.slice(0,6).map(renderCard).join("") : `<div class="empty">등록된 프로젝트가 없습니다.</div>`);
+    }
+    sortSel.addEventListener('change', render); approveOnly.addEventListener('change', render); render();
+  </script>
 </body>
 </html>
