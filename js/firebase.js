@@ -12,7 +12,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyCNguz8K5MehFR5nydZ293hI60FQ9Jh5Tk",
   authDomain: "projectpaw-bf042.firebaseapp.com",
   projectId: "projectpaw-bf042",
-  storageBucket: "projectpaw-bf042.appspot.com",   // ✅ 여기 수정됨
+  storageBucket: "projectpaw-bf042.appspot.com", // ✅ 올바른 값
   messagingSenderId: "340056180297",
   appId: "1:340056180297:web:20ae730ee45b0563062198",
   measurementId: "G-FEMJ80972P"
@@ -24,6 +24,7 @@ export const auth = getAuth(app);
 export const storageFB = getStorage(app);
 export const analytics = getAnalytics(app);
 
+// re-export helpers
 export {
   collection, addDoc, getDocs, getDoc, doc,
   query, orderBy, serverTimestamp, updateDoc
