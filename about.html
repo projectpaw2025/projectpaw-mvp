@@ -1,64 +1,164 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project.PAW - About</title>
-  <link rel="stylesheet" href="styles.css">
-  <script type="module">
-    import { auth, signOut } from "./js/firebase.js";
-
-    window.logout = async () => {
-      try {
-        await signOut(auth);
-        alert("로그아웃 완료! 다시 로그인 해주세요.");
-        location.href = "index.html";
-      } catch (e) {
-        console.error("로그아웃 실패:", e);
-      }
-    };
-  </script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>About — Project.PAW</title>
+  <link rel="stylesheet" href="common.css"/>
+  <link rel="stylesheet" href="app.min.css"/>
   <style>
-    body { margin: 0; font-family: "Noto Sans KR", sans-serif; background: #fff; color: #333; }
-    header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 1rem 2rem; background: #ffffff; border-bottom: 1px solid #eee;
-      position: sticky; top: 0; z-index: 10;
-    }
-    nav { display: flex; gap: 1rem; }
-    nav a, nav button {
-      background: none; border: none; cursor: pointer;
-      font-size: 1rem; color: #333; text-decoration: none; transition: color 0.2s;
-    }
-    nav a:hover, nav button:hover { color: #ff6b6b; }
-    main { padding: 2rem; max-width: 800px; margin: auto; line-height: 1.6; }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 28px 16px 48px; }
+    .eyebrow { font-weight: 800; color:#111827; letter-spacing:-.01em; }
+    .headline { font-size: 2rem; font-weight: 900; color:#111827; letter-spacing:-.01em; margin: 8px 0 18px; }
+    .lead { font-size: 1.05rem; color:#374151; line-height:1.7; }
+    .hr { height:1px; background:#eef2f7; margin: 28px 0; }
+    h2 { font-size:1.2rem; font-weight:800; color:#111827; margin: 18px 0 10px; }
+    p { color:#374151; line-height:1.7; }
+    .callout { border:1px solid #e5e7eb; background:#f9fafb; border-radius:12px; padding:16px; }
+    .badges { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 0; }
+    .badge { display:inline-block; border:1px solid #e5e7eb; background:#fff; padding:4px 10px; border-radius:999px; font-weight:700; font-size:.9rem; color:#111827; }
+    .grid { display:grid; gap:14px; }
+    @media (min-width: 800px){ .grid.cols-2 { grid-template-columns: 1fr 1fr; } }
+    .box { border:1px solid #eef2f7; border-radius:14px; padding:16px; background:#fff; }
+    .muted { color:#6b7280; font-size:.95rem; }
+    .quote { font-size:1.1rem; font-weight:800; color:#111827; }
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background:#111; color:#fff; padding:2px 8px; border-radius:8px; font-size:.85rem; }
+    .cta-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    .btn { padding:12px 16px; border-radius:12px; font-weight:800; text-decoration:none; border:1px solid #111; }
+    .btn.primary { background:#111; color:#fff; }
+    .btn.ghost { background:#fff; color:#111; border-color:#e5e7eb; }
+    .checklist { padding-left: 1rem; }
+    .checklist li { margin: 6px 0; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🐾 Project.PAW</h1>
-    <nav>
-      <a href="index.html">홈</a>
-      <a href="project_list.html">후원하기</a>
-      <a href="create.html">등록하기</a>
-      <button onclick="logout()">로그아웃</button>
-    </nav>
-  </header>
+  <div data-include="header"></div>
 
-  <main>
-    <h2>About Project.PAW</h2>
-    <p>🐾 Project.PAW는 구조자와 후원자를 연결하는 따뜻한 플랫폼입니다.</p>
-    <p>“도움은 본능, 연결은 선택”이라는 철학을 바탕으로, 망설임을 용기로 바꾸는 사회적 인프라를 지향합니다.</p>
-    <p>우리는 숫자보다 감정을, 결과보다 연결을 중시합니다. 주는 사람도, 받는 사람도 행복한 경험을 만드는 것이 목표입니다.</p>
-    <p>앞으로 Project.PAW는 동물 복지를 넘어, 사람과 사회 전반의 사각지대까지 확장해 나갈 것입니다.</p>
+  <main class="wrap">
+    <div class="eyebrow">About</div>
+    <h1 class="headline">왜 이런 플랫폼이 이제야 나왔을까?</h1>
+    <p class="lead">
+      Project.PAW는 <strong>법인 없는 개인↔개인 직연결</strong>을 지향하는, <strong>비영리 1인 운영</strong> 프로젝트입니다.
+      후원은 구조자에게 <strong>곧장</strong> 닿습니다. <strong>책임 없는 구조는 등록할 수 없습니다.</strong>
+      우리는 “얼마가 모였나”보다 <strong>“몇 마음이 모였나”</strong>를 먼저 기록합니다.
+    </p>
+
+    <div class="hr"></div>
+
+    <section>
+      <h2>핵심 원칙 3가지</h2>
+      <div class="grid cols-2">
+        <div class="box">
+          <h3>1) 법인 없는 직연결</h3>
+          <p>중간 단체를 통하지 않습니다. 후원자의 마음이 구조자 손에 <em>바로</em> 닿습니다.</p>
+          <div class="badges">
+            <span class="badge">Direct</span>
+            <span class="badge">No middle-org</span>
+            <span class="badge">Trust by design</span>
+          </div>
+        </div>
+        <div class="box">
+          <h3>2) 구조자 책임 필수</h3>
+          <p>등록은 권리가 아니라 책임입니다. 자기부담·증빙·후기 공유는 필수입니다.</p>
+          <div class="badges">
+            <span class="badge">Self-contribution</span>
+            <span class="badge">Proof</span>
+            <span class="badge">Follow-up</span>
+          </div>
+        </div>
+        <div class="box">
+          <h3>3) 돈보다 연결</h3>
+          <p>목표금액보다 <strong>연결된 마음 수</strong>를 전면에 보여줍니다. 숫자는 수단, 연결이 목적입니다.</p>
+          <div class="badges">
+            <span class="badge">Hearts-first</span>
+            <span class="badge">Human KPI</span>
+          </div>
+        </div>
+        <div class="box">
+          <h3>운영 형태</h3>
+          <p>Project.PAW는 <strong>비영리 1인 운영</strong>입니다. 수익을 목적으로 하지 않습니다.</p>
+          <p class="muted">※ 베타 단계: PG 수수료 등 비용은 플랫폼이 부담할 수 있도록 단계적으로 설계합니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="hr"></div>
+
+    <section class="callout">
+      <div class="quote">“책임의 끝과 공감의 시작이 만나는 곳.”</div>
+      <p class="muted" style="margin-top:6px">
+        구조자는 책임을 증명하고, 후원자는 그 책임 위에서 마음을 건넵니다. 신뢰는 우연이 아니라, 설계의 결과입니다.
+      </p>
+      <ul class="checklist">
+        <li>등록자 카카오톡 ID로 운영자 실사 연락</li>
+        <li>자기부담·증빙·후기 공유가 다음 등록의 조건</li>
+        <li>승인(관리자) → 공개 노출</li>
+      </ul>
+    </section>
+
+    <div class="hr"></div>
+
+    <section>
+      <h2>어떻게 흘러가나요?</h2>
+      <div class="grid cols-2">
+        <div class="box">
+          <h3>Step 1 · 등록</h3>
+          <p>구조자가 기본 정보와 대표 사진을 등록합니다. 등록자 카카오ID로 검증 연락이 진행됩니다.</p>
+        </div>
+        <div class="box">
+          <h3>Step 2 · 검증</h3>
+          <p>관리자가 증빙/후기 이행 여부를 확인하고 <strong>승인</strong>합니다. 책임 없는 등록은 거절됩니다.</p>
+        </div>
+        <div class="box">
+          <h3>Step 3 · 연결</h3>
+          <p>후원자는 구조자와 직접 연결됩니다. 우리는 금액보다 <strong>연결된 마음</strong>을 먼저 보여줍니다.</p>
+        </div>
+        <div class="box">
+          <h3>Step 4 · 기록</h3>
+          <p>후기·영수증·상황 기록은 <em>신뢰의 아카이브</em>가 됩니다. 다음 등록은 이 기록 위에서 결정됩니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="hr"></div>
+
+    <section>
+      <h2>우리가 <em>아닌 것</em></h2>
+      <ul class="checklist">
+        <li>대형 법인 모금 플랫폼이 아닙니다.</li>
+        <li>“눈물 마케팅”으로 돈을 끌어모으는 곳이 아닙니다.</li>
+        <li>책임 없는 ‘아무나 등록’은 허용하지 않습니다.</li>
+      </ul>
+    </section>
+
+    <div class="hr"></div>
+
+    <section>
+      <h2>왜 지금?</h2>
+      <p>
+        제도권이 닿지 못한 사각지대에서, 사람들은 <em>망설임</em>과 <em>무력감</em> 사이를 오갑니다.
+        Project.PAW는 그 사이에 손을 내밉니다. <strong>직접 연결</strong>로, <strong>책임 위의 신뢰</strong>로,
+        <strong>돈보다 마음</strong>으로. 그래서 “왜 이제야”라는 말이 자연스럽게 나오도록.
+      </p>
+    </section>
+
+    <div class="hr"></div>
+
+    <section>
+      <h2>함께할까요?</h2>
+      <p class="muted">당신의 한 마음이, 누군가의 내일을 바꿉니다.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="project_list.html">🐾 지금 구조자 만나보기</a>
+        <a class="btn ghost" href="create.html">내가 구조자를 돕고 싶다면, 등록하기</a>
+      </div>
+    </section>
   </main>
 
-  <footer style="margin-top:3rem; padding:2rem; background:#fafafa; text-align:center; font-size:0.9rem; color:#666;">
-    <p>© 2025 Project.PAW</p>
-    <p>
-      <a href="about.html">About</a> | 
-      <a href="login.html">로그인</a>
-    </p>
-  </footer>
+  <div data-include="footer"></div>
+
+  <script type="module">
+    import { injectLayout } from "./js/include.js";
+    injectLayout({ active: "about" });
+  </script>
 </body>
 </html>
