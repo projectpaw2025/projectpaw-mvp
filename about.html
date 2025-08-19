@@ -8,75 +8,82 @@
   <link rel="stylesheet" href="app.min.css"/>
   <style>
     :root{
-      --ink:#111827; --sub:#374151; --muted:#6b7280; --line:#eef2f7;
-      --bg:#ffffff; --pill:#f1f5f9; --brand:#111827;
-      --g1:#fdf2f8; --g2:#fefce8;
+      --ink:#111827; --sub:#374151; --muted:#6b7280; --line:#eef2f7; --bg:#ffffff;
+      --brand:#111827; --g1:#fdf2f8; --g2:#fefce8; --pill:#f1f5f9;
     }
-    /* ===== Hero ===== */
-    .hero {
-      background: radial-gradient(1200px 600px at 50% -100px, var(--g1), transparent 60%),
-                  linear-gradient(135deg, var(--g1), var(--g2));
+    /* ===== Layout ===== */
+    .section{ background:var(--bg); }
+    .wrap{ max-width:1040px; margin:0 auto; padding:40px 16px; }
+    .sr-only{ position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0; }
+
+    /* ===== HERO (강한 시각) ===== */
+    .hero{
+      background: radial-gradient(1200px 600px at 50% -100px, var(--g1), transparent 60%), linear-gradient(135deg, var(--g1), var(--g2));
       border-bottom:1px solid var(--line);
     }
-    .hero-wrap { max-width:1040px; margin:0 auto; padding:68px 16px 48px; text-align:center; }
-    .eyebrow { font-weight:800; letter-spacing:.02em; color:var(--brand); }
-    .headline { font-size:2.25rem; font-weight:900; letter-spacing:-.02em; color:var(--ink); margin:10px 0 10px; }
-    .lead { font-size:1.1rem; color:var(--sub); line-height:1.8; max-width:820px; margin:0 auto; }
-    .cta-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:20px; }
-    .btn { padding:12px 18px; border-radius:14px; font-weight:800; text-decoration:none; border:1px solid var(--brand); }
-    .btn.primary { background:var(--brand); color:#fff; }
-    .btn.ghost { background:#fff; color:var(--brand); border-color:#e5e7eb; }
+    .hero-wrap{ max-width:1040px; margin:0 auto; padding:72px 16px 48px; text-align:center; }
+    .eyebrow{ font-weight:800; color:var(--brand); letter-spacing:.02em; }
+    .headline{ font-size:2.2rem; font-weight:900; color:var(--ink); letter-spacing:-.02em; margin:8px 0 6px; }
+    .hero-pills{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:12px; }
+    .pill{ padding:8px 12px; border-radius:999px; border:1px solid var(--line); background:#fff; font-weight:800; color:var(--ink); }
+    .cta-row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:18px; }
+    .btn{ padding:12px 16px; border-radius:14px; font-weight:800; text-decoration:none; border:1px solid var(--brand); }
+    .btn.primary{ background:var(--brand); color:#fff; }
+    .btn.ghost{ background:#fff; color:var(--brand); border-color:#e5e7eb; }
 
-    /* ===== Section wrappers ===== */
-    .section { background:var(--bg); }
-    .wrap { max-width:1040px; margin:0 auto; padding:42px 16px; }
-
-    /* ===== 3 Principles ===== */
-    .grid3 {
-      display:grid; gap:16px;
-      grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+    /* ===== 3 PRINCIPLES (카드, 한 줄) ===== */
+    .grid3{ display:grid; gap:16px; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); }
+    .card{
+      border:1px solid var(--line); border-radius:16px; background:#fff; padding:18px;
+      box-shadow: 0 6px 16px rgba(17,24,39,.05); transition:.15s ease; text-align:center;
+      display:flex; flex-direction:column; gap:8px; align-items:center; justify-content:center; min-height:158px;
     }
-    .card {
-      border:1px solid var(--line); border-radius:16px; background:#fff;
-      padding:18px; transition:.15s ease; height:100%;
-      box-shadow: 0 6px 16px rgba(17,24,39,.05);
+    .card:hover{ transform:translateY(-2px); box-shadow: 0 12px 28px rgba(17,24,39,.08); }
+    .icon{ font-size:1.8rem; }
+    .card h3{ margin:0; font-size:1.1rem; font-weight:900; color:var(--ink); }
+    .tagline{ color:var(--sub); font-weight:700; }
+
+    /* ===== STATS (숫자 타일) ===== */
+    .stats{ display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); }
+    .stat{ border:1px solid var(--line); border-radius:16px; background:#fff; padding:16px; text-align:center; }
+    .stat .num{ font-size:1.6rem; font-weight:900; color:var(--ink); }
+    .stat .cap{ color:var(--muted); font-weight:700; }
+
+    /* ===== TIMELINE (아이콘 + 한줄) ===== */
+    .timeline{ position:relative; padding-left:20px; }
+    .timeline:before{ content:""; position:absolute; left:8px; top:0; bottom:0; width:2px; background:var(--line); }
+    .t-item{ position:relative; padding:10px 0 10px 18px; }
+    .t-item:before{ content:""; position:absolute; left:-2px; top:16px; width:10px; height:10px; border-radius:50%; background:var(--brand); }
+    .t-row{ display:flex; gap:10px; align-items:center; }
+    .t-ico{ font-size:1.2rem; }
+    .t-text{ font-weight:800; color:var(--ink); }
+
+    /* ===== COMPARISON (기존 vs PAW) ===== */
+    .compare{ display:grid; gap:14px; grid-template-columns:1fr 1fr; }
+    @media (max-width:900px){ .compare{ grid-template-columns:1fr; } }
+    .pane{ border:1px solid var(--line); border-radius:16px; background:#fff; padding:16px; }
+    .pane h4{ margin:0 0 8px; font-size:1.05rem; font-weight:900; }
+    .x{ color:#b91c1c; font-weight:900; }
+    .o{ color:#065f46; font-weight:900; }
+    .list{ display:flex; flex-direction:column; gap:6px; }
+    .row{ display:flex; align-items:center; gap:8px; font-weight:800; color:var(--sub); }
+
+    /* ===== “우리는 아닌 것” (칩) ===== */
+    .not{ display:flex; flex-wrap:wrap; gap:10px; }
+    .chip{ padding:10px 12px; border-radius:999px; border:1px solid var(--line); background:#fff; font-weight:900; }
+    .chip .no{ margin-left:6px; color:#b91c1c; }
+
+    /* ===== CTA STRIP ===== */
+    .strip{
+      background: linear-gradient(135deg, var(--g1), var(--g2));
+      border-top:1px solid var(--line); border-bottom:1px solid var(--line);
     }
-    .card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(17,24,39,.08); }
-    .kicker { display:inline-flex; align-items:center; gap:8px; font-weight:800; color:var(--ink); }
-    .kicker .icon { font-size:1.25rem; }
-    .card h3 { margin:8px 0 6px; font-size:1.15rem; font-weight:900; color:var(--ink); }
-    .card p  { margin:0; color:var(--sub); line-height:1.6; }
-    .badges { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
-    .badge { background:var(--pill); border:1px solid var(--line); padding:4px 10px; border-radius:999px; font-weight:800; font-size:.85rem; color:var(--ink); }
+    .strip .box{ max-width:900px; margin:0 auto; text-align:center; padding:36px 16px; }
+    .strip h3{ margin:0 0 8px; font-size:1.4rem; font-weight:900; }
+    .strip p{ margin:0 0 14px; color:var(--sub); font-weight:700; }
 
-    /* ===== Split section (quote + checklist) ===== */
-    .split { display:grid; gap:16px; grid-template-columns: 1.2fr .8fr; }
-    @media (max-width: 900px){ .split{ grid-template-columns:1fr; } }
-    .quote-box { border:1px solid var(--line); border-radius:18px; padding:18px 18px 16px; background:#fff; }
-    .quote { font-size:1.2rem; font-weight:900; color:var(--ink); }
-    .muted { color:var(--muted); margin-top:6px; }
-    .check { border:1px dashed var(--line); border-radius:16px; padding:14px; background:#fff; }
-    .check ul{ margin:8px 0 0 1.1rem; }
-    .check li{ margin:6px 0; color:var(--sub); }
-
-    /* ===== Timeline ===== */
-    .timeline { position:relative; padding-left:20px; }
-    .timeline:before {
-      content:""; position:absolute; left:8px; top:0; bottom:0; width:2px; background:var(--line);
-    }
-    .t-item { position:relative; padding:10px 0 10px 18px; }
-    .t-item:before {
-      content:""; position:absolute; left:-2px; top:16px; width:10px; height:10px; border-radius:50%;
-      background:var(--brand);
-    }
-    .t-title{ font-weight:900; color:var(--ink); }
-    .t-desc { color:var(--sub); line-height:1.7; }
-
-    /* ===== Not us ===== */
-    .pill-list { display:flex; flex-wrap:wrap; gap:10px; }
-    .pill { padding:8px 12px; border-radius:999px; border:1px solid var(--line); background:#fff; font-weight:800; color:var(--ink); }
-
-    .hr { height:1px; background:var(--line); margin:26px 0; }
+    /* ===== small ===== */
+    .muted{ color:var(--muted); }
   </style>
 </head>
 <body>
@@ -86,12 +93,13 @@
   <section class="hero">
     <div class="hero-wrap">
       <div class="eyebrow">About</div>
-      <h1 class="headline">왜 이런 플랫폼이 이제야 나왔을까?</h1>
-      <p class="lead">
-        Project.PAW는 <strong>법인 없는 개인↔개인 직연결</strong>을 지향하는 <strong>비영리 1인 운영</strong> 프로젝트입니다.
-        후원은 구조자에게 <strong>곧장</strong> 닿습니다. <strong>책임 없는 구조는 등록할 수 없습니다.</strong><br/>
-        우리는 “얼마가 모였나”보다 <strong>“몇 마음이 모였나”</strong>를 먼저 기록합니다.
-      </p>
+      <h1 class="headline">법인 없는 첫 후원 플랫폼</h1>
+      <div class="hero-pills">
+        <span class="pill">🧑‍🤝‍🧑 개인↔개인 직연결</span>
+        <span class="pill">🐾 구조자 책임 필수</span>
+        <span class="pill">❤️ 돈보다 연결</span>
+        <span class="pill">🙋‍♂️ 비영리 1인 운영</span>
+      </div>
       <div class="cta-row">
         <a class="btn primary" href="project_list.html">🐾 지금 구조자 만나보기</a>
         <a class="btn ghost" href="create.html">내가 등록하기</a>
@@ -99,93 +107,112 @@
     </div>
   </section>
 
-  <!-- 핵심 3원칙 -->
+  <!-- 3 PRINCIPLES (한 줄 메시지) -->
   <section class="section">
-    <div class="wrap">
-      <div class="grid3">
-        <article class="card">
-          <div class="kicker"><span class="icon">🧑‍🤝‍🧑</span>개인 ↔ 개인 직연결</div>
-          <h3>중간 법인 없이, 바로 연결</h3>
-          <p>후원자의 마음이 구조자에게 곧장 닿습니다. 그래서 빠르고, 그래서 진심이 보입니다.</p>
-          <div class="badges"><span class="badge">Direct</span><span class="badge">No middle-org</span><span class="badge">Trust by design</span></div>
-        </article>
-        <article class="card">
-          <div class="kicker"><span class="icon">🐾</span>구조자 책임 필수</div>
-          <h3>등록은 권리가 아니라 책임</h3>
-          <p>자기부담·증빙·후기 공유는 필수. 책임 없는 구조는 등록할 수 없습니다.</p>
-          <div class="badges"><span class="badge">Self-contribution</span><span class="badge">Proof</span><span class="badge">Follow-up</span></div>
-        </article>
-        <article class="card">
-          <div class="kicker"><span class="icon">❤️</span>숫자보다 연결</div>
-          <h3>얼마보다, 몇 마음</h3>
-          <p>목표금액이 아니라 <strong>연결된 마음 수</strong>를 전면에 보여줍니다. 숫자는 수단, 연결이 목적입니다.</p>
-          <div class="badges"><span class="badge">Hearts-first</span><span class="badge">Human KPI</span></div>
-        </article>
-      </div>
+    <div class="wrap grid3">
+      <article class="card">
+        <div class="icon">🧑‍🤝‍🧑</div>
+        <h3>중간 법인 없이, 바로 연결</h3>
+        <div class="tagline">당신의 마음 → 구조자의 손</div>
+      </article>
+      <article class="card">
+        <div class="icon">🐾</div>
+        <h3>등록은 권리가 아니라 책임</h3>
+        <div class="tagline">자기부담·증빙·후기 필수</div>
+      </article>
+      <article class="card">
+        <div class="icon">❤️</div>
+        <h3>얼마보다, 몇 마음</h3>
+        <div class="tagline">연결된 마음 수를 먼저</div>
+      </article>
     </div>
   </section>
 
-  <!-- 인용 + 체크리스트 (신뢰는 설계된다) -->
+  <!-- STATS (시각적 신뢰) -->
   <section class="section">
-    <div class="wrap split">
-      <div class="quote-box">
-        <div class="quote">“책임의 끝과 공감의 시작이 만나는 곳.”</div>
-        <p class="muted">신뢰는 우연이 아니라, 설계의 결과입니다.</p>
-        <div class="hr"></div>
-        <div class="timeline">
-          <div class="t-item">
-            <div class="t-title">등록</div>
-            <div class="t-desc">구조자가 정보를 등록하고 대표 사진을 올립니다. 등록자 카카오ID로 실사 연락이 갑니다.</div>
-          </div>
-          <div class="t-item">
-            <div class="t-title">검증</div>
-            <div class="t-desc">관리자가 증빙/후기 이행 여부를 확인하고 승인합니다. 책임 없는 등록은 거절됩니다.</div>
-          </div>
-          <div class="t-item">
-            <div class="t-title">연결</div>
-            <div class="t-desc">후원자는 구조자와 직접 연결됩니다. 화면에서는 금액보다 ‘연결된 마음’을 먼저 봅니다.</div>
-          </div>
-          <div class="t-item">
-            <div class="t-title">기록</div>
-            <div class="t-desc">후기·영수증·상황 기록이 쌓입니다. 다음 등록은 이 기록 위에서 결정됩니다.</div>
-          </div>
+    <div class="wrap stats">
+      <div class="stat">
+        <div class="num">100%</div>
+        <div class="cap">기부금 구조자 전달</div>
+      </div>
+      <div class="stat">
+        <div class="num">0</div>
+        <div class="cap">중간 법인</div>
+      </div>
+      <div class="stat">
+        <div class="num">필수</div>
+        <div class="cap">자기부담 · 증빙 · 후기</div>
+      </div>
+      <div class="stat">
+        <div class="num">1인</div>
+        <div class="cap">비영리 운영</div>
+      </div>
+    </div>
+    <div class="wrap" style="text-align:center; margin-top:-8px;">
+      <span class="muted">* 베타 단계 — 신뢰가 쌓이면 병원 direct payment로 확장</span>
+    </div>
+  </section>
+
+  <!-- TIMELINE (4단계, 한 줄 설명) -->
+  <section class="section">
+    <div class="wrap">
+      <h2 class="sr-only">운영 흐름</h2>
+      <div class="timeline">
+        <div class="t-item">
+          <div class="t-row"><div class="t-ico">📝</div><div class="t-text">등록 — 기본정보·대표사진, 등록자 카카오ID 수집</div></div>
+        </div>
+        <div class="t-item">
+          <div class="t-row"><div class="t-ico">🔎</div><div class="t-text">검증 — 증빙/후기 확인, 책임 없는 등록은 거절</div></div>
+        </div>
+        <div class="t-item">
+          <div class="t-row"><div class="t-ico">🤝</div><div class="t-text">연결 — 후원자가 구조자와 직접 연결</div></div>
+        </div>
+        <div class="t-item">
+          <div class="t-row"><div class="t-ico">📚</div><div class="t-text">기록 — 후기/영수증 아카이브, 다음 등록의 기준</div></div>
         </div>
       </div>
-
-      <aside class="check">
-        <strong>운영 체크포인트</strong>
-        <ul>
-          <li>등록자 카카오톡 ID로 운영자 실사 연락</li>
-          <li>자기부담·증빙·후기 공유 ⟶ 다음 등록의 조건</li>
-          <li>관리자 승인 ⟶ 공개 노출</li>
-        </ul>
-        <div class="hr"></div>
-        <p class="muted">베타 단계에서는 필요 시 <em>구조자에게 직접 전달</em>로 시작하고, 신뢰가 쌓이면 <strong>병원 direct payment</strong>로 확장합니다.</p>
-      </aside>
     </div>
   </section>
 
-  <!-- 우리는 이런 곳이 아닙니다 -->
+  <!-- COMPARISON (기존 vs PAW) -->
+  <section class="section">
+    <div class="wrap compare">
+      <div class="pane">
+        <h4>기존 기부 플랫폼</h4>
+        <div class="list">
+          <div class="row"><span class="x">✖</span> 법인 중심 모금</div>
+          <div class="row"><span class="x">✖</span> 아무나 등록 가능</div>
+          <div class="row"><span class="x">✖</span> 금액 KPI 우선</div>
+        </div>
+      </div>
+      <div class="pane">
+        <h4>Project.PAW</h4>
+        <div class="list">
+          <div class="row"><span class="o">✔</span> 개인↔개인 직연결</div>
+          <div class="row"><span class="o">✔</span> 책임 필수(자기부담·증빙·후기)</div>
+          <div class="row"><span class="o">✔</span> 돈보다 연결(‘마음 수’ 우선)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOT US (부정 칩) -->
   <section class="section">
     <div class="wrap">
-      <h3 style="font-size:1.15rem; font-weight:900; color:var(--ink); margin:0 0 10px;">우리는 <em>아닌 것</em></h3>
-      <div class="pill-list">
-        <span class="pill">대형 법인 모금 플랫폼 ❌</span>
-        <span class="pill">눈물 마케팅 ❌</span>
-        <span class="pill">아무나 등록 허용 ❌</span>
+      <h2 class="sr-only">우리는 아닌 것</h2>
+      <div class="not">
+        <span class="chip">대형 법인 모금 <span class="no">NO</span></span>
+        <span class="chip">눈물 마케팅 <span class="no">NO</span></span>
+        <span class="chip">무책임 등록 <span class="no">NO</span></span>
       </div>
-      <div class="hr"></div>
-      <p class="muted">Project.PAW는 비영리 1인 운영입니다. 돈보다 연결. 말이 아니라, 설계로 증명합니다.</p>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="section" style="background:linear-gradient(135deg, var(--g1), var(--g2)); border-top:1px solid var(--line);">
-    <div class="wrap" style="text-align:center;">
-      <h3 class="headline" style="font-size:1.6rem;">왜 이제야 나왔냐고요?</h3>
-      <p class="lead" style="max-width:720px; margin:0 auto;">
-        제도권이 놓친 사이를, 우리는 <strong>직접 연결</strong>로 잇습니다. <strong>책임 위</strong>에 <strong>마음</strong>을 얹습니다.
-      </p>
+  <!-- CTA STRIP -->
+  <section class="strip">
+    <div class="box">
+      <h3>왜 이제야 나왔냐고요?</h3>
+      <p>제도권이 놓친 사이를 <strong>직접 연결</strong>로 메웁니다. <strong>책임 위</strong>에 <strong>마음</strong>을 얹습니다.</p>
       <div class="cta-row">
         <a class="btn primary" href="project_list.html">🐾 지금 구조자 만나보기</a>
         <a class="btn ghost" href="create.html">내가 등록하기</a>
