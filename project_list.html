@@ -1,112 +1,115 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Project.PAW – 후원하기</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>프로젝트 목록 — Project.PAW</title>
+  <link rel="stylesheet" href="common.css"/>
+  <link rel="stylesheet" href="app.min.css"/>
   <style>
-    body{margin:0;font-family:"Noto Sans KR",system-ui,Segoe UI,Roboto,sans-serif;background:#fff;color:#111827}
-    .wrap{max-width:1200px;margin:0 auto;padding:24px 16px}
-    h2{margin:0 0 12px 0}
-    .muted{color:#64748b}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-    .card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(15,23,42,.05);transition:.12s}
-    .card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,.08)}
-    .media{position:relative;background:#f1f5f9;border-bottom:1px solid #e5e7eb}
-    .media::before{content:"";display:block;padding-top:75%} /* 4:3 비율 */
-    .media>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%}
-    .body{padding:12px}
-    .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
-    .title{margin:0;font-size:16px;font-weight:800;line-height:1.25}
-    .line2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-    .badge{font-size:11px;padding:3px 7px;border-radius:999px;border:1px solid #d1fae5;background:#ecfdf5;color:#065f46}
-    .badge.pending{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
-    .progress{width:100%;height:6px;border-radius:999px;background:#f1f5f9;border:1px solid #e5e7eb;overflow:hidden;margin-top:8px}
-    .progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4f7fff,#6bd3ff)}
-    .meta{display:flex;gap:10px;color:#64748b;font-size:13px;margin-top:6px}
+    .wrap { max-width:1120px; margin:0 auto; padding:24px 16px; }
+    .page-title { font-size:1.5rem; font-weight:800; color:#111827; margin-bottom:12px; }
+    .toolbar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+    .toolbar input, .toolbar select { padding:10px; border:1px solid #e5e7eb; border-radius:10px; }
+    .cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:16px; }
+    .card { border:1px solid #eef2f7; border-radius:16px; overflow:hidden; background:#fff;
+            display:flex; flex-direction:column; transition: transform .08s ease, box-shadow .2s ease; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(17,24,39,.08); }
+    .card img { width:100%; height:180px; object-fit:cover; }
+    .card-body { padding:14px; display:flex; flex-direction:column; gap:8px; }
+    .chip { display:inline-block; padding:2px 10px; border-radius:999px; font-size:.8rem; border:1px solid #e5e7eb; color:#374151; }
+    .chip.approved { background:#ecfdf5; border-color:#bbf7d0; color:#065f46; }
+    .chip.pending { background:#fff7ed; border-color:#fed7aa; color:#9a3412; }
+    .hearts { display:flex; align-items:center; gap:8px; font-weight:800; color:#111827; }
+    .hearts .count { font-size:1.1rem; padding:4px 10px; border-radius:10px; background:#f1f5f9; }
+    .money { font-size:.9rem; color:#4b5563; }
+    .meta { font-size:.9rem; color:#6b7280; }
+    .card-actions { margin-top:8px; display:flex; justify-content:flex-end; gap:8px; }
+    .btn.small { padding:8px 12px; border-radius:10px; font-weight:700; border:1px solid #111; background:#111; color:#fff; text-decoration:none; }
   </style>
 </head>
 <body>
-  <!-- 공통 헤더 -->
   <div data-include="header"></div>
 
   <main class="wrap">
-    <h2>후원 가능한 프로젝트</h2>
-    <p class="muted" style="margin:4px 0 16px">사진은 어떤 사이즈로 올려도 카드에서는 4:3으로 일관되게 보여줘요.</p>
-    <div id="list" class="grid" aria-live="polite"></div>
+    <h1 class="page-title">프로젝트</h1>
+    <div class="toolbar">
+      <input id="q" type="text" placeholder="검색: 이름/요약/설명"/>
+      <select id="f">
+        <option value="all">전체</option>
+        <option value="approved">승인</option>
+        <option value="pending">대기</option>
+      </select>
+    </div>
+    <div id="list" class="cards"></div>
   </main>
 
-  <!-- 공통 푸터 -->
   <div data-include="footer"></div>
 
   <script type="module">
     import { injectLayout } from "./js/include.js";
     injectLayout({ active: "project_list" });
+  </script>
 
-    import { db } from "./js/firebase.js";
-    import { collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <script>
+    (function(){
+      const $q = document.getElementById('q');
+      const $f = document.getElementById('f');
+      const $list = document.getElementById('list');
+      const fmt = (n)=> Number(n||0).toLocaleString('ko-KR');
 
-    const wrap = document.getElementById("list");
-    const esc = (s='') => String(s).replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+      function readProjects(){
+        try { const arr = JSON.parse(localStorage.getItem('projects')); return Array.isArray(arr)?arr:[]; }
+        catch(e){ return []; }
+      }
+      function match(p, q, f){
+        if (f==='approved' && !p.adminApproved) return false;
+        if (f==='pending' && p.adminApproved) return false;
+        if (!q) return true;
+        const hay = [p.name,p.summary,p.description,p.rescuerName].map(x=>(x??'')+'').join(' ').toLowerCase();
+        return hay.includes(q.toLowerCase());
+      }
 
-    function percent(raised, target){
-      const r = Number(raised||0), t = Number(target||0);
-      if(!t || t<=0) return 0;
-      const p = Math.round((r/t)*100);
-      return Math.max(0, Math.min(100, p));
-    }
+      function render(){
+        const q = $q.value.trim();
+        const f = $f.value;
+        const list = readProjects()
+          .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0))
+          .filter(p=>match(p,q,f));
 
-    function card(p, id){
-      const cover = p.imageUrl || (p.images?.cover) || "img/placeholder.svg";
-      const title = esc(p.title || "제목 없음");
-      const desc = esc(p.description || p.summary || "");
-      const pct = percent(p.raisedAmount, p.targetAmount);
-      const badge = (p.status==="approved")
-        ? '<span class="badge">승인</span>'
-        : '<span class="badge pending">대기</span>';
+        if (!list.length){
+          $list.innerHTML = `<div class="card" style="padding:16px; display:flex; align-items:center; justify-content:center;">
+            <div class="meta">조건에 맞는 프로젝트가 없습니다.</div></div>`;
+          return;
+        }
 
-      return `
-        <a class="card" href="project.html?id=${encodeURIComponent(id)}" aria-label="${title} 상세보기">
-          <div class="media"><img src="${cover}" alt="${title} 대표 이미지" loading="lazy" decoding="async"></div>
-          <div class="body">
-            <div class="row">
-              <h3 class="title">${title}</h3>
-              ${badge}
-            </div>
-            <p class="muted line2" style="margin:6px 0">${desc}</p>
-            <div class="progress"><i style="width:${pct}%"></i></div>
-            <div class="meta">
-              ${p.targetAmount ? `<span>목표 ${Number(p.targetAmount).toLocaleString()}원</span>` : ``}
-              ${p.selfPayAmount ? `<span>구조자 ${Number(p.selfPayAmount).toLocaleString()}원</span>` : ``}
-            </div>
-          </div>
-        </a>
-      `;
-    }
+        $list.innerHTML = list.map(p=>{
+          const cover = p.representativeImage || "img/placeholder.svg";
+          const tag = p.adminApproved ? '<span class="chip approved">승인</span>' : '<span class="chip pending">대기</span>';
+          const hearts = Array.isArray(p.supporters) ? p.supporters.length : 0;
+          return `
+            <article class="card">
+              <img src="${cover}" alt="${p.name || 'project cover'}"/>
+              <div class="card-body">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                  <strong>${p.name ?? '(이름 없음)'}</strong>
+                  ${tag}
+                </div>
+                <div class="hearts">❤️ <span class="count">연결된 마음 ${hearts}명</span></div>
+                <div class="money">목표 ${fmt(p.goalAmount)}원 · 구조자 부담 ${fmt(p.rescuerContribution)}원</div>
+                <div class="meta">${p.summary ?? ''}</div>
+                <div class="card-actions">
+                  <a class="btn small" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a>
+                </div>
+              </div>
+            </article>`;
+        }).join('');
+      }
 
-    async function render(){
-      wrap.innerHTML = Array.from({length:6}).map(()=>`
-        <div class="card"><div class="media"></div><div class="body">
-          <div class="row"><h3 class="title muted">Loading…</h3><span class="badge pending">…</span></div>
-          <div class="progress"><i style="width:0%"></i></div>
-        </div></div>`).join("");
-
-      const q = query(collection(db, "projects"), orderBy("createdAt","desc"));
-      const snap = await getDocs(q);
-      const items = [];
-      snap.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
-
-      // 승인된 게 있으면 승인만, 아니면 전체
-      const approved = items.filter(x => x.status === "approved");
-      const list = (approved.length ? approved : items);
-
-      wrap.innerHTML = list.map(p => card(p, p.id)).join("") || `
-        <div class="muted">아직 등록된 프로젝트가 없어요.</div>
-      `;
-    }
-
-    render();
+      $q.addEventListener('input', render);
+      $f.addEventListener('change', render);
+      render();
+    })();
   </script>
 </body>
 </html>
