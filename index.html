@@ -1,92 +1,143 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Project.PAW · 진행 중인 구조 프로젝트</title>
-  <meta name="description" content="Project.PAW — 100% 전달과 책임 기반 구조. 진행 중인 구조 프로젝트를 확인하고 직접 연결로 참여하세요." />
-  <link rel="icon" href="img/placeholder.svg" />
-  <link rel="stylesheet" href="css/app.css" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Project.PAW — 직접 연결되는 따뜻함</title>
+  <style>
+    :root{
+      --primary:#1f6feb; --ink:#0b1220; --muted:#6b7280; --bg:#f8fafc; --card:#fff;
+      --line:#e5e7eb; --radius:18px; --shadow:0 12px 30px rgba(16,24,40,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:#0f172a;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
+    a{text-decoration:none;color:inherit}
+    .container{max-width:1120px;margin:0 auto;padding:0 16px}
+    .topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+    .topbar .inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{font-weight:900;letter-spacing:.2px}
+    .nav{display:flex;gap:8px}
+    .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .btn.ghost{background:#11182710}
+    .btn.primary{background:var(--primary);color:#fff}
+    .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;padding:36px 0 18px}
+    @media(max-width:900px){.hero{grid-template-columns:1fr}}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .pad{padding:18px}
+    .title{font-size:clamp(24px,3.4vw,40px);font-weight:900;margin:0 0 8px 0;line-height:1.08}
+    .subtitle{color:var(--muted);font-size:16px;margin:6px 0 0 0}
+    .commit{margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .commit .pill{background:#f1f5ff;border:1px solid #dbe7ff;padding:10px 12px;border-radius:12px;font-weight:700;color:#2947a3;text-align:center}
+    .notice{margin-top:14px;border-radius:12px;background:#0b1220;color:#e5e7eb;padding:14px;font-weight:600}
+    .kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800}
+    h2{margin:0 0 10px 0;font-size:20px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+    .thumb{width:100%;height:180px;object-fit:cover;border-bottom:1px solid var(--line);background:#eef2ff;border-top-left-radius:var(--radius);border-top-right-radius:var(--radius)}
+    .card-link{display:block;overflow:hidden;border-radius:var(--radius);transition:transform .12s}
+    .card-link:hover{transform:translateY(-2px)}
+    .muted{color:#6b7280}
+    .badge{font-size:12px;padding:4px 8px;border-radius:999px}
+    .badge.approved{background:#eafff2;color:#0a6b3c}
+    .badge.pending{background:#fff6e6;color:#a15a00}
+    .progress{width:100%;height:8px;background:#f3f4f6;border-radius:999px;overflow:hidden;margin:10px 0 6px}
+    .progress i{display:block;height:100%;background:var(--primary);width:0%}
+    .skeleton{position:relative;min-height:260px;background:linear-gradient(90deg,#f4f6fb 25%,#eef2f7 37%,#f4f6fb 63%);background-size:400% 100%;animation:shimmer 1.4s infinite;border-radius:var(--radius)}
+    @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+    footer{border-top:1px solid var(--line);margin-top:28px}
+    .footer-inner{display:flex;justify-content:space-between;align-items:center;padding:24px 0;color:#94a3b8;font-size:14px}
+    .footer-nav{display:flex;gap:12px}
+    .footer-link{color:#64748b}
+  </style>
 </head>
 <body>
-  <!-- 상단 내비 -->
-  <nav class="nav">
-    <div class="container">
-      <div class="brand"><a href="index.html">Project<span class="dot">.PAW</span></a></div>
-      <ul>
-        <li><a href="index.html" class="btn">홈</a></li>
-        <li><a href="project_list.html">후원하기</a></li>
-        <li><a href="create.html">후원 등록</a></li>
-      </ul>
+  <header class="topbar">
+    <div class="container inner">
+      <a class="brand" href="index.html">Project.PAW</a>
+      <nav class="nav">
+        <a href="project_list.html" class="btn ghost">후원하기</a>
+        <a href="create.html" class="btn primary">등록하기</a>
+      </nav>
     </div>
-  </nav>
+  </header>
 
   <main class="container">
-    <!-- 히어로 -->
-    <section class="section">
-      <h2>지금은 Pilot Run</h2>
-      <p>PG 연동 전까지는 <b>카카오톡 연결로 직접</b> 돕습니다. Project.PAW는 <b>100% 전달</b>과 <b>책임 기반 구조(구조자 30% 자부담, 후기 필수)</b>를 지향합니다.</p>
-      <ul style="margin:8px 0 0 16px; color:#445;">
-        <li>직접 연결: 중간 단체 없이 개인↔️개인</li>
-        <li>책임 구조: 구조자 자부담 + 후기 공개</li>
-        <li>투명 공개: 목표/현황, 영수증 갤러리</li>
-      </ul>
+    <section class="hero">
+      <div class="card pad">
+        <h1 class="title">도움은 본능, <span style="color:var(--primary)">연결</span>은 선택.</h1>
+        <p class="subtitle">숫자보다 마음. 구조자는 책임을, 후원자는 신뢰를. 우리는 <b>개인↔개인</b> 직접 연결 플랫폼입니다.</p>
+        <div class="commit">
+          <div class="pill">100% 전달</div>
+          <div class="pill">구조자 30% 책임</div>
+          <div class="pill">직접 연결</div>
+        </div>
+        <div class="notice">PG 연동 전: 후원 등록 → <b>관리자 승인</b> 시 카카오 오픈채팅 링크가 공개됩니다.</div>
+      </div>
+      <div class="card pad">
+        <div class="kicker">지금 진행중</div>
+        <h2>추천 프로젝트</h2>
+        <div id="home-cards" class="grid" style="margin-top:8px"></div>
+        <div style="margin-top:12px;display:flex;justify-content:flex-end">
+          <a class="btn ghost" href="project_list.html">모두 보기</a>
+        </div>
+      </div>
     </section>
+  </main>
 
-    <h3 style="margin-top:28px;">진행 중인 구조 프로젝트</h3>
-    <section class="section">
-      <div id="list" class="grid list"></div>
-    </section>
+  <footer>
+    <div class="container footer-inner">
+      <span>© Project.PAW</span>
+      <nav class="footer-nav">
+        <a class="footer-link" href="about.html">About</a>
+        <a class="footer-link" href="login.html">로그인</a>
+      </nav>
+    </div>
+  </footer>
 
-    <!-- 목록 렌더 스크립트 -->
-    <script type="module">
-      import "./js/firebase.js"; // 익명 로그인 등 초기화(사이드이펙트)
-      import { storage as pawStore, fmt } from "./js/app.js"; // 이름 충돌 방지 (Firebase Storage와 구분)
-      import { percent, esc } from "./js/utils.js";
+  <script type="module">
+    import "./js/firebase.js";
+    import { storage, fmt } from "./js/app.js";
+    import { percent, esc } from "./js/utils.js";
 
-      const list = document.querySelector("#list");
+    const wrap = document.querySelector("#home-cards");
+    const skeletons = () => {
+      wrap.innerHTML = Array.from({ length: 4 }).map(()=>`<div class="skeleton"></div>`).join("");
+    };
 
-      async function render() {
-        // ✅ Firestore 비동기 — 반드시 await
-        let items = await pawStore.getAll();
+    function createdAtSeconds(x){
+      return (x && typeof x==='object' && 'seconds' in x) ? x.seconds : 0;
+    }
 
-        // 필요하면 승인만 표시하려면 아래 주석 해제
-        // items = items.filter(p => p.status === "approved");
+    async function render(){
+      skeletons();
+      let list = await storage.getAll();
+      list.sort((a,b)=> createdAtSeconds(b.createdAt) - createdAtSeconds(a.createdAt));
+      list = list.slice(0,4);
 
-        // 최신순
-        items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      wrap.innerHTML = list.map(p=>{
+        const pct = Math.max(0, Math.min(100, percent(p.raisedAmount||0, p.targetAmount||1)));
+        const cover = (p.images && p.images.cover) ? p.images.cover : "img/placeholder.svg";
+        const badge = (p.status==="approved")? '<span class="badge approved">승인</span>' : '<span class="badge pending">대기</span>';
 
-        if (!items.length) {
-          list.innerHTML = `<div class="empty">표시할 프로젝트가 없습니다. 첫 프로젝트를 등록해보세요.</div>`;
-          return;
-        }
-
-        list.innerHTML = items.slice(0, 6).map(p => `
-          <a class="card row" href="project.html?id=${encodeURIComponent(p.id)}" aria-label="프로젝트 ${esc(p.title || '')} 상세 보기">
-            <img class="thumb" src="${(p.images && p.images.cover) ? p.images.cover : 'img/placeholder.svg'}" alt="대표 이미지">
-            <div class="info">
-              <h3 style="margin:0">${esc(p.title || '')}</h3>
-              <p>${esc(p.summary || '')}</p>
-              <div class="progress" style="margin-top:10px; margin-bottom:6px;">
-                <i style="width:${percent(p.raisedAmount, p.targetAmount)}%"></i>
+        return `
+          <a class="card-link" href="project.html?id=${encodeURIComponent(p.id)}">
+            <img class="thumb" src="${cover}" alt="대표 이미지"/>
+            <div class="pad">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <strong>${esc(p.title||"이름 미정")}</strong>
+                ${badge}
               </div>
-              <div class="line" style="display:flex; gap:12px; margin-top:6px; color:#334;">
+              <p class="muted" style="margin:6px 0">${esc(p.summary||"")}</p>
+              <div class="progress"><i style="width:${pct}%"></i></div>
+              <div class="muted" style="display:flex;gap:12px">
                 <span>목표 ${fmt(p.targetAmount)}원</span>
                 <span>구조자 ${fmt(p.selfPayAmount)}원</span>
               </div>
             </div>
           </a>
-        `).join("");
-      }
-
-      render();
-    </script>
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      <small>Project.PAW — “도움은 본능, 연결은 선택.” 100% 전달 · 책임 구조 · 직접 연결</small>
-    </div>
-  </footer>
+        `;
+      }).join("");
+    }
+    render();
+  </script>
 </body>
 </html>
