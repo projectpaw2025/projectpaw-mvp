@@ -13,6 +13,7 @@
     .form-grid .full { grid-column: 1 / -1; }
     label { display:block; font-weight:600; margin-bottom:6px; }
     input, textarea { width:100%; padding:10px; border:1px solid #e5e7eb; border-radius:8px; }
+    input:disabled { background:#f3f4f6; color:#9ca3af; } /* 음영 */
     .btn { padding:10px 14px; border-radius:10px; border:1px solid #111; background:#111; color:#fff; cursor:pointer; }
     .btn.secondary { background:#fff; color:#111; border:1px solid #ddd; }
     .hint { font-size:.85rem; color:#6b7280; }
@@ -52,22 +53,21 @@
         <input name="rescuerContribution" type="number" min="0" step="1000" placeholder="예: 180000" required/>
       </div>
 
+      <!-- 🔥 Beta Service 비활성화 필드 -->
       <div>
         <label>동물병원 이름</label>
-        <input name="hospitalName" type="text" placeholder="예: ○○동물병원" disabled value="베타 단계 — 추후 PG 연동"/>
+        <input name="hospitalName" type="text" placeholder="Beta Service 후 활성화 예정" disabled/>
       </div>
       <div>
         <label>계좌번호(참고)</label>
-        <input name="bankAccount" type="text" placeholder="PG 연동 전까지만 참고용" disabled/>
+        <input name="bankAccount" type="text" placeholder="Beta Service 후 활성화 예정" disabled/>
       </div>
-
       <div class="full">
         <label>카카오톡 초대링크</label>
-        <input name="kakaoInviteLink" type="url" placeholder="https://open.kakao.com/o/xxxxxx" required/>
-        <div class="hint">베타 단계에서는 카카오톡 링크로 직접 연결됩니다.</div>
+        <input name="kakaoInviteLink" type="url" placeholder="Beta Service 후 활성화 예정" disabled/>
       </div>
 
-      <!-- 🔥 등록자 카카오톡 ID 추가 -->
+      <!-- 🔥 등록자 카카오톡 ID -->
       <div class="full">
         <label>등록자 카카오톡 ID</label>
         <input name="registrantKakaoId" type="text" placeholder="운영자 검증을 위해 카카오톡 ID를 입력하세요" required/>
@@ -161,10 +161,11 @@
           goalAmount: Number(fd.get("goalAmount") || 0),
           rescuerContribution: Number(fd.get("rescuerContribution") || 0),
 
-          hospitalName: fd.get("hospitalName"),
-          bankAccount: fd.get("bankAccount"),
-          kakaoInviteLink: fd.get("kakaoInviteLink"),
-          registrantKakaoId: fd.get("registrantKakaoId"), // 🔥 추가 저장
+          hospitalName: null, // Beta 단계 → null 처리
+          bankAccount: null,
+          kakaoInviteLink: null,
+
+          registrantKakaoId: fd.get("registrantKakaoId"),
 
           representativeImage: repData,
           gallery: situationData,
