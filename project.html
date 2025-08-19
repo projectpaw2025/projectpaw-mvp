@@ -1,210 +1,116 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>프로젝트 상세 — Project.PAW</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project.PAW - 상세보기</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module">
+    import { auth, signOut } from "./js/firebase.js";
+
+    window.logout = async () => {
+      try {
+        await signOut(auth);
+        alert("로그아웃 완료! 다시 로그인 해주세요.");
+        location.href = "index.html";
+      } catch (e) {
+        console.error("로그아웃 실패:", e);
+      }
+    };
+  </script>
   <style>
-    :root{--primary:#1f6feb;--muted:#64748b;--bg:#f8fafc;--card:#ffffff;--line:#e5e7eb;--radius:16px}
-    *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:#0f172a;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
-    a{text-decoration:none;color:inherit}
-    .container{max-width:1100px;margin:0 auto;padding:0 14px}
-    .topbar{position:sticky;top:0;z-index:10;background:#ffffffcc;border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
-    .topbar .inner{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
-    .brand{font-weight:900}.nav{display:flex;gap:8px}
-    .btn{appearance:none;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-weight:700;cursor:pointer;background:#fff}
-    .btn.primary{background:var(--primary);color:#fff;border-color:transparent}.btn.disabled{opacity:.5;pointer-events:none}
-
-    .layout{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;padding:18px 0}
-    @media(max-width:900px){.layout{grid-template-columns:1fr}}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:16px}
-    .pad{padding:12px}
-
-    /* Cover: 320px (밝은 톤) */
-    .cover img{width:100%;height:320px;object-fit:cover;border-top-left-radius:16px;border-top-right-radius:16px;background:#eef2ff}
-    @media(max-width:640px){.cover img{height:220px}}
-
-    h1{margin:0 0 6px 0;font-size:clamp(20px,3.2vw,26px);font-weight:900}
-    .muted{color:var(--muted)}
-    .kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#475569;font-weight:800;margin-bottom:6px}
-    .progress{width:100%;height:6px;background:#f1f5f9;border-radius:999px;overflow:hidden;margin:8px 0 4px;border:1px solid var(--line)}
-    .progress i{display:block;height:100%;background:linear-gradient(90deg,#4f7fff,#6bd3ff);width:0%}
-    .chip{display:inline-block;font-size:11px;padding:3px 7px;border-radius:999px;background:#fff6e6;color:#a15a00;border:1px solid #f3d6a3}
-    .chip.approved{background:#eafff2;color:#0a6b3c;border:1px solid #b7f0cf}
-
-    /* Gallery: 240px */
-    .slider{position:relative}
-    .track{display:flex;transition:transform .25s ease}
-    .slide{min-width:100%}
-    .slide img{width:100%;height:240px;object-fit:cover;border-radius:10px;background:#eef2ff}
-    @media(max-width:640px){.slide img{height:200px}}
-    .navbtn{position:absolute;top:50%;transform:translateY(-50%);border:1px solid var(--line);background:#fff;border-radius:999px;width:32px;height:32px;box-shadow:0 8px 20px rgba(2,6,23,.06);cursor:pointer}
-    .navbtn.prev{left:6px}.navbtn.next{right:6px}
-
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
-    .img-cell{border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#fff}
-    .img-cell img{width:100%;height:120px;object-fit:cover;display:block;background:#eef2ff}
-
-    footer{border-top:1px solid var(--line);margin-top:18px;background:#fff}
-    .footer-inner{display:flex;justify-content:space-between;align-items:center;padding:14px 0;color:#64748b;font-size:13px}
-    .footer-nav{display:flex;gap:10px}
+    body {
+      margin: 0;
+      font-family: "Noto Sans KR", sans-serif;
+      background: #fff;
+      color: #333;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #ffffff;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      color: #222;
+    }
+    nav {
+      display: flex;
+      gap: 1rem;
+    }
+    nav a, nav button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      color: #333;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav button:hover {
+      color: #ff6b6b;
+    }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="container inner">
-      <a class="brand" href="index.html">Project.PAW</a>
-      <nav class="nav">
-        <a href="project_list.html" class="btn">후원하기</a>
-        <a href="create.html" class="btn primary">등록하기</a>
-      </nav>
-    </div>
+  <header>
+    <h1>🐾 Project.PAW</h1>
+    <nav>
+      <a href="index.html">홈</a>
+      <a href="project_list.html">후원하기</a>
+      <a href="about.html">About</a>
+      <button onclick="logout()">로그아웃</button>
+    </nav>
   </header>
 
-  <main class="container">
-    <article class="layout">
-      <div>
-        <div class="card cover"><img class="project-cover" src="img/placeholder.svg" alt="대표 이미지" loading="lazy" decoding="async"/></div>
-
-        <div class="card pad" style="margin-top:10px">
-          <div class="kicker">프로젝트</div>
-          <h1 class="project-title"></h1>
-          <p class="muted project-summary" style="margin:4px 0 6px 0"></p>
-          <div class="progress"><i id="bar" style="width:0%"></i></div>
-          <div class="muted" style="display:flex;gap:10px;margin-top:4px;align-items:center;font-size:13px">
-            <span id="money"></span>
-            <span id="statusChip" class="chip">대기</span>
-          </div>
-        </div>
-
-        <div class="card pad" style="margin-top:10px">
-          <div class="kicker">상세 설명</div>
-          <div class="project-description" style="line-height:1.6"></div>
-        </div>
-
-        <div class="card pad" style="margin-top:10px">
-          <div class="kicker">상황 갤러리</div>
-          <div class="slider">
-            <button class="navbtn prev" type="button" aria-label="이전">‹</button>
-            <div class="track"></div>
-            <button class="navbtn next" type="button" aria-label="다음">›</button>
-          </div>
-        </div>
-
-        <div class="card pad" style="margin-top:10px">
-          <div class="kicker">영수증</div>
-          <div class="grid receipt-preview"></div>
-        </div>
-      </div>
-
-      <aside class="card pad">
-        <div>
-          <div class="kicker">연결</div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
-            <a class="btn primary" id="kakaoBtn" target="_blank" rel="noopener">카카오톡 연결</a>
-            <button class="btn" id="shareBtn">공유</button>
-          </div>
-          <p class="muted" id="kakaoNotice" style="margin-top:6px;display:none;font-size:13px">
-            관리자 승인 후 카카오 오픈채팅 링크가 공개됩니다.
-          </p>
-        </div>
-
-        <div style="margin-top:12px">
-          <div class="kicker">정보</div>
-          <div style="display:grid;gap:6px;margin-top:4px;font-size:13px" class="muted">
-            <div><b>등록일</b> <span id="createdAtText" style="margin-left:6px">-</span></div>
-            <div><b>목표 금액</b> <span id="goalText" style="margin-left:6px">-</span></div>
-            <div><b>구조자 부담</b> <span id="selfText" style="margin-left:6px">-</span></div>
-          </div>
-        </div>
-
-        <div class="muted" style="font-size:12px;margin-top:10px">
-          “책임의 끝과 공감의 시작이 만나는 곳.”
-        </div>
-      </aside>
-    </article>
+  <main style="padding:2rem; max-width:900px; margin:auto;">
+    <div id="project-detail">
+      <!-- JS에서 프로젝트 내용 로드 -->
+    </div>
   </main>
 
-  <footer>
-    <div class="container footer-inner">
-      <span>© Project.PAW — “발바닥 하나가, 마음 하나다.”</span>
-      <nav class="footer-nav">
-        <a href="about.html">About</a>
-        <a href="login.html">로그인</a>
-      </nav>
-    </div>
+  <footer style="margin-top:3rem; padding:2rem; background:#fafafa; text-align:center; font-size:0.9rem; color:#666;">
+    <p>© 2025 Project.PAW</p>
+    <p>
+      <a href="about.html">About</a> | 
+      <a href="login.html">로그인</a>
+    </p>
   </footer>
 
   <script type="module">
-    import "./js/firebase.js";
-    import { storage, fmt } from "./js/app.js";
-    import { esc, percent } from "./js/utils.js";
-    const $ = (s,r=document)=>r.querySelector(s);
-    const id = new URLSearchParams(location.search).get("id");
-    const createdAtText = (ts)=> ts?.seconds ? new Date(ts.seconds*1000).toLocaleString("ko-KR") : "-";
+    import { db } from "./js/firebase.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    async function main(){
-      if(!id){ document.body.innerHTML = "<main class='container'><p>잘못된 접근입니다 (id 없음)</p></main>"; return; }
-      const p = await storage.byId(id);
-      if(!p){ document.body.innerHTML = "<main class='container'><p>프로젝트를 찾을 수 없습니다.</p></main>"; return; }
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
 
-      const title = p.title || "";
-      document.title = `${title} — Project.PAW`;
+    async function loadProject() {
+      if (!id) return;
+      const ref = doc(db, "projects", id);
+      const snap = await getDoc(ref);
 
-      $(".project-title").textContent = title;
-      $(".project-summary").textContent = p.summary || "";
-
-      const target = fmt(p.targetAmount||0);
-      const selfPay = fmt(p.selfPayAmount||0);
-      const pct = Math.max(0, Math.min(100, percent(p.raisedAmount||0, p.targetAmount||1)));
-      $("#money").textContent = `목표 ${target}원 · 구조자 ${selfPay}원 (달성률 ${pct}%)`;
-      $("#bar").style.width = pct + "%";
-
-      const chip = $("#statusChip");
-      if((p.status||"pending")==="approved"){ chip.textContent="승인"; chip.classList.add("approved"); }
-      else { chip.textContent="대기"; chip.classList.remove("approved"); }
-
-      const cover = (p.images && p.images.cover) ? p.images.cover : "img/placeholder.svg";
-      $(".project-cover").src = cover;
-      $(".project-cover").alt = `${title} 대표 이미지`;
-
-      const desc = (p.description||"").replace(/\n/g,"<br/>");
-      $(".project-description").innerHTML = desc;
-
-      $("#createdAtText").textContent = createdAtText(p.createdAt);
-      $("#goalText").textContent = `${target}원`;
-      $("#selfText").textContent = `${selfPay}원`;
-
-      const g = Array.isArray(p.images?.gallery) ? p.images.gallery : [];
-      const track = document.querySelector(".track");
-      if(g.length){
-        track.innerHTML = g.map((src,i)=> `<div class="slide"><img src="${src}" alt="${title} 상황 사진 ${i+1}" loading="lazy" decoding="async"></div>`).join("");
-      }else{
-        track.innerHTML = `<div class="slide"><div class="pad muted" style="text-align:center">등록된 사진이 없습니다.</div></div>`;
+      if (snap.exists()) {
+        const p = snap.data();
+        document.getElementById("project-detail").innerHTML = `
+          <img src="${p.imageUrl || 'img/default.jpg'}" style="width:100%;max-height:400px;object-fit:cover;border-radius:12px;margin-bottom:1rem;">
+          <h2 style="margin-bottom:0.5rem;">${p.title}</h2>
+          <p style="color:#555;">${p.description || ""}</p>
+          <p style="margin-top:1rem;font-weight:bold;color:#ff6b6b;">후원자와 연결되는 카카오톡 오픈채팅방: 
+            <a href="${p.kakaoUrl || '#'}" target="_blank" style="color:#ff6b6b;">참여하기</a>
+          </p>
+        `;
+      } else {
+        document.getElementById("project-detail").innerHTML = "<p>존재하지 않는 프로젝트입니다.</p>";
       }
-      let idx = 0; const total = Math.max(track.children.length, 1);
-      const update = ()=> track.style.transform = `translateX(${-idx*100}%)`;
-      document.querySelector(".navbtn.prev").onclick = ()=>{ idx=(idx-1+total)%total; update(); };
-      document.querySelector(".navbtn.next").onclick = ()=>{ idx=(idx+1)%total; update(); };
-      update();
-
-      const r = Array.isArray(p.images?.receipts) ? p.images.receipts : [];
-      const rwrap = document.querySelector(".receipt-preview");
-      rwrap.innerHTML = (r.length ? r : []).map((src,i)=> `<div class="img-cell"><img src="${src}" alt="${title} 영수증 ${i+1}" loading="lazy" decoding="async"></div>`).join("")
-        || `<div class="img-cell"><div class="pad muted" style="text-align:center;height:120px;display:flex;align-items:center;justify-content:center">등록된 영수증이 없습니다.</div></div>`;
-
-      const kakaoBtn = $("#kakaoBtn");
-      const kakaoNotice = $("#kakaoNotice");
-      const kakao = (p.kakaoLink||"").trim();
-      if(p.status==="approved" && kakao){ kakaoBtn.href = kakao; kakaoNotice.style.display = "none"; }
-      else { kakaoBtn.classList.add("disabled"); kakaoBtn.setAttribute("aria-disabled","true"); kakaoNotice.style.display = "block"; }
-
-      $("#shareBtn").addEventListener("click", async ()=>{
-        try { await navigator.clipboard.writeText(location.href); alert("당신의 마음이 연결되었습니다. 링크가 복사되었습니다 ✨"); }
-        catch { prompt("복사 실패. 수동으로 복사하세요:", location.href); }
-      });
     }
-    main();
+
+    loadProject();
   </script>
 </body>
 </html>
