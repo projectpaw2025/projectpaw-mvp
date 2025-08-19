@@ -1,69 +1,198 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project.PAW</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Project.PAW — 법인 없는 첫 후원 플랫폼</title>
+
+  <!-- 기존 스타일 우선순위 유지 -->
+  <link rel="stylesheet" href="common.css"/>
+  <link rel="stylesheet" href="app.min.css"/>
+
   <style>
-    body { margin:0; font-family:"Noto Sans KR",sans-serif; background:#fff; color:#333; }
-    .hero { text-align:center; padding:4rem 2rem; background:linear-gradient(to right,#fff,#fdfdfd); }
-    .hero h2 { font-size:2rem; margin-bottom:1rem; }
-    .hero p { font-size:1.2rem; color:#666; }
+    /* ===== Hero ===== */
+    .hero {
+      background: linear-gradient(135deg, #fdf2f8, #fefce8);
+      padding: 80px 20px;
+      text-align: center;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .hero-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+    .hero-sub {
+      font-size: 1.1rem;
+      color: #374151;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .hero-actions .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform .08s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+      box-shadow: 0 6px 16px rgba(17,24,39,.12);
+    }
+    .btn.primary { background: #111827; color: #fff; border: 1px solid #111827; }
+    .btn.primary:hover { transform: translateY(-1px); background: #374151; border-color: #374151; }
+
+    /* ===== Highlights (3컬럼) ===== */
+    .highlights { padding: 60px 20px; background: #fff; }
+    .highlights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+    .highlight { text-align: center; padding: 20px; border-radius: 16px; border:1px solid #eef2f7; background:#fff; }
+    .highlight .icon { font-size: 2rem; margin-bottom: 12px; }
+    .highlight h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; color:#111827; }
+    .highlight p { font-size: 0.95rem; color: #4b5563; line-height: 1.55; }
+
+    /* ===== 진행중 프로젝트 섹션 (기존 리스트 들어갈 자리) ===== */
+    .section { padding: 50px 20px; }
+    .section .container { max-width: 1120px; margin: 0 auto; }
+    .section-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 18px; color:#111827; }
+    .cards {
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap:16px;
+    }
+    .card {
+      border:1px solid #eef2f7; border-radius:16px; overflow:hidden; background:#fff;
+      display:flex; flex-direction:column;
+      transition: transform .08s ease, box-shadow .2s ease;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(17,24,39,.08); }
+    .card img { width:100%; height:180px; object-fit:cover; }
+    .card-body { padding:14px; display:flex; flex-direction:column; gap:8px; }
+    .meta { font-size:.9rem; color:#6b7280; }
+    .chip { display:inline-block; padding:2px 10px; border-radius:999px; font-size:.8rem; border:1px solid #e5e7eb; color:#374151; }
+    .chip.approved { background:#ecfdf5; border-color:#bbf7d0; color:#065f46; }
+    .chip.pending { background:#fff7ed; border-color:#fed7aa; color:#9a3412; }
+    .card-actions { margin-top:8px; display:flex; justify-content:flex-end; gap:8px; }
+    .btn.small { padding:8px 12px; border-radius:10px; font-weight:700; border:1px solid #111; background:#111; color:#fff; text-decoration:none; }
+    .btn.ghost { background:#fff; color:#111; border:1px solid #e5e7eb; }
+
+    /* ===== 유틸 ===== */
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
   </style>
 </head>
 <body>
-  <!-- Header Include -->
+  <!-- 헤더/푸터는 include.js가 주입 -->
   <div data-include="header"></div>
 
+  <!-- Hero -->
   <section class="hero">
-    <h2>도움은 본능, 연결은 선택</h2>
-    <p>망설임을 용기로 바꾸는 플랫폼</p>
+    <div class="hero-content">
+      <h1 class="hero-title">법인 없는 첫 후원 플랫폼</h1>
+      <p class="hero-sub">
+        당신의 마음이 곧장 구조자에게 닿습니다.<br/>
+        책임 없는 구조는 등록할 수 없습니다.<br/>
+        돈보다 연결이 먼저 기록됩니다.
+      </p>
+      <div class="hero-actions">
+        <a href="project_list.html" class="btn primary">🐾 지금 구조자 만나보기</a>
+      </div>
+    </div>
   </section>
 
-  <main style="padding:2rem; max-width:1200px; margin:auto;">
-    <h3 style="margin-bottom:1rem;">최근 등록된 프로젝트</h3>
-    <div id="projects" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem;">
-      <!-- JS로 카드 로드 -->
+  <!-- 3컬럼 하이라이트 -->
+  <section class="highlights" aria-labelledby="hl-title">
+    <h2 id="hl-title" class="sr-only">Project.PAW 핵심 철학</h2>
+    <div class="highlights-grid">
+      <div class="highlight">
+        <div class="icon">🧑‍🤝‍🧑</div>
+        <h3>개인 ↔ 개인 직연결</h3>
+        <p>법인이나 단체를 거치지 않습니다. 후원자의 마음이 구조자에게 직접 닿습니다.</p>
+      </div>
+      <div class="highlight">
+        <div class="icon">🐾</div>
+        <h3>구조자 책임 필수</h3>
+        <p>자기부담·증빙·후기 공유는 필수입니다. 책임 없는 구조는 등록할 수 없습니다.</p>
+      </div>
+      <div class="highlight">
+        <div class="icon">❤️</div>
+        <h3>숫자보다 연결</h3>
+        <p>얼마가 모였는지가 아니라, 몇 마음이 모였는지가 중요합니다.</p>
+      </div>
     </div>
-  </main>
+  </section>
 
-  <!-- Footer Include -->
+  <!-- 진행중 프로젝트 (홈 미리보기 4개) -->
+  <section class="section" aria-labelledby="list-title">
+    <div class="container">
+      <h2 id="list-title" class="section-title">진행중인 구조 프로젝트</h2>
+      <div id="home-cards" class="cards"></div>
+      <div style="text-align:right; margin-top:12px;">
+        <a class="btn small ghost" href="project_list.html">전체 보기 →</a>
+      </div>
+    </div>
+  </section>
+
   <div data-include="footer"></div>
 
+  <!-- 레이아웃 주입 -->
   <script type="module">
     import { injectLayout } from "./js/include.js";
     injectLayout({ active: "index" });
+  </script>
 
-    import { db } from "./js/firebase.js";
-    import { collection, getDocs, orderBy, query, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <!-- 홈 카드 렌더링: localStorage "projects"에서 4개 미리보기 -->
+  <script>
+    (function(){
+      const $wrap = document.getElementById('home-cards');
+      function readProjects() {
+        try {
+          const raw = localStorage.getItem('projects');
+          const arr = JSON.parse(raw);
+          return Array.isArray(arr) ? arr : [];
+        } catch(e) { return []; }
+      }
+      function fmt(n){ return Number(n||0).toLocaleString('ko-KR'); }
+      function render() {
+        const list = readProjects()
+          .sort((a,b) => (b.createdAt||0) - (a.createdAt||0))
+          .slice(0, 4);
 
-    const projectContainer = document.getElementById("projects");
+        if (!list.length) {
+          $wrap.innerHTML = `
+            <div class="card" style="padding:16px; align-items:center; justify-content:center;">
+              <div class="meta">아직 등록된 프로젝트가 없습니다.</div>
+            </div>`;
+          return;
+        }
 
-    async function loadProjects() {
-      const q = query(collection(db, "projects"), orderBy("createdAt","desc"), limit(6));
-      const snapshot = await getDocs(q);
-      snapshot.forEach(doc => {
-        const p = doc.data();
-        const card = document.createElement("div");
-        card.style.border = "1px solid #eee";
-        card.style.borderRadius = "12px";
-        card.style.overflow = "hidden";
-        card.style.background = "#fff";
-        card.style.boxShadow = "0 2px 6px rgba(0,0,0,0.05)";
-
-        card.innerHTML = `
-          <img src="${p.imageUrl || 'img/default.jpg'}" style="width:100%;height:200px;object-fit:cover;">
-          <div style="padding:1rem;">
-            <h4 style="margin:0 0 0.5rem 0;font-size:1.1rem;color:#222;">${p.title}</h4>
-            <p style="margin:0;font-size:0.9rem;color:#555;">${p.description?.slice(0,60) || ''}...</p>
-            <a href="project.html?id=${doc.id}" style="display:inline-block;margin-top:0.8rem;color:#ff6b6b;font-weight:bold;">상세보기 →</a>
-          </div>
-        `;
-        projectContainer.appendChild(card);
-      });
-    }
-    loadProjects();
+        $wrap.innerHTML = list.map(p => {
+          const cover = p.representativeImage || "img/placeholder.svg";
+          const tag = p.adminApproved ? '<span class="chip approved">승인</span>' : '<span class="chip pending">대기</span>';
+          return `
+            <article class="card">
+              <img src="${cover}" alt="${p.name || 'project cover'}"/>
+              <div class="card-body">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                  <strong>${p.name ?? '(이름 없음)'}</strong>
+                  ${tag}
+                </div>
+                <div class="meta">${p.summary ?? ''}</div>
+                <div class="meta">목표 ${fmt(p.goalAmount)}원 · 구조자 부담 ${fmt(p.rescuerContribution)}원</div>
+                <div class="card-actions">
+                  <a class="btn small" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a>
+                </div>
+              </div>
+            </article>`;
+        }).join('');
+      }
+      render();
+    })();
   </script>
 </body>
 </html>
