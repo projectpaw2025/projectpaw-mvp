@@ -1,168 +1,165 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>프로젝트 등록 — Project.PAW</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project.PAW - 프로젝트 등록</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module">
+    import { auth, signOut } from "./js/firebase.js";
+
+    window.logout = async () => {
+      try {
+        await signOut(auth);
+        alert("로그아웃 완료! 다시 로그인 해주세요.");
+        location.href = "index.html";
+      } catch (e) {
+        console.error("로그아웃 실패:", e);
+      }
+    };
+  </script>
   <style>
-    :root{--primary:#1f6feb;--muted:#6b7280;--bg:#f8fafc;--card:#fff;--line:#e5e7eb;--radius:18px;--shadow:0 12px 30px rgba(16,24,40,.08)}
-    *{box-sizing:border-box}
-    html,body{margin:0;background:var(--bg);color:#0f172a;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
-    a{text-decoration:none;color:inherit}
-    .container{max-width:920px;margin:0 auto;padding:0 16px}
-    .topbar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line)}
-    .topbar .inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
-    .brand{font-weight:900}
-    .nav{display:flex;gap:8px}
-    .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
-    .btn.ghost{background:#11182710}
-    .btn.primary{background:var(--primary);color:#fff}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin:24px 0}
-    h1{margin:0 0 8px 0;font-size:clamp(22px,3.4vw,30px);font-weight:900}
-    .muted{color:#6b7280}
-    form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .full{grid-column:1/-1}
-    label{font-weight:700;font-size:14px}
-    input[type="text"],input[type="number"],textarea,input[type="file"]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
-    textarea{min-height:120px}
-    .hint{font-size:12px;color:#64748b}
-    .row{display:flex;gap:8px;align-items:center}
-    footer{border-top:1px solid var(--line)}
-    .footer-inner{display:flex;justify-content:space-between;align-items:center;padding:24px 0;color:#94a3b8;font-size:14px}
-    .footer-nav{display:flex;gap:12px}
-    .footer-link{color:#64748b}
+    body {
+      margin: 0;
+      font-family: "Noto Sans KR", sans-serif;
+      background: #fff;
+      color: #333;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #ffffff;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      color: #222;
+    }
+    nav {
+      display: flex;
+      gap: 1rem;
+    }
+    nav a, nav button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      color: #333;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav button:hover {
+      color: #ff6b6b;
+    }
+    main {
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: #fafafa;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    input, textarea {
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    button.submit-btn {
+      padding: 0.8rem;
+      background: #ff6b6b;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button.submit-btn:hover {
+      background: #ff4c4c;
+    }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="container inner">
-      <a class="brand" href="index.html">Project.PAW</a>
-      <nav class="nav">
-        <a class="btn ghost" href="index.html">홈</a>
-        <a class="btn primary" href="project_list.html">후원하기</a>
-      </nav>
-    </div>
+  <header>
+    <h1>🐾 Project.PAW</h1>
+    <nav>
+      <a href="index.html">홈</a>
+      <a href="project_list.html">후원하기</a>
+      <a href="about.html">About</a>
+      <button onclick="logout()">로그아웃</button>
+    </nav>
   </header>
 
-  <main class="container">
-    <div class="card">
-      <h1>프로젝트 등록</h1>
-      <p class="muted" style="margin:4px 0 14px 0">PG 연동 전: 등록 후 <b>관리자 승인</b> 시 카카오 오픈채팅 링크가 공개됩니다.</p>
-
-      <form id="form">
-        <div class="full">
-          <label>프로젝트 제목</label>
-          <input name="title" type="text" placeholder="예: 교통사고로 다친 나비 치료비 모금" required/>
-        </div>
-
-        <div>
-          <label>동물 이름</label>
-          <input name="animalName" type="text" placeholder="예: 나비" required/>
-        </div>
-        <div>
-          <label>구조자 이름</label>
-          <input name="rescuerName" type="text" placeholder="예: 홍길동" required/>
-        </div>
-
-        <div class="full">
-          <label>상황 요약</label>
-          <input name="summary" type="text" placeholder="짧은 한 줄 요약" required/>
-        </div>
-
-        <div class="full">
-          <label>상세 설명</label>
-          <textarea name="description" placeholder="무슨 일이 있었는지, 필요한 치료와 비용 등을 적어주세요." required></textarea>
-        </div>
-
-        <div>
-          <label>목표 금액(원)</label>
-          <input name="targetAmount" type="number" min="0" step="1000" placeholder="예: 600000" required/>
-        </div>
-        <div>
-          <label>구조자 부담액(원)</label>
-          <input name="selfPayAmount" type="number" min="0" step="1000" placeholder="예: 180000" required/>
-        </div>
-
-        <div class="full">
-          <label>대표 사진 (1장)</label>
-          <input id="coverFile" type="file" accept="image/*" required/>
-          <div class="hint">JPG/PNG 권장, 5MB 이하</div>
-        </div>
-
-        <div class="full">
-          <label>상황 사진 (여러 장)</label>
-          <input id="galleryFiles" type="file" accept="image/*" multiple/>
-        </div>
-
-        <div class="full">
-          <label>영수증 사진 (여러 장)</label>
-          <input id="receiptFiles" type="file" accept="image/*" multiple/>
-        </div>
-
-        <div class="full row" style="justify-content:flex-end;margin-top:8px">
-          <a class="btn ghost" href="index.html">취소</a>
-          <button class="btn primary" type="submit">등록하기</button>
-        </div>
-      </form>
-    </div>
+  <main>
+    <h2>프로젝트 등록</h2>
+    <form id="create-form">
+      <input type="text" id="title" placeholder="제목" required>
+      <textarea id="description" placeholder="설명" rows="5" required></textarea>
+      <input type="url" id="kakaoUrl" placeholder="카카오톡 오픈채팅방 URL">
+      <input type="file" id="image" accept="image/*">
+      <button type="submit" class="submit-btn">등록하기</button>
+    </form>
   </main>
 
-  <footer>
-    <div class="container footer-inner">
-      <span>© Project.PAW</span>
-      <nav class="footer-nav">
-        <a class="footer-link" href="about.html">About</a>
-        <a class="footer-link" href="login.html">로그인</a>
-      </nav>
-    </div>
+  <footer style="margin-top:3rem; padding:2rem; background:#fafafa; text-align:center; font-size:0.9rem; color:#666;">
+    <p>© 2025 Project.PAW</p>
+    <p>
+      <a href="about.html">About</a> | 
+      <a href="login.html">로그인</a>
+    </p>
   </footer>
 
   <script type="module">
-    import "./js/firebase.js";
-    import { storage } from "./js/app.js";
-    import { pick, readFilesAsDataURL } from "./js/utils.js";
-    import { uploadImageToStorage } from "./js/uploader.js";
+    import { db, storage, auth } from "./js/firebase.js";
+    import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    const form = document.querySelector('#form');
-    const coverFile = document.querySelector('#coverFile');
-    const galleryFiles = document.querySelector('#galleryFiles');
-    const receiptFiles = document.querySelector('#receiptFiles');
+    const form = document.getElementById("create-form");
 
-    form.addEventListener('submit', async (e)=>{
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
+      const title = document.getElementById("title").value.trim();
+      const description = document.getElementById("description").value.trim();
+      const kakaoUrl = document.getElementById("kakaoUrl").value.trim();
+      const imageFile = document.getElementById("image").files[0];
 
-      // 필수 이미지
-      const cover = coverFile.files[0];
-      if(!cover){ alert("대표 사진을 선택해주세요."); return; }
+      if (!auth.currentUser) {
+        alert("로그인 후 등록 가능합니다.");
+        return;
+      }
 
-      // 업로드
-      const coverUrl = await uploadImageToStorage(cover, "covers/");
-      const gallery = await Promise.all(Array.from(galleryFiles.files||[]).map(f=>uploadImageToStorage(f,"gallery/")));
-      const receipts = await Promise.all(Array.from(receiptFiles.files||[]).map(f=>uploadImageToStorage(f,"receipts/")));
+      let imageUrl = "";
+      if (imageFile) {
+        const storageRef = ref(storage, `projects/${Date.now()}-${imageFile.name}`);
+        await uploadBytes(storageRef, imageFile);
+        imageUrl = await getDownloadURL(storageRef);
+      }
 
-      const fd = new FormData(form);
-      const data = {
-        // 필수 입력
-        title: fd.get("title"),
-        animalName: fd.get("animalName"),
-        rescuerName: fd.get("rescuerName"),
-        summary: fd.get("summary"),
-        description: fd.get("description"),
-        targetAmount: Number(fd.get("targetAmount")||0),
-        selfPayAmount: Number(fd.get("selfPayAmount")||0),
+      await addDoc(collection(db, "projects"), {
+        title,
+        description,
+        kakaoUrl,
+        imageUrl,
+        createdAt: serverTimestamp(),
+        createdBy: auth.currentUser.uid
+      });
 
-        // 이미지
-        images: { cover: coverUrl, gallery, receipts },
-
-        // PG 전 플로우: 등록 시에는 관리자 승인 대기 & kakaoLink 없음
-        status: "pending",
-        kakaoLink: "",
-
-        raisedAmount: 0
-      };
-
-      const saved = await storage.add(data); // Firestore add (serverTimestamp 포함)
-      location.href = 'project.html?id=' + encodeURIComponent(saved.id);
+      alert("프로젝트가 등록되었습니다. 관리자의 승인을 기다려주세요!");
+      form.reset();
+      window.location.href = "project_list.html";
     });
   </script>
 </body>
