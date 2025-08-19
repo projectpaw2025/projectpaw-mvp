@@ -7,9 +7,9 @@
   <meta name="description" content="도움은 본능, 연결은 선택. Project.PAW는 구조자와 후원자를 직접 연결하는 따뜻한 플랫폼입니다.">
   <style>
     :root{
-      --primary:#1f6feb; --ink:#e6ecff; --muted:#9aa8c7;
-      --bg:#0a0f1d; --surface:#0f1629; --surface-2:#0c1224; --line:#1a2342;
-      --radius:16px; --shadow:0 14px 34px rgba(10,15,29,.36);
+      --primary:#1f6feb; --ink:#0f172a; --muted:#64748b;
+      --bg:#f8fafc; --surface:#ffffff; --line:#e5e7eb;
+      --radius:16px; --shadow:0 10px 25px rgba(16,24,40,.08);
     }
     *{box-sizing:border-box}
     html,body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
@@ -18,57 +18,55 @@
     .clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
     /* Topbar */
-    .topbar{position:fixed;top:0;left:0;right:0;z-index:50;background:#0b1222e6;border-bottom:1px solid #111a33;backdrop-filter:blur(6px)}
+    .topbar{position:fixed;top:0;left:0;right:0;z-index:50;background:#ffffffcc;border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
     .topbar .inner{max-width:1120px;margin:0 auto;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
     .brand{font-weight:900;letter-spacing:.2px}
     .nav{display:flex;gap:8px}
-    .btn{appearance:none;border:0;border-radius:10px;padding:9px 12px;font-weight:700;cursor:pointer}
-    .btn.ghost{background:#ffffff12}
-    .btn.primary{background:var(--primary);color:#fff}
+    .btn{appearance:none;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-weight:700;cursor:pointer;background:#fff}
+    .btn.primary{background:var(--primary);color:#fff;border-color:transparent}
+    .btn:hover{box-shadow:0 4px 12px rgba(2,6,23,.08)}
 
-    /* Hero (압축) */
-    .hero{
-      min-height:70svh; display:grid; place-items:center; padding-top:64px;
-      background: radial-gradient(900px 480px at 70% -10%, #112149 0%, transparent 60%), radial-gradient(600px 480px at -10% 90%, #0c2130 0%, transparent 60%);
-    }
+    /* Hero (압축, 화이트) */
+    .hero{min-height:70svh;display:grid;place-items:center;padding-top:64px;background:
+      radial-gradient(900px 420px at 70% -10%, #eaf2ff 0%, transparent 60%),
+      radial-gradient(700px 480px at -10% 90%, #e6fff5 0%, transparent 60%)}
     .hero-inner{max-width:1120px;width:100%;padding:18px 14px;display:grid;grid-template-columns:1.05fr .95fr;gap:16px}
     @media (max-width: 960px){ .hero-inner{grid-template-columns:1fr} }
-
-    .panel{background:linear-gradient(180deg,var(--surface),var(--surface-2));border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+    .panel{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
     .pad{padding:18px}
-    .kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#90a0c0;font-weight:800;margin-bottom:6px}
+    .kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#475569;font-weight:800;margin-bottom:6px}
     .t-hero{font-size:clamp(24px,4vw,40px);line-height:1.1;font-weight:900;margin:0}
     .subtitle{color:var(--muted);font-size:15px;margin:8px 0 0}
     .pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-    .pill{padding:6px 10px;border-radius:999px;background:#0e2039;border:1px solid #1c2a4d;color:#bcd0ff;font-weight:800;font-size:12px}
+    .pill{padding:6px 10px;border-radius:999px;background:#f1f5ff;border:1px solid #dbe7ff;color:#1d4ed8;font-weight:800;font-size:12px}
     .cta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
     .cta .btn{padding:10px 12px;border-radius:10px}
 
-    /* Cards (4:3, 컴팩트) */
+    /* Cards (4:3, 화이트) */
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-    .card{background:linear-gradient(180deg,#0f1629,#0d1527);border:1px solid #1b2547;border-radius:16px;overflow:hidden;transition:transform .12s ease, box-shadow .12s}
-    .card:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(22,35,78,.48)}
-    .media{position:relative;background:#0a1020;border-bottom:1px solid #1b2547}
+    .card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:transform .12s ease, box-shadow .12s}
+    .card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+    .media{position:relative;background:#eef2ff;border-bottom:1px solid var(--line)}
     .media::before{content:"";display:block;padding-top:75%} /* 4:3 */
     .media > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 38%}
     .body{padding:12px}
     .row{display:flex;gap:8px;align-items:center;justify-content:space-between}
     .title-sm{margin:0;font-size:16px}
-    .muted{color:#9aa8c7}
+    .muted{color:var(--muted)}
     .badge{font-size:11px;padding:3px 7px;border-radius:999px}
-    .badge.approved{background:#09291a;color:#4ae39b;border:1px solid #153a27}
-    .badge.pending{background:#2a1e05;color:#ffcc6b;border:1px solid #3e2b08}
-    .progress{width:100%;height:6px;background:#111a33;border-radius:999px;overflow:hidden;margin:8px 0 4px;border:1px solid #1e2b50}
+    .badge.approved{background:#eafff2;color:#0a6b3c;border:1px solid #b7f0cf}
+    .badge.pending{background:#fff6e6;color:#a15a00;border:1px solid #f3d6a3}
+    .progress{width:100%;height:6px;background:#f1f5f9;border-radius:999px;overflow:hidden;margin:8px 0 4px;border:1px solid var(--line)}
     .progress i{display:block;height:100%;background:linear-gradient(90deg,#4f7fff,#6bd3ff);width:0%}
 
     /* Section spacing */
     .section{max-width:1120px;margin:0 auto;padding:0 14px 24px}
 
     /* Footer */
-    footer{border-top:1px solid #111a33;background:#0a0f1d}
-    .footer-inner{max-width:1120px;margin:0 auto;padding:16px 14px;display:flex;justify-content:space-between;align-items:center;color:#7f8fb3;font-size:13px}
+    footer{border-top:1px solid var(--line);background:#fff}
+    .footer-inner{max-width:1120px;margin:0 auto;padding:16px 14px;display:flex;justify-content:space-between;align-items:center;color:#64748b;font-size:13px}
     .footer-nav{display:flex;gap:10px}
-    .footer-link{color:#9aa8c7}
+    .footer-link{color:#64748b}
   </style>
 </head>
 <body>
@@ -76,7 +74,7 @@
     <div class="inner">
       <a class="brand" href="index.html">Project.PAW</a>
       <nav class="nav">
-        <a href="project_list.html" class="btn ghost">후원하기</a>
+        <a href="project_list.html" class="btn">후원하기</a>
         <a href="create.html" class="btn primary">등록하기</a>
       </nav>
     </div>
@@ -93,14 +91,14 @@
         </div>
         <div class="cta">
           <a class="btn primary" href="project_list.html">후원하기</a>
-          <a class="btn ghost" href="create.html">등록하기</a>
+          <a class="btn" href="create.html">등록하기</a>
         </div>
       </div>
 
       <div class="panel pad">
         <div class="row" style="justify-content:space-between">
           <div class="kicker">지금 진행중</div>
-          <a class="btn ghost" href="project_list.html">모두 보기</a>
+          <a class="btn" href="project_list.html">모두 보기</a>
         </div>
         <div id="home-cards" class="grid" style="margin-top:8px"></div>
       </div>
