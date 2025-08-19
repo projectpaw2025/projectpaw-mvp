@@ -4,43 +4,45 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>후원하기 — Project.PAW</title>
-  <meta property="og:title" content="Project.PAW — 후원 프로젝트"/>
-  <meta property="og:description" content="도움은 본능, 연결은 선택. 지금 연결을 시작하세요."/>
   <style>
-    :root{--primary:#1f6feb;--muted:#6b7280;--bg:#0a0f1d;--card:#0f1629;--line:#1a2342;--radius:18px}
+    :root{--primary:#1f6feb;--muted:#9aa8c7;--bg:#0a0f1d;--card:#0f1629;--line:#1a2342;--radius:16px}
     *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:#e6ecff;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
     a{text-decoration:none;color:inherit}
-    .container{max-width:1120px;margin:0 auto;padding:0 16px}
+    .clamp-1{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+    .clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+    .container{max-width:1120px;margin:0 auto;padding:0 14px}
     .topbar{position:sticky;top:0;z-index:10;background:#0b1222;border-bottom:1px solid var(--line)}
-    .topbar .inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
-    .brand{font-weight:900}
-    .nav{display:flex;gap:8px}
-    .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
-    .btn.ghost{background:#ffffff12}
-    .btn.primary{background:var(--primary);color:#fff}
-    .section{padding:28px 0}
-    .kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#90a0c0;font-weight:800}
-    h1{margin:0 0 6px 0;font-size:clamp(22px,3.4vw,30px);font-weight:900}
-    .controls{display:flex;gap:10px;align-items:center}
-    select,input[type="checkbox"]{padding:10px 12px;border:1px solid #243056;border-radius:12px;background:#0c1326;color:#e6ecff}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-    .card{background:linear-gradient(180deg,#0f1629,#0d1527);border:1px solid #1b2547;border-radius:18px;overflow:hidden;transition:transform .12s}
+    .topbar .inner{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
+    .brand{font-weight:900}.nav{display:flex;gap:8px}
+    .btn{appearance:none;border:0;border-radius:10px;padding:9px 12px;font-weight:700;cursor:pointer}
+    .btn.ghost{background:#ffffff12}.btn.primary{background:var(--primary);color:#fff}
+
+    .section{padding:22px 0}
+    .kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#90a0c0;font-weight:800}
+    h1{margin:0 0 6px 0;font-size:clamp(20px,3.2vw,26px);font-weight:900}
+    .controls{display:flex;gap:8px;align-items:center}
+    select,input[type="checkbox"]{padding:8px 10px;border:1px solid #243056;border-radius:10px;background:#0c1326;color:#e6ecff}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+    .card{background:linear-gradient(180deg,#0f1629,#0d1527);border:1px solid #1b2547;border-radius:16px;overflow:hidden;transition:transform .12s}
     .card:hover{transform:translateY(-2px)}
     .media{position:relative;background:#0a1020;border-bottom:1px solid #1b2547}
-    .media::before{content:"";display:block;padding-top:56.25%}
-    .media > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%}
-    .pad{padding:14px 14px 16px}
+    .media::before{content:"";display:block;padding-top:75%} /* 4:3 */
+    .media > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 38%}
+    .pad{padding:12px}
     .muted{color:#9aa8c7}
-    .badge{font-size:12px;padding:4px 8px;border-radius:999px}
+    .badge{font-size:11px;padding:3px 7px;border-radius:999px}
     .badge.approved{background:#09291a;color:#4ae39b;border:1px solid #153a27}
     .badge.pending{background:#2a1e05;color:#ffcc6b;border:1px solid #3e2b08}
-    .progress{width:100%;height:8px;background:#111a33;border-radius:999px;overflow:hidden;margin:10px 0 6px;border:1px solid #1e2b50}
+    .progress{width:100%;height:6px;background:#111a33;border-radius:999px;overflow:hidden;margin:8px 0 4px;border:1px solid #1e2b50}
     .progress i{display:block;height:100%;background:linear-gradient(90deg,#4f7fff,#6bd3ff);width:0%}
-    .tools{display:flex;justify-content:center;margin-top:16px}
-    .empty{padding:36px;text-align:center;border:1px dashed #344065;border-radius:16px;background:#0b1224;color:#9aa8c7}
-    footer{border-top:1px solid #111a33;margin-top:28px}
-    .footer-inner{display:flex;justify-content:space-between;align-items:center;padding:24px 0;color:#7f8fb3;font-size:14px}
-    .footer-nav{display:flex;gap:12px}
+    .tools{display:flex;justify-content:center;margin-top:14px}
+    .empty{padding:24px;text-align:center;border:1px dashed #344065;border-radius:14px;background:#0b1224;color:#9aa8c7}
+
+    footer{border-top:1px solid #111a33;margin-top:20px}
+    .footer-inner{display:flex;justify-content:space-between;align-items:center;padding:16px 0;color:#7f8fb3;font-size:13px}
+    .footer-nav{display:flex;gap:10px}
   </style>
 </head>
 <body>
@@ -73,7 +75,7 @@
         </div>
       </div>
 
-      <div id="list" class="grid" style="margin-top:16px"></div>
+      <div id="list" class="grid" style="margin-top:12px"></div>
       <div class="tools"><button id="moreBtn" class="btn ghost">더 보기</button></div>
     </section>
   </main>
@@ -98,11 +100,10 @@
     const onlyApproved = document.querySelector("#onlyApproved");
     const moreBtn = document.querySelector("#moreBtn");
 
-    let all = [];
-    let page = 0;
-    const PAGE_SIZE = 9;
+    let all = []; let page = 0;
+    const PAGE_SIZE = 12; // 컴팩트하게 더 많이
 
-    function createdAtSeconds(x){ return (x && typeof x==='object' && 'seconds' in x) ? x.seconds : 0; }
+    const createdAtSeconds = x => (x && typeof x==='object' && 'seconds' in x) ? x.seconds : 0;
 
     function renderPage(){
       const start = page * PAGE_SIZE;
@@ -119,25 +120,23 @@
 
         return `
           <a class="card" href="project.html?id=${encodeURIComponent(p.id)}" aria-label="프로젝트 ${title} 상세 보기">
-            <div class="media"><img src="${cover}" alt="${title} 대표 이미지"/></div>
+            <div class="media"><img src="${cover}" alt="${title} 대표 이미지" loading="lazy" decoding="async"/></div>
             <div class="pad">
               <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-                <h3 style="margin:0;font-size:18px">${title}</h3>
+                <h3 class="clamp-1" style="margin:0;font-size:16px">${title}</h3>
                 ${badge}
               </div>
-              <p class="muted" style="margin:6px 0 10px 0">${esc(p.summary || '')}</p>
+              <p class="muted clamp-2" style="margin:4px 0 6px 0">${esc(p.summary || '')}</p>
               <div class="progress"><i style="width:${pct}%"></i></div>
-              <div class="muted" style="display:flex;gap:12px;">
+              <div class="muted" style="display:flex;gap:10px;font-size:13px">
                 <span>목표 ${fmt(p.targetAmount)}원</span>
                 <span>구조자 ${fmt(p.selfPayAmount)}원</span>
               </div>
             </div>
-          </a>
-        `;
+          </a>`;
       }).join("");
 
       if(page===0) wrap.innerHTML = chunk; else wrap.insertAdjacentHTML("beforeend", chunk);
-
       page++;
       moreBtn.style.display = (page * PAGE_SIZE >= all.length) ? "none" : "inline-block";
 
@@ -150,7 +149,6 @@
     async function apply(){
       page = 0;
       let items = await storage.getAll();
-
       if(onlyApproved?.checked) items = items.filter(p => (p.status || "pending") === "approved");
 
       const mode = sortSel?.value || "latest";
