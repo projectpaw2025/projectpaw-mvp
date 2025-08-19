@@ -78,4 +78,154 @@
           <h1 class="project-title"></h1>
           <p class="project-summary muted" style="margin:6px 0 8px 0"></p>
           <div class="progress"><i id="bar" style="width:0%"></i></div>
-          <div class="row muted" style="gap:12px; margin-top:6px"
+          <div class="row muted" style="gap:12px; margin-top:6px">
+            <span id="money"></span>
+            <span class="chip" id="statusChip">대기</span>
+          </div>
+        </div>
+
+        <div class="section-card pad">
+          <div class="kicker">상세 설명</div>
+          <div class="project-description" style="line-height:1.6"></div>
+        </div>
+
+        <div class="section-card pad">
+          <div class="kicker">상황 갤러리</div>
+          <div class="slider">
+            <button class="navbtn prev" type="button" aria-label="이전">‹</button>
+            <div class="track"></div>
+            <button class="navbtn next" type="button" aria-label="다음">›</button>
+          </div>
+        </div>
+
+        <div class="section-card pad">
+          <div class="kicker">영수증</div>
+          <div class="grid receipt-preview"></div>
+        </div>
+      </div>
+
+      <!-- 우측: 액션 / 정보 요약 -->
+      <aside class="section-card pad">
+        <div class="stack">
+          <div>
+            <div class="kicker">연결</div>
+            <div class="actions" style="margin-top:8px">
+              <a class="btn primary" id="kakaoBtn" target="_blank" rel="noopener">카카오톡 연결</a>
+              <button class="btn ghost" id="shareBtn">공유</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="kicker">정보</div>
+            <div class="stack">
+              <div class="row"><span class="muted" style="width:88px">등록일</span> <span id="createdAtText">-</span></div>
+              <div class="row"><span class="muted" style="width:88px">목표 금액</span> <span id="goalText">-</span></div>
+              <div class="row"><span class="muted" style="width:88px">구조자 부담</span> <span id="selfText">-</span></div>
+            </div>
+          </div>
+
+          <div class="muted" style="font-size:13px">
+            “책임의 끝과 공감의 시작이 만나는 곳.”
+          </div>
+        </div>
+      </aside>
+    </article>
+  </main>
+
+  <footer>© Project.PAW</footer>
+
+  <!-- 기능 스크립트 -->
+  <script type="module">
+    import "./js/firebase.js";
+    import { storage, fmt } from "./js/app.js";
+    import { esc, percent } from "./js/utils.js";
+
+    const $ = (sel, root=document) => root.querySelector(sel);
+
+    const id = new URLSearchParams(location.search).get("id");
+
+    function toDateText(createdAt){
+      const sec = (createdAt && typeof createdAt==='object' && 'seconds' in createdAt) ? createdAt.seconds : 0;
+      if(!sec) return "-";
+      const d = new Date(sec*1000);
+      return d.toLocaleString("ko-KR");
+    }
+
+    async function main(){
+      if(!id){
+        document.body.innerHTML = "<main class='container'><p>잘못된 접근입니다 (id 없음)</p></main>";
+        return;
+      }
+
+      const p = await storage.byId(id);
+      if(!p){
+        document.body.innerHTML = "<main class='container'><p>프로젝트를 찾을 수 없습니다.</p></main>";
+        return;
+      }
+
+      // 헤더/요약/상태
+      $(".project-title").textContent = p.title || "";
+      $(".project-summary").textContent = p.summary || "";
+
+      const target = fmt(p.targetAmount||0);
+      const selfPay = fmt(p.selfPayAmount||0);
+      const pct = Math.max(0, Math.min(100, percent(p.raisedAmount||0, p.targetAmount||1)));
+
+      $("#money").textContent = `목표 ${target}원 · 구조자 ${selfPay}원 (달성률 ${pct}%)`;
+      $("#bar").style.width = pct + "%";
+
+      const chip = $("#statusChip");
+      if((p.status||"pending")==="approved"){ chip.textContent="승인"; chip.style.background="#eafff2"; chip.style.color="#0a6b3c"; }
+      else { chip.textContent="대기"; chip.style.background="#fff6e6"; chip.style.color="#a15a00"; }
+
+      // 커버
+      const cover = (p.images && p.images.cover) ? p.images.cover : "img/placeholder.svg";
+      $(".project-cover").src = cover;
+
+      // 상세 설명
+      const desc = (p.description||"").replace(/\n/g,"<br/>");
+      $(".project-description").innerHTML = desc;
+
+      // 등록 정보
+      $("#createdAtText").textContent = toDateText(p.createdAt);
+      $("#goalText").textContent = `${target}원`;
+      $("#selfText").textContent = `${selfPay}원`;
+
+      // 갤러리
+      const g = Array.isArray(p.images?.gallery) ? p.images.gallery : [];
+      const track = document.querySelector(".track");
+      if(g.length){
+        track.innerHTML = g.map(src => `<div class="slide"><img src="${src}" alt="gallery"></div>`).join("");
+      }else{
+        track.innerHTML = `<div class="empty" style="width:100%">등록된 사진이 없습니다.</div>`;
+      }
+      let idx = 0;
+      const total = Math.max(track.children.length, 1);
+      const update = () => { track.style.transform = `translateX(${-idx*100}%)`; };
+      document.querySelector(".navbtn.prev").onclick = ()=>{ idx=(idx-1+total)%total; update(); };
+      document.querySelector(".navbtn.next").onclick = ()=>{ idx=(idx+1)%total; update(); };
+      update();
+
+      // 영수증
+      const r = Array.isArray(p.images?.receipts) ? p.images.receipts : [];
+      const rwrap = document.querySelector(".receipt-preview");
+      rwrap.innerHTML = (r.length ? r : []).map(src => `<div class="img-cell"><img src="${src}" alt="receipt"></div>`).join("")
+        || `<div class="empty" style="width:100%">등록된 영수증이 없습니다.</div>`;
+
+      // 카카오 링크
+      const kakao = (p.kakaoLink||"").trim();
+      const kakaoBtn = $("#kakaoBtn");
+      if(kakao){ kakaoBtn.href = kakao; }
+      else { kakaoBtn.classList.add("disabled"); kakaoBtn.setAttribute("aria-disabled","true"); }
+
+      // 공유
+      $("#shareBtn").addEventListener("click", async ()=>{
+        try { await navigator.clipboard.writeText(location.href); alert("링크가 복사되었습니다."); }
+        catch { prompt("복사 실패. 수동으로 복사하세요:", location.href); }
+      });
+    }
+
+    main();
+  </script>
+</body>
+</html>
