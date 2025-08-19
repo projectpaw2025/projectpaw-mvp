@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Project.PAW</title>
-  <link rel="stylesheet" href="app.min.css">
+  <link rel="stylesheet" href="styles.css">
   <style>
     body { margin:0; font-family:"Noto Sans KR",sans-serif; background:#fff; color:#333; }
     .hero { text-align:center; padding:4rem 2rem; background:linear-gradient(to right,#fff,#fdfdfd); }
@@ -53,7 +53,7 @@
         card.style.boxShadow = "0 2px 6px rgba(0,0,0,0.05)";
 
         card.innerHTML = `
-          <img src="${p.imageUrl || 'img/placeholder.svg'}" style="width:100%;height:200px;object-fit:cover;">
+          <img src="${p.imageUrl || 'img/default.jpg'}" style="width:100%;height:200px;object-fit:cover;">
           <div style="padding:1rem;">
             <h4 style="margin:0 0 0.5rem 0;font-size:1.1rem;color:#222;">${p.title}</h4>
             <p style="margin:0;font-size:0.9rem;color:#555;">${p.description?.slice(0,60) || ''}...</p>
