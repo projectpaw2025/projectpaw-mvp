@@ -1,11 +1,9 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>프로젝트 등록</title>
-  <link rel="stylesheet" href="common.css"/>
-  <link rel="stylesheet" href="app.min.css"/>
+  <link rel="stylesheet" href="common.css"/><link rel="stylesheet" href="app.min.css"/>
   <style>
     .wrap{max-width:860px;margin:0 auto;padding:20px 16px}
     .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -24,32 +22,29 @@
 </head>
 <body>
   <div data-include="header"></div>
+  <script type="module">
+    import { injectLayout } from './js/include.js';
+    injectLayout();
+  </script>
 
   <main class="wrap">
     <h1 style="margin:0 0 6px">프로젝트 등록</h1>
-
     <form id="form">
       <div class="grid2">
         <div><label>동물 이름</label><input name="name" required/></div>
         <div><label>구조자 이름</label><input name="rescuerName" required/></div>
       </div>
-
       <div><label>상황 요약</label><input name="summary" required/></div>
       <div><label>상세 설명</label><textarea name="description" required></textarea></div>
-
       <div class="grid2">
         <div><label>목표 금액(원)</label><input type="number" name="goalAmount" min="0" required/></div>
         <div><label>구조자 부담액(원)</label><input type="number" name="rescuerContribution" min="0" required/></div>
       </div>
-
       <div><label>등록자 카카오톡 ID</label><input name="registrantKakaoId" required/></div>
-
       <div><label>대표 사진 (1장)</label><input type="file" id="repImage" accept="image/*" required/></div>
       <div><label>구조 상황 사진 (여러 장)</label><input type="file" id="situationImages" accept="image/*" multiple/></div>
       <div><label>영수증 사진 (여러 장)</label><input type="file" id="receiptImages" accept="image/*" multiple/></div>
-
       <p class="note">* 병원명/계좌/카카오톡 초대링크는 <b>관리자 전용</b> 화면에서 등록됩니다.</p>
-
       <div class="actions">
         <a class="btn ghost" href="index.html">취소</a>
         <button class="btn primary" type="submit" id="submitBtn">등록하기</button>
@@ -60,40 +55,35 @@
   <div data-include="footer"></div>
 
   <script type="module">
-    import { injectLayout } from './js/include.js';
     import { apiCreateProject } from './js/api.js';
-    // 🔒 익명 인증 완료 대기용 Promise (firebase.js에서 export)
     import { authReady } from './js/firebase.js';
-
-    injectLayout();
 
     const form = document.getElementById('form');
     const submitBtn = document.getElementById('submitBtn');
 
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', async (e)=>{
       e.preventDefault();
-
-      // ✅ 인증 보장: Firestore/Storage rules 가 write에 auth 요구하므로 대기
+      // 🔒 Firestore/Storage rules가 write 시 auth 요구 → 익명 인증 보장
       await authReady;
 
       submitBtn.classList.add('disabled');
       submitBtn.textContent = '업로드 중...';
 
-      try {
+      try{
         const fd = new FormData(form);
         const rep = document.getElementById('repImage').files[0];
         const situ = document.getElementById('situationImages').files;
         const rcpt = document.getElementById('receiptImages').files;
 
-        if (rep) fd.append('representativeImage', rep);
-        Array.from(situ).forEach(f => fd.append('situationImages', f));
-        Array.from(rcpt).forEach(f => fd.append('receiptImages', f));
+        if(rep) fd.append('representativeImage', rep);
+        Array.from(situ).forEach(f=>fd.append('situationImages', f));
+        Array.from(rcpt).forEach(f=>fd.append('receiptImages', f));
 
         const saved = await apiCreateProject(fd);
-        location.href = 'project.html?id=' + encodeURIComponent(saved.id);
-      } catch (err) {
-        alert('업로드 실패: ' + (err.message || ''));
-      } finally {
+        location.href = 'project.html?id='+encodeURIComponent(saved.id);
+      }catch(err){
+        alert('업로드 실패: '+(err.message||''));
+      }finally{
         submitBtn.classList.remove('disabled');
         submitBtn.textContent = '등록하기';
       }
