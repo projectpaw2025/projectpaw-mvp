@@ -7,163 +7,75 @@
   <link rel="stylesheet" href="common.css"/>
   <link rel="stylesheet" href="app.min.css"/>
   <style>
-    .container-narrow { max-width: 880px; margin: 0 auto; padding: 0 16px; }
-    .section-title { font-size: 1.5rem; margin: 8px 0 16px; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-grid .full { grid-column: 1 / -1; }
-    label { display:block; font-weight:600; margin-bottom:6px; }
-    input, textarea { width:100%; padding:10px; border:1px solid #e5e7eb; border-radius:8px; }
-    .btn { padding:10px 14px; border-radius:10px; border:1px solid #111; background:#111; color:#fff; cursor:pointer; }
-    .btn.secondary { background:#fff; color:#111; border:1px solid #ddd; }
+    .wrap{max-width:860px;margin:0 auto;padding:20px 16px}
+    form{display:grid;gap:12px}
+    label{font-weight:800;margin-top:6px}
+    input,textarea{width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:10px}
+    textarea{min-height:120px;resize:vertical}
+    .grid2{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+    @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+    .note{color:#6b7280}
+    .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
+    .disabled{opacity:.6;pointer-events:none}
   </style>
 </head>
 <body>
   <div data-include="header"></div>
-
-  <main class="container-narrow" style="padding:24px 0">
-    <h2 class="section-title">프로젝트 등록</h2>
-    <form id="form" class="form-grid">
-      <div>
-        <label>동물 이름</label>
-        <input name="name" type="text" placeholder="예: 나비" required/>
+  <main class="wrap">
+    <h1 style="font-size:1.6rem;font-weight:900;margin:0 0 6px">프로젝트 등록</h1>
+    <form id="form">
+      <div class="grid2">
+        <div><label>동물 이름</label><input name="name" required/></div>
+        <div><label>구조자 이름</label><input name="rescuerName" required/></div>
       </div>
-      <div>
-        <label>구조자 이름</label>
-        <input name="rescuerName" type="text" placeholder="예: 홍길동" required/>
+      <div><label>상황 요약</label><input name="summary" required/></div>
+      <div><label>상세 설명</label><textarea name="description" required></textarea></div>
+      <div class="grid2">
+        <div><label>목표 금액(원)</label><input type="number" name="goalAmount" min="0" required/></div>
+        <div><label>구조자 부담액(원)</label><input type="number" name="rescuerContribution" min="0" required/></div>
       </div>
-
-      <div class="full">
-        <label>상황 요약</label>
-        <input name="summary" type="text" placeholder="짧은 한 줄 요약" required/>
-      </div>
-
-      <div class="full">
-        <label>상세 설명</label>
-        <textarea name="description" rows="6" placeholder="무슨 일이 있었는지, 필요한 치료와 비용 등을 적어주세요." required></textarea>
-      </div>
-
-      <div>
-        <label>목표 금액(원)</label>
-        <input name="goalAmount" type="number" min="0" step="1000" placeholder="예: 600000" required/>
-      </div>
-      <div>
-        <label>구조자 부담액(원)</label>
-        <input name="rescuerContribution" type="number" min="0" step="1000" placeholder="예: 180000" required/>
-      </div>
-
-      <!-- 🔥 등록자 카카오톡 ID -->
-      <div class="full">
-        <label>등록자 카카오톡 ID</label>
-        <input name="registrantKakaoId" type="text" placeholder="운영자 검증을 위해 카카오톡 ID를 입력하세요" required/>
-      </div>
-
-      <div class="full">
-        <label>대표 사진 (1장)</label>
-        <input id="repImage" type="file" accept="image/*" required/>
-      </div>
-      <div class="full">
-        <label>구조 상황 사진 (여러 장)</label>
-        <input id="situationImages" type="file" accept="image/*" multiple/>
-      </div>
-      <div class="full">
-        <label>영수증 사진 (여러 장)</label>
-        <input id="receiptImages" type="file" accept="image/*" multiple/>
-      </div>
-
-      <div class="full" style="display:flex; gap:8px; justify-content:flex-end">
-        <a class="btn secondary" href="index.html">취소</a>
-        <button class="btn" type="submit">등록하기</button>
+      <div><label>등록자 카카오톡 ID</label><input name="registrantKakaoId" required/></div>
+      <div><label>대표 사진 (1장)</label><input type="file" id="repImage" accept="image/*" required/></div>
+      <div><label>구조 상황 사진 (여러 장)</label><input type="file" id="situationImages" accept="image/*" multiple/></div>
+      <div><label>영수증 사진 (여러 장)</label><input type="file" id="receiptImages" accept="image/*" multiple/></div>
+      <p class="note">* 병원명/계좌/카카오톡 초대링크는 <strong>관리자 전용</strong> 화면에서 등록됩니다.</p>
+      <div class="actions">
+        <a class="btn ghost" href="index.html">취소</a>
+        <button class="btn primary" type="submit" id="submitBtn">등록하기</button>
       </div>
     </form>
   </main>
-
   <div data-include="footer"></div>
 
   <script type="module">
-    import { injectLayout } from "./js/include.js";
-    injectLayout({ active: "create" });
-  </script>
+    import { injectLayout } from './js/include.js';
+    import { apiCreateProject } from './js/api.js';
+    injectLayout({active:'create'});
 
-  <script src="paw.js"></script>
+    const form = document.getElementById('form');
+    const submitBtn = document.getElementById('submitBtn');
 
-  <script>
-    (function () {
-      if (typeof window.parseFilesToDataURLs !== "function") {
-        window.parseFilesToDataURLs = async function (fileList) {
-          const files = Array.from(fileList || []);
-          const toDataURL = (file) =>
-            new Promise((res, rej) => {
-              const reader = new FileReader();
-              reader.onload = () => res(reader.result);
-              reader.onerror = rej;
-              reader.readAsDataURL(file);
-            });
-          const results = [];
-          for (const f of files) results.push(await toDataURL(f));
-          return results;
-        };
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      submitBtn.classList.add('disabled'); submitBtn.textContent='업로드 중...';
+
+      const fd = new FormData(form);
+      const rep = document.getElementById('repImage').files[0];
+      const situ = document.getElementById('situationImages').files;
+      const rcpt = document.getElementById('receiptImages').files;
+      if (rep) fd.append('representativeImage', rep);
+      Array.from(situ).forEach(f=>fd.append('situationImages', f));
+      Array.from(rcpt).forEach(f=>fd.append('receiptImages', f));
+
+      try{
+        const saved = await apiCreateProject(fd);
+        location.href = 'project.html?id=' + encodeURIComponent(saved.id);
+      }catch(err){
+        alert('업로드 실패: ' + (err.message||''));
+      }finally{
+        submitBtn.classList.remove('disabled'); submitBtn.textContent='등록하기';
       }
-      if (typeof window.upsertProject !== "function") {
-        window.upsertProject = function (p) {
-          try {
-            const key = "projects";
-            const raw = localStorage.getItem(key);
-            const arr = Array.isArray(JSON.parse(raw)) ? JSON.parse(raw) : [];
-            const idx = arr.findIndex((x) => x.id === p.id);
-            if (idx >= 0) arr[idx] = p;
-            else arr.push(p);
-            localStorage.setItem(key, JSON.stringify(arr));
-          } catch (e) {
-            console.error("upsertProject 실패:", e);
-            alert("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
-          }
-        };
-      }
-
-      const form = document.getElementById("form");
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const fd = new FormData(form);
-        const repFile = document.querySelector("#repImage").files[0];
-        const situationFiles = document.querySelector("#situationImages").files;
-        const receiptFiles = document.querySelector("#receiptImages").files;
-
-        const repData = repFile ? (await window.parseFilesToDataURLs([repFile]))[0] : null;
-        const situationData = await window.parseFilesToDataURLs(situationFiles);
-        const receiptData = await window.parseFilesToDataURLs(receiptFiles);
-
-        const p = {
-          id: Date.now().toString(),
-          createdAt: Date.now(),
-
-          name: fd.get("name"),
-          rescuerName: fd.get("rescuerName"),
-          summary: fd.get("summary"),
-          description: fd.get("description"),
-
-          goalAmount: Number(fd.get("goalAmount") || 0),
-          rescuerContribution: Number(fd.get("rescuerContribution") || 0),
-
-          // 관리자 전용 필드 — 등록 시 null
-          hospitalName: null,
-          bankAccount: null,
-          kakaoInviteLink: null,
-
-          registrantKakaoId: fd.get("registrantKakaoId"),
-
-          representativeImage: repData,
-          gallery: situationData,
-          receipts: receiptData,
-
-          raisedAmount: 0,
-          adminApproved: false
-        };
-
-        window.upsertProject(p);
-        location.href = "project.html?id=" + encodeURIComponent(p.id);
-      });
-    })();
+    });
   </script>
 </body>
 </html>

@@ -7,37 +7,31 @@
   <link rel="stylesheet" href="common.css"/>
   <link rel="stylesheet" href="app.min.css"/>
   <style>
-    .container-narrow { max-width: 1040px; margin: 0 auto; padding: 16px; }
-    .admin-toolbar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin: 8px 0 16px; }
-    .admin-toolbar input, .admin-toolbar select { padding:10px; border:1px solid #e5e7eb; border-radius:8px; }
-    .cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:12px; }
-    .card { border:1px solid #eee; border-radius:12px; padding:12px; background:#fff; display:flex; flex-direction:column; gap:10px; }
-    .card h3 { margin:0; font-size:1.1rem; }
-    .row { display:flex; gap:8px; }
-    .row > * { flex:1; }
-    label { display:block; font-weight:600; margin-bottom:6px; }
-    input[type="text"], input[type="number"], input[type="url"] { width:100%; padding:10px; border:1px solid #e5e7eb; border-radius:8px; }
-    .tag { display:inline-block; padding:2px 8px; border-radius:999px; font-size:.8rem; border:1px solid #ddd; }
-    .tag.pending { background:#fff7ed; border-color:#fed7aa; color:#9a3412; }
-    .tag.ok { background:#ecfdf5; border-color:#bbf7d0; color:#065f46; }
-    .btn { padding:10px 12px; border-radius:10px; border:1px solid #111; background:#111; color:#fff; cursor:pointer; }
-    .btn.secondary { background:#fff; color:#111; border:1px solid #ddd; }
-    .card-actions { display:flex; gap:8px; justify-content:flex-end; }
-    .meta { font-size:.85rem; color:#6b7280; }
-    .divider { height:1px; background:#f1f5f9; margin:6px 0; }
-    .note { font-size:.85rem; color:#6b7280; }
-    .danger { color:#b91c1c; }
+    .wrap{max-width:1040px;margin:0 auto;padding:20px 16px}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 16px}
+    .toolbar input,.toolbar select{padding:10px;border:1px solid #e5e7eb;border-radius:10px}
+    .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+    .card{display:flex;flex-direction:column;gap:10px;padding:12px}
+    .row{display:flex;gap:8px}
+    .row>*{flex:1}
+    label{display:block;font-weight:700;margin-bottom:6px}
+    input{width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px}
+    .chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.85rem;border:1px solid #e5e7eb;color:#374151}
+    .chip.ok{background:#ecfdf5;border-color:#bbf7d0;color:#065f46}
+    .chip.pending{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+    .actions{display:flex;gap:8px;justify-content:flex-end}
+    .btn{padding:10px 12px;border-radius:10px;border:1px solid #111;background:#111;color:#fff}
+    .btn.secondary{background:#fff;color:#111;border:1px solid #e5e7eb}
   </style>
 </head>
 <body>
   <div data-include="header"></div>
+  <main class="wrap">
+    <h1 style="font-size:1.5rem;font-weight:900;margin:0 0 10px">관리자 대시보드</h1>
+    <p class="muted">임시 보안(비밀번호)만 적용됨. 실서비스는 Firebase Auth/Rules 필요.</p>
 
-  <main class="container-narrow" style="padding: 8px 0 24px">
-    <h2>관리자 대시보드</h2>
-    <p class="note">⚠️ 이 페이지는 클라이언트에서만 동작하는 임시 관리자 화면입니다. 실제 운영 시 서버/인증을 붙이세요.</p>
-
-    <div class="admin-toolbar">
-      <input id="search" type="text" placeholder="이름/요약/설명/등록자 카카오ID 검색"/>
+    <div class="toolbar">
+      <input id="search" placeholder="이름/요약/설명/등록자 카카오ID 검색"/>
       <select id="filter">
         <option value="all">전체</option>
         <option value="pending">대기</option>
@@ -48,196 +42,82 @@
 
     <div id="cards" class="cards"></div>
   </main>
-
   <div data-include="footer"></div>
 
   <script type="module">
-    import { injectLayout } from "./js/include.js";
-    injectLayout({ active: "about" }); // 헤더 활성표시는 아무거나, 어차피 관리자 전용
-  </script>
-
-  <script>
-    // ====== 매우 단순한 프론트 보안 (진짜 보안 아님) ======
-    (function adminGate() {
-      const EXPECT = "paw-admin"; // 🔒 임시 비번 — 배포 전 바꾸세요
-      const viaQuery = new URL(location.href).searchParams.get("key");
-      if (viaQuery === EXPECT) return;
-      const input = prompt("관리자 페이지 접속 비밀번호를 입력하세요:");
-      if (input !== EXPECT) {
-        alert("접근 거부");
-        location.href = "index.html";
-      }
+    import { injectLayout } from './js/include.js';
+    import { apiListProjects, apiToggleApprove } from './js/api.js';
+    injectLayout({active:'about'});
+    (function(){
+      const EXPECT = 'paw-admin';
+      const viaQuery = new URL(location.href).searchParams.get('key');
+      if(viaQuery === EXPECT) return;
+      const input = prompt('관리자 비밀번호:');
+      if(input !== EXPECT){ alert('거부'); location.href='index.html'; }
     })();
-  </script>
 
-  <script>
-    // ====== 데이터 접근 유틸 ======
-    function readProjects() {
-      try {
-        const raw = localStorage.getItem("projects");
-        const arr = JSON.parse(raw);
-        return Array.isArray(arr) ? arr : [];
-      } catch (e) { return []; }
-    }
-    function writeProjects(arr) {
-      localStorage.setItem("projects", JSON.stringify(arr || []));
-    }
-    function updateProject(patch) {
-      const arr = readProjects();
-      const idx = arr.findIndex(x => x.id === patch.id);
-      if (idx >= 0) arr[idx] = { ...arr[idx], ...patch };
-      writeProjects(arr);
-    }
-    function deleteProject(id) {
-      const arr = readProjects().filter(x => x.id !== id);
-      writeProjects(arr);
+    const $cards = document.getElementById('cards');
+    const $search = document.getElementById('search');
+    const $filter = document.getElementById('filter');
+    const $refresh = document.getElementById('refresh');
+
+    function match(p,q,f){
+      if(f==='pending' && p.adminApproved) return false;
+      if(f==='approved' && !p.adminApproved) return false;
+      if(!q) return true;
+      const hay=[p.name,p.summary,p.description,p.registrantKakaoId].map(v=>(v??'')+'').join(' ').toLowerCase();
+      return hay.includes(q.toLowerCase());
     }
 
-    // ====== 렌더링 ======
-    const $cards = document.getElementById("cards");
-    const $search = document.getElementById("search");
-    const $filter = document.getElementById("filter");
-    const $refresh = document.getElementById("refresh");
+    function fmt(n){ return Number(n||0).toLocaleString('ko-KR'); }
 
-    function matchesFilter(p, query, filter) {
-      if (filter === "pending" && p.adminApproved) return false;
-      if (filter === "approved" && !p.adminApproved) return false;
-      if (!query) return true;
-      const hay = [
-        p.name, p.rescuerName, p.summary, p.description,
-        p.registrantKakaoId, p.hospitalName, p.bankAccount, p.kakaoInviteLink
-      ].map(v => (v ?? "") + "").join(" ").toLowerCase();
-      return hay.includes(query.toLowerCase());
-    }
-
-    function fmtKRW(n) {
-      const x = Number(n || 0);
-      return x.toLocaleString("ko-KR") + "원";
-    }
-
-    function render() {
-      const projects = readProjects()
-        .sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
-      const q = $search.value.trim();
-      const f = $filter.value;
-
-      const list = projects.filter(p => matchesFilter(p, q, f));
-      if (!list.length) {
-        $cards.innerHTML = `<div class="note">표시할 프로젝트가 없습니다.</div>`;
-        return;
-      }
-
-      $cards.innerHTML = list.map(p => {
-        const statusTag = p.adminApproved
-          ? `<span class="tag ok">승인</span>`
-          : `<span class="tag pending">대기</span>`;
-
-        const cover = p.representativeImage || "img/placeholder.svg";
-        const goal = fmtKRW(p.goalAmount);
-        const contrib = fmtKRW(p.rescuerContribution);
-
-        return `
+    async function render(){
+      const status = $filter.value==='all'?'all':$filter.value;
+      const list = (await apiListProjects({ status })).filter(p=>match(p,$search.value.trim(),$filter.value));
+      if(!list.length){ $cards.innerHTML = '<div class="muted">표시할 프로젝트 없음</div>'; return; }
+      $cards.innerHTML = list.map(p => `
         <div class="card" data-id="${p.id}">
-          <div class="row" style="gap:12px; align-items:center">
-            <img src="${cover}" alt="cover" style="width:88px;height:88px;object-fit:cover;border-radius:10px;border:1px solid #eee"/>
+          <div class="row" style="align-items:center;gap:12px">
+            <img src="${p.representativeImageUrl || 'img/placeholder.svg'}" style="width:88px;height:88px;object-fit:cover;border-radius:10px;border:1px solid #eee"/>
             <div style="flex:1">
-              <h3>${p.name ?? "(이름 없음)"} <small class="meta">by ${p.rescuerName ?? "-"}</small></h3>
-              <div class="meta">${p.summary ?? ""}</div>
-              <div class="meta">목표 ${goal} · 구조자 부담 ${contrib}</div>
-              <div>${statusTag}</div>
+              <div style="font-weight:900">${p.name ?? '(이름 없음)'} <span class="${p.adminApproved?'chip ok':'chip pending'}" style="margin-left:6px">${p.adminApproved?'승인':'대기'}</span></div>
+              <div class="muted">${p.summary ?? ''}</div>
+              <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
             </div>
           </div>
-
-          <div class="divider"></div>
-
           <div class="row">
-            <div>
-              <label>병원명</label>
-              <input type="text" name="hospitalName" placeholder="예: ○○동물병원" value="${p.hospitalName ?? ""}"/>
-            </div>
-            <div>
-              <label>계좌번호</label>
-              <input type="text" name="bankAccount" placeholder="예: 국민 000000-00-000000" value="${p.bankAccount ?? ""}"/>
-            </div>
+            <div><label>병원명</label><input name="hospitalName" value="${p.hospitalName ?? ''}"/></div>
+            <div><label>계좌번호</label><input name="bankAccount" value="${p.bankAccount ?? ''}"/></div>
           </div>
-          <div>
-            <label>카카오톡 초대링크</label>
-            <input type="url" name="kakaoInviteLink" placeholder="https://open.kakao.com/o/xxxxxx" value="${p.kakaoInviteLink ?? ""}"/>
-          </div>
-
-          <div class="divider"></div>
-
+          <div><label>카카오톡 초대링크</label><input name="kakaoInviteLink" value="${p.kakaoInviteLink ?? ''}"/></div>
           <div class="row">
-            <div>
-              <label>등록자 카카오톡 ID</label>
-              <input type="text" name="registrantKakaoId" value="${p.registrantKakaoId ?? ""}" disabled/>
-              <div class="note">등록 시 제출된 정보(읽기 전용)</div>
-            </div>
-            <div>
-              <label>프로젝트 ID</label>
-              <input type="text" value="${p.id}" disabled/>
-              <div class="note">내부 식별자</div>
-            </div>
+            <div><label>등록자 카카오ID</label><input disabled value="${p.registrantKakaoId ?? ''}"/></div>
+            <div><label>프로젝트 ID</label><input disabled value="${p.id}"/></div>
           </div>
-
-          <div class="card-actions">
-            <button class="btn secondary" data-action="preview">상세보기</button>
-            <button class="btn secondary" data-action="toggle">${p.adminApproved ? "승인 해제" : "승인하기"}</button>
-            <button class="btn" data-action="save">저장</button>
-            <button class="btn secondary danger" data-action="delete">삭제</button>
+          <div class="actions">
+            <a class="btn secondary" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a>
+            <button class="btn secondary" data-action="toggle">${p.adminApproved?'승인 해제':'승인하기'}</button>
           </div>
-        </div>`;
-      }).join("");
+        </div>
+      `).join('');
     }
 
-    // ====== 이벤트 바인딩 ======
-    $cards.addEventListener("click", (e) => {
-      const btn = e.target.closest("button[data-action]");
-      if (!btn) return;
-
-      const card = btn.closest(".card");
+    $cards.addEventListener('click', async (e)=>{
+      const btn = e.target.closest('button[data-action]');
+      if(!btn) return;
+      const card = btn.closest('.card');
       const id = card?.dataset?.id;
-      if (!id) return;
-
-      const action = btn.dataset.action;
-
-      if (action === "preview") {
-        location.href = "project.html?id=" + encodeURIComponent(id);
-        return;
-      }
-
-      if (action === "toggle") {
-        const arr = readProjects();
-        const p = arr.find(x => x.id === id);
-        if (!p) return;
-        p.adminApproved = !p.adminApproved;
-        writeProjects(arr);
+      if(!id) return;
+      if(btn.dataset.action==='toggle'){
+        const will = btn.textContent.includes('해제') ? false : true;
+        await apiToggleApprove(id, will);
         render();
-        return;
-      }
-
-      if (action === "save") {
-        const hospitalName = card.querySelector('input[name="hospitalName"]').value.trim();
-        const bankAccount = card.querySelector('input[name="bankAccount"]').value.trim();
-        const kakaoInviteLink = card.querySelector('input[name="kakaoInviteLink"]').value.trim();
-        updateProject({ id, hospitalName, bankAccount, kakaoInviteLink });
-        alert("저장되었습니다.");
-        return;
-      }
-
-      if (action === "delete") {
-        if (!confirm("정말 삭제할까요? 이 작업은 되돌릴 수 없습니다.")) return;
-        deleteProject(id);
-        render();
-        return;
       }
     });
 
-    $search.addEventListener("input", render);
-    $filter.addEventListener("change", render);
-    $refresh.addEventListener("click", render);
-
-    // 초기 렌더
+    $search.addEventListener('input', render);
+    $filter.addEventListener('change', render);
+    $refresh.addEventListener('click', render);
     render();
   </script>
 </body>

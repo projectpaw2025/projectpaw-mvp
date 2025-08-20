@@ -7,246 +7,112 @@
   <link rel="stylesheet" href="common.css"/>
   <link rel="stylesheet" href="app.min.css"/>
   <style>
-    :root{
-      --ink:#111827; --sub:#374151; --muted:#6b7280; --line:#eef2f7;
-      --brand:#111827; --g1:#fdf2f8; --g2:#fefce8;
-    }
-
-    /* ===== Hero ===== */
-    .hero {
-      background: radial-gradient(1200px 600px at 50% -100px, var(--g1), transparent 60%),
-                  linear-gradient(135deg, var(--g1), var(--g2));
-      padding: 84px 20px 72px;
-      text-align: center;
-      border-bottom: 1px solid var(--line);
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-title {
-      font-size: 2.3rem; font-weight: 900; color: var(--ink);
-      margin-bottom: 16px; letter-spacing: -0.02em;
-    }
-    .hero-sub {
-      font-size: 1.1rem; color: var(--sub); line-height: 1.7; margin-bottom: 28px;
-    }
-    .hero-actions { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
-    .btn {
-      display:inline-block; padding: 15px 28px; border-radius: 999px;
-      font-size: 1rem; font-weight: 800; text-decoration: none;
-      transition: transform .08s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
-      border:1px solid var(--brand);
-    }
-    .btn.primary { background: var(--brand); color: #fff; box-shadow: 0 8px 20px rgba(17,24,39,.18); }
-    .btn.primary:hover { transform: translateY(-2px); background:#222; }
-    .btn.ghost { background:#fff; color:var(--brand); border-color:#e5e7eb; }
-    .btn.ghost:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(17,24,39,.10); }
-
-    /* 작은 강조 배지 */
-    .hero-badges { margin: 10px auto 0; display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
-    .badge {
-      display:inline-flex; align-items:center; gap:6px;
-      padding:6px 12px; border-radius:999px; border:1px solid var(--line); background:#fff;
-      font-weight:800; font-size:.86rem; color:var(--ink);
-    }
-
-    /* ===== Highlights (3컬럼) ===== */
-    .highlights { padding: 60px 20px; background: #fff; }
-    .highlights-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px; max-width: 1040px; margin: 0 auto;
-    }
-    .highlight { text-align: center; padding: 20px; border-radius: 16px; border:1px solid var(--line); background:#fff; }
-    .highlight .icon { font-size: 2rem; margin-bottom: 12px; }
-    .highlight h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; color:#111827; }
-    .highlight p { font-size: 0.95rem; color: #4b5563; line-height: 1.55; }
-
-    /* ===== Cards (연결 우선 노출) ===== */
-    .section { padding: 50px 20px; }
-    .section .container { max-width: 1120px; margin: 0 auto; }
-    .section-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 18px; color:#111827; }
-
-    .cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:16px; }
-    .card {
-      border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff;
-      display:flex; flex-direction:column; transition: transform .08s ease, box-shadow .2s ease;
-    }
-    .card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(17,24,39,.08); }
-    .card img { width:100%; height:180px; object-fit:cover; }
-    .card-body { padding:14px; display:flex; flex-direction:column; gap:8px; }
-    .meta { font-size:.9rem; color:#6b7280; }
-    .chip {
-      display:inline-block; padding:2px 10px; border-radius:999px;
-      font-size:.8rem; border:1px solid #e5e7eb; color:#374151;
-    }
-    .chip.approved { background:#ecfdf5; border-color:#bbf7d0; color:#065f46; }
-    .chip.pending { background:#fff7ed; border-color:#fed7aa; color:#9a3412; }
-
-    .hearts { display:flex; align-items:center; gap:8px; font-weight:800; color:#111827; }
-    .hearts .count { font-size:1.1rem; padding:6px 12px; border-radius:10px; background:#f1f5f9; }
-    .money { font-size:.9rem; color:#4b5563; }
-    .card-actions { margin-top:8px; display:flex; justify-content:flex-end; gap:8px; }
-    .btn.small { padding:8px 12px; border-radius:10px; font-weight:800; border:1px solid var(--brand); background:var(--brand); color:#fff; text-decoration:none; }
-    .btn.ghost-small { padding:8px 12px; border-radius:10px; font-weight:800; border:1px solid #e5e7eb; background:#fff; color:#111; text-decoration:none; }
-
-    /* ===== Sticky CTA Bar (스크롤 시 나타남) ===== */
-    .sticky-cta {
-      position: sticky; bottom: 12px; z-index: 60; pointer-events: none;
-      display:flex; justify-content:center; padding: 0 12px;
-    }
-    .sticky-cta__inner {
-      pointer-events: auto;
-      display:flex; gap:8px; align-items:center; justify-content:center; flex-wrap:wrap;
-      background:#fff; border:1px solid var(--line); border-radius: 16px;
-      padding:10px 12px; box-shadow: 0 12px 28px rgba(17,24,39,.18);
-      transform: translateY(20px); opacity: 0; transition: all .2s ease;
-    }
-    .sticky-cta.is-visible .sticky-cta__inner {
-      transform: translateY(0); opacity: 1;
-    }
-    .sticky-cta .btn { padding:10px 16px; border-radius: 12px; font-weight: 800; }
-    .sticky-cta .btn.primary { background: var(--brand); color:#fff; border-color: var(--brand); }
-    .sticky-cta .btn.ghost { background:#fff; color:var(--brand); border-color:#e5e7eb; }
-
-    /* ===== Accessibility utility ===== */
-    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
-
-    @media (max-width: 640px){
-      .hero-title{ font-size: 1.9rem; }
-      .btn{ padding: 14px 22px; }
-    }
+    .hero{background:radial-gradient(1200px 600px at 50% -100px, var(--g1), transparent 60%),linear-gradient(135deg,var(--g1),var(--g2));padding:84px 16px 60px;border-bottom:1px solid var(--line);text-align:center}
+    .hero h1{font-size:2.3rem;font-weight:900;letter-spacing:-.02em;margin:0 0 12px}
+    .hero .sub{font-size:1.1rem;color:var(--sub);line-height:1.7}
+    .hero .actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:22px}
+    .badges{margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+    .beta-note{margin-top:10px;color:#6b7280;font-weight:700}
+    .highlights{padding:54px 0}
+    .grid3{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+    .highlight{padding:20px;text-align:center}
+    .highlight .icon{font-size:2rem;margin-bottom:8px}
+    .section{padding:50px 0}
+    .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+    .card img{width:100%;height:180px;object-fit:cover;border-top-left-radius:16px;border-top-right-radius:16px}
+    .card-body{padding:14px;display:flex;flex-direction:column;gap:8px}
+    .chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.8rem;border:1px solid #e5e7eb;color:#374151}
+    .chip.approved{background:#ecfdf5;border-color:#bbf7d0;color:#065f46}
+    .chip.pending{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+    .hearts{display:flex;align-items:center;gap:8px;font-weight:800}
+    .hearts .count{padding:6px 12px;border-radius:10px;background:#f1f5f9}
+    .money{font-size:.9rem;color:#4b5563}
   </style>
 </head>
 <body>
-  <!-- 헤더/푸터는 include.js가 주입 -->
   <div data-include="header"></div>
 
-  <!-- Hero -->
-  <section class="hero" aria-labelledby="home-hero-title">
-    <h1 id="home-hero-title" class="hero-title">법인 없는 첫 후원 플랫폼</h1>
-    <p class="hero-sub">
-      당신의 마음이 곧장 구조자에게 닿습니다.<br/>
-      책임 없는 구조는 등록할 수 없습니다.<br/>
-      돈보다 연결이 먼저 기록됩니다.
-    </p>
-    <div class="hero-actions">
-      <a href="project_list.html" class="btn primary">🐾 지금 구조자 만나보기</a>
-      <a href="create.html" class="btn ghost">등록하기</a>
-    </div>
-    <div class="hero-badges" aria-hidden="true">
-      <span class="badge">개인↔개인 직연결</span>
-      <span class="badge">구조자 책임 필수</span>
-      <span class="badge">금액보다 연결</span>
-    </div>
-  </section>
-
-  <!-- 3컬럼 하이라이트 -->
-  <section class="highlights" aria-labelledby="hl-title">
-    <h2 id="hl-title" class="sr-only">Project.PAW 핵심 철학</h2>
-    <div class="highlights-grid">
-      <div class="highlight">
-        <div class="icon">🧑‍🤝‍🧑</div>
-        <h3>개인 ↔ 개인 직연결</h3>
-        <p>법인이나 단체를 거치지 않습니다. 후원자의 마음이 구조자에게 직접 닿습니다.</p>
-      </div>
-      <div class="highlight">
-        <div class="icon">🐾</div>
-        <h3>구조자 책임 필수</h3>
-        <p>자기부담·증빙·후기 공유는 필수입니다. 책임 없는 구조는 등록할 수 없습니다.</p>
-      </div>
-      <div class="highlight">
-        <div class="icon">❤️</div>
-        <h3>숫자보다 연결</h3>
-        <p>얼마가 모였는지가 아니라, 몇 마음이 모였는지가 중요합니다.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 진행중 프로젝트 (미리보기) -->
-  <section class="section" aria-labelledby="list-title">
+  <section class="hero">
     <div class="container">
-      <h2 id="list-title" class="section-title">진행중인 구조 프로젝트</h2>
-      <div id="home-cards" class="cards"></div>
-      <div style="text-align:right; margin-top:12px;">
-        <a class="btn ghost-small" href="project_list.html">전체 보기 →</a>
+      <h1>법인 없는 첫 후원 플랫폼</h1>
+      <p class="sub">
+        당신의 마음이 곧장 구조자에게 닿습니다.<br/>
+        책임 없는 구조는 등록할 수 없습니다.<br/>
+        돈보다 연결이 먼저 기록됩니다.
+      </p>
+      <div class="actions">
+        <a class="btn primary" href="project_list.html">🐾 지금 구조자 만나보기</a>
+        <a class="btn ghost" href="create.html">등록하기</a>
       </div>
+      <div class="badges" aria-hidden="true">
+        <span class="pill">개인↔개인 직연결</span>
+        <span class="pill">구조자 책임 필수</span>
+        <span class="pill">금액보다 연결</span>
+      </div>
+      <div class="beta-note">현재 <strong>Beta 서비스</strong>입니다. PG(결제) 연결 전까지는 <strong>카카오톡 단톡방</strong>으로 연결합니다.</div>
     </div>
   </section>
 
-  <!-- Sticky CTA Bar -->
-  <div class="sticky-cta" aria-hidden="true">
-    <div class="sticky-cta__inner" id="stickyCta">
-      <a href="project_list.html" class="btn primary">🐾 지금 구조자 만나보기</a>
-      <a href="create.html" class="btn ghost">등록하기</a>
+  <section class="highlights">
+    <div class="container grid3">
+      <div class="card highlight"><div class="icon">🧑‍🤝‍🧑</div><h3 style="margin:4px 0 6px">개인 ↔ 개인 직연결</h3><div style="color:#4b5563">법인/단체를 거치지 않습니다.</div></div>
+      <div class="card highlight"><div class="icon">🐾</div><h3 style="margin:4px 0 6px">구조자 책임 필수</h3><div style="color:#4b5563">자기부담·증빙·후기 공유.</div></div>
+      <div class="card highlight"><div class="icon">❤️</div><h3 style="margin:4px 0 6px">숫자보다 연결</h3><div style="color:#4b5563">‘연결된 마음 수’를 먼저.</div></div>
     </div>
-  </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="sr-only">진행중 프로젝트</h2>
+      <div id="home-cards" class="cards"></div>
+      <div style="text-align:right;margin-top:12px">
+        <a class="btn ghost" href="project_list.html" style="padding:8px 12px;border-radius:10px;font-weight:800">전체 보기 →</a>
+      </div>
+    </div>
+  </section>
 
   <div data-include="footer"></div>
 
-  <!-- 레이아웃 주입 -->
   <script type="module">
-    import { injectLayout } from "./js/include.js";
-    injectLayout({ active: "index" });
-  </script>
+    import { injectLayout } from './js/include.js';
+    import { apiListProjects } from './js/api.js';
+    injectLayout({active:'index'});
 
-  <!-- 홈 카드 렌더링: localStorage "projects"에서 4개 미리보기 + '연결된 마음 수' 우선 -->
-  <script>
-    (function(){
-      const $wrap = document.getElementById('home-cards');
-      function readProjects() {
-        try { const arr = JSON.parse(localStorage.getItem('projects')); return Array.isArray(arr)?arr:[]; }
-        catch(e){ return []; }
-      }
-      const fmt = (n)=> Number(n||0).toLocaleString('ko-KR');
+    const wrap = document.getElementById('home-cards');
+    const fmt = n => Number(n||0).toLocaleString('ko-KR');
+    const coverOf = p => p.coverUrl || p.representativeImageUrl || p.representativeImage || 'img/placeholder.svg';
+    const heartsOf = p => (p.supportersCount ?? (Array.isArray(p.supporters)? p.supporters.length:0)) || 0;
 
-      function render() {
-        const list = readProjects().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,4);
-        if (!list.length) {
-          $wrap.innerHTML = `<div class="card" style="padding:16px; display:flex; align-items:center; justify-content:center;">
-            <div class="meta">아직 등록된 프로젝트가 없습니다.</div></div>`;
+    async function render(){
+      try{
+        const list = await apiListProjects({ limit: 4, status: 'approved' });
+        if(!list.length){
+          wrap.innerHTML = '<div class="card" style="padding:16px;display:flex;align-items:center;justify-content:center"><div class="muted">아직 등록된 프로젝트가 없습니다.</div></div>';
           return;
         }
-        $wrap.innerHTML = list.map(p=>{
-          const cover = p.representativeImage || "img/placeholder.svg";
-          const tag = p.adminApproved ? '<span class="chip approved">승인</span>' : '<span class="chip pending">대기</span>';
-          const hearts = Array.isArray(p.supporters) ? p.supporters.length : 0;
-          return `
-            <article class="card">
-              <img src="${cover}" alt="${p.name || 'project cover'}"/>
-              <div class="card-body">
-                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                  <strong>${p.name ?? '(이름 없음)'}</strong>
-                  ${tag}
-                </div>
-                <div class="hearts">❤️ <span class="count">연결된 마음 ${hearts}명</span></div>
-                <div class="money">목표 ${fmt(p.goalAmount)}원 · 구조자 부담 ${fmt(p.rescuerContribution)}원</div>
-                <div class="meta">${p.summary ?? ''}</div>
-                <div class="card-actions">
-                  <a class="btn small" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a>
-                </div>
+        wrap.innerHTML = list.map(p => `
+          <article class="card">
+            <img src="${coverOf(p)}" alt="${p.name || 'project cover'}">
+            <div class="card-body">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                <strong>${p.name ?? '(이름 없음)'}</strong>
+                ${p.adminApproved ? '<span class="chip approved">승인</span>' : '<span class="chip pending">대기</span>'}
               </div>
-            </article>`;
-        }).join('');
+              <div class="hearts">❤️ <span class="count">연결된 마음 ${heartsOf(p)}명</span></div>
+              <div class="money">목표 ${fmt(p.goalAmount)}원 · 구조자 부담 ${fmt(p.rescuerContribution)}원</div>
+              <div class="muted">${p.summary ?? ''}</div>
+              <div style="margin-top:8px;display:flex;justify-content:flex-end">
+                <a class="btn primary" style="padding:8px 12px;border-radius:10px" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a>
+              </div>
+            </div>
+          </article>
+        `).join('');
+      }catch(e){
+        console.error(e);
+        wrap.innerHTML = '<div class="muted">서버에서 목록을 불러오지 못했습니다.</div>';
       }
-      render();
-    })();
-  </script>
-
-  <!-- Sticky CTA 동작: 히어로 지나면 나타나고, 맨 위에선 숨김 -->
-  <script>
-    (function(){
-      const sticky = document.getElementById('stickyCta');
-      const hero = document.querySelector('.hero');
-      const onScroll = () => {
-        const heroBottom = hero.getBoundingClientRect().bottom;
-        if (heroBottom < 0) {
-          sticky.parentElement.classList.add('is-visible');
-        } else {
-          sticky.parentElement.classList.remove('is-visible');
-        }
-      };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-    })();
+    }
+    render();
   </script>
 </body>
 </html>
