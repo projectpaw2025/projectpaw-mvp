@@ -1,5 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAnalytics, isSupported } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js';
+import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { getFirestore, serverTimestamp, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, limit as fLimit, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
 
@@ -16,7 +17,19 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 isSupported().then(ok => { if(ok) getAnalytics(app); });
 
+export const auth = getAuth(app);
+
+// Make sure we have an auth user (anonymous) before any writes.
+export const authReady = new Promise((resolve) => {
+  onAuthStateChanged(auth, (user) => {
+    if (user) resolve(user);
+  });
+});
+
+signInAnonymously(auth).catch((e)=>console.warn('anonymous auth failed', e));
+
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
+// re-exports
 export { serverTimestamp, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, fLimit, updateDoc, ref, uploadBytesResumable, getDownloadURL };

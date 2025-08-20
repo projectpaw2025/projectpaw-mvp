@@ -1,4 +1,4 @@
-import { db, storage, serverTimestamp, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, fLimit, updateDoc, ref, uploadBytesResumable, getDownloadURL } from './firebase.js';
+import { db, storage, authReady, serverTimestamp, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, fLimit, updateDoc, ref, uploadBytesResumable, getDownloadURL } from './firebase.js';
 
 function normalizeProject(id, data){
   return { id, supportersCount: 0, ...data };
@@ -33,6 +33,8 @@ async function uploadFile(path, file){
 }
 
 export async function apiCreateProject(formOrObj){
+  // ensure we have an authenticated (anonymous) user before writing
+  await authReady;
   const cRef = collection(db, 'projects');
   const dRef = doc(cRef);
   const id = dRef.id;
