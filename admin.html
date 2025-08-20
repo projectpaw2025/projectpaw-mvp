@@ -48,6 +48,8 @@
     import { injectLayout } from './js/include.js';
     import { apiListProjects, apiToggleApprove } from './js/api.js';
     injectLayout({active:'about'});
+
+    // 간단 비밀번호 보호
     (function(){
       const EXPECT = 'paw-admin';
       const viaQuery = new URL(location.href).searchParams.get('key');
@@ -65,38 +67,42 @@
       if(f==='pending' && p.adminApproved) return false;
       if(f==='approved' && !p.adminApproved) return false;
       if(!q) return true;
-      const hay=[p.name,p.summary,p.description,p.registrantKakaoId].map(v=>(v??'')+'').join(' ').toLowerCase();
+      const hay=[p.name,p.summary,p.description,p.registrantKakaoId]
+        .map(v=>(v??'')+'').join(' ').toLowerCase();
       return hay.includes(q.toLowerCase());
     }
 
     function fmt(n){ return Number(n||0).toLocaleString('ko-KR'); }
 
     async function render(){
-      const status = $filter.value==='all'?'all':$filter.value;
-      const list = (await apiListProjects({ status })).filter(p=>match(p,$search.value.trim(),$filter.value));
-      if(!list.length){ $cards.innerHTML = '<div class="muted">표시할 프로젝트 없음</div>'; return; }
+      const status = $filter.value;   // ✅ 선택된 값 그대로 전달
+      const list = (await apiListProjects({ status }))
+        .filter(p=>match(p,$search.value.trim(),$filter.value));
+      if(!list.length){ 
+        $cards.innerHTML = '<div class="muted">표시할 프로젝트 없음</div>'; 
+        return; 
+      }
       $cards.innerHTML = list.map(p => `
         <div class="card" data-id="${p.id}">
           <div class="row" style="align-items:center;gap:12px">
-            <img src="${p.representativeImageUrl || 'img/placeholder.svg'}" style="width:88px;height:88px;object-fit:cover;border-radius:10px;border:1px solid #eee"/>
+            <img src="${p.representativeImageUrl || 'img/placeholder.svg'}" 
+                 style="width:88px;height:88px;object-fit:cover;border-radius:10px;border:1px solid #eee"/>
             <div style="flex:1">
-              <div style="font-weight:900">${p.name ?? '(이름 없음)'} <span class="${p.adminApproved?'chip ok':'chip pending'}" style="margin-left:6px">${p.adminApproved?'승인':'대기'}</span></div>
+              <div style="font-weight:900">
+                ${p.name ?? '(이름 없음)'} 
+                <span class="${p.adminApproved?'chip ok':'chip pending'}" style="margin-left:6px">
+                  ${p.adminApproved?'승인':'대기'}
+                </span>
+              </div>
               <div class="muted">${p.summary ?? ''}</div>
               <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
             </div>
           </div>
-          <div class="row">
-            <div><label>병원명</label><input name="hospitalName" value="${p.hospitalName ?? ''}"/></div>
-            <div><label>계좌번호</label><input name="bankAccount" value="${p.bankAccount ?? ''}"/></div>
-          </div>
-          <div><label>카카오톡 초대링크</label><input name="kakaoInviteLink" value="${p.kakaoInviteLink ?? ''}"/></div>
-          <div class="row">
-            <div><label>등록자 카카오ID</label><input disabled value="${p.registrantKakaoId ?? ''}"/></div>
-            <div><label>프로젝트 ID</label><input disabled value="${p.id}"/></div>
-          </div>
           <div class="actions">
             <a class="btn secondary" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a>
-            <button class="btn secondary" data-action="toggle">${p.adminApproved?'승인 해제':'승인하기'}</button>
+            <button class="btn secondary" data-action="toggle">
+              ${p.adminApproved?'승인 해제':'승인하기'}
+            </button>
           </div>
         </div>
       `).join('');
@@ -118,6 +124,9 @@
     $search.addEventListener('input', render);
     $filter.addEventListener('change', render);
     $refresh.addEventListener('click', render);
+
+    // ✅ 초기 진입 시 무조건 'all'로 고정
+    $filter.value = 'all';
     render();
   </script>
 </body>
