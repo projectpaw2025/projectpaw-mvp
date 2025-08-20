@@ -38,7 +38,6 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 
-// Anonymous Auth
 export const auth = getAuth(app);
 let _resolveAuthReady;
 export const authReady = new Promise((res)=>{ _resolveAuthReady = res; });
@@ -53,7 +52,6 @@ onAuthStateChanged(auth, (user)=>{
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-// re-exports
 export {
   serverTimestamp,
   collection,

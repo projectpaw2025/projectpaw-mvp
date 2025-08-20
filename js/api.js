@@ -125,14 +125,14 @@ export async function apiCreateProject(formOrObj) {
   for (const f of situFiles) {
     if (f && f.size) {
       const c = await compressImage(f, { maxDim: 1600, quality: 0.82 });
-      galleryUrls.push(await uploadFile(`gallery/${id}/${Date.now()}_${c.name}`, c));
+      galleryUrls.push(await uploadFile(`gallery/${id}_${Date.now()}_${c.name}`, c));
     }
   }
   const receiptUrls = [];
   for (const f of rcptFiles) {
     if (f && f.size) {
       const c = await compressImage(f, { maxDim: 1600, quality: 0.82 });
-      receiptUrls.push(await uploadFile(`receipts/${id}/${Date.now()}_${c.name}`, c));
+      receiptUrls.push(await uploadFile(`receipts/${id}_${Date.now()}_${c.name}`, c));
     }
   }
 
