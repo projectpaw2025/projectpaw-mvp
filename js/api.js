@@ -1,22 +1,24 @@
-// api.js
-import {
-  db,
-  storage,
-  serverTimestamp,
-  collection,
-  doc,
-  setDoc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-  orderBy,
-  limit as fLimit,
-  updateDoc,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL
-} from './firebase.js';
+ // api.js
+ import {
+   db,
+   storage,
+   serverTimestamp,
+   collection,
+   doc,
+   setDoc,
+   getDoc,
+   getDocs,
+   query,
+   where,
+   orderBy,
+   limit as fLimit,
+   updateDoc,
+   ref,
+   uploadBytesResumable,
+   getDownloadURL
+ } from './firebase.js';
++import { auth } from './firebase.js'; // ✅ 추가
+
 
 // 이미지 압축
 async function fileToDataURL(file) {
