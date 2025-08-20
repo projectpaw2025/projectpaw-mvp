@@ -119,20 +119,20 @@ export async function apiCreateProject(formOrObj) {
   let coverUrl = null;
   if (repFile && repFile.size) {
     const c = await compressImage(repFile, { maxDim: 1600, quality: 0.82 });
-    coverUrl = await uploadFile(`projects/${id}/cover_${Date.now()}_${c.name}`, c);
+    coverUrl = await uploadFile(`covers/${id}_${Date.now()}_${c.name}`, c);
   }
   const galleryUrls = [];
   for (const f of situFiles) {
     if (f && f.size) {
       const c = await compressImage(f, { maxDim: 1600, quality: 0.82 });
-      galleryUrls.push(await uploadFile(`projects/${id}/gallery/${Date.now()}_${c.name}`, c));
+      galleryUrls.push(await uploadFile(`gallery/${id}/${Date.now()}_${c.name}`, c));
     }
   }
   const receiptUrls = [];
   for (const f of rcptFiles) {
     if (f && f.size) {
       const c = await compressImage(f, { maxDim: 1600, quality: 0.82 });
-      receiptUrls.push(await uploadFile(`projects/${id}/receipts/${Date.now()}_${c.name}`, c));
+      receiptUrls.push(await uploadFile(`receipts/${id}/${Date.now()}_${c.name}`, c));
     }
   }
 
