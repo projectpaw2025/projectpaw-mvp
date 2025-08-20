@@ -1,118 +1,25 @@
-<!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Project.PAW — 법인 없는 첫 후원 플랫폼</title>
-  <link rel="stylesheet" href="common.css"/>
-  <link rel="stylesheet" href="app.min.css"/>
-  <style>
-    .hero{background:radial-gradient(1200px 600px at 50% -100px, var(--g1), transparent 60%),linear-gradient(135deg,var(--g1),var(--g2));padding:84px 16px 60px;border-bottom:1px solid var(--line);text-align:center}
-    .hero h1{font-size:2.3rem;font-weight:900;letter-spacing:-.02em;margin:0 0 12px}
-    .hero .sub{font-size:1.1rem;color:var(--sub);line-height:1.7}
-    .hero .actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:22px}
-    .badges{margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-    .beta-note{margin-top:10px;color:#6b7280;font-weight:700}
-    .highlights{padding:54px 0}
-    .grid3{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-    .highlight{padding:20px;text-align:center}
-    .highlight .icon{font-size:2rem;margin-bottom:8px}
-    .section{padding:50px 0}
-    .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-    .card img{width:100%;height:180px;object-fit:cover;border-top-left-radius:16px;border-top-right-radius:16px}
-    .card-body{padding:14px;display:flex;flex-direction:column;gap:8px}
-    .chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.8rem;border:1px solid #e5e7eb;color:#374151}
-    .chip.approved{background:#ecfdf5;border-color:#bbf7d0;color:#065f46}
-    .chip.pending{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
-    .hearts{display:flex;align-items:center;gap:8px;font-weight:800}
-    .hearts .count{padding:6px 12px;border-radius:10px;background:#f1f5f9}
-    .money{font-size:.9rem;color:#4b5563}
-  </style>
-</head>
-<body>
-  <div data-include="header"></div>
-
-  <section class="hero">
-    <div class="container">
-      <h1>법인 없는 첫 후원 플랫폼</h1>
-      <p class="sub">
-        당신의 마음이 곧장 구조자에게 닿습니다.<br/>
-        책임 없는 구조는 등록할 수 없습니다.<br/>
-        돈보다 연결이 먼저 기록됩니다.
-      </p>
-      <div class="actions">
-        <a class="btn primary" href="project_list.html">🐾 지금 구조자 만나보기</a>
-        <a class="btn ghost" href="create.html">등록하기</a>
-      </div>
-      <div class="badges" aria-hidden="true">
-        <span class="pill">개인↔개인 직연결</span>
-        <span class="pill">구조자 책임 필수</span>
-        <span class="pill">금액보다 연결</span>
-      </div>
-      <div class="beta-note">현재 <strong>Beta 서비스</strong>입니다. PG(결제) 연결 전까지는 <strong>카카오톡 단톡방</strong>으로 연결합니다.</div>
-    </div>
-  </section>
-
-  <section class="highlights">
-    <div class="container grid3">
-      <div class="card highlight"><div class="icon">🧑‍🤝‍🧑</div><h3 style="margin:4px 0 6px">개인 ↔ 개인 직연결</h3><div style="color:#4b5563">법인/단체를 거치지 않습니다.</div></div>
-      <div class="card highlight"><div class="icon">🐾</div><h3 style="margin:4px 0 6px">구조자 책임 필수</h3><div style="color:#4b5563">자기부담·증빙·후기 공유.</div></div>
-      <div class="card highlight"><div class="icon">❤️</div><h3 style="margin:4px 0 6px">숫자보다 연결</h3><div style="color:#4b5563">‘연결된 마음 수’를 먼저.</div></div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <h2 class="sr-only">진행중 프로젝트</h2>
-      <div id="home-cards" class="cards"></div>
-      <div style="text-align:right;margin-top:12px">
-        <a class="btn ghost" href="project_list.html" style="padding:8px 12px;border-radius:10px;font-weight:800">전체 보기 →</a>
-      </div>
-    </div>
-  </section>
-
-  <div data-include="footer"></div>
-
-  <script type="module">
-    import { injectLayout } from './js/include.js';
-    import { apiListProjects } from './js/api.js';
-    injectLayout({active:'index'});
-
-    const wrap = document.getElementById('home-cards');
-    const fmt = n => Number(n||0).toLocaleString('ko-KR');
-    const coverOf = p => p.coverUrl || p.representativeImageUrl || p.representativeImage || 'img/placeholder.svg';
-    const heartsOf = p => (p.supportersCount ?? (Array.isArray(p.supporters)? p.supporters.length:0)) || 0;
-
-    async function render(){
-      try{
-        const list = await apiListProjects({ limit: 4, status: 'approved' });
-        if(!list.length){
-          wrap.innerHTML = '<div class="card" style="padding:16px;display:flex;align-items:center;justify-content:center"><div class="muted">아직 등록된 프로젝트가 없습니다.</div></div>';
-          return;
-        }
-        wrap.innerHTML = list.map(p => `
-          <article class="card">
-            <img src="${coverOf(p)}" alt="${p.name || 'project cover'}">
-            <div class="card-body">
-              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-                <strong>${p.name ?? '(이름 없음)'}</strong>
-                ${p.adminApproved ? '<span class="chip approved">승인</span>' : '<span class="chip pending">대기</span>'}
-              </div>
-              <div class="hearts">❤️ <span class="count">연결된 마음 ${heartsOf(p)}명</span></div>
-              <div class="money">목표 ${fmt(p.goalAmount)}원 · 구조자 부담 ${fmt(p.rescuerContribution)}원</div>
-              <div class="muted">${p.summary ?? ''}</div>
-              <div style="margin-top:8px;display:flex;justify-content:flex-end">
-                <a class="btn primary" style="padding:8px 12px;border-radius:10px" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a>
-              </div>
-            </div>
-          </article>
-        `).join('');
-      }catch(e){
-        console.error(e);
-        wrap.innerHTML = '<div class="muted">서버에서 목록을 불러오지 못했습니다.</div>';
-      }
-    }
-    render();
-  </script>
-</body>
-</html>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Project.PAW</title>
+<link rel="stylesheet" href="common.css"/><link rel="stylesheet" href="app.min.css"/>
+<style>.hero{background:radial-gradient(1200px 600px at 50% -100px, var(--g1), transparent 60%),linear-gradient(135deg,var(--g1),var(--g2));padding:84px 16px 60px;border-bottom:1px solid var(--line);text-align:center}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}.card img{width:100%;height:180px;object-fit:cover;border-top-left-radius:16px;border-top-right-radius:16px}.card-body{padding:14px;display:flex;flex-direction:column;gap:8px}
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.8rem;border:1px solid #e5e7eb;color:#374151}.chip.approved{background:#ecfdf5;border-color:#bbf7d0;color:#065f46}.chip.pending{background:#fff7ed;border-color:#fed7aa;color:#9a3412}</style>
+</head><body>
+<div data-include="header"></div>
+<section class="hero"><div class="container">
+<h1>법인 없는 첫 후원 플랫폼</h1>
+<p class="sub">현재 <b>Beta 서비스</b>입니다. PG(결제) 연결 전까지는 <b>카카오톡 단톡방</b>으로 연결합니다.</p>
+<div class="actions"><a class="btn primary" href="project_list.html">🐾 지금 구조자 만나보기</a> <a class="btn ghost" href="create.html">등록하기</a></div>
+</div></section>
+<section class="section"><div class="container"><div id="home-cards" class="cards"></div></div></section>
+<div data-include="footer"></div>
+<script type="module">
+  import { injectLayout } from './js/include.js'; import { apiListProjects } from './js/api.js'; injectLayout();
+  const wrap=document.getElementById('home-cards'); const fmt=n=>Number(n||0).toLocaleString('ko-KR'); const cover=p=>p.coverUrl||p.representativeImageUrl||'img/placeholder.svg';
+  (async()=>{ try{ const list=await apiListProjects({limit:4,status:'approved'}); wrap.innerHTML=list.map(p=>`
+    <article class="card"><img src="${cover(p)}"/><div class="card-body">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong>${p.name??'(이름 없음)'}</strong>${p.adminApproved?'<span class="chip approved">승인</span>':'<span class="chip pending">대기</span>'}</div>
+    <div class="muted">${p.summary??''}</div><div style="text-align:right"><a class="btn primary" style="padding:8px 12px;border-radius:10px" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a></div>
+    </div></article>`).join(''); if(!list.length) wrap.innerHTML='<div class="muted">아직 등록이 없습니다.</div>'; }catch(e){ wrap.innerHTML='<div class="muted">목록을 불러오지 못했습니다.</div>'; } })();
+</script>
+</body></html>

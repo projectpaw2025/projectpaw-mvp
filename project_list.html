@@ -1,98 +1,14 @@
-<!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>프로젝트 목록 — Project.PAW</title>
-  <link rel="stylesheet" href="common.css"/>
-  <link rel="stylesheet" href="app.min.css"/>
-  <style>
-    .wrap{max-width:1120px;margin:0 auto;padding:24px 16px}
-    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 16px}
-    .toolbar input,.toolbar select{padding:10px;border:1px solid #e5e7eb;border-radius:10px}
-    .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-    .card img{width:100%;height:180px;object-fit:cover;border-top-left-radius:16px;border-top-right-radius:16px}
-    .card-body{padding:14px;display:flex;flex-direction:column;gap:8px}
-    .chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.8rem;border:1px solid #e5e7eb;color:#374151}
-    .chip.approved{background:#ecfdf5;border-color:#bbf7d0;color:#065f46}
-    .chip.pending{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
-    .hearts{display:flex;align-items:center;gap:8px;font-weight:800}
-    .hearts .count{padding:6px 12px;border-radius:10px;background:#f1f5f9}
-    .money{font-size:.9rem;color:#4b5563}
-  </style>
-</head>
-<body>
-  <div data-include="header"></div>
-
-  <main class="wrap">
-    <h1 style="font-size:1.6rem;font-weight:900;margin:0 0 6px">프로젝트</h1>
-    <div class="toolbar">
-      <input id="q" type="text" placeholder="검색: 이름/요약/설명"/>
-      <select id="f">
-        <option value="approved">승인</option>
-        <option value="all">전체</option>
-        <option value="pending">대기</option>
-      </select>
-    </div>
-    <div id="list" class="cards"></div>
-  </main>
-
-  <div data-include="footer"></div>
-
-  <script type="module">
-    import { injectLayout } from './js/include.js';
-    import { apiListProjects } from './js/api.js';
-    injectLayout({active:'project_list'});
-
-    const $q = document.getElementById('q');
-    const $f = document.getElementById('f');
-    const $list = document.getElementById('list');
-
-    const fmt = n => Number(n||0).toLocaleString('ko-KR');
-    const coverOf = p => p.coverUrl || p.representativeImageUrl || p.representativeImage || 'img/placeholder.svg';
-    const heartsOf = p => (p.supportersCount ?? (Array.isArray(p.supporters)? p.supporters.length:0)) || 0;
-
-    function match(p,q){
-      if(!q) return true;
-      const hay=[p.name,p.summary,p.description,p.rescuerName].map(x=>(x||'')+'').join(' ').toLowerCase();
-      return hay.includes(q.toLowerCase());
-    }
-
-    async function render(){
-      try{
-        const status = $f.value;
-        const all = await apiListProjects({ status });
-        const list = all.filter(p=>match(p, $q.value.trim()));
-        if(!list.length){
-          $list.innerHTML = '<div class="card" style="padding:16px;display:flex;align-items:center;justify-content:center"><div class="muted">조건에 맞는 프로젝트가 없습니다.</div></div>';
-          return;
-        }
-        $list.innerHTML = list.map(p => `
-          <article class="card">
-            <img src="${coverOf(p)}" alt="${p.name || 'project cover'}">
-            <div class="card-body">
-              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-                <strong>${p.name ?? '(이름 없음)'}</strong>
-                ${p.adminApproved ? '<span class="chip approved">승인</span>' : '<span class="chip pending">대기</span>'}
-              </div>
-              <div class="hearts">❤️ <span class="count">연결된 마음 ${heartsOf(p)}명</span></div>
-              <div class="money">목표 ${fmt(p.goalAmount)}원 · 구조자 부담 ${fmt(p.rescuerContribution)}원</div>
-              <div class="muted">${p.summary ?? ''}</div>
-              <div style="margin-top:8px;display:flex;justify-content:flex-end">
-                <a class="btn primary" style="padding:8px 12px;border-radius:10px" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a>
-              </div>
-            </div>
-          </article>
-        `).join('');
-      }catch(e){
-        console.error(e);
-        $list.innerHTML = '<div class="muted">서버에서 목록을 불러오지 못했습니다.</div>';
-      }
-    }
-
-    $q.addEventListener('input', render);
-    $f.addEventListener('change', render);
-    render();
-  </script>
-</body>
-</html>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>프로젝트 목록</title><link rel="stylesheet" href="common.css"/><link rel="stylesheet" href="app.min.css"/>
+<style>.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}.card img{width:100%;height:180px;object-fit:cover;border-top-left-radius:16px;border-top-right-radius:16px}.card-body{padding:14px;display:flex;flex-direction:column;gap:8px}.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.8rem;border:1px solid #e5e7eb;color:#374151}.chip.approved{background:#ecfdf5;border-color:#bbf7d0;color:#065f46}.chip.pending{background:#fff7ed;border-color:#fed7aa;color:#9a3412}</style>
+</head><body><div data-include="header"></div><main class="container" style="padding:24px 16px">
+<h1 style="margin:0 0 10px">프로젝트</h1><input id="q" placeholder="검색" style="padding:10px;border:1px solid #e5e7eb;border-radius:10px;width:100%;max-width:360px"/>
+<div id="list" class="cards" style="margin-top:14px"></div></main><div data-include="footer"></div>
+<script type="module">
+import { injectLayout } from './js/include.js'; import { apiListProjects } from './js/api.js'; injectLayout();
+const $q=document.getElementById('q'), $list=document.getElementById('list'); const cover=p=>p.coverUrl||p.representativeImageUrl||'img/placeholder.svg';
+function match(p,q){ if(!q) return true; const hay=[p.name,p.summary,p.description,p.rescuerName].map(x=>(x||'')+'').join(' ').toLowerCase(); return hay.includes(q.toLowerCase()); }
+async function render(){ const all=await apiListProjects({status:'all'}); const list=all.filter(p=>match(p,$q.value.trim())); $list.innerHTML=list.map(p=>`
+<article class="card"><img src="${cover(p)}"/><div class="card-body"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong>${p.name??'(이름 없음)'}</strong>${p.adminApproved?'<span class="chip approved">승인</span>':'<span class="chip pending">대기</span>'}</div><div class="muted">${p.summary??''}</div><div style="text-align:right"><a class="btn primary" style="padding:8px 12px;border-radius:10px" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a></div></div></article>`).join(''); if(!list.length) $list.innerHTML='<div class="muted">결과 없음</div>'; }
+$q.addEventListener('input', render); render();
+</script></body></html>

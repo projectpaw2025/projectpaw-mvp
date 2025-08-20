@@ -8,7 +8,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyCNguz8K5MehFR5nydZ293hI60FQ9Jh5Tk",
   authDomain: "projectpaw-bf042.firebaseapp.com",
   projectId: "projectpaw-bf042",
-  storageBucket: "projectpaw-bf042.firebasestorage.app",
+  storageBucket: "projectpaw-bf042.appspot.com",
   messagingSenderId: "340056180297",
   appId: "1:340056180297:web:20ae730ee45b0563062198",
   measurementId: "G-FEMJ80972P"
@@ -18,18 +18,12 @@ export const app = initializeApp(firebaseConfig);
 isSupported().then(ok => { if(ok) getAnalytics(app); });
 
 export const auth = getAuth(app);
-
-// Make sure we have an auth user (anonymous) before any writes.
-export const authReady = new Promise((resolve) => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) resolve(user);
-  });
+export const authReady = new Promise((resolve)=>{
+  onAuthStateChanged(auth, (u)=>{ if(u) resolve(u); });
 });
-
-signInAnonymously(auth).catch((e)=>console.warn('anonymous auth failed', e));
+signInAnonymously(auth).catch(e=>console.warn('anon auth fail', e));
 
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-// re-exports
 export { serverTimestamp, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, fLimit, updateDoc, ref, uploadBytesResumable, getDownloadURL };
