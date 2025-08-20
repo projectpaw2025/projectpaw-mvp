@@ -32,39 +32,51 @@ async function uploadFile(path, file){
   return await getDownloadURL(task.snapshot.ref);
 }
 
+// PRODUCTION-FLOW: create doc first -> upload files -> update doc (urls)
 export async function apiCreateProject(formOrObj){
-  // ensure we have an authenticated (anonymous) user before writing
-  await authReady;
+  // ensure authenticated (anonymous ok)
+  const user = await authReady;
+
   const cRef = collection(db, 'projects');
-  const dRef = doc(cRef);
+  const dRef = doc(cRef);         // pre-generate id
   const id = dRef.id;
 
-  let data;
+  // Parse input
   let repFile=null, situFiles=[], rcptFiles=[];
+  let payload = {};
   if(formOrObj instanceof FormData){
     const fd = formOrObj;
     repFile = fd.get('representativeImage');
     situFiles = fd.getAll('situationImages').filter(Boolean);
     rcptFiles = fd.getAll('receiptImages').filter(Boolean);
-    data = {
+    payload = {
       name: fd.get('name') || '',
       rescuerName: fd.get('rescuerName') || '',
       summary: fd.get('summary') || '',
       description: fd.get('description') || '',
       goalAmount: Number(fd.get('goalAmount') || 0),
       rescuerContribution: Number(fd.get('rescuerContribution') || 0),
-      registrantKakaoId: fd.get('registrantKakaoId') || '',
-      hospitalName: null, bankAccount: null, kakaoInviteLink: null,
-      adminApproved: false, supportersCount: 0,
-      createdAt: serverTimestamp()
+      registrantKakaoId: fd.get('registrantKakaoId') || ''
     };
   } else {
-    data = { ...formOrObj, createdAt: serverTimestamp(), adminApproved: false, supportersCount: 0 };
+    payload = { ...formOrObj };
   }
 
+  // 1) CREATE minimal doc (no admin fields, with ownerUid)
+  const dataCreate = {
+    ...payload,
+    ownerUid: user.uid,
+    adminApproved: false,
+    supportersCount: 0,
+    createdAt: serverTimestamp()
+    // hospitalName/bankAccount/kakaoInviteLink intentionally omitted at create (admin only)
+  };
+  await setDoc(dRef, dataCreate);
+
+  // 2) Upload files under projects/{id}/...
   let coverUrl = null;
   if(repFile && repFile.size){
-    coverUrl = await uploadFile(`projects/${id}/cover_${Date.now()}.jpg`, repFile);
+    coverUrl = await uploadFile(`projects/${id}/cover_${Date.now()}_${repFile.name}`, repFile);
   }
   const galleryUrls = [];
   for(const f of situFiles){
@@ -75,18 +87,12 @@ export async function apiCreateProject(formOrObj){
     if(f && f.size) receiptUrls.push(await uploadFile(`projects/${id}/receipts/${Date.now()}_${f.name}`, f));
   }
 
-  const toSave = {
-    ...data,
-    representativeImageUrl: coverUrl,
+  // 3) UPDATE doc with uploaded URLs
+  await updateDoc(dRef, {
+    representativeImageUrl: coverUrl || null,
     galleryUrls,
-    receiptUrls,
-  };
+    receiptUrls
+  });
 
-  await setDoc(dRef, toSave);
-  return { id, ...toSave };
-}
-
-export async function apiToggleApprove(id, approved){
-  await updateDoc(doc(db,'projects', id), { adminApproved: !!approved });
-  return { ok:true };
+  return { id, ...dataCreate, representativeImageUrl: coverUrl, galleryUrls, receiptUrls };
 }
