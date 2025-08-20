@@ -25,20 +25,26 @@
   </style>
 </head>
 <body>
-  <!-- 공통 헤더 -->
+  <!-- 공통 헤더 주입 -->
   <div data-include="header"></div>
 
-  <!-- Hero -->
+  <!-- 🔹 헤더/푸터 즉시 주입: 가장 먼저 실행 -->
+  <script type="module">
+    import { injectLayout } from './js/include.js';
+    injectLayout();
+  </script>
+
+  <!-- Hero Section (원본 그대로) -->
   <section class="hero">
     <h1>법인 없는 첫 후원 플랫폼</h1>
     <p>현재 <strong>Beta 서비스</strong>입니다.<br/>
        PG(결제) 연결 전까지는 <b>카카오톡 단톡방</b>을 통해 연결됩니다.</p>
-    <!-- 원본 링크 그대로 유지 -->
+    <!-- 원본 링크 유지 (projects.html 그대로) -->
     <a href="projects.html" class="btn primary">🐾 지금 구조자 만나보기</a>
     <a href="create.html" class="btn secondary">등록하기</a>
   </section>
 
-  <!-- Projects -->
+  <!-- Projects Section (원본 그대로) -->
   <section class="projects">
     <h2>진행 중인 프로젝트</h2>
     <div id="projects-grid" class="grid">
@@ -46,5 +52,45 @@
     </div>
   </section>
 
-  <!-- 공통 푸터 -->
-  <div data-include="fo
+  <!-- 공통 푸터 주입 -->
+  <div data-include="footer"></div>
+
+  <!-- 데이터 렌더 스크립트 (별도 모듈) -->
+  <script type="module">
+    import { apiListProjects } from './js/api.js';
+
+    const $grid = document.getElementById('projects-grid');
+    const fmt = (n) => Number(n||0).toLocaleString('ko-KR');
+
+    // ✅ 대표 이미지 필드 호환: representativeImageUrl → mainImage → images[0] → placeholder
+    const pickImage = (p) =>
+      p.representativeImageUrl ||
+      p.mainImage ||
+      (Array.isArray(p.images) && p.images[0]) ||
+      'img/placeholder.svg';
+
+    async function render(){
+      try {
+        const list = await apiListProjects({ status:'approved', limit:12 });
+        if(!list.length){
+          $grid.innerHTML = '<div class="muted">아직 승인된 프로젝트가 없습니다.</div>';
+          return;
+        }
+        $grid.innerHTML = list.map(p => `
+          <a class="card" href="project.html?id=${encodeURIComponent(p.id)}">
+            <img src="${pickImage(p)}" alt=""/>
+            <h3>${p.name ?? '(이름 없음)'}</h3>
+            <div class="muted">${p.summary ?? ''}</div>
+            <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
+          </a>
+        `).join('');
+      } catch (e) {
+        console.error(e);
+        $grid.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
