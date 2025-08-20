@@ -1,41 +1,42 @@
 import { 
   db, storage, authReady, serverTimestamp, 
   collection, doc, setDoc, getDoc, getDocs, 
-  query, where, orderBy, fLimit, updateDoc, 
-  ref, uploadBytesResumable, getDownloadURL 
+  query, where, updateDoc, ref, 
+  uploadBytesResumable, getDownloadURL 
 } from './firebase.js';
 
 // image compression helpers
-async function fileToDataURL(file){
-  return await new Promise((res, rej)=>{
-    const r=new FileReader();
-    r.onload=()=>res(r.result);
-    r.onerror=rej;
-    r.readAsDataURL(file);
-  });
+async function fileToDataURL(file){ 
+  return await new Promise((res, rej)=>{ 
+    const r=new FileReader(); 
+    r.onload=()=>res(r.result); 
+    r.onerror=rej; 
+    r.readAsDataURL(file); 
+  }); 
 }
-async function loadImage(src){
-  return await new Promise((res, rej)=>{
-    const img=new Image();
-    img.onload=()=>res(img);
-    img.onerror=rej;
-    img.src=src;
-  });
+async function loadImage(src){ 
+  return await new Promise((res, rej)=>{ 
+    const img=new Image(); 
+    img.onload=()=>res(img); 
+    img.onerror=rej; 
+    img.src=src; 
+  }); 
 }
-async function compressImage(file, {maxDim=1600, quality=0.82}={}){
-  try{
+async function compressImage(file, {maxDim=1600, quality=0.82}={}) {
+  try {
     const src = await fileToDataURL(file);
     const img = await loadImage(src);
     const maxSide = Math.max(img.width, img.height);
     const ratio = Math.min(1, maxDim/maxSide);
     const tw = Math.round(img.width*ratio), th = Math.round(img.height*ratio);
-    const c = document.createElement('canvas'); c.width=tw; c.height=th;
+    const c = document.createElement('canvas'); 
+    c.width=tw; c.height=th;
     c.getContext('2d').drawImage(img,0,0,tw,th);
     const blob = await new Promise(res => c.toBlob(res, 'image/jpeg', quality));
     return new File([blob], file.name.replace(/\.(png|webp)$/i,'.jpg'), {type:'image/jpeg'});
-  }catch(e){
+  } catch(e) { 
     console.warn('compress fail', e); 
-    return file;
+    return file; 
   }
 }
 
@@ -43,36 +44,20 @@ function normalizeProject(id, data){
   return { id, supportersCount: 0, ...data }; 
 }
 
-// 🔥 여기 수정됨
-export async function apiListProjects({ limit = 20, status = 'all' } = {}){
-  let q;
+// 🔥 수정된 부분: orderBy 제거, status별 조건만
+export async function apiListProjects({ limit = 20, status = 'all' } = {}) {
+  let q = collection(db, 'projects');
 
-  if(status === 'approved'){
-    q = query(
-      collection(db,'projects'), 
-      where('adminApproved','==', true), 
-      orderBy('createdAt','desc'), 
-      fLimit(limit)
-    );
-  } else if(status === 'pending'){
-    q = query(
-      collection(db,'projects'), 
-      where('adminApproved','==', false), 
-      orderBy('createdAt','desc'), 
-      fLimit(limit)
-    );
-  } else {
-    // status === 'all' → 필터 없이 전체
-    q = query(
-      collection(db,'projects'),
-      orderBy('createdAt','desc'),
-      fLimit(limit)
-    );
+  if (status === 'approved') {
+    q = query(q, where('adminApproved','==', true));
+  } else if (status === 'pending') {
+    q = query(q, where('adminApproved','==', false));
   }
+  // status === 'all' → 필터 없음 (모든 프로젝트 불러옴)
 
   const snap = await getDocs(q); 
-  const out=[]; 
-  snap.forEach(d=>out.push(normalizeProject(d.id,d.data()))); 
+  const out=[];
+  snap.forEach(d => out.push(normalizeProject(d.id, d.data()))); 
   return out;
 }
 
@@ -134,7 +119,6 @@ export async function apiCreateProject(formOrObj){
     const c=await compressImage(repFile,{maxDim:1600,quality:0.82});
     coverUrl = await uploadFile(`projects/${id}/cover_${Date.now()}_${c.name}`, c);
   }
-
   const galleryUrls=[];
   for(const f of situFiles){ 
     if(f && f.size){ 
@@ -142,7 +126,6 @@ export async function apiCreateProject(formOrObj){
       galleryUrls.push(await uploadFile(`projects/${id}/gallery/${Date.now()}_${c.name}`, c)); 
     }
   }
-
   const receiptUrls=[];
   for(const f of rcptFiles){ 
     if(f && f.size){ 
