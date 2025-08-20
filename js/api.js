@@ -1,9 +1,5 @@
-import { 
-  db, storage, authReady, serverTimestamp,
-  collection, doc, setDoc, getDoc, getDocs,
-  query, where, orderBy, limit as fLimit,
-  updateDoc, ref, uploadBytesResumable, getDownloadURL 
-} from './firebase.js';
+import { db, storage, authReady, serverTimestamp, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, updateDoc, ref, uploadBytesResumable, getDownloadURL } from './firebase.js';
+import { limit as fLimit } from "firebase/firestore";   // ✅ 여기 추가
 
 // image compression helpers
 async function fileToDataURL(file){ return await new Promise((res, rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); }
@@ -51,7 +47,7 @@ async function uploadFile(path, file){
   return await getDownloadURL(task.snapshot.ref);
 }
 
-// 프로젝트 생성
+// production flow: create doc -> upload -> update
 export async function apiCreateProject(formOrObj){
   const user = await authReady;
   const cRef = collection(db, 'projects');
@@ -101,9 +97,9 @@ export async function apiCreateProject(formOrObj){
   return { id, ...dataCreate, representativeImageUrl: coverUrl, galleryUrls, receiptUrls };
 }
 
-// ✅ 관리자 승인 토글 함수 추가
-export async function apiToggleApprove(projectId, approve=true) {
-  const dRef = doc(db, 'projects', projectId);
-  await updateDoc(dRef, { adminApproved: approve });
-  return true;
+// ✅ 관리자 승인/해제용 API 추가
+export async function apiToggleApprove(id, will) {
+  const dRef = doc(db, 'projects', id);
+  await updateDoc(dRef, { adminApproved: will });
+  return { id, adminApproved: will };
 }
