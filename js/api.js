@@ -1,8 +1,27 @@
-import { db, storage, authReady, serverTimestamp, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, fLimit, updateDoc, ref, uploadBytesResumable, getDownloadURL } from './firebase.js';
+import { 
+  db, storage, authReady, serverTimestamp, 
+  collection, doc, setDoc, getDoc, getDocs, 
+  query, where, orderBy, fLimit, updateDoc, 
+  ref, uploadBytesResumable, getDownloadURL 
+} from './firebase.js';
 
 // image compression helpers
-async function fileToDataURL(file){ return await new Promise((res, rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); }
-async function loadImage(src){ return await new Promise((res, rej)=>{ const img=new Image(); img.onload=()=>res(img); img.onerror=rej; img.src=src; }); }
+async function fileToDataURL(file){
+  return await new Promise((res, rej)=>{
+    const r=new FileReader();
+    r.onload=()=>res(r.result);
+    r.onerror=rej;
+    r.readAsDataURL(file);
+  });
+}
+async function loadImage(src){
+  return await new Promise((res, rej)=>{
+    const img=new Image();
+    img.onload=()=>res(img);
+    img.onerror=rej;
+    img.src=src;
+  });
+}
 async function compressImage(file, {maxDim=1600, quality=0.82}={}){
   try{
     const src = await fileToDataURL(file);
@@ -14,22 +33,54 @@ async function compressImage(file, {maxDim=1600, quality=0.82}={}){
     c.getContext('2d').drawImage(img,0,0,tw,th);
     const blob = await new Promise(res => c.toBlob(res, 'image/jpeg', quality));
     return new File([blob], file.name.replace(/\.(png|webp)$/i,'.jpg'), {type:'image/jpeg'});
-  }catch(e){ console.warn('compress fail', e); return file; }
-}
-
-function normalizeProject(id, data){ return { id, supportersCount: 0, ...data }; }
-
-export async function apiListProjects({ limit = 20, status = 'all' } = {}){
-  let q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'), fLimit(limit));
-  if(status === 'approved'){
-    q = query(collection(db,'projects'), where('adminApproved','==', true), orderBy('createdAt','desc'), fLimit(limit));
-  } else if(status === 'pending'){
-    q = query(collection(db,'projects'), where('adminApproved','==', false), orderBy('createdAt','desc'), fLimit(limit));
+  }catch(e){
+    console.warn('compress fail', e); 
+    return file;
   }
-  const snap = await getDocs(q); const out=[]; snap.forEach(d=>out.push(normalizeProject(d.id,d.data()))); return out;
 }
 
-export async function apiGetProject(id){ const d=await getDoc(doc(db,'projects',id)); if(!d.exists()) throw new Error('NOT_FOUND'); return normalizeProject(d.id,d.data()); }
+function normalizeProject(id, data){ 
+  return { id, supportersCount: 0, ...data }; 
+}
+
+// 🔥 여기 수정됨
+export async function apiListProjects({ limit = 20, status = 'all' } = {}){
+  let q;
+
+  if(status === 'approved'){
+    q = query(
+      collection(db,'projects'), 
+      where('adminApproved','==', true), 
+      orderBy('createdAt','desc'), 
+      fLimit(limit)
+    );
+  } else if(status === 'pending'){
+    q = query(
+      collection(db,'projects'), 
+      where('adminApproved','==', false), 
+      orderBy('createdAt','desc'), 
+      fLimit(limit)
+    );
+  } else {
+    // status === 'all' → 필터 없이 전체
+    q = query(
+      collection(db,'projects'),
+      orderBy('createdAt','desc'),
+      fLimit(limit)
+    );
+  }
+
+  const snap = await getDocs(q); 
+  const out=[]; 
+  snap.forEach(d=>out.push(normalizeProject(d.id,d.data()))); 
+  return out;
+}
+
+export async function apiGetProject(id){ 
+  const d=await getDoc(doc(db,'projects',id)); 
+  if(!d.exists()) throw new Error('NOT_FOUND'); 
+  return normalizeProject(d.id,d.data()); 
+}
 
 async function uploadFile(path, file){
   const r = ref(storage, path);
@@ -46,7 +97,9 @@ export async function apiCreateProject(formOrObj){
   const dRef = doc(cRef);
   const id = dRef.id;
 
-  let repFile=null, situFiles=[], rcptFiles=[]; let payload={};
+  let repFile=null, situFiles=[], rcptFiles=[]; 
+  let payload={};
+
   if(formOrObj instanceof FormData){
     const fd=formOrObj;
     repFile=fd.get('representativeImage');
@@ -61,7 +114,9 @@ export async function apiCreateProject(formOrObj){
       rescuerContribution: Number(fd.get('rescuerContribution')||0),
       registrantKakaoId: fd.get('registrantKakaoId')||''
     };
-  } else { payload = {...formOrObj}; }
+  } else { 
+    payload = {...formOrObj}; 
+  }
 
   // 1) create doc
   const dataCreate = {
@@ -79,10 +134,22 @@ export async function apiCreateProject(formOrObj){
     const c=await compressImage(repFile,{maxDim:1600,quality:0.82});
     coverUrl = await uploadFile(`projects/${id}/cover_${Date.now()}_${c.name}`, c);
   }
+
   const galleryUrls=[];
-  for(const f of situFiles){ if(f && f.size){ const c=await compressImage(f,{maxDim:1600,quality:0.82}); galleryUrls.push(await uploadFile(`projects/${id}/gallery/${Date.now()}_${c.name}`, c)); }}
+  for(const f of situFiles){ 
+    if(f && f.size){ 
+      const c=await compressImage(f,{maxDim:1600,quality:0.82}); 
+      galleryUrls.push(await uploadFile(`projects/${id}/gallery/${Date.now()}_${c.name}`, c)); 
+    }
+  }
+
   const receiptUrls=[];
-  for(const f of rcptFiles){ if(f && f.size){ const c=await compressImage(f,{maxDim:1600,quality:0.82}); receiptUrls.push(await uploadFile(`projects/${id}/receipts/${Date.now()}_${c.name}`, c)); }}
+  for(const f of rcptFiles){ 
+    if(f && f.size){ 
+      const c=await compressImage(f,{maxDim:1600,quality:0.82}); 
+      receiptUrls.push(await uploadFile(`projects/${id}/receipts/${Date.now()}_${c.name}`, c)); 
+    }
+  }
 
   // 3) update doc
   await updateDoc(dRef, { representativeImageUrl: coverUrl||null, galleryUrls, receiptUrls });
