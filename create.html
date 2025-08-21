@@ -1,81 +1,123 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>프로젝트 등록</title><link rel="stylesheet" href="common.css"/><link rel="stylesheet" href="app.min.css"/>
-<style>.wrap{max-width:860px;margin:0 auto;padding:20px 16px}form{display:grid;gap:12px}label{font-weight:800;margin-top:6px}input,textarea{width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:10px}textarea{min-height:120px;resize:vertical}.grid2{display:grid;gap:12px;grid-template-columns:1fr 1fr}@media(max-width:760px){.grid2{grid-template-columns:1fr}}.note{color:#6b7280}.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}.disabled{opacity:.6;pointer-events:none}</style>
-</head><body><div data-include="header"></div><main class="wrap">
-<h1 style="margin:0 0 6px">프로젝트 등록</h1>
-<form id="form">
-  <div class="grid2"><div><label>동물 이름</label><input name="name" required/></div><div><label>구조자 이름</label><input name="rescuerName" required/></div></div>
-  <div><label>상황 요약</label><input name="summary" required/></div>
-  <div><label>상세 설명</label><textarea name="description" required></textarea></div>
-  <div class="grid2"><div><label>목표 금액(원)</label><input type="number" name="goalAmount" min="0" required/></div><div><label>구조자 부담액(원)</label><input type="number" name="rescuerContribution" min="0" required/></div></div>
-  <div><label>등록자 카카오톡 ID</label><input name="registrantKakaoId" required/></div>
-  <div><label>대표 사진 (1장)</label><input type="file" id="repImage" accept="image/*" required/></div>
-  <div><label>구조 상황 사진 (여러 장)</label><input type="file" id="situationImages" accept="image/*" multiple/></div>
-  <div><label>영수증 사진 (여러 장)</label><input type="file" id="receiptImages" accept="image/*" multiple/></div>
-  <p class="note">* 병원명/계좌/카카오톡 초대링크는 <b>관리자 전용</b> 화면에서 등록됩니다.</p>
-  <div class="actions"><a class="btn ghost" href="index.html">취소</a><button class="btn primary" type="submit" id="submitBtn">등록하기</button></div>
-</form></main><div data-include="footer"></div>
-<script type="module">
-import { injectLayout } from './js/include.js'; import { apiCreateProject } from './js/api.js';
-import { authReady } from './js/firebase.js'; injectLayout();
-// === previews ===
-const repInput = document.getElementById('repImage');
-const situInput = document.getElementById('situationImages');
-const rcptInput = document.getElementById('receiptImages');
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>프로젝트 등록 - Project.PAW</title>
+  <link rel="stylesheet" href="common.css"/>
+  <link rel="stylesheet" href="app.min.css"/>
+  <style>
+    body { background:#fafafa; font-family:'Pretendard',sans-serif; }
+    .container { max-width:720px; margin:40px auto; padding:0 16px; }
+    h1 { font-size:1.5rem; font-weight:700; margin-bottom:20px; }
+    form { display:flex; flex-direction:column; gap:16px; }
+    label { font-weight:600; font-size:.95rem; }
+    input, textarea { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:1rem; }
+    textarea { resize:vertical; min-height:100px; }
+    .btn { display:inline-block; padding:12px 20px; border-radius:12px; font-weight:600; cursor:pointer; text-decoration:none; text-align:center; }
+    .btn.primary { background:#111; color:#fff; border:none; }
+    .muted { font-size:.85rem; color:#777; }
+    .preview { margin-top:10px; max-width:200px; border-radius:8px; border:1px solid #ddd; }
+    footer { margin-top:60px; padding:30px; text-align:center; font-size:.9rem; color:#888; border-top:1px solid #eee; }
+  </style>
+</head>
+<body>
+  <div data-include="header"></div>
 
-function makePreviewContainer(afterEl, id){
-  const el = document.createElement('div');
-  el.id = id;
-  el.style.display='flex';
-  el.style.flexWrap='wrap';
-  el.style.gap='8px';
-  el.style.marginTop='8px';
-  afterEl.insertAdjacentElement('afterend', el);
-  return el;
-}
+  <main class="container">
+    <h1>새 프로젝트 등록</h1>
 
-const repPrev = repInput ? makePreviewContainer(repInput, 'repPreview') : null;
-const situPrev = situInput ? makePreviewContainer(situInput, 'situPreview') : null;
-const rcptPrev = rcptInput ? makePreviewContainer(rcptInput, 'rcptPreview') : null;
+    <form id="create-form">
+      <div>
+        <label>프로젝트 이름</label>
+        <input type="text" name="name" required maxlength="80"/>
+      </div>
+      <div>
+        <label>구조자 이름</label>
+        <input type="text" name="rescuerName" maxlength="40"/>
+      </div>
+      <div>
+        <label>한 줄 요약</label>
+        <input type="text" name="summary" maxlength="200"/>
+      </div>
+      <div>
+        <label>상세 설명</label>
+        <textarea name="description" maxlength="5000"></textarea>
+      </div>
+      <div>
+        <label>목표 금액 (원)</label>
+        <input type="number" name="goalAmount" min="0" max="1000000000"/>
+      </div>
+      <div>
+        <label>구조자 부담금 (원)</label>
+        <input type="number" name="rescuerContribution" min="0" max="1000000000"/>
+      </div>
+      <div>
+        <label>대표 이미지</label>
+        <input type="file" id="coverFile" accept="image/*"/>
+        <img id="coverPreview" class="preview" style="display:none"/>
+      </div>
+      <div>
+        <label>갤러리 이미지 (최대 20장)</label>
+        <input type="file" id="galleryFiles" accept="image/*" multiple/>
+      </div>
+      <div>
+        <label>영수증 이미지 (최대 20장)</label>
+        <input type="file" id="receiptFiles" accept="image/*" multiple/>
+      </div>
+      <div>
+        <label>카카오톡 오픈채팅 ID</label>
+        <input type="text" name="registrantKakaoId" maxlength="64" placeholder="예: abcd1234"/>
+        <p class="muted">※ open.kakao.com/o/ 뒤에 오는 ID만 입력하세요.</p>
+      </div>
+      <button type="submit" class="btn primary">등록하기</button>
+    </form>
+  </main>
 
-function renderPreview(input, container, single=false){
-  if(!input || !container) return;
-  container.innerHTML='';
-  const files = Array.from(input.files||[]);
-  const take = single ? files.slice(0,1) : files;
-  take.forEach(f=>{
-    const img = document.createElement('img');
-    img.src = URL.createObjectURL(f);
-    img.style.width='120px'; img.style.height='120px';
-    img.style.objectFit='cover'; img.style.borderRadius='10px';
-    img.style.border='1px solid #eef2f7';
-    container.appendChild(img);
-  });
-}
+  <div data-include="footer"></div>
 
-repInput?.addEventListener('change', ()=> renderPreview(repInput, repPrev, true));
-situInput?.addEventListener('change', ()=> renderPreview(situInput, situPrev));
-rcptInput?.addEventListener('change', ()=> renderPreview(rcptInput, rcptPrev));
-// === /previews ===
+  <!-- 내부 로직 -->
+  <script type="module">
+    import { injectLayout } from './js/include.js';
+    import { apiCreateProject } from './assets/js/api.js';
 
-const form=document.getElementById('form'); const submitBtn=document.getElementById('submitBtn');
-form.addEventListener('submit', async (e)=>{
-  e.preventDefault(); 
-      await authReady;
-alert('⏳ 업로드를 시작합니다. 잠시만 기다려주세요!'); submitBtn.classList.add('disabled'); submitBtn.textContent='업로드 중...';
-  const fd = new FormData(form);
-  const rep = document.getElementById('repImage').files[0];
-  const situ = document.getElementById('situationImages').files;
-  const rcpt = document.getElementById('receiptImages').files;
-  if(rep) fd.append('representativeImage', rep);
-  Array.from(situ).forEach(f=>fd.append('situationImages', f));
-  Array.from(rcpt).forEach(f=>fd.append('receiptImages', f));
-  try{ const saved=await apiCreateProject(fd); location.href='project.html?id='+encodeURIComponent(saved.id); }
-  catch(err){ alert('업로드 실패: '+(err.message||'')); }
-  finally{ submitBtn.classList.remove('disabled'); submitBtn.textContent='등록하기'; }
-});
-<script type="module" src="assets/js/create.js">
+    injectLayout({ active:'create' });
+
+    const form = document.getElementById('create-form');
+    const coverFileInput = document.getElementById('coverFile');
+    const coverPreview = document.getElementById('coverPreview');
+
+    coverFileInput.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if(file){
+        coverPreview.src = URL.createObjectURL(file);
+        coverPreview.style.display = 'block';
+      }
+    });
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const data = Object.fromEntries(new FormData(form).entries());
+      const coverFile = coverFileInput.files[0];
+      const galleryFiles = document.getElementById('galleryFiles').files;
+      const receiptFiles = document.getElementById('receiptFiles').files;
+
+      try {
+        await apiCreateProject({
+          ...data,
+          coverFile,
+          galleryFiles: [...galleryFiles],
+          receiptFiles: [...receiptFiles]
+        });
+
+        alert("프로젝트가 등록되었습니다. 관리자의 승인 후 노출됩니다.");
+        location.href = "project_list.html";
+      } catch (err) {
+        console.error(err);
+        alert("등록 실패: " + err.message);
+      }
+    });
   </script>
 </body>
-
-</body></html>
+</html>
