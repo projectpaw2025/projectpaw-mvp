@@ -56,30 +56,41 @@ textarea{min-height:120px;resize:vertical}
 
     injectLayout({ active:'create' });
 
-    const form=document.getElementById('form');
-    const submitBtn=document.getElementById('submitBtn');
-    form.addEventListener('submit', async (e)=>{
+    const form = document.getElementById('form');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       await authReady;
+
       submitBtn.classList.add('disabled');
-      submitBtn.textContent='업로드 중...';
+      submitBtn.textContent = '업로드 중...';
 
-      const fd = new FormData(form);
-      const rep = document.getElementById('repImage').files[0];
-      const situ = document.getElementById('situationImages').files;
-      const rcpt = document.getElementById('receiptImages').files;
-      if(rep) fd.append('representativeImage', rep);
-      Array.from(situ).forEach(f=>fd.append('situationImages', f));
-      Array.from(rcpt).forEach(f=>fd.append('receiptImages', f));
+      try {
+        const fd = new FormData(form);
 
-      try{
-        const saved=await apiCreateProject(fd);
-        location.href='project.html?id='+encodeURIComponent(saved.id);
-      }catch(err){
-        alert('업로드 실패: '+(err.message||''));
-      }finally{
+        // ✅ api.js에서 기대하는 구조로 변환
+        const projectData = {
+          name: fd.get("name"),
+          rescuerName: fd.get("rescuerName"),
+          summary: fd.get("summary"),
+          description: fd.get("description"),
+          goalAmount: fd.get("goalAmount"),
+          rescuerContribution: fd.get("rescuerContribution"),
+          registrantKakaoId: fd.get("registrantKakaoId"),
+          coverFile: document.getElementById('repImage').files[0] || null,
+          galleryFiles: Array.from(document.getElementById('situationImages').files),
+          receiptFiles: Array.from(document.getElementById('receiptImages').files)
+        };
+
+        const savedId = await apiCreateProject(projectData);
+        location.href = 'project.html?id=' + encodeURIComponent(savedId);
+
+      } catch (err) {
+        alert('업로드 실패: ' + (err.message || ''));
+      } finally {
         submitBtn.classList.remove('disabled');
-        submitBtn.textContent='등록하기';
+        submitBtn.textContent = '등록하기';
       }
     });
   </script>
