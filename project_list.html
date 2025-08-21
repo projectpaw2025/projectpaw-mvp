@@ -21,7 +21,6 @@
 
   <main class="container" style="padding:24px 16px">
     <h1 style="margin:0 0 10px">프로젝트</h1>
-    <!-- 검색 인풋(없어도 동작하도록 스크립트에서 널가드 처리) -->
     <input id="q" placeholder="검색" style="padding:10px;border:1px solid #e5e7eb;border-radius:10px;width:100%;max-width:360px"/>
     <div id="list" class="cards" style="margin-top:14px"></div>
   </main>
@@ -38,69 +37,49 @@
 
     const $q = document.getElementById('q');
     const $list = document.getElementById('list');
+    if (!$list) console.error('[project_list] #list 요소가 없습니다.');
 
-    // 필수 노드 확인(없어도 크래시 금지)
-    if (!$list) {
-      console.error('[project_list] #list 요소가 없습니다. 마크업을 확인하세요.');
-    }
-
-    // ---------- 이미지 후보/변환(강화판) ----------
-    const pick = (...cands) => cands.find(u => typeof u === 'string' && u.trim());
-
+    // 후보 수집
     function candidatesOf(p){
       const out = [];
       const push = v => { if (typeof v === 'string' && v.trim()) out.push(v.trim()); };
-      const simple = [
-        'representativeImageUrl','coverUrl','coverURL','cover',
-        'thumbnailUrl','thumbnail','image','mainImageUrl','mainImage',
-        'photo','photoUrl'
-      ];
-      simple.forEach(k => push(p[k]));
-      const arrays = ['galleryUrls','images','photos','pictures','media','attachments','files'];
-      arrays.forEach(k => {
-        const arr = p[k];
-        if (Array.isArray(arr)) {
-          arr.forEach(it => {
-            if (typeof it === 'string') push(it);
-            else if (it && (it.url || it.downloadUrl || it.path)) push(it.url || it.downloadUrl || it.path);
-          });
-        }
+      ['representativeImageUrl','coverUrl','coverURL','cover','thumbnailUrl','thumbnail','image','mainImageUrl','mainImage','photo','photoUrl']
+        .forEach(k => push(p[k]));
+      ['galleryUrls','images','photos','pictures','media','attachments','files'].forEach(k => {
+        const arr = p[k]; if (Array.isArray(arr)) arr.forEach(it => {
+          if (typeof it === 'string') push(it);
+          else if (it && (it.url || it.downloadUrl || it.path)) push(it.url || it.downloadUrl || it.path);
+        });
       });
       return out;
     }
 
-    async function toHttpUrl(maybe) {
-      if (!maybe) return null;
-      if (typeof maybe === 'string') maybe = maybe.trim();
-      if (/^(https?:|data:|blob:)/i.test(maybe)) return maybe; // 이미 표시 가능한 스킴
-      if (maybe.startsWith('/')) maybe = maybe.slice(1);       // 선행 슬래시 제거
-      if (/^gs:\/\//i.test(maybe)) {
-        // 잘못 저장된 버킷 교정: *.firebasestorage.app → *.appspot.com
-        maybe = maybe.replace(/gs:\/\/([^/]+)\.firebasestorage\.app(\/|$)/i, 'gs://$1.appspot.com$2');
-      }
+    // 경로/gs:// → 표시가능한 URL
+    async function toHttpUrl(raw){
+      if (!raw) return null;
+      let v = String(raw).trim();
+      if (/^(https?:|data:|blob:)/i.test(v)) return v;    // 이미 URL
+      if (v.startsWith('/')) v = v.slice(1);              // /covers → covers
       try {
-        const r = ref(storage, maybe);
-        return await getDownloadURL(r);
+        // ref(storage, 'gs://bucket/path')를 그대로 넣으면 버킷 상관없이 동작함
+        return await getDownloadURL(ref(storage, v));
       } catch (e) {
-        console.warn('getDownloadURL 실패:', maybe, e?.message || e);
+        console.warn('getDownloadURL 실패:', v, e?.message || e);
         return null;
       }
     }
 
-    async function coverUrlOf(p) {
-      const cands = candidatesOf(p);
-      for (const c of cands) {
+    async function coverUrlOf(p){
+      for (const c of candidatesOf(p)) {
         const u = await toHttpUrl(c);
         if (u) return u;
       }
       return 'img/placeholder.svg';
     }
-    // ---------- /이미지 보강 끝 ----------
 
     function match(p, q){
       if(!q) return true;
-      const hay = [p.name, p.summary, p.description, p.rescuerName]
-        .map(x => (x||'')+'').join(' ').toLowerCase();
+      const hay = [p.name,p.summary,p.description,p.rescuerName].map(x=>(x||'')+'').join(' ').toLowerCase();
       return hay.includes(q.toLowerCase());
     }
 
@@ -108,21 +87,14 @@
 
     async function render(){
       try{
-        const all = await apiListProjects({ status:'all' }); // 승인 전 포함
-        const query = $q ? $q.value.trim() : '';
-        const list = all.filter(p => match(p, query));
+        const all = await apiListProjects({ status:'all' });
+        const q = $q ? $q.value.trim() : '';
+        const list = all.filter(p => match(p, q));
 
-        if(!$list) return; // 필수 노드 없으면 더 진행 안함
+        if(!$list) return;
+        if(!list.length){ $list.innerHTML = '<div class="muted">결과 없음</div>'; return; }
 
-        if(!list.length){
-          $list.innerHTML = '<div class="muted">결과 없음</div>';
-          return;
-        }
-
-        const withCovers = await Promise.all(list.map(async p => ({
-          ...p,
-          _cover: await coverUrlOf(p)
-        })));
+        const withCovers = await Promise.all(list.map(async p => ({ ...p, _cover: await coverUrlOf(p) })));
 
         $list.innerHTML = withCovers.map(p => `
           <article class="card">
@@ -146,7 +118,7 @@
       }
     }
 
-    if ($q) $q.addEventListener('input', render); // 널가드
+    if ($q) $q.addEventListener('input', render);
     render();
   </script>
 </body>
