@@ -1,27 +1,28 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>관리자 페이지 - Project.PAW</title>
-  <link rel="stylesheet" href="common.css"/>
-  <link rel="stylesheet" href="app.min.css"/>
-  <style>
-    table { width:100%; border-collapse:collapse; margin-top:20px; }
-    th, td { border:1px solid #ddd; padding:8px; font-size:.9rem; }
-    th { background:#f5f5f5; text-align:left; }
-    button { padding:6px 10px; border:1px solid #ccc; border-radius:6px; cursor:pointer; margin-right:6px; }
-    button.approve { background:#4CAF50; color:white; border:none; }
-    button.delete { background:#f44336; color:white; border:none; }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>관리자 페이지</title>
+<link rel="stylesheet" href="common.css"/>
+<link rel="stylesheet" href="app.min.css"/>
+<style>
+.wrap{max-width:960px;margin:0 auto;padding:20px 16px}
+table{width:100%;border-collapse:collapse;margin-top:20px}
+th,td{border:1px solid #e5e7eb;padding:10px;font-size:.9rem;text-align:left}
+th{background:#f9fafb}
+.actions{display:flex;gap:6px}
+button{padding:6px 10px;border-radius:8px;border:1px solid #ccc;cursor:pointer}
+button.approve{background:#16a34a;color:#fff;border:none}
+button.delete{background:#dc2626;color:#fff;border:none}
+</style>
 </head>
 <body>
   <div data-include="header"></div>
 
-  <main class="container">
+  <main class="wrap">
     <h1>관리자 승인 페이지</h1>
     <p>등록된 프로젝트를 확인하고 승인/삭제할 수 있습니다.</p>
-
     <table>
       <thead>
         <tr>
@@ -46,50 +47,45 @@
 
     injectLayout({ active:'admin' });
 
-    const $body = document.getElementById('projects-body');
+    const $body=document.getElementById('projects-body');
 
-    function fmtStatus(p){
-      return p.adminApproved ? "승인됨 ✅" : "대기중 ⏳";
-    }
+    function fmtStatus(p){return p.adminApproved?"승인됨 ✅":"대기중 ⏳"}
 
     async function render(){
-      try {
-        const list = await fetchAllProjects();
+      try{
+        const list=await fetchAllProjects();
         if(!list.length){
-          $body.innerHTML = '<tr><td colspan="5" class="muted">아직 등록된 프로젝트가 없습니다.</td></tr>';
+          $body.innerHTML='<tr><td colspan="5" class="muted">아직 등록된 프로젝트가 없습니다.</td></tr>';
           return;
         }
-        $body.innerHTML = list.map(p => `
+        $body.innerHTML=list.map(p=>`
           <tr>
-            <td>${p.name ?? '(이름 없음)'}</td>
-            <td>${p.rescuerName ?? '-'}</td>
-            <td>${p.summary ?? ''}</td>
+            <td>${p.name??'(이름 없음)'}</td>
+            <td>${p.rescuerName??'-'}</td>
+            <td>${p.summary??''}</td>
             <td>${fmtStatus(p)}</td>
-            <td>
-              ${!p.adminApproved ? `<button class="approve" data-id="${p.id}">승인</button>` : ''}
+            <td class="actions">
+              ${!p.adminApproved?`<button class="approve" data-id="${p.id}">승인</button>`:''}
               <button class="delete" data-id="${p.id}">삭제</button>
             </td>
-          </tr>
-        `).join('');
-      } catch(e){
+          </tr>`).join('');
+      }catch(e){
         console.error(e);
-        $body.innerHTML = '<tr><td colspan="5" class="muted">프로젝트를 불러오지 못했습니다.</td></tr>';
+        $body.innerHTML='<tr><td colspan="5" class="muted">프로젝트를 불러오지 못했습니다.</td></tr>';
       }
     }
 
-    $body.addEventListener('click', async e => {
+    $body.addEventListener('click', async e=>{
       if(e.target.matches('.approve')){
-        const id = e.target.dataset.id;
-        if(confirm("이 프로젝트를 승인하시겠습니까?")){
-          await approveProject(id);
+        if(confirm("승인하시겠습니까?")){
+          await approveProject(e.target.dataset.id);
           alert("승인되었습니다.");
           render();
         }
       }
       if(e.target.matches('.delete')){
-        const id = e.target.dataset.id;
-        if(confirm("이 프로젝트를 삭제하시겠습니까?")){
-          await deleteProject(id);
+        if(confirm("삭제하시겠습니까?")){
+          await deleteProject(e.target.dataset.id);
           alert("삭제되었습니다.");
           render();
         }
