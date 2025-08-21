@@ -11,4 +11,5 @@ function match(p,q){ if(!q) return true; const hay=[p.name,p.summary,p.descripti
 async function render(){ const all=await apiListProjects({status:'all'}); const list=all.filter(p=>match(p,$q.value.trim())); $list.innerHTML=list.map(p=>`
 <article class="card"><img src="${cover(p)}"/><div class="card-body"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong>${p.name??'(이름 없음)'}</strong>${p.adminApproved?'<span class="chip approved">승인</span>':'<span class="chip pending">대기</span>'}</div><div class="muted">${p.summary??''}</div><div style="text-align:right"><a class="btn primary" style="padding:8px 12px;border-radius:10px" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a></div></div></article>`).join(''); if(!list.length) $list.innerHTML='<div class="muted">결과 없음</div>'; }
 $q.addEventListener('input', render); render();
-</script></body></html>
+</script><script type="module" src="assets/js/project_list.js"></script>
+</body></html>
