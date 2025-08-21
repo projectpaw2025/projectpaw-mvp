@@ -47,9 +47,10 @@
 
   <div data-include="footer"></div>
 
+  <!-- 내부 로직 -->
   <script type="module">
     import { injectLayout } from './js/include.js';
-    import { fetchApprovedProjects } from './js/api.js';
+    import { fetchApprovedProjects } from './assets/js/api.js';
 
     injectLayout({ active:'home' });
 
@@ -65,16 +66,18 @@
         }
         $grid.innerHTML = list.map(p => `
           <a class="card" href="project.html?id=${encodeURIComponent(p.id)}">
-            <img src="${p.coverUrl || (Array.isArray(p.images)&&p.images[0]) || 'img/placeholder.svg'}" alt=""/>
+            <img src="${(p.coverUrl || (Array.isArray(p.images)&&p.images[0]) || 'img/placeholder.svg')}" alt=""/>
             <h3>${p.name ?? '(이름 없음)'}</h3>
             <div class="muted">${p.summary ?? ''}</div>
             <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
-          </a>`).join('');
+          </a>
+        `).join('');
       } catch (e) {
         console.error(e);
         $grid.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
       }
     }
+
     render();
   </script>
 </body>
