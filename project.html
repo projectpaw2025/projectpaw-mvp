@@ -9,21 +9,24 @@
   const $detail = document.getElementById('project-detail');
   const fmt = n => Number(n||0).toLocaleString('ko-KR');
 
-  // ---------- 이미지 후보/변환(강화판) ----------
-  const pick = (...cands) => cands.find(u => typeof u === 'string' && u.trim());
+  /* ---------------- 이미지 후보 수집 + URL 변환 (강화판) ---------------- */
 
+  // 문서 내에서 있을 법한 필드들을 전부 후보로 모음
   function candidatesOf(p){
     const out = [];
     const push = v => { if (typeof v === 'string' && v.trim()) out.push(v.trim()); };
-    const simple = [
-      'representativeImageUrl','coverUrl','coverURL','cover',
-      'thumbnailUrl','thumbnail','image','mainImageUrl','mainImage',
-      'photo','photoUrl'
-    ];
-    simple.forEach(k => push(p[k]));
 
-    const arrays = ['galleryUrls','images','photos','pictures','media','attachments','files'];
-    arrays.forEach(k => {
+    // 단일 문자열 필드들(이름이 제각각일 수 있음)
+    [
+      'representativeImageUrl','representativeImage','representImg',
+      'coverUrl','coverURL','cover','mainImageUrl','mainImage',
+      'thumbnailUrl','thumbnail','thumbUrl','thumbnailURL',
+      'image','imageUrl','imageURL','photo','photoUrl','photoURL'
+    ].forEach(k => push(p[k]));
+
+    // 배열 필드들(문자열 또는 {url|downloadUrl|path})
+    ['galleryUrls','images','photos','pictures','media','attachments','files']
+    .forEach(k => {
       const arr = p[k];
       if (Array.isArray(arr)) {
         arr.forEach(it => {
@@ -32,27 +35,46 @@
         });
       }
     });
+
     return out;
   }
 
-  async function toHttpUrl(maybe) {
-    if (!maybe) return null;
-    if (typeof maybe === 'string') maybe = maybe.trim();
-    if (/^(https?:|data:|blob:)/i.test(maybe)) return maybe; // 이미 URL
-    if (maybe.startsWith('/')) maybe = maybe.slice(1);       // 선행 슬래시 제거
-    if (/^gs:\/\//i.test(maybe)) {
-      // 잘못 저장된 버킷 교정: *.firebasestorage.app → *.appspot.com
-      maybe = maybe.replace(/gs:\/\/([^/]+)\.firebasestorage\.app(\/|$)/i, 'gs://$1.appspot.com$2');
+  // 경로/이상한 URL → 표시 가능한 http(s) URL로 변환
+  async function toHttpUrl(raw) {
+    if (!raw) return null;
+    let v = (typeof raw === 'string') ? raw.trim() : String(raw);
+
+    // 이미 표시 가능한 스킴은 우선 통과
+    if (/^(https?:|data:|blob:)/i.test(v)) {
+      // 예외: https://<bucket>.firebasestorage.app/<path> 는 유효하지 않을 수 있으니 교정 시도
+      const m = v.match(/^https?:\/\/([^/]+)\.firebasestorage\.app\/(.+)$/i);
+      if (m) {
+        const gs = `gs://${m[1]}.appspot.com/${decodeURIComponent(m[2].replace(/%2F/gi,'/'))}`;
+        try { return await getDownloadURL(ref(storage, gs)); } catch { /* fallthrough */ }
+      }
+      return v;
     }
+
+    // 선행 슬래시 제거(/covers/.. → covers/..)
+    if (v.startsWith('/')) v = v.slice(1);
+
+    // gs:// …firebasestorage.app  → gs:// …appspot.com 로 교정
+    if (/^gs:\/\//i.test(v)) {
+      v = v.replace(/gs:\/\/([^/]+)\.firebasestorage\.app(\/|$)/i, 'gs://$1.appspot.com$2');
+    }
+
+    // URL-인코딩된 경로(%2F 등) 정리
+    try { v = decodeURIComponent(v); } catch {}
+
     try {
-      const r = ref(storage, maybe);
-      return await getDownloadURL(r);
+      return await getDownloadURL(ref(storage, v)); // 'covers/..' 또는 교정된 'gs://..'
     } catch (e) {
-      console.warn('getDownloadURL 실패:', maybe, e?.message || e);
+      console.warn('[project] getDownloadURL 실패:', v, e?.message || e);
       return null;
     }
   }
 
+  // 대표 이미지 1장만 필요할 때
   async function coverUrlOf(p) {
     const cands = candidatesOf(p);
     for (const c of cands) {
@@ -62,10 +84,10 @@
     return 'img/placeholder.svg';
   }
 
+  // 갤러리 전체 이미지(중복 제거)
   async function galleryHttpUrls(p){
-    // 대표/커버 + 갤러리/이미지 전부 후보로 모아 변환
     const cands = candidatesOf(p);
-    const urls = await Promise.all(cands.map(toHttpUrl));
+    const urls  = await Promise.all(cands.map(toHttpUrl));
     const uniq = [];
     const seen = new Set();
     for (const u of urls) {
@@ -76,11 +98,10 @@
     }
     return uniq.length ? uniq : ['img/placeholder.svg'];
   }
-  // ---------- /이미지 보강 끝 ----------
+  /* ---------------- /이미지 변환 끝 ---------------- */
 
-  function getId(){
-    return new URLSearchParams(location.search).get("id");
-  }
+  // UI 렌더
+  function getId(){ return new URLSearchParams(location.search).get("id"); }
 
   function renderSlider(imgs){
     if(!imgs || !imgs.length) return '';
