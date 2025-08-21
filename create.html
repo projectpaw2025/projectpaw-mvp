@@ -1,123 +1,21 @@
 <!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>프로젝트 등록 - Project.PAW</title>
-  <link rel="stylesheet" href="common.css"/>
-  <link rel="stylesheet" href="app.min.css"/>
-  <style>
-    body { background:#fafafa; font-family:'Pretendard',sans-serif; }
-    .container { max-width:720px; margin:40px auto; padding:0 16px; }
-    h1 { font-size:1.5rem; font-weight:700; margin-bottom:20px; }
-    form { display:flex; flex-direction:column; gap:16px; }
-    label { font-weight:600; font-size:.95rem; }
-    input, textarea { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:1rem; }
-    textarea { resize:vertical; min-height:100px; }
-    .btn { display:inline-block; padding:12px 20px; border-radius:12px; font-weight:600; cursor:pointer; text-decoration:none; text-align:center; }
-    .btn.primary { background:#111; color:#fff; border:none; }
-    .muted { font-size:.85rem; color:#777; }
-    .preview { margin-top:10px; max-width:200px; border-radius:8px; border:1px solid #ddd; }
-    footer { margin-top:60px; padding:30px; text-align:center; font-size:.9rem; color:#888; border-top:1px solid #eee; }
-  </style>
-</head>
+<head>...</head>
 <body>
   <div data-include="header"></div>
 
-  <main class="container">
-    <h1>새 프로젝트 등록</h1>
-
-    <form id="create-form">
-      <div>
-        <label>프로젝트 이름</label>
-        <input type="text" name="name" required maxlength="80"/>
-      </div>
-      <div>
-        <label>구조자 이름</label>
-        <input type="text" name="rescuerName" maxlength="40"/>
-      </div>
-      <div>
-        <label>한 줄 요약</label>
-        <input type="text" name="summary" maxlength="200"/>
-      </div>
-      <div>
-        <label>상세 설명</label>
-        <textarea name="description" maxlength="5000"></textarea>
-      </div>
-      <div>
-        <label>목표 금액 (원)</label>
-        <input type="number" name="goalAmount" min="0" max="1000000000"/>
-      </div>
-      <div>
-        <label>구조자 부담금 (원)</label>
-        <input type="number" name="rescuerContribution" min="0" max="1000000000"/>
-      </div>
-      <div>
-        <label>대표 이미지</label>
-        <input type="file" id="coverFile" accept="image/*"/>
-        <img id="coverPreview" class="preview" style="display:none"/>
-      </div>
-      <div>
-        <label>갤러리 이미지 (최대 20장)</label>
-        <input type="file" id="galleryFiles" accept="image/*" multiple/>
-      </div>
-      <div>
-        <label>영수증 이미지 (최대 20장)</label>
-        <input type="file" id="receiptFiles" accept="image/*" multiple/>
-      </div>
-      <div>
-        <label>카카오톡 오픈채팅 ID</label>
-        <input type="text" name="registrantKakaoId" maxlength="64" placeholder="예: abcd1234"/>
-        <p class="muted">※ open.kakao.com/o/ 뒤에 오는 ID만 입력하세요.</p>
-      </div>
-      <button type="submit" class="btn primary">등록하기</button>
-    </form>
-  </main>
+  <main class="container"> ... </main>
 
   <div data-include="footer"></div>
 
-  <!-- 내부 로직 -->
   <script type="module">
     import { injectLayout } from './js/include.js';
-    import { apiCreateProject } from './assets/js/api.js';
+    import { apiCreateProject } from './js/api.js';
 
     injectLayout({ active:'create' });
 
     const form = document.getElementById('create-form');
-    const coverFileInput = document.getElementById('coverFile');
-    const coverPreview = document.getElementById('coverPreview');
-
-    coverFileInput.addEventListener('change', e => {
-      const file = e.target.files[0];
-      if(file){
-        coverPreview.src = URL.createObjectURL(file);
-        coverPreview.style.display = 'block';
-      }
-    });
-
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-
-      const data = Object.fromEntries(new FormData(form).entries());
-      const coverFile = coverFileInput.files[0];
-      const galleryFiles = document.getElementById('galleryFiles').files;
-      const receiptFiles = document.getElementById('receiptFiles').files;
-
-      try {
-        await apiCreateProject({
-          ...data,
-          coverFile,
-          galleryFiles: [...galleryFiles],
-          receiptFiles: [...receiptFiles]
-        });
-
-        alert("프로젝트가 등록되었습니다. 관리자의 승인 후 노출됩니다.");
-        location.href = "project_list.html";
-      } catch (err) {
-        console.error(err);
-        alert("등록 실패: " + err.message);
-      }
-    });
+    ...
   </script>
 </body>
 </html>
