@@ -3,36 +3,30 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>관리자 승인 - Project.PAW</title>
+  <title>관리자 페이지 - Project.PAW</title>
   <link rel="stylesheet" href="common.css"/>
   <link rel="stylesheet" href="app.min.css"/>
   <style>
-    body { background:#fafafa; font-family:'Pretendard',sans-serif; }
-    .container { max-width:960px; margin:40px auto; padding:0 16px; }
-    h1 { font-size:1.5rem; font-weight:700; margin-bottom:20px; }
     table { width:100%; border-collapse:collapse; margin-top:20px; }
-    th, td { border:1px solid #ddd; padding:10px; font-size:.95rem; }
-    th { background:#f7f7f7; text-align:left; }
-    td img { max-width:120px; border-radius:6px; }
-    .btn { display:inline-block; padding:8px 14px; border-radius:8px; font-weight:600; cursor:pointer; text-decoration:none; font-size:.9rem; }
-    .btn.approve { background:#4caf50; color:#fff; border:none; margin-right:6px; }
-    .btn.delete { background:#f44336; color:#fff; border:none; }
-    .muted { font-size:.85rem; color:#777; }
-    footer { margin-top:60px; padding:30px; text-align:center; font-size:.9rem; color:#888; border-top:1px solid #eee; }
+    th, td { border:1px solid #ddd; padding:8px; font-size:.9rem; }
+    th { background:#f5f5f5; text-align:left; }
+    button { padding:6px 10px; border:1px solid #ccc; border-radius:6px; cursor:pointer; margin-right:6px; }
+    button.approve { background:#4CAF50; color:white; border:none; }
+    button.delete { background:#f44336; color:white; border:none; }
   </style>
 </head>
 <body>
   <div data-include="header"></div>
 
   <main class="container">
-    <h1>프로젝트 승인 / 관리</h1>
-    <p class="muted">※ 이 페이지는 관리자 전용입니다.</p>
+    <h1>관리자 승인 페이지</h1>
+    <p>등록된 프로젝트를 확인하고 승인/삭제할 수 있습니다.</p>
 
     <table>
       <thead>
         <tr>
-          <th>대표 이미지</th>
-          <th>프로젝트 이름</th>
+          <th>프로젝트명</th>
+          <th>구조자</th>
           <th>요약</th>
           <th>상태</th>
           <th>액션</th>
@@ -46,70 +40,59 @@
 
   <div data-include="footer"></div>
 
-  <!-- 내부 로직 -->
   <script type="module">
     import { injectLayout } from './js/include.js';
-    import { fetchAllProjects, approveProject, deleteProject } from './assets/js/api.js';
+    import { fetchAllProjects, approveProject, deleteProject } from './js/api.js';
 
     injectLayout({ active:'admin' });
 
     const $body = document.getElementById('projects-body');
 
     function fmtStatus(p){
-      if(p.adminApproved) return "승인됨";
-      return "대기중";
+      return p.adminApproved ? "승인됨 ✅" : "대기중 ⏳";
     }
 
     async function render(){
       try {
         const list = await fetchAllProjects();
         if(!list.length){
-          $body.innerHTML = '<tr><td colspan="5" class="muted">등록된 프로젝트가 없습니다.</td></tr>';
+          $body.innerHTML = '<tr><td colspan="5" class="muted">아직 등록된 프로젝트가 없습니다.</td></tr>';
           return;
         }
         $body.innerHTML = list.map(p => `
           <tr>
-            <td><img src="${p.coverUrl || (Array.isArray(p.images)&&p.images[0]) || 'img/placeholder.svg'}"/></td>
-            <td>${p.name ?? ''}</td>
+            <td>${p.name ?? '(이름 없음)'}</td>
+            <td>${p.rescuerName ?? '-'}</td>
             <td>${p.summary ?? ''}</td>
             <td>${fmtStatus(p)}</td>
             <td>
-              ${!p.adminApproved ? `<button class="btn approve" data-id="${p.id}" data-action="approve">승인</button>` : ''}
-              <button class="btn delete" data-id="${p.id}" data-action="delete">삭제</button>
+              ${!p.adminApproved ? `<button class="approve" data-id="${p.id}">승인</button>` : ''}
+              <button class="delete" data-id="${p.id}">삭제</button>
             </td>
           </tr>
         `).join('');
-      } catch (e) {
+      } catch(e){
         console.error(e);
-        $body.innerHTML = '<tr><td colspan="5" class="muted">불러오기 실패</td></tr>';
+        $body.innerHTML = '<tr><td colspan="5" class="muted">프로젝트를 불러오지 못했습니다.</td></tr>';
       }
     }
 
+    // 버튼 이벤트 처리
     $body.addEventListener('click', async e => {
-      if(e.target.dataset.action){
+      if(e.target.matches('.approve')){
         const id = e.target.dataset.id;
-        const action = e.target.dataset.action;
-        if(action === 'approve'){
-          if(confirm("이 프로젝트를 승인하시겠습니까?")){
-            try {
-              await approveProject(id);
-              alert("승인 완료");
-              render();
-            } catch(err){
-              alert("승인 실패: " + err.message);
-            }
-          }
+        if(confirm("이 프로젝트를 승인하시겠습니까?")){
+          await approveProject(id);
+          alert("승인되었습니다.");
+          render();
         }
-        if(action === 'delete'){
-          if(confirm("정말 삭제하시겠습니까?")){
-            try {
-              await deleteProject(id);
-              alert("삭제 완료");
-              render();
-            } catch(err){
-              alert("삭제 실패: " + err.message);
-            }
-          }
+      }
+      if(e.target.matches('.delete')){
+        const id = e.target.dataset.id;
+        if(confirm("이 프로젝트를 삭제하시겠습니까?")){
+          await deleteProject(id);
+          alert("삭제되었습니다.");
+          render();
         }
       }
     });
