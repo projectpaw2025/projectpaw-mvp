@@ -50,7 +50,7 @@
   <!-- 내부 로직 -->
   <script type="module">
     import { injectLayout } from './js/include.js';
-    import { apiListProjects } from './js/api.js';
+    import { fetchApprovedProjects } from './assets/js/api.js';
 
     injectLayout({ active:'home' });
 
@@ -59,14 +59,14 @@
 
     async function render(){
       try {
-        const list = await apiListProjects({ status:'approved', limit:12 });
+        const list = await fetchApprovedProjects();
         if(!list.length){
           $grid.innerHTML = '<div class="muted">아직 승인된 프로젝트가 없습니다.</div>';
           return;
         }
         $grid.innerHTML = list.map(p => `
           <a class="card" href="project.html?id=${encodeURIComponent(p.id)}">
-            <img src="${(p.representativeImageUrl || p.coverUrl || (Array.isArray(p.images)&&p.images[0]) || 'img/placeholder.svg')}" alt=""/>
+            <img src="${(p.coverUrl || (Array.isArray(p.images)&&p.images[0]) || 'img/placeholder.svg')}" alt=""/>
             <h3>${p.name ?? '(이름 없음)'}</h3>
             <div class="muted">${p.summary ?? ''}</div>
             <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
@@ -80,8 +80,5 @@
 
     render();
   </script>
-
-  <!-- index.js 별도 모듈 -->
-  <script type="module" src="assets/js/index.js"></script>
 </body>
 </html>
