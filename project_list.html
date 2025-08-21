@@ -7,12 +7,13 @@
 <link rel="stylesheet" href="common.css"/>
 <link rel="stylesheet" href="app.min.css"/>
 <style>
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-.card img{width:100%;height:180px;object-fit:cover;border-top-left-radius:16px;border-top-right-radius:16px}
-.card-body{padding:14px;display:flex;flex-direction:column;gap:8px}
-.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.8rem;border:1px solid #e5e7eb;color:#374151}
-.chip.approved{background:#ecfdf5;border-color:#bbf7d0;color:#065f46}
-.chip.pending{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .card{border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;background:#fff}
+  .card img{width:100%;height:180px;object-fit:cover}
+  .card-body{padding:14px;display:flex;flex-direction:column;gap:8px}
+  .chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.8rem;border:1px solid #e5e7eb;color:#374151}
+  .chip.approved{background:#ecfdf5;border-color:#bbf7d0;color:#065f46}
+  .chip.pending{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
 </style>
 </head>
 <body>
@@ -32,35 +33,55 @@
 
     injectLayout({ active:'list' });
 
-    const $q=document.getElementById('q'),
-          $list=document.getElementById('list');
+    const $q = document.getElementById('q');
+    const $list = document.getElementById('list');
 
-    const cover=p=>p.coverUrl||p.representativeImageUrl||'img/placeholder.svg';
+    const cover = p =>
+      p.representativeImageUrl ||
+      p.coverUrl ||
+      (Array.isArray(p.images) && p.images[0]) ||
+      'img/placeholder.svg';
 
-    function match(p,q){
+    function match(p, q){
       if(!q) return true;
-      const hay=[p.name,p.summary,p.description,p.rescuerName].map(x=>(x||'')+'').join(' ').toLowerCase();
+      const hay = [p.name, p.summary, p.description, p.rescuerName]
+        .map(x => (x||'')+'').join(' ').toLowerCase();
       return hay.includes(q.toLowerCase());
     }
 
+    function fmt(n){ return Number(n||0).toLocaleString('ko-KR'); }
+
     async function render(){
-      const all=await apiListProjects({status:'all'});
-      const list=all.filter(p=>match(p,$q.value.trim()));
-      $list.innerHTML=list.map(p=>`
-        <article class="card">
-          <img src="${cover(p)}"/>
-          <div class="card-body">
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-              <strong>${p.name??'(이름 없음)'}</strong>
-              ${p.adminApproved?'<span class="chip approved">승인</span>':'<span class="chip pending">대기</span>'}
+      try{
+        // 🔴 기존 데이터까지 모두 보이도록 'all'
+        const all = await apiListProjects({ status:'all' });
+        const list = all.filter(p => match(p, $q.value.trim()));
+
+        if(!list.length){
+          $list.innerHTML = '<div class="muted">결과 없음</div>';
+          return;
+        }
+
+        $list.innerHTML = list.map(p => `
+          <article class="card">
+            <img src="${cover(p)}" alt="cover"/>
+            <div class="card-body">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                <strong>${p.name ?? '(이름 없음)'}</strong>
+                ${p.adminApproved ? '<span class="chip approved">승인</span>' : '<span class="chip pending">대기</span>'}
+              </div>
+              <div class="muted">${p.summary ?? ''}</div>
+              <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
+              <div style="text-align:right">
+                <a class="btn primary" style="padding:8px 12px;border-radius:10px" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a>
+              </div>
             </div>
-            <div class="muted">${p.summary??''}</div>
-            <div style="text-align:right">
-              <a class="btn primary" style="padding:8px 12px;border-radius:10px" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a>
-            </div>
-          </div>
-        </article>`).join('');
-      if(!list.length) $list.innerHTML='<div class="muted">결과 없음</div>';
+          </article>
+        `).join('');
+      }catch(e){
+        console.error(e);
+        $list.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
+      }
     }
 
     $q.addEventListener('input', render);
