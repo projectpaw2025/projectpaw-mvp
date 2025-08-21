@@ -1,118 +1,153 @@
-<script type="module">
-  import { injectLayout } from './js/include.js';
-  import { apiListProjects } from './js/api.js';
-  import { storage } from './js/firebase.js';
-  import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>프로젝트 목록</title>
+<link rel="stylesheet" href="common.css"/>
+<link rel="stylesheet" href="app.min.css"/>
+<style>
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .card{border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;background:#fff}
+  .card img{width:100%;height:180px;object-fit:cover}
+  .card-body{padding:14px;display:flex;flex-direction:column;gap:8px}
+  .chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.8rem;border:1px solid #e5e7eb;color:#374151}
+  .chip.approved{background:#ecfdf5;border-color:#bbf7d0;color:#065f46}
+  .chip.pending{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+</style>
+</head>
+<body>
+  <div data-include="header"></div>
 
-  injectLayout({ active:'list' });
+  <main class="container" style="padding:24px 16px">
+    <h1 style="margin:0 0 10px">프로젝트</h1>
+    <!-- 검색 인풋(없어도 동작하도록 스크립트에서 널가드 처리) -->
+    <input id="q" placeholder="검색" style="padding:10px;border:1px solid #e5e7eb;border-radius:10px;width:100%;max-width:360px"/>
+    <div id="list" class="cards" style="margin-top:14px"></div>
+  </main>
 
-  const $q = document.getElementById('q');
-  const $list = document.getElementById('list');
+  <div data-include="footer"></div>
 
-  // ---------- 이미지 후보/변환(강화판) ----------
-  const pick = (...cands) => cands.find(u => typeof u === 'string' && u.trim());
+  <script type="module">
+    import { injectLayout } from './js/include.js';
+    import { apiListProjects } from './js/api.js';
+    import { storage } from './js/firebase.js';
+    import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-  function candidatesOf(p){
-    const out = [];
-    const push = v => { if (typeof v === 'string' && v.trim()) out.push(v.trim()); };
-    const simple = [
-      'representativeImageUrl','coverUrl','coverURL','cover',
-      'thumbnailUrl','thumbnail','image','mainImageUrl','mainImage',
-      'photo','photoUrl'
-    ];
-    simple.forEach(k => push(p[k]));
+    injectLayout({ active:'list' });
 
-    const arrays = ['galleryUrls','images','photos','pictures','media','attachments','files'];
-    arrays.forEach(k => {
-      const arr = p[k];
-      if (Array.isArray(arr)) {
-        arr.forEach(it => {
-          if (typeof it === 'string') push(it);
-          else if (it && (it.url || it.downloadUrl || it.path)) push(it.url || it.downloadUrl || it.path);
-        });
+    const $q = document.getElementById('q');
+    const $list = document.getElementById('list');
+
+    // 필수 노드 확인(없어도 크래시 금지)
+    if (!$list) {
+      console.error('[project_list] #list 요소가 없습니다. 마크업을 확인하세요.');
+    }
+
+    // ---------- 이미지 후보/변환(강화판) ----------
+    const pick = (...cands) => cands.find(u => typeof u === 'string' && u.trim());
+
+    function candidatesOf(p){
+      const out = [];
+      const push = v => { if (typeof v === 'string' && v.trim()) out.push(v.trim()); };
+      const simple = [
+        'representativeImageUrl','coverUrl','coverURL','cover',
+        'thumbnailUrl','thumbnail','image','mainImageUrl','mainImage',
+        'photo','photoUrl'
+      ];
+      simple.forEach(k => push(p[k]));
+      const arrays = ['galleryUrls','images','photos','pictures','media','attachments','files'];
+      arrays.forEach(k => {
+        const arr = p[k];
+        if (Array.isArray(arr)) {
+          arr.forEach(it => {
+            if (typeof it === 'string') push(it);
+            else if (it && (it.url || it.downloadUrl || it.path)) push(it.url || it.downloadUrl || it.path);
+          });
+        }
+      });
+      return out;
+    }
+
+    async function toHttpUrl(maybe) {
+      if (!maybe) return null;
+      if (typeof maybe === 'string') maybe = maybe.trim();
+      if (/^(https?:|data:|blob:)/i.test(maybe)) return maybe; // 이미 표시 가능한 스킴
+      if (maybe.startsWith('/')) maybe = maybe.slice(1);       // 선행 슬래시 제거
+      if (/^gs:\/\//i.test(maybe)) {
+        // 잘못 저장된 버킷 교정: *.firebasestorage.app → *.appspot.com
+        maybe = maybe.replace(/gs:\/\/([^/]+)\.firebasestorage\.app(\/|$)/i, 'gs://$1.appspot.com$2');
       }
-    });
-    return out;
-  }
-
-  async function toHttpUrl(maybe) {
-    if (!maybe) return null;
-    if (typeof maybe === 'string') maybe = maybe.trim();
-    // 이미 표시 가능한 스킴
-    if (/^(https?:|data:|blob:)/i.test(maybe)) return maybe;
-    // 선행 슬래시 제거 (/covers/.. → covers/..)
-    if (maybe.startsWith('/')) maybe = maybe.slice(1);
-    // 잘못 저장된 gs 버킷 교정 (*.firebasestorage.app → *.appspot.com)
-    if (/^gs:\/\//i.test(maybe)) {
-      maybe = maybe.replace(/gs:\/\/([^/]+)\.firebasestorage\.app(\/|$)/i, 'gs://$1.appspot.com$2');
-    }
-    try {
-      const r = ref(storage, maybe);     // 'covers/...' 또는 교정된 'gs://...'
-      return await getDownloadURL(r);
-    } catch (e) {
-      console.warn('getDownloadURL 실패:', maybe, e?.message || e);
-      return null;
-    }
-  }
-
-  async function coverUrlOf(p) {
-    const cands = candidatesOf(p);
-    for (const c of cands) {
-      const u = await toHttpUrl(c);
-      if (u) return u;
-    }
-    return 'img/placeholder.svg';
-  }
-  // ---------- /이미지 보강 끝 ----------
-
-  function match(p, q){
-    if(!q) return true;
-    const hay = [p.name, p.summary, p.description, p.rescuerName]
-      .map(x => (x||'')+'').join(' ').toLowerCase();
-    return hay.includes(q.toLowerCase());
-  }
-
-  const fmt = n => Number(n||0).toLocaleString('ko-KR');
-
-  async function render(){
-    try{
-      // 승인 전 포함
-      const all = await apiListProjects({ status:'all' });
-      const list = all.filter(p => match(p, $q.value.trim()));
-
-      if(!list.length){
-        $list.innerHTML = '<div class="muted">결과 없음</div>';
-        return;
+      try {
+        const r = ref(storage, maybe);
+        return await getDownloadURL(r);
+      } catch (e) {
+        console.warn('getDownloadURL 실패:', maybe, e?.message || e);
+        return null;
       }
-
-      // 각 항목 커버 URL 해석
-      const withCovers = await Promise.all(list.map(async p => ({
-        ...p,
-        _cover: await coverUrlOf(p)
-      })));
-
-      $list.innerHTML = withCovers.map(p => `
-        <article class="card">
-          <img src="${p._cover}" alt="cover"/>
-          <div class="card-body">
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-              <strong>${p.name ?? '(이름 없음)'}</strong>
-              ${p.adminApproved ? '<span class="chip approved">승인</span>' : '<span class="chip pending">대기</span>'}
-            </div>
-            <div class="muted">${p.summary ?? ''}</div>
-            <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
-            <div style="text-align:right">
-              <a class="btn primary" style="padding:8px 12px;border-radius:10px" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a>
-            </div>
-          </div>
-        </article>
-      `).join('');
-    }catch(e){
-      console.error(e);
-      $list.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
     }
-  }
 
-  $q.addEventListener('input', render);
-  render();
-</script>
+    async function coverUrlOf(p) {
+      const cands = candidatesOf(p);
+      for (const c of cands) {
+        const u = await toHttpUrl(c);
+        if (u) return u;
+      }
+      return 'img/placeholder.svg';
+    }
+    // ---------- /이미지 보강 끝 ----------
+
+    function match(p, q){
+      if(!q) return true;
+      const hay = [p.name, p.summary, p.description, p.rescuerName]
+        .map(x => (x||'')+'').join(' ').toLowerCase();
+      return hay.includes(q.toLowerCase());
+    }
+
+    const fmt = n => Number(n||0).toLocaleString('ko-KR');
+
+    async function render(){
+      try{
+        const all = await apiListProjects({ status:'all' }); // 승인 전 포함
+        const query = $q ? $q.value.trim() : '';
+        const list = all.filter(p => match(p, query));
+
+        if(!$list) return; // 필수 노드 없으면 더 진행 안함
+
+        if(!list.length){
+          $list.innerHTML = '<div class="muted">결과 없음</div>';
+          return;
+        }
+
+        const withCovers = await Promise.all(list.map(async p => ({
+          ...p,
+          _cover: await coverUrlOf(p)
+        })));
+
+        $list.innerHTML = withCovers.map(p => `
+          <article class="card">
+            <img src="${p._cover}" alt="cover"/>
+            <div class="card-body">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                <strong>${p.name ?? '(이름 없음)'}</strong>
+                ${p.adminApproved ? '<span class="chip approved">승인</span>' : '<span class="chip pending">대기</span>'}
+              </div>
+              <div class="muted">${p.summary ?? ''}</div>
+              <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
+              <div style="text-align:right">
+                <a class="btn primary" style="padding:8px 12px;border-radius:10px" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a>
+              </div>
+            </div>
+          </article>
+        `).join('');
+      }catch(e){
+        console.error(e);
+        if($list) $list.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
+      }
+    }
+
+    if ($q) $q.addEventListener('input', render); // 널가드
+    render();
+  </script>
+</body>
+</html>
