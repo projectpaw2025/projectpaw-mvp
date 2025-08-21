@@ -1,18 +1,149 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>프로젝트 상세</title><link rel="stylesheet" href="common.css"/><link rel="stylesheet" href="app.min.css"/>
-<style>.wrap{max-width:1040px;margin:0 auto;padding:20px 16px}.cover{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px;border:1px solid #eef2f7}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}.thumb{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;border:1px solid #eef2f7}</style>
-</head><body><div data-include="header"></div><main class="wrap" id="app"></main><div data-include="footer"></div>
-<script type="module">
-import { injectLayout } from './js/include.js'; import { apiGetProject } from './js/api.js'; injectLayout();
-const $app=document.getElementById('app'); const id=new URL(location.href).searchParams.get('id'); const cover=p=>p.coverUrl||p.representativeImageUrl||'img/placeholder.svg'; const fmt=n=>Number(n||0).toLocaleString('ko-KR');
-(async()=>{ try{ const p=await apiGetProject(id); const g=p.galleryUrls||[]; const r=p.receiptUrls||[]; $app.innerHTML = `
-  <img class="cover" src="${cover(p)}"/><h1>${p.name??'(이름 없음)'} ${p.adminApproved?'<span class="pill" style="background:#ecfdf5;border-color:#bbf7d0;color:#065f46">승인</span>':'<span class="pill" style="background:#fff7ed;border-color:#fed7aa;color:#9a3412">대기</span>'}</h1>
-  <div class="muted">목표 ${fmt(p.goalAmount)}원 · 구조자 부담 ${fmt(p.rescuerContribution)}원</div>
-  <h3>상황 요약</h3><p>${p.summary??''}</p>
-  <h3>상세 설명</h3><p>${(p.description??'').replace(/\n/g,'<br/>')}</p>
-  ${g.length?'<h3>구조 상황 사진</h3><div class="grid">'+g.map(s=>`<img class="thumb" src="${s}">`).join('')+'</div>':''}
-  ${r.length?'<h3>영수증</h3><div class="grid">'+r.map(s=>`<img class="thumb" src="${s}">`).join('')+'</div>':''}`; }catch(e){ $app.innerHTML='<p>불러오기 실패</p>'; } })();
-</script></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>프로젝트 상세 - Project.PAW</title>
+  <link rel="stylesheet" href="common.css"/>
+  <link rel="stylesheet" href="app.min.css"/>
+  <style>
+    body { background:#fafafa; font-family:'Pretendard',sans-serif; }
+    .container { max-width:960px; margin:30px auto; padding:0 16px; }
+    .title { font-size:1.6rem; font-weight:700; margin:20px 0 10px; }
+    .summary { font-size:1rem; color:#666; margin-bottom:20px; }
+    .meta { font-size:.9rem; color:#888; margin-bottom:30px; }
+    .gallery { position:relative; overflow:hidden; border-radius:12px; margin-bottom:20px; }
+    .gallery img { width:100%; height:420px; object-fit:cover; display:block; }
+    .gallery-controls { position:absolute; top:50%; left:0; right:0; display:flex; justify-content:space-between; padding:0 10px; transform:translateY(-50%); }
+    .gallery-controls button { background:rgba(0,0,0,0.4); color:#fff; border:none; padding:8px 12px; border-radius:50%; cursor:pointer; }
+    .description { white-space:pre-line; font-size:1rem; line-height:1.6; color:#333; margin-top:30px; }
+    .receipts { margin-top:40px; }
+    .receipts h3 { font-size:1.2rem; font-weight:600; margin-bottom:12px; }
+    .receipts img { width:100%; max-width:320px; margin:8px; border:1px solid #ddd; border-radius:8px; }
+    .action { margin-top:40px; }
+    .btn { display:inline-block; padding:12px 20px; border-radius:12px; font-weight:600; cursor:pointer; text-decoration:none; }
+    .btn.primary { background:#111; color:#fff; }
+    .muted { color:#777; font-size:.9rem; }
+    footer { margin-top:60px; padding:30px; text-align:center; font-size:.9rem; color:#888; border-top:1px solid #eee; }
+  </style>
+</head>
+<body>
+  <div data-include="header"></div>
 
-<!-- project.html 맨 아래 -->
-<script type="module" src="assets/js/project.js"></script>
+  <main class="container">
+    <div id="gallery" class="gallery">
+      <img id="gallery-img" src="img/placeholder.svg" alt="프로젝트 이미지"/>
+      <div class="gallery-controls">
+        <button id="prev">〈</button>
+        <button id="next">〉</button>
+      </div>
+    </div>
+
+    <h1 id="title" class="title">제목 불러오는 중...</h1>
+    <p id="summary" class="summary"></p>
+    <div id="meta" class="meta"></div>
+
+    <div id="description" class="description"></div>
+
+    <section class="receipts">
+      <h3>영수증 / 증빙 자료</h3>
+      <div id="receipts-box"></div>
+    </section>
+
+    <div class="action">
+      <a id="kakao-link" href="#" target="_blank" class="btn primary">🐾 카카오톡으로 연결하기</a>
+    </div>
+  </main>
+
+  <div data-include="footer"></div>
+
+  <!-- 내부 로직 -->
+  <script type="module">
+    import { injectLayout } from './js/include.js';
+    import { getProjectById } from './assets/js/api.js';
+
+    injectLayout();
+
+    // URL 파라미터에서 id 추출
+    const params = new URLSearchParams(window.location.search);
+    const projectId = params.get('id');
+
+    const $title = document.getElementById('title');
+    const $summary = document.getElementById('summary');
+    const $meta = document.getElementById('meta');
+    const $desc = document.getElementById('description');
+    const $galleryImg = document.getElementById('gallery-img');
+    const $receiptsBox = document.getElementById('receipts-box');
+    const $kakao = document.getElementById('kakao-link');
+
+    let gallery = [];
+    let galleryIndex = 0;
+
+    function renderGallery(){
+      if(gallery.length){
+        $galleryImg.src = gallery[galleryIndex];
+      } else {
+        $galleryImg.src = 'img/placeholder.svg';
+      }
+    }
+
+    document.getElementById('prev').onclick = () => {
+      if(gallery.length){
+        galleryIndex = (galleryIndex - 1 + gallery.length) % gallery.length;
+        renderGallery();
+      }
+    };
+    document.getElementById('next').onclick = () => {
+      if(gallery.length){
+        galleryIndex = (galleryIndex + 1) % gallery.length;
+        renderGallery();
+      }
+    };
+
+    async function render(){
+      if(!projectId){
+        $title.textContent = "잘못된 접근";
+        return;
+      }
+
+      try {
+        const p = await getProjectById(projectId);
+        if(!p){
+          $title.textContent = "프로젝트를 찾을 수 없습니다.";
+          return;
+        }
+
+        $title.textContent = p.name ?? "(제목 없음)";
+        $summary.textContent = p.summary ?? "";
+        $meta.innerHTML = `목표: ${Number(p.goalAmount||0).toLocaleString()}원 · 부담: ${Number(p.rescuerContribution||0).toLocaleString()}원 · 구조자: ${p.rescuerName ?? ''}`;
+        $desc.textContent = p.description ?? "";
+
+        // 갤러리
+        gallery = p.galleryUrls && p.galleryUrls.length ? p.galleryUrls : (p.coverUrl ? [p.coverUrl] : []);
+        galleryIndex = 0;
+        renderGallery();
+
+        // 영수증
+        if(p.receiptUrls && p.receiptUrls.length){
+          $receiptsBox.innerHTML = p.receiptUrls.map(url => `<img src="${url}" alt="receipt"/>`).join('');
+        } else {
+          $receiptsBox.innerHTML = '<div class="muted">증빙 자료가 없습니다.</div>';
+        }
+
+        // 카톡 연결
+        if(p.registrantKakaoId){
+          $kakao.href = `https://open.kakao.com/o/${p.registrantKakaoId}`;
+        } else {
+          $kakao.style.display = 'none';
+        }
+
+      } catch (e) {
+        console.error(e);
+        $title.textContent = "불러오기 실패";
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
