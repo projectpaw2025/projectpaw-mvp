@@ -26,6 +26,7 @@
   </style>
 </head>
 <body>
+  <!-- ✅ header placeholder -->
   <div data-include="header"></div>
 
   <!-- Hero Section -->
@@ -45,28 +46,30 @@
     </div>
   </section>
 
+  <!-- ✅ footer placeholder -->
   <div data-include="footer"></div>
 
-  <!-- 내부 로직 -->
   <script type="module">
     import { injectLayout } from './js/include.js';
-    import { fetchApprovedProjects } from './assets/js/api.js';
+    import { apiListProjects } from './js/api.js';
 
+    // ✅ header/footer 자동 삽입
     injectLayout({ active:'home' });
 
     const $grid = document.getElementById('projects-grid');
+
     function fmt(n){ return Number(n||0).toLocaleString('ko-KR'); }
 
     async function render(){
       try {
-        const list = await fetchApprovedProjects();
+        const list = await apiListProjects({ status:'approved', limit:12 });
         if(!list.length){
           $grid.innerHTML = '<div class="muted">아직 승인된 프로젝트가 없습니다.</div>';
           return;
         }
         $grid.innerHTML = list.map(p => `
           <a class="card" href="project.html?id=${encodeURIComponent(p.id)}">
-            <img src="${(p.coverUrl || (Array.isArray(p.images)&&p.images[0]) || 'img/placeholder.svg')}" alt=""/>
+            <img src="${(p.representativeImageUrl || p.coverUrl || (Array.isArray(p.images)&&p.images[0]) || 'img/placeholder.svg')}" alt=""/>
             <h3>${p.name ?? '(이름 없음)'}</h3>
             <div class="muted">${p.summary ?? ''}</div>
             <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
