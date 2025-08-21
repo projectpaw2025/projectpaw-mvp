@@ -1,5 +1,5 @@
 // assets/js/api.js
-import { db, storage, authReady } from "./firebase.js";
+import { db, storage, auth, authReady } from "./firebase.js";
 import {
   collection,
   doc,
