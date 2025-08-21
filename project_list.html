@@ -36,10 +36,13 @@
     const $q = document.getElementById('q');
     const $list = document.getElementById('list');
 
-    const cover = p =>
+    // 공통 커버 선택 체인
+    const cover = (p) =>
       p.representativeImageUrl ||
       p.coverUrl ||
+      (Array.isArray(p.galleryUrls) && p.galleryUrls[0]) ||
       (Array.isArray(p.images) && p.images[0]) ||
+      p.image || p.thumbnailUrl ||
       'img/placeholder.svg';
 
     function match(p, q){
@@ -49,11 +52,11 @@
       return hay.includes(q.toLowerCase());
     }
 
-    function fmt(n){ return Number(n||0).toLocaleString('ko-KR'); }
+    const fmt = n => Number(n||0).toLocaleString('ko-KR');
 
     async function render(){
       try{
-        // ✅ 기존 데이터까지 모두 보이도록 'all'
+        // 목록은 기존 데이터까지 다 보이도록 'all'
         const all = await apiListProjects({ status:'all' });
         const list = all.filter(p => match(p, $q.value.trim()));
 
