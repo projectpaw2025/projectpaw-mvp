@@ -2,6 +2,7 @@ export async function injectLayout({ active } = {}) {
   const h = document.querySelector('[data-include="header"]');
   const f = document.querySelector('[data-include="footer"]');
 
+  // 항상 같은 디렉토리 기준에서 partials 불러오기
   if (h) {
     try {
       const res = await fetch('./partials/header.html');
