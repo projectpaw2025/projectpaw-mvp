@@ -1,10 +1,21 @@
 <!doctype html>
 <html lang="ko">
-<head>...</head>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>프로젝트 목록 - Project.PAW</title>
+  <link rel="stylesheet" href="common.css"/>
+  <link rel="stylesheet" href="app.min.css"/>
+</head>
 <body>
   <div data-include="header"></div>
 
-  <section class="projects"> ... </section>
+  <main class="projects">
+    <h1>진행 중인 프로젝트</h1>
+    <div id="projects-grid" class="grid">
+      <div class="muted">불러오는 중...</div>
+    </div>
+  </main>
 
   <div data-include="footer"></div>
 
@@ -17,7 +28,25 @@
     const $grid = document.getElementById('projects-grid');
     function fmt(n){ return Number(n||0).toLocaleString('ko-KR'); }
 
-    async function render(){ ... }
+    async function render(){
+      try {
+        const list = await fetchApprovedProjects();
+        if(!list.length){
+          $grid.innerHTML = '<div class="muted">아직 승인된 프로젝트가 없습니다.</div>';
+          return;
+        }
+        $grid.innerHTML = list.map(p => `
+          <a class="card" href="project.html?id=${encodeURIComponent(p.id)}">
+            <img src="${p.coverUrl || (Array.isArray(p.images)&&p.images[0]) || 'img/placeholder.svg'}"/>
+            <h3>${p.name ?? '(이름 없음)'}</h3>
+            <div class="muted">${p.summary ?? ''}</div>
+            <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
+          </a>`).join('');
+      } catch (e) {
+        console.error(e);
+        $grid.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
+      }
+    }
     render();
   </script>
 </body>
