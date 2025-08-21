@@ -115,3 +115,13 @@ export async function deleteProject(id) {
   const ref = doc(db, "projects", id);
   await deleteDoc(ref);
 }
+
+
+// Compatibility alias for legacy code
+export async function apiListProjects(opts={}) {
+  const status = opts.status || 'approved';
+  if (status === 'approved') {
+    return await fetchApprovedProjects();
+  }
+  return await fetchAllProjects();
+}
