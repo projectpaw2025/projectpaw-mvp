@@ -70,7 +70,7 @@ button.delete{background:#dc2626;color:#fff;border:none}
             </td>
           </tr>`).join('');
       }catch(e){
-        console.error(e);
+        console.error("프로젝트 목록 불러오기 실패:", e);
         $body.innerHTML='<tr><td colspan="5" class="muted">프로젝트를 불러오지 못했습니다.</td></tr>';
       }
     }
@@ -78,15 +78,25 @@ button.delete{background:#dc2626;color:#fff;border:none}
     $body.addEventListener('click', async e=>{
       if(e.target.matches('.approve')){
         if(confirm("승인하시겠습니까?")){
-          await approveProject(e.target.dataset.id);
-          alert("승인되었습니다.");
+          try {
+            await approveProject(e.target.dataset.id);
+            alert("승인되었습니다.");
+          } catch(err) {
+            console.error("승인 실패:", err);
+            alert("승인 실패: " + (err.message || '권한 문제일 수 있습니다.'));
+          }
           render();
         }
       }
       if(e.target.matches('.delete')){
         if(confirm("삭제하시겠습니까?")){
-          await deleteProject(e.target.dataset.id);
-          alert("삭제되었습니다.");
+          try {
+            await deleteProject(e.target.dataset.id);
+            alert("삭제되었습니다.");
+          } catch(err) {
+            console.error("삭제 실패:", err);
+            alert("삭제 실패: " + (err.message || '권한 문제일 수 있습니다.'));
+          }
           render();
         }
       }
