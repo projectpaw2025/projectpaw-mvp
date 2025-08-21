@@ -53,7 +53,7 @@
 
     async function render(){
       try{
-        // 🔴 기존 데이터까지 모두 보이도록 'all'
+        // ✅ 기존 데이터까지 모두 보이도록 'all'
         const all = await apiListProjects({ status:'all' });
         const list = all.filter(p => match(p, $q.value.trim()));
 
