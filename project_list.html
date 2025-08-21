@@ -30,20 +30,50 @@
   <script type="module">
     import { injectLayout } from './js/include.js';
     import { apiListProjects } from './js/api.js';
+    import { storage } from './js/firebase.js';
+    import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     injectLayout({ active:'list' });
 
     const $q = document.getElementById('q');
     const $list = document.getElementById('list');
 
-    // 공통 커버 선택 체인
-    const cover = (p) =>
-      p.representativeImageUrl ||
-      p.coverUrl ||
-      (Array.isArray(p.galleryUrls) && p.galleryUrls[0]) ||
-      (Array.isArray(p.images) && p.images[0]) ||
-      p.image || p.thumbnailUrl ||
-      'img/placeholder.svg';
+    // ---- 이미지 URL 보강: 문자열만 고르고, 배열/객체도 처리 ----
+    const pick = (...cands) => cands.find(u => typeof u === 'string' && u.trim());
+    const firstFromImages = (p) => {
+      if (!Array.isArray(p.images) || !p.images.length) return null;
+      const v = p.images[0];
+      return typeof v === 'string' ? v : (v && v.url) ? v.url : null;
+    };
+    const firstFromGallery = (p) =>
+      Array.isArray(p.galleryUrls) && p.galleryUrls.length ? p.galleryUrls[0] : null;
+
+    // gs://bucket/path 또는 'covers/...' 같은 Storage 경로 → https URL로 변환
+    async function toHttpUrl(maybe) {
+      if (!maybe) return null;
+      if (/^https?:\/\//i.test(maybe)) return maybe;       // 이미 http(s)
+      try {
+        const r = ref(storage, maybe);                      // gs:// 또는 상대 경로 모두 허용
+        return await getDownloadURL(r);
+      } catch (e) {
+        console.warn('getDownloadURL 실패:', maybe, e?.message || e);
+        return null;
+      }
+    }
+
+    // 최종 커버 URL 계산 (비동기)
+    async function coverUrlOf(p) {
+      const candidate = pick(
+        p.representativeImageUrl,
+        p.coverUrl,
+        firstFromGallery(p),
+        firstFromImages(p),
+        p.image,
+        p.thumbnailUrl
+      );
+      const url = await toHttpUrl(candidate);
+      return url || 'img/placeholder.svg';
+    }
 
     function match(p, q){
       if(!q) return true;
@@ -56,7 +86,7 @@
 
     async function render(){
       try{
-        // 목록은 기존 데이터까지 다 보이도록 'all'
+        // 목록은 기존 데이터까지 모두 보이도록
         const all = await apiListProjects({ status:'all' });
         const list = all.filter(p => match(p, $q.value.trim()));
 
@@ -65,9 +95,15 @@
           return;
         }
 
-        $list.innerHTML = list.map(p => `
+        // 각 항목의 커버 URL을 비동기로 해석
+        const withCovers = await Promise.all(list.map(async p => ({
+          ...p,
+          _cover: await coverUrlOf(p)
+        })));
+
+        $list.innerHTML = withCovers.map(p => `
           <article class="card">
-            <img src="${cover(p)}" alt="cover"/>
+            <img src="${p._cover}" alt="cover"/>
             <div class="card-body">
               <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
                 <strong>${p.name ?? '(이름 없음)'}</strong>
