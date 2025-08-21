@@ -13,7 +13,38 @@
   <main class="container">
     <h1>새 프로젝트 등록</h1>
     <form id="create-form">
-      <!-- 기존 폼 그대로 (이름, 설명, 이미지 업로드, 카톡 ID 등) -->
+      <label>프로젝트명</label>
+      <input type="text" name="name" required />
+
+      <label>구조자 이름</label>
+      <input type="text" name="rescuerName" />
+
+      <label>요약</label>
+      <textarea name="summary" maxlength="200"></textarea>
+
+      <label>설명</label>
+      <textarea name="description" maxlength="5000"></textarea>
+
+      <label>목표 금액</label>
+      <input type="number" name="goalAmount" />
+
+      <label>구조자 부담금</label>
+      <input type="number" name="rescuerContribution" />
+
+      <label>카카오톡 ID</label>
+      <input type="text" name="registrantKakaoId" />
+
+      <label>대표 이미지</label>
+      <input type="file" id="coverFile" accept="image/*" />
+      <img id="coverPreview" style="display:none; max-width:200px; margin-top:10px;" />
+
+      <label>갤러리 이미지</label>
+      <input type="file" id="galleryFiles" accept="image/*" multiple />
+
+      <label>영수증 이미지</label>
+      <input type="file" id="receiptFiles" accept="image/*" multiple />
+
+      <button type="submit">등록하기</button>
     </form>
   </main>
 
