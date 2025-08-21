@@ -1,52 +1,81 @@
-// js/project_list.js
-import { db } from "./firebase.js";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+// assets/js/project_list.js
+import { fetchApprovedProjects } from "./api.js";
 
-const projectListContainer = document.getElementById("project-list");
+const grid = document.getElementById("list-grid");
+const empty = document.getElementById("list-empty");
+const sortSel = document.getElementById("sort");
+const approvedOnly = document.getElementById("approvedOnly");
+const search = document.getElementById("search");
 
-async function loadProjects() {
-  try {
-    const querySnapshot = await getDocs(collection(db, "projects"));
-    projectListContainer.innerHTML = ""; // 기존 내용 비움
+function cardHTML(p) {
+  const img = p.coverUrl || "assets/img/paw.svg";
+  const percent =
+    p.goalAmount > 0
+      ? Math.min(100, Math.round((Number(p.raisedAmount || 0) / Number(p.goalAmount)) * 100))
+      : 0;
 
-    if (querySnapshot.empty) {
-      projectListContainer.innerHTML = `<p style="text-align:center; color:#888;">등록된 프로젝트가 없습니다.</p>`;
-      return;
-    }
-
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-
-      // 대표 이미지 (없으면 기본 이미지 대체)
-      const mainImage = data.mainImage || "https://via.placeholder.com/400x250?text=No+Image";
-
-      // 카드 HTML
-      const card = document.createElement("div");
-      card.className = "project-card";
-
-      card.innerHTML = `
-        <img src="${mainImage}" alt="대표 이미지">
-        <h3>${data.name || "이름 없음"}</h3>
-        <p style="margin:0.3rem 0; color:#666; font-size:0.9rem;">
-          구조 장소: ${data.location || "알 수 없음"}
-        </p>
-        <p style="margin:0.3rem 0; color:#666; font-size:0.9rem;">
-          목표 금액: <b>${Number(data.targetAmount || 0).toLocaleString()}원</b>
-        </p>
-        <button class="donate-btn">후원하기</button>
-      `;
-
-      // 후원 버튼 클릭 → project_detail.html?id=DOC_ID 로 이동
-      card.querySelector(".donate-btn").addEventListener("click", () => {
-        location.href = `project_detail.html?id=${doc.id}`;
-      });
-
-      projectListContainer.appendChild(card);
-    });
-  } catch (e) {
-    console.error("프로젝트 불러오기 실패:", e);
-    projectListContainer.innerHTML = `<p style="text-align:center; color:red;">프로젝트를 불러오는 중 오류가 발생했습니다.</p>`;
-  }
+  return `<a class="card" href="project.html?id=${p.id}">
+    <img src="${img}" alt="대표 이미지"/>
+    <div class="content">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+        <strong>${p.name}</strong>
+        ${p.adminApproved ? '<span class="badge">승인</span>' : '<span class="badge" style="background:#fee2e2;color:#991b1b">대기</span>'}
+      </div>
+      <div class="meta">${p.summary ?? ""}</div>
+      <div class="progress"><div style="width:${percent}%"></div></div>
+      <div class="meta">목표 ₩${(p.goalAmount || 0).toLocaleString("ko-KR")} · 구조자 30% ₩${(p.rescuerContribution || 0).toLocaleString("ko-KR")}</div>
+    </div>
+  </a>`;
 }
 
-loadProjects();
+let cache = [];
+function applyFilters() {
+  let arr = [...cache];
+
+  const q = (search.value || "").trim().toLowerCase();
+  if (q) {
+    arr = arr.filter(
+      (p) =>
+        (p.name || "").toLowerCase().includes(q) ||
+        (p.description || "").toLowerCase().includes(q)
+    );
+  }
+  if (approvedOnly.checked) {
+    arr = arr.filter((p) => p.adminApproved === true);
+  }
+
+  if (sortSel.value === "progress") {
+    arr.sort((a, b) => {
+      const ap = a.goalAmount ? (a.raisedAmount || 0) / a.goalAmount : 0;
+      const bp = b.goalAmount ? (b.raisedAmount || 0) / b.goalAmount : 0;
+      return bp - ap;
+    });
+  } else if (sortSel.value === "goal") {
+    arr.sort((a, b) => (b.goalAmount || 0) - (a.goalAmount || 0));
+  } else {
+    // 최신순 (createdAt가 serverTimestamp일 수 있으므로 보조 정렬)
+    arr.sort(
+      (a, b) =>
+        (b?.createdAt?.seconds || 0) - (a?.createdAt?.seconds || 0)
+    );
+  }
+
+  if (arr.length === 0) {
+    empty.style.display = "block";
+    grid.innerHTML = "";
+    return;
+  }
+  empty.style.display = "none";
+  grid.innerHTML = arr.map(cardHTML).join("");
+}
+
+async function bootstrap() {
+  cache = await fetchApprovedProjects();
+  applyFilters();
+}
+
+[sortSel, approvedOnly, search].forEach((el) =>
+  el.addEventListener("input", applyFilters)
+);
+
+bootstrap();
