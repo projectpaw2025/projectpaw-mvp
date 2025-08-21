@@ -13,3 +13,6 @@ const $app=document.getElementById('app'); const id=new URL(location.href).searc
   ${g.length?'<h3>구조 상황 사진</h3><div class="grid">'+g.map(s=>`<img class="thumb" src="${s}">`).join('')+'</div>':''}
   ${r.length?'<h3>영수증</h3><div class="grid">'+r.map(s=>`<img class="thumb" src="${s}">`).join('')+'</div>':''}`; }catch(e){ $app.innerHTML='<p>불러오기 실패</p>'; } })();
 </script></body></html>
+
+<!-- project.html 맨 아래 -->
+<script type="module" src="assets/js/project.js"></script>
