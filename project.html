@@ -1,32 +1,28 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>프로젝트 상세 - Project.PAW</title>
-  <link rel="stylesheet" href="common.css"/>
-  <link rel="stylesheet" href="app.min.css"/>
-  <style>
-    .project-container { max-width:800px; margin:40px auto; padding:0 16px; }
-    .project-header { margin-bottom:20px; }
-    .project-header h1 { font-size:1.6rem; font-weight:800; }
-    .muted { color:#666; font-size:.9rem; }
-    .slider { position:relative; overflow:hidden; border-radius:12px; margin:20px 0; }
-    .slider img { width:100%; display:none; }
-    .slider img.active { display:block; }
-    .slider-nav { position:absolute; top:50%; width:100%; display:flex; justify-content:space-between; transform:translateY(-50%); }
-    .slider-nav button { background:rgba(0,0,0,0.5); color:#fff; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; }
-    .btn { display:inline-block; padding:12px 20px; border-radius:12px; font-weight:600; cursor:pointer; text-decoration:none; }
-    .btn.kakao { background:#FEE500; color:#111; }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>프로젝트 상세</title>
+<link rel="stylesheet" href="common.css"/>
+<link rel="stylesheet" href="app.min.css"/>
+<style>
+.wrap{max-width:860px;margin:0 auto;padding:20px 16px}
+h1{font-size:1.5rem;font-weight:800;margin-bottom:6px}
+.muted{color:#6b7280;font-size:.9rem}
+.slider{position:relative;overflow:hidden;border-radius:12px;margin:20px 0}
+.slider img{width:100%;display:none}
+.slider img.active{display:block}
+.slider-nav{position:absolute;top:50%;width:100%;display:flex;justify-content:space-between;transform:translateY(-50%)}
+.slider-nav button{background:rgba(0,0,0,.5);color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer}
+.btn.kakao{background:#FEE500;color:#111;padding:12px 20px;border-radius:12px;display:inline-block;font-weight:600;margin-top:16px}
+</style>
 </head>
 <body>
   <div data-include="header"></div>
 
-  <main class="project-container">
-    <div id="project-detail">
-      <div class="muted">불러오는 중...</div>
-    </div>
+  <main class="wrap">
+    <div id="project-detail"><div class="muted">불러오는 중...</div></div>
   </main>
 
   <div data-include="footer"></div>
@@ -37,72 +33,46 @@
 
     injectLayout({ active:'project' });
 
-    const $detail = document.getElementById('project-detail');
-
-    function getId(){
-      const params = new URLSearchParams(location.search);
-      return params.get("id");
-    }
-
-    function fmt(n){ return Number(n||0).toLocaleString('ko-KR'); }
-
+    const $detail=document.getElementById('project-detail');
+    function getId(){return new URLSearchParams(location.search).get("id")}
+    function fmt(n){return Number(n||0).toLocaleString('ko-KR')}
     function renderSlider(urls){
-      if(!urls || !urls.length) return '';
-      return `
-        <div class="slider">
-          ${urls.map((u,i)=>`<img src="${u}" class="${i===0?'active':''}"/>`).join('')}
-          <div class="slider-nav">
-            <button id="prevBtn">◀</button>
-            <button id="nextBtn">▶</button>
-          </div>
-        </div>`;
+      if(!urls||!urls.length) return '';
+      return `<div class="slider">
+        ${urls.map((u,i)=>`<img src="${u}" class="${i===0?'active':''}"/>`).join('')}
+        <div class="slider-nav"><button id="prevBtn">◀</button><button id="nextBtn">▶</button></div>
+      </div>`;
     }
-
     async function render(){
-      const id = getId();
-      if(!id){
-        $detail.innerHTML = '<div class="muted">잘못된 접근입니다.</div>';
-        return;
-      }
-      try {
-        const p = await getProjectById(id);
-        if(!p){
-          $detail.innerHTML = '<div class="muted">존재하지 않는 프로젝트입니다.</div>';
-          return;
-        }
-
-        $detail.innerHTML = `
-          <div class="project-header">
-            <h1>${p.name ?? '(이름 없음)'}</h1>
-            <div class="muted">구조자: ${p.rescuerName ?? ''}</div>
-          </div>
-          <img src="${p.coverUrl || 'img/placeholder.svg'}" style="width:100%; border-radius:12px; margin-bottom:20px;"/>
+      const id=getId();
+      if(!id){$detail.innerHTML='<div class="muted">잘못된 접근입니다.</div>';return;}
+      try{
+        const p=await getProjectById(id);
+        if(!p){$detail.innerHTML='<div class="muted">존재하지 않는 프로젝트입니다.</div>';return;}
+        $detail.innerHTML=`
+          <h1>${p.name??'(이름 없음)'}</h1>
+          <div class="muted">구조자: ${p.rescuerName??''}</div>
+          <img src="${p.coverUrl||'img/placeholder.svg'}" style="width:100%;border-radius:12px;margin:20px 0"/>
           ${renderSlider(p.galleryUrls)}
-          <p>${p.description ?? ''}</p>
+          <p>${p.description??''}</p>
           <p class="muted">목표 금액: ${fmt(p.goalAmount)}원</p>
           <p class="muted">구조자 부담금: ${fmt(p.rescuerContribution)}원</p>
           <p class="muted">지지자 수: ${fmt(p.supportersCount)}</p>
-          ${p.registrantKakaoId ? `<a href="https://open.kakao.com/o/${p.registrantKakaoId}" target="_blank" class="btn kakao">카카오톡으로 참여하기</a>` : ''}
+          ${p.registrantKakaoId?`<a href="https://open.kakao.com/o/${p.registrantKakaoId}" target="_blank" class="btn kakao">카카오톡으로 참여하기</a>`:''}
         `;
-
-        const imgs = $detail.querySelectorAll('.slider img');
+        const imgs=$detail.querySelectorAll('.slider img');
         if(imgs.length){
-          let idx = 0;
-          const prev = document.getElementById('prevBtn');
-          const next = document.getElementById('nextBtn');
-          function show(i){
-            imgs.forEach((img,j)=>img.classList.toggle('active', j===i));
-          }
-          prev.addEventListener('click', ()=>{ idx = (idx-1+imgs.length)%imgs.length; show(idx); });
-          next.addEventListener('click', ()=>{ idx = (idx+1)%imgs.length; show(idx); });
+          let idx=0;
+          const prev=document.getElementById('prevBtn'), next=document.getElementById('nextBtn');
+          function show(i){imgs.forEach((img,j)=>img.classList.toggle('active',j===i))}
+          prev.addEventListener('click',()=>{idx=(idx-1+imgs.length)%imgs.length;show(idx)});
+          next.addEventListener('click',()=>{idx=(idx+1)%imgs.length;show(idx)});
         }
-
-      } catch(e){
+      }catch(e){
         console.error(e);
-        $detail.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
+        $detail.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
       }
     }
-
     render();
   </script>
 </body>
