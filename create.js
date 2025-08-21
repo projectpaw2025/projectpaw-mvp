@@ -1,88 +1,53 @@
 // js/create.js
-import { db } from "./firebase.js";
-import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { uploadImageToStorage } from "./uploader.js";
+import { injectLayout } from './js/include.js';
+import { apiCreateProject } from './js/api.js';
+import { authReady } from './js/firebase.js';
 
-const form = document.getElementById("createForm"),
-  mainInput = document.getElementById("imageMain"),
-  galInput = document.getElementById("imageGallery"),
-  prevMain = document.getElementById("previewMain"),
-  prevGal = document.getElementById("previewGallery");
+injectLayout();
 
-// 메인 이미지 미리보기
-mainInput?.addEventListener("change", () => {
-  const f = mainInput.files?.[0];
-  if (!f) {
-    prevMain.textContent = "미리보기 없음";
-    return;
-  }
-  const r = new FileReader();
-  r.onload = () => {
-    prevMain.innerHTML = `<img src="${r.result}" style="max-width:220px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.08)">`;
-  };
-  r.readAsDataURL(f);
-});
+const form = document.getElementById('form');
+const submitBtn = document.getElementById('submitBtn');
 
-// 갤러리 이미지 미리보기
-galInput?.addEventListener("change", () => {
-  prevGal.innerHTML = "";
-  const files = Array.from(galInput.files || []);
-  files.slice(0, 6).forEach((f) => {
-    const r = new FileReader();
-    r.onload = () => {
-      const img = document.createElement("img");
-      img.src = r.result;
-      img.style.width = "90px";
-      img.style.marginRight = "6px";
-      img.style.borderRadius = "8px";
-      prevGal.appendChild(img);
-    };
-    r.readAsDataURL(f);
-  });
-});
-
-// 등록하기 처리
-form?.addEventListener("submit", async (e) => {
+form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const submitBtn = form.querySelector("button[type=submit]");
+  await authReady;
+
+  submitBtn.classList.add('disabled');
+
+  // 업로드 시작 팝업
+  Swal.fire({
+    title: '업로드 중...',
+    text: '사진과 내용을 등록하고 있습니다. 잠시만 기다려주세요 🐾',
+    allowOutsideClick: false,
+    didOpen: () => Swal.showLoading()
+  });
+
+  const fd = new FormData(form);
+  const rep = document.getElementById('repImage').files[0];
+  const situ = document.getElementById('situationImages').files;
+  const rcpt = document.getElementById('receiptImages').files;
+  if (rep) fd.append('representativeImage', rep);
+  Array.from(situ).forEach(f => fd.append('situationImages', f));
+  Array.from(rcpt).forEach(f => fd.append('receiptImages', f));
+
   try {
-    submitBtn.disabled = true;
-    submitBtn.textContent = "🐾 업로드 중입니다... 잠시만 기다려주세요";
-
-    // 대표 이미지 업로드
-    const mainFile = mainInput.files?.[0];
-    let mainUrl = null;
-    if (mainFile) {
-      mainUrl = await uploadImageToStorage(mainFile, "covers/");
-    }
-
-    // 갤러리 이미지 업로드
-    const galFiles = Array.from(galInput.files || []);
-    const galleryUrls = [];
-    for (const f of galFiles) {
-      galleryUrls.push(await uploadImageToStorage(f, "gallery/"));
-    }
-
-    // Firestore 저장
-    await setDoc(doc(collection(db, "projects")), {
-      name: form.name.value,
-      summary: form.summary.value,
-      representativeImageUrl: mainUrl,
-      galleryUrls,
-      createdAt: serverTimestamp(),
-      adminApproved: false,
-      supportersCount: 0,
+    const saved = await apiCreateProject(fd);
+    Swal.fire({
+      icon: 'success',
+      title: '등록 완료!',
+      text: '프로젝트가 성공적으로 등록되었습니다 🎉'
+    }).then(() => {
+      location.href = 'project.html?id=' + encodeURIComponent(saved.id);
     });
-
-    alert("✅ 등록이 완료되었습니다! 감사합니다 🐾");
-    form.reset();
-    prevMain.innerHTML = "";
-    prevGal.innerHTML = "";
   } catch (err) {
     console.error(err);
-    alert("❌ 업로드 실패. 다시 시도해주세요.");
+    Swal.fire({
+      icon: 'error',
+      title: '업로드 실패',
+      text: '다시 시도해주세요 😢'
+    });
   } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "등록하기";
+    submitBtn.classList.remove('disabled');
+    submitBtn.textContent = '등록하기';
   }
 });
