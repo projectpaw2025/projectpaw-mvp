@@ -8,6 +8,53 @@ injectLayout();
 const form = document.getElementById('form');
 const submitBtn = document.getElementById('submitBtn');
 
+// =====================
+// 📌 미리보기 기능
+// =====================
+function previewSingle(inputId, containerId) {
+  const input = document.getElementById(inputId);
+  const container = document.getElementById(containerId);
+
+  input.addEventListener("change", (e) => {
+    container.innerHTML = "";
+    const file = e.target.files[0];
+    if (file) {
+      const img = document.createElement("img");
+      img.src = URL.createObjectURL(file); // ✅ 업로드 전 즉시 미리보기
+      img.style.maxWidth = "220px";
+      img.style.borderRadius = "12px";
+      img.style.boxShadow = "0 8px 30px rgba(0,0,0,.08)";
+      container.appendChild(img);
+    }
+  });
+}
+
+function previewMultiple(inputId, containerId) {
+  const input = document.getElementById(inputId);
+  const container = document.getElementById(containerId);
+
+  input.addEventListener("change", (e) => {
+    container.innerHTML = "";
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      const img = document.createElement("img");
+      img.src = URL.createObjectURL(file);
+      img.style.width = "90px";
+      img.style.marginRight = "6px";
+      img.style.borderRadius = "8px";
+      container.appendChild(img);
+    });
+  });
+}
+
+// 미리보기 연결
+previewSingle("repImage", "previewMain");
+previewMultiple("situationImages", "previewGallery");
+previewMultiple("receiptImages", "previewReceipts");
+
+// =====================
+// 📌 등록 처리
+// =====================
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   await authReady;
@@ -32,6 +79,7 @@ form.addEventListener('submit', async (e) => {
 
   try {
     const saved = await apiCreateProject(fd);
+
     Swal.fire({
       icon: 'success',
       title: '등록 완료!',
@@ -39,6 +87,11 @@ form.addEventListener('submit', async (e) => {
     }).then(() => {
       location.href = 'project.html?id=' + encodeURIComponent(saved.id);
     });
+
+    form.reset();
+    document.getElementById("previewMain").innerHTML = "";
+    document.getElementById("previewGallery").innerHTML = "";
+    document.getElementById("previewReceipts").innerHTML = "";
   } catch (err) {
     console.error(err);
     Swal.fire({
