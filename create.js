@@ -1,106 +1,104 @@
-// js/create.js
-import { injectLayout } from './js/include.js';
-import { apiCreateProject } from './js/api.js';
-import { authReady } from './js/firebase.js';
-
-injectLayout();
-
-const form = document.getElementById('form');
-const submitBtn = document.getElementById('submitBtn');
-
-// =====================
-// 📌 미리보기 기능
-// =====================
-function previewSingle(inputId, containerId) {
-  const input = document.getElementById(inputId);
-  const container = document.getElementById(containerId);
-
-  input.addEventListener("change", (e) => {
-    container.innerHTML = "";
-    const file = e.target.files[0];
-    if (file) {
-      const img = document.createElement("img");
-      img.src = URL.createObjectURL(file); // ✅ 업로드 전 즉시 미리보기
-      img.style.maxWidth = "220px";
-      img.style.borderRadius = "12px";
-      img.style.boxShadow = "0 8px 30px rgba(0,0,0,.08)";
-      container.appendChild(img);
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>프로젝트 등록</title>
+  <link rel="stylesheet" href="common.css"/>
+  <link rel="stylesheet" href="app.min.css"/>
+  <style>
+    .wrap { max-width:860px; margin:0 auto; padding:20px 16px }
+    form { display:grid; gap:12px }
+    label { font-weight:800; margin-top:6px }
+    input, textarea {
+      width:100%; padding:10px;
+      border:1px solid #e5e7eb; border-radius:10px
     }
-  });
-}
+    textarea { min-height:120px; resize:vertical }
+    .grid2 { display:grid; gap:12px; grid-template-columns:1fr 1fr }
+    @media(max-width:760px){ .grid2{ grid-template-columns:1fr } }
+    .note { color:#6b7280 }
+    .actions { display:flex; gap:10px; justify-content:flex-end; margin-top:12px }
+    .disabled { opacity:.6; pointer-events:none }
+    .preview-area img { margin-top:6px; }
+  </style>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+<div data-include="header"></div>
 
-function previewMultiple(inputId, containerId) {
-  const input = document.getElementById(inputId);
-  const container = document.getElementById(containerId);
+<main class="wrap">
+  <h1 style="margin:0 0 6px">프로젝트 등록</h1>
 
-  input.addEventListener("change", (e) => {
-    container.innerHTML = "";
-    const files = Array.from(e.target.files);
-    files.forEach(file => {
-      const img = document.createElement("img");
-      img.src = URL.createObjectURL(file);
-      img.style.width = "90px";
-      img.style.marginRight = "6px";
-      img.style.borderRadius = "8px";
-      container.appendChild(img);
-    });
-  });
-}
+  <form id="form">
+    <div class="grid2">
+      <div>
+        <label>동물 이름</label>
+        <input name="name" required/>
+      </div>
+      <div>
+        <label>구조자 이름</label>
+        <input name="rescuerName" required/>
+      </div>
+    </div>
 
-// 미리보기 연결
-previewSingle("repImage", "previewMain");
-previewMultiple("situationImages", "previewGallery");
-previewMultiple("receiptImages", "previewReceipts");
+    <div>
+      <label>상황 요약</label>
+      <input name="summary" required/>
+    </div>
 
-// =====================
-// 📌 등록 처리
-// =====================
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  await authReady;
+    <div>
+      <label>상세 설명</label>
+      <textarea name="description" required></textarea>
+    </div>
 
-  submitBtn.classList.add('disabled');
+    <div class="grid2">
+      <div>
+        <label>목표 금액(원)</label>
+        <input type="number" name="goalAmount" min="0" required/>
+      </div>
+      <div>
+        <label>구조자 부담액(원)</label>
+        <input type="number" name="rescuerContribution" min="0" required/>
+      </div>
+    </div>
 
-  // 업로드 시작 팝업
-  Swal.fire({
-    title: '업로드 중...',
-    text: '사진과 내용을 등록하고 있습니다. 잠시만 기다려주세요 🐾',
-    allowOutsideClick: false,
-    didOpen: () => Swal.showLoading()
-  });
+    <div>
+      <label>등록자 카카오톡 ID</label>
+      <input name="registrantKakaoId" required/>
+    </div>
 
-  const fd = new FormData(form);
-  const rep = document.getElementById('repImage').files[0];
-  const situ = document.getElementById('situationImages').files;
-  const rcpt = document.getElementById('receiptImages').files;
-  if (rep) fd.append('representativeImage', rep);
-  Array.from(situ).forEach(f => fd.append('situationImages', f));
-  Array.from(rcpt).forEach(f => fd.append('receiptImages', f));
+    <div>
+      <label>대표 사진 (1장)</label>
+      <input type="file" id="repImage" accept="image/*" required/>
+      <div id="previewMain" class="preview-area"></div>
+    </div>
 
-  try {
-    const saved = await apiCreateProject(fd);
+    <div>
+      <label>구조 상황 사진 (여러 장)</label>
+      <input type="file" id="situationImages" accept="image/*" multiple/>
+      <div id="previewGallery" class="preview-area"></div>
+    </div>
 
-    Swal.fire({
-      icon: 'success',
-      title: '등록 완료!',
-      text: '프로젝트가 성공적으로 등록되었습니다 🎉'
-    }).then(() => {
-      location.href = 'project.html?id=' + encodeURIComponent(saved.id);
-    });
+    <div>
+      <label>영수증 사진 (여러 장)</label>
+      <input type="file" id="receiptImages" accept="image/*" multiple/>
+      <div id="previewReceipts" class="preview-area"></div>
+    </div>
 
-    form.reset();
-    document.getElementById("previewMain").innerHTML = "";
-    document.getElementById("previewGallery").innerHTML = "";
-    document.getElementById("previewReceipts").innerHTML = "";
-  } catch (err) {
-    console.error(err);
-    Swal.fire({
-      icon: 'error',
-      title: '업로드 실패',
-      text: '다시 시도해주세요 😢'
-    });
-  } finally {
-    submitBtn.classList.remove('disabled');
-    submitBtn.textContent = '등록하기';
-  }
-});
+    <p class="note">* 병원명/계좌/카카오톡 초대링크는 <b>관리자 전용</b> 화면에서 등록됩니다.</p>
+
+    <div class="actions">
+      <a class="btn ghost" href="index.html">취소</a>
+      <button class="btn primary" type="submit" id="submitBtn">등록하기</button>
+    </div>
+  </form>
+</main>
+
+<div data-include="footer"></div>
+
+<!-- 프로젝트 등록 JS -->
+<script type="module" src="./js/create.js"></script>
+</body>
+</html>
