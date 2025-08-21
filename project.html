@@ -1,167 +1,135 @@
-<script type="module">
-  import { injectLayout } from './js/include.js';
-  import { getProjectById } from './js/api.js';
-  import { storage } from './js/firebase.js';
-  import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>프로젝트 상세</title>
+<link rel="stylesheet" href="common.css"/>
+<link rel="stylesheet" href="app.min.css"/>
+<style>
+  .wrap{max-width:860px;margin:0 auto;padding:20px 16px}
+  h1{font-size:1.5rem;font-weight:800;margin-bottom:6px}
+  .muted{color:#6b7280;font-size:.9rem}
+  .kv{width:100%;border-radius:12px;margin:16px 0}
+  .slider{position:relative;overflow:hidden;border-radius:12px;margin:20px 0}
+  .slider img{width:100%;display:none}
+  .slider img.active{display:block}
+  .slider-nav{position:absolute;top:50%;width:100%;display:flex;justify-content:space-between;transform:translateY(-50%)}
+  .slider-nav button{background:rgba(0,0,0,.5);color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer}
+  .btn.kakao{background:#FEE500;color:#111;padding:12px 20px;border-radius:12px;display:inline-block;font-weight:600;margin-top:16px}
+</style>
+</head>
+<body>
+  <div data-include="header"></div>
 
-  injectLayout({ active:'project' });
+  <main class="wrap">
+    <div id="project-detail"><div class="muted">불러오는 중...</div></div>
+  </main>
 
-  const $detail = document.getElementById('project-detail');
-  const fmt = n => Number(n||0).toLocaleString('ko-KR');
+  <div data-include="footer"></div>
 
-  /* ---------------- 이미지 후보 수집 + URL 변환 (강화판) ---------------- */
+  <script type="module">
+    import { injectLayout } from './js/include.js';
+    import { getProjectById } from './js/api.js';
+    import { storage } from './js/firebase.js';
+    import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-  // 문서 내에서 있을 법한 필드들을 전부 후보로 모음
-  function candidatesOf(p){
-    const out = [];
-    const push = v => { if (typeof v === 'string' && v.trim()) out.push(v.trim()); };
+    injectLayout({ active:'project' });
 
-    // 단일 문자열 필드들(이름이 제각각일 수 있음)
-    [
-      'representativeImageUrl','representativeImage','representImg',
-      'coverUrl','coverURL','cover','mainImageUrl','mainImage',
-      'thumbnailUrl','thumbnail','thumbUrl','thumbnailURL',
-      'image','imageUrl','imageURL','photo','photoUrl','photoURL'
-    ].forEach(k => push(p[k]));
+    const $detail = document.getElementById('project-detail');
+    const fmt = n => Number(n||0).toLocaleString('ko-KR');
 
-    // 배열 필드들(문자열 또는 {url|downloadUrl|path})
-    ['galleryUrls','images','photos','pictures','media','attachments','files']
-    .forEach(k => {
-      const arr = p[k];
-      if (Array.isArray(arr)) {
-        arr.forEach(it => {
+    // 후보 수집
+    function candidatesOf(p){
+      const out = [];
+      const push = v => { if (typeof v === 'string' && v.trim()) out.push(v.trim()); };
+      ['representativeImageUrl','representativeImage','representImg','coverUrl','coverURL','cover','mainImageUrl','mainImage','thumbnailUrl','thumbnail','thumbUrl','image','imageUrl','photo','photoUrl']
+        .forEach(k => push(p[k]));
+      ['galleryUrls','images','photos','pictures','media','attachments','files'].forEach(k => {
+        const arr = p[k]; if (Array.isArray(arr)) arr.forEach(it => {
           if (typeof it === 'string') push(it);
           else if (it && (it.url || it.downloadUrl || it.path)) push(it.url || it.downloadUrl || it.path);
         });
+      });
+      return out;
+    }
+
+    // 경로/gs:// → 표시가능한 URL
+    async function toHttpUrl(raw){
+      if (!raw) return null;
+      let v = String(raw).trim();
+      if (/^(https?:|data:|blob:)/i.test(v)) return v;   // 이미 URL
+      if (v.startsWith('/')) v = v.slice(1);             // /covers → covers
+      try {
+        return await getDownloadURL(ref(storage, v));    // 'covers/...' 또는 'gs://bucket/path'
+      } catch (e) {
+        console.warn('[project] getDownloadURL 실패:', v, e?.message || e);
+        return null;
       }
-    });
+    }
 
-    return out;
-  }
+    async function galleryHttpUrls(p){
+      const cands = candidatesOf(p);
+      const urls  = await Promise.all(cands.map(toHttpUrl));
+      const uniq = [], seen = new Set();
+      for (const u of urls) { if (u && !seen.has(u)) { seen.add(u); uniq.push(u); } }
+      return uniq.length ? uniq : ['img/placeholder.svg'];
+    }
 
-  // 경로/이상한 URL → 표시 가능한 http(s) URL로 변환
-  async function toHttpUrl(raw) {
-    if (!raw) return null;
-    let v = (typeof raw === 'string') ? raw.trim() : String(raw);
+    function getId(){ return new URLSearchParams(location.search).get("id"); }
 
-    // 이미 표시 가능한 스킴은 우선 통과
-    if (/^(https?:|data:|blob:)/i.test(v)) {
-      // 예외: https://<bucket>.firebasestorage.app/<path> 는 유효하지 않을 수 있으니 교정 시도
-      const m = v.match(/^https?:\/\/([^/]+)\.firebasestorage\.app\/(.+)$/i);
-      if (m) {
-        const gs = `gs://${m[1]}.appspot.com/${decodeURIComponent(m[2].replace(/%2F/gi,'/'))}`;
-        try { return await getDownloadURL(ref(storage, gs)); } catch { /* fallthrough */ }
+    function renderSlider(imgs){
+      if(!imgs || !imgs.length) return '';
+      if(imgs.length === 1){
+        return `<img class="kv" src="${imgs[0]}" alt="project image"/>`;
       }
-      return v;
+      return `
+        <div class="slider">
+          ${imgs.map((u,i)=>`<img src="${u}" class="${i===0?'active':''}" alt="gallery ${i+1}"/>`).join('')}
+          <div class="slider-nav">
+            <button id="prevBtn">◀</button>
+            <button id="nextBtn">▶</button>
+          </div>
+        </div>`;
     }
 
-    // 선행 슬래시 제거(/covers/.. → covers/..)
-    if (v.startsWith('/')) v = v.slice(1);
+    async function render(){
+      const id = getId();
+      if(!id){ $detail.innerHTML = '<div class="muted">잘못된 접근입니다.</div>'; return; }
 
-    // gs:// …firebasestorage.app  → gs:// …appspot.com 로 교정
-    if (/^gs:\/\//i.test(v)) {
-      v = v.replace(/gs:\/\/([^/]+)\.firebasestorage\.app(\/|$)/i, 'gs://$1.appspot.com$2');
-    }
+      try{
+        const p = await getProjectById(id);
+        if(!p){ $detail.innerHTML = '<div class="muted">존재하지 않는 프로젝트입니다.</div>'; return; }
 
-    // URL-인코딩된 경로(%2F 등) 정리
-    try { v = decodeURIComponent(v); } catch {}
+        const imgs = await galleryHttpUrls(p);
 
-    try {
-      return await getDownloadURL(ref(storage, v)); // 'covers/..' 또는 교정된 'gs://..'
-    } catch (e) {
-      console.warn('[project] getDownloadURL 실패:', v, e?.message || e);
-      return null;
-    }
-  }
+        $detail.innerHTML = `
+          <h1>${p.name ?? '(이름 없음)'}</h1>
+          <div class="muted">구조자: ${p.rescuerName ?? ''}</div>
+          ${renderSlider(imgs)}
+          <p>${p.description ?? ''}</p>
+          <p class="muted">목표 금액: ${fmt(p.goalAmount)}원</p>
+          <p class="muted">구조자 부담금: ${fmt(p.rescuerContribution)}원</p>
+          <p class="muted">지지자 수: ${fmt(p.supportersCount)}</p>
+          ${p.registrantKakaoId ? `<a href="https://open.kakao.com/o/${p.registrantKakaoId}" target="_blank" class="btn kakao">카카오톡으로 참여하기</a>` : ''}
+        `;
 
-  // 대표 이미지 1장만 필요할 때
-  async function coverUrlOf(p) {
-    const cands = candidatesOf(p);
-    for (const c of cands) {
-      const u = await toHttpUrl(c);
-      if (u) return u;
-    }
-    return 'img/placeholder.svg';
-  }
-
-  // 갤러리 전체 이미지(중복 제거)
-  async function galleryHttpUrls(p){
-    const cands = candidatesOf(p);
-    const urls  = await Promise.all(cands.map(toHttpUrl));
-    const uniq = [];
-    const seen = new Set();
-    for (const u of urls) {
-      if (!u) continue;
-      if (seen.has(u)) continue;
-      seen.add(u);
-      uniq.push(u);
-    }
-    return uniq.length ? uniq : ['img/placeholder.svg'];
-  }
-  /* ---------------- /이미지 변환 끝 ---------------- */
-
-  // UI 렌더
-  function getId(){ return new URLSearchParams(location.search).get("id"); }
-
-  function renderSlider(imgs){
-    if(!imgs || !imgs.length) return '';
-    if(imgs.length === 1){
-      return `<img class="kv" src="${imgs[0]}" alt="project image"/>`;
-    }
-    return `
-      <div class="slider">
-        ${imgs.map((u,i)=>`<img src="${u}" class="${i===0?'active':''}" alt="gallery ${i+1}"/>`).join('')}
-        <div class="slider-nav">
-          <button id="prevBtn">◀</button>
-          <button id="nextBtn">▶</button>
-        </div>
-      </div>
-    `;
-  }
-
-  async function render(){
-    const id = getId();
-    if(!id){
-      $detail.innerHTML = '<div class="muted">잘못된 접근입니다.</div>';
-      return;
-    }
-    try{
-      const p = await getProjectById(id);
-      if(!p){
-        $detail.innerHTML = '<div class="muted">존재하지 않는 프로젝트입니다.</div>';
-        return;
+        const sliderImgs = $detail.querySelectorAll('.slider img');
+        if(sliderImgs.length){
+          let idx = 0;
+          const prev = document.getElementById('prevBtn');
+          const next = document.getElementById('nextBtn');
+          const show = (i) => sliderImgs.forEach((img,j)=>img.classList.toggle('active', j===i));
+          prev?.addEventListener('click', ()=>{ idx = (idx-1+sliderImgs.length)%sliderImgs.length; show(idx); });
+          next?.addEventListener('click', ()=>{ idx = (idx+1)%sliderImgs.length; show(idx); });
+        }
+      }catch(e){
+        console.error(e);
+        $detail.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
       }
-
-      const imgs = await galleryHttpUrls(p);
-
-      $detail.innerHTML = `
-        <h1>${p.name ?? '(이름 없음)'}</h1>
-        <div class="muted">구조자: ${p.rescuerName ?? ''}</div>
-
-        ${renderSlider(imgs)}
-
-        <p>${p.description ?? ''}</p>
-        <p class="muted">목표 금액: ${fmt(p.goalAmount)}원</p>
-        <p class="muted">구조자 부담금: ${fmt(p.rescuerContribution)}원</p>
-        <p class="muted">지지자 수: ${fmt(p.supportersCount)}</p>
-        ${p.registrantKakaoId ? `<a href="https://open.kakao.com/o/${p.registrantKakaoId}" target="_blank" class="btn kakao">카카오톡으로 참여하기</a>` : ''}
-      `;
-
-      // 슬라이더 동작
-      const sliderImgs = $detail.querySelectorAll('.slider img');
-      if(sliderImgs.length){
-        let idx = 0;
-        const prev = document.getElementById('prevBtn');
-        const next = document.getElementById('nextBtn');
-        const show = (i) => sliderImgs.forEach((img,j)=>img.classList.toggle('active', j===i));
-        prev?.addEventListener('click', ()=>{ idx = (idx-1+sliderImgs.length)%sliderImgs.length; show(idx); });
-        next?.addEventListener('click', ()=>{ idx = (idx+1)%sliderImgs.length; show(idx); });
-      }
-    }catch(e){
-      console.error(e);
-      $detail.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
     }
-  }
 
-  render();
-</script>
+    render();
+  </script>
+</body>
+</html>
