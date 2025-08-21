@@ -1,10 +1,21 @@
 <!doctype html>
 <html lang="ko">
-<head>...</head>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>프로젝트 등록 - Project.PAW</title>
+  <link rel="stylesheet" href="common.css"/>
+  <link rel="stylesheet" href="app.min.css"/>
+</head>
 <body>
   <div data-include="header"></div>
 
-  <main class="container"> ... </main>
+  <main class="container">
+    <h1>새 프로젝트 등록</h1>
+    <form id="create-form">
+      <!-- 기존 폼 그대로 (이름, 설명, 이미지 업로드, 카톡 ID 등) -->
+    </form>
+  </main>
 
   <div data-include="footer"></div>
 
@@ -15,7 +26,38 @@
     injectLayout({ active:'create' });
 
     const form = document.getElementById('create-form');
-    ...
+    const coverFileInput = document.getElementById('coverFile');
+    const coverPreview = document.getElementById('coverPreview');
+
+    coverFileInput.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if(file){
+        coverPreview.src = URL.createObjectURL(file);
+        coverPreview.style.display = 'block';
+      }
+    });
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      const coverFile = coverFileInput.files[0];
+      const galleryFiles = document.getElementById('galleryFiles').files;
+      const receiptFiles = document.getElementById('receiptFiles').files;
+
+      try {
+        await apiCreateProject({
+          ...data,
+          coverFile,
+          galleryFiles: [...galleryFiles],
+          receiptFiles: [...receiptFiles]
+        });
+        alert("프로젝트가 등록되었습니다. 관리자의 승인 후 노출됩니다.");
+        location.href = "project_list.html";
+      } catch (err) {
+        console.error(err);
+        alert("등록 실패: " + err.message);
+      }
+    });
   </script>
 </body>
 </html>
