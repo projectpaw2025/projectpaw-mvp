@@ -1,1 +1,6 @@
-export async function injectLayout(){const h=document.querySelector('[data-include="header"]');const f=document.querySelector('[data-include="footer"]');if(h) h.innerHTML=await (await fetch('partials/header.html')).text(); if(f) f.innerHTML=await (await fetch('partials/footer.html')).text();}
+export async function injectLayout() {
+  const h = document.querySelector('[data-include="header"]');
+  const f = document.querySelector('[data-include="footer"]');
+  if (h) h.innerHTML = await (await fetch('./partials/header.html')).text();
+  if (f) f.innerHTML = await (await fetch('./partials/footer.html')).text();
+}
