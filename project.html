@@ -31,41 +31,85 @@
   <script type="module">
     import { injectLayout } from './js/include.js';
     import { getProjectById } from './js/api.js';
+    import { storage } from './js/firebase.js';
+    import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     injectLayout({ active:'project' });
 
     const $detail = document.getElementById('project-detail');
     const fmt = n => Number(n||0).toLocaleString('ko-KR');
 
-    const cover = (p) =>
-      p.representativeImageUrl ||
-      p.coverUrl ||
-      (Array.isArray(p.galleryUrls) && p.galleryUrls[0]) ||
-      (Array.isArray(p.images) && p.images[0]) ||
-      p.image || p.thumbnailUrl ||
-      'img/placeholder.svg';
+    // ----- 이미지 후보/변환 헬퍼 (목록 페이지와 동일 컨셉) -----
+    const pick = (...cands) => cands.find(u => typeof u === 'string' && u.trim());
 
+    const firstFromImages = (p) => {
+      if (!Array.isArray(p.images) || !p.images.length) return null;
+      const v = p.images[0];
+      return typeof v === 'string' ? v : (v && v.url) ? v.url : null;
+    };
+
+    const firstFromGallery = (p) =>
+      Array.isArray(p.galleryUrls) && p.galleryUrls.length ? p.galleryUrls[0] : null;
+
+    async function toHttpUrl(maybe) {
+      if (!maybe) return null;
+      if (/^https?:\/\//i.test(maybe)) return maybe;  // 이미 URL
+      try {
+        const r = ref(storage, maybe);                 // 'covers/...' 또는 'gs://...' 모두 허용
+        return await getDownloadURL(r);
+      } catch (e) {
+        console.warn('getDownloadURL 실패:', maybe, e?.message || e);
+        return null;
+      }
+    }
+
+    async function coverUrlOf(p) {
+      const candidate = pick(
+        p.representativeImageUrl,
+        p.coverUrl,
+        firstFromGallery(p),
+        firstFromImages(p),
+        p.image,
+        p.thumbnailUrl
+      );
+      const url = await toHttpUrl(candidate);
+      return url || 'img/placeholder.svg';
+    }
+
+    // 전체 갤러리 후보 수집 후 URL 변환
+    async function galleryHttpUrls(p){
+      const candidates = [];
+
+      // 대표/커버 먼저
+      const cov = await coverUrlOf(p);
+      if (cov) candidates.push(cov);
+
+      // 갤러리 배열
+      if (Array.isArray(p.galleryUrls)) candidates.push(...p.galleryUrls);
+
+      // images 배열(string 또는 {url})
+      if (Array.isArray(p.images)) {
+        for (const it of p.images) {
+          candidates.push(typeof it === 'string' ? it : (it && it.url) ? it.url : null);
+        }
+      }
+
+      // 변환 & 중복 제거 & falsy 제거
+      const urls = await Promise.all(candidates.map(toHttpUrl));
+      const uniq = [];
+      const seen = new Set();
+      for (const u of urls) {
+        if (!u) continue;
+        if (seen.has(u)) continue;
+        seen.add(u);
+        uniq.push(u);
+      }
+      return uniq.length ? uniq : ['img/placeholder.svg'];
+    }
+
+    // ----- UI -----
     function getId(){
       return new URLSearchParams(location.search).get("id");
-    }
-
-    function uniq(arr){
-      const seen = new Set();
-      return arr.filter(x => {
-        if(!x) return false;
-        if(seen.has(x)) return false;
-        seen.add(x);
-        return true;
-      });
-    }
-
-    function buildImages(p){
-      const imgs = [
-        cover(p),
-        ...(Array.isArray(p.galleryUrls) ? p.galleryUrls : []),
-        ...(Array.isArray(p.images) ? p.images : [])
-      ];
-      return uniq(imgs);
     }
 
     function renderSlider(imgs){
@@ -97,7 +141,7 @@
           return;
         }
 
-        const imgs = buildImages(p);
+        const imgs = await galleryHttpUrls(p);
 
         $detail.innerHTML = `
           <h1>${p.name ?? '(이름 없음)'}</h1>
@@ -119,8 +163,8 @@
           const prev = document.getElementById('prevBtn');
           const next = document.getElementById('nextBtn');
           const show = (i) => sliderImgs.forEach((img,j)=>img.classList.toggle('active', j===i));
-          prev.addEventListener('click', ()=>{ idx = (idx-1+sliderImgs.length)%sliderImgs.length; show(idx); });
-          next.addEventListener('click', ()=>{ idx = (idx+1)%sliderImgs.length; show(idx); });
+          prev?.addEventListener('click', ()=>{ idx = (idx-1+sliderImgs.length)%sliderImgs.length; show(idx); });
+          next?.addEventListener('click', ()=>{ idx = (idx+1)%sliderImgs.length; show(idx); });
         }
       }catch(e){
         console.error(e);
