@@ -1,147 +1,126 @@
-// api.js
+// assets/js/api.js
+import { db, storage, authReady } from "./firebase.js";
 import {
-  db,
-  storage,
-  serverTimestamp,
   collection,
   doc,
   setDoc,
   getDoc,
   getDocs,
-  query,
-  where,
-  orderBy,
-  limit as fLimit,
   updateDoc,
+  serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+import {
   ref,
-  uploadBytesResumable,
-  getDownloadURL
-} from './firebase.js';
+  uploadBytes,
+  getDownloadURL,
+} from "https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js";
 
-// 이미지 압축
-async function fileToDataURL(file) {
-  return await new Promise((res, rej) => {
-    const r = new FileReader();
-    r.onload = () => res(r.result);
-    r.onerror = rej;
-    r.readAsDataURL(file);
-  });
-}
-async function loadImage(src) {
-  return await new Promise((res, rej) => {
-    const img = new Image();
-    img.onload = () => res(img);
-    img.onerror = rej;
-    img.src = src;
-  });
-}
-async function compressImage(file, { maxDim = 1600, quality = 0.82 } = {}) {
-  try {
-    const src = await fileToDataURL(file);
-    const img = await loadImage(src);
-    const maxSide = Math.max(img.width, img.height);
-    const ratio = Math.min(1, maxDim / maxSide);
-    const tw = Math.round(img.width * ratio), th = Math.round(img.height * ratio);
-    const c = document.createElement('canvas'); c.width = tw; c.height = th;
-    c.getContext('2d').drawImage(img, 0, 0, tw, th);
-    const blob = await new Promise(res => c.toBlob(res, 'image/jpeg', quality));
-    return new File([blob], file.name.replace(/\.(png|webp)$/i, '.jpg'), { type: 'image/jpeg' });
-  } catch (e) { console.warn('compress fail', e); return file; }
-}
-
-// normalize
-function normalizeProject(id, data) {
-  return { id, supportersCount: 0, ...data };
-}
-
-// 프로젝트 리스트 가져오기
-export async function apiListProjects({ limit = 20, status = 'all' } = {}) {
-  let q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'), fLimit(limit));
-  if (status === 'approved') {
-    q = query(collection(db, 'projects'), where('adminApproved', '==', true), orderBy('createdAt', 'desc'), fLimit(limit));
-  } else if (status === 'pending') {
-    q = query(collection(db, 'projects'), where('adminApproved', '==', false), orderBy('createdAt', 'desc'), fLimit(limit));
-  }
-  const snap = await getDocs(q);
-  const out = [];
-  snap.forEach(d => out.push(normalizeProject(d.id, d.data())));
-  return out;
-}
-
-// 단일 프로젝트
-export async function apiGetProject(id) {
-  const d = await getDoc(doc(db, 'projects', id));
-  if (!d.exists()) throw new Error('NOT_FOUND');
-  return normalizeProject(d.id, d.data());
-}
-
-// 파일 업로드
-async function uploadFile(path, file) {
+/** 공통: 파일을 Storage에 업로드 후 URL 리턴 */
+async function uploadAndGetURL(file, path) {
   const r = ref(storage, path);
-  const meta = { contentType: (file && file.type) ? file.type : 'image/jpeg' };
-  const task = uploadBytesResumable(r, file, meta);
-  await new Promise((res, rej) => { task.on('state_changed', () => { }, rej, res); });
-  return await getDownloadURL(task.snapshot.ref);
+  await uploadBytes(r, file);
+  return await getDownloadURL(r);
 }
 
-// 프로젝트 생성
-export async function apiCreateProject(formOrObj) {
-  const cRef = collection(db, 'projects');
-  const dRef = doc(cRef);
-  const id = dRef.id;
+/** Firestore 전체 가져오기 → JS에서 정렬/필터 (서버타임스탬프 null 보호) */
+export async function fetchAllProjects() {
+  await authReady;
+  const snap = await getDocs(collection(db, "projects"));
+  const rows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  rows.sort(
+    (a, b) =>
+      (b?.createdAt?.seconds || 0) - (a?.createdAt?.seconds || 0)
+  );
+  return rows;
+}
 
-  let repFile = null, situFiles = [], rcptFiles = []; let payload = {};
-  if (formOrObj instanceof FormData) {
-    const fd = formOrObj;
-    repFile = fd.get('representativeImage');
-    situFiles = fd.getAll('situationImages').filter(Boolean);
-    rcptFiles = fd.getAll('receiptImages').filter(Boolean);
-    payload = {
-      name: fd.get('name') || '',
-      rescuerName: fd.get('rescuerName') || '',
-      summary: fd.get('summary') || '',
-      description: fd.get('description') || '',
-      goalAmount: Number(fd.get('goalAmount') || 0),
-      rescuerContribution: Number(fd.get('rescuerContribution') || 0),
-      registrantKakaoId: fd.get('registrantKakaoId') || ''
-    };
-  } else { payload = { ...formOrObj }; }
+/** 승인된 프로젝트만 */
+export async function fetchApprovedProjects() {
+  const all = await fetchAllProjects();
+  return all.filter((p) => p.adminApproved === true);
+}
 
-  const dataCreate = {
-    ...payload,
-    adminApproved: false,
-    supportersCount: 0,
-    createdAt: serverTimestamp()
-  };
-  await setDoc(dRef, dataCreate);
+/** 단건 조회 */
+export async function getProjectById(id) {
+  await authReady;
+  const refDoc = doc(db, "projects", id);
+  const snap = await getDoc(refDoc);
+  return snap.exists() ? { id, ...snap.data() } : null;
+}
 
-  // 이미지 업로드
-  let coverUrl = null;
-  if (repFile && repFile.size) {
-    const c = await compressImage(repFile, { maxDim: 1600, quality: 0.82 });
-    coverUrl = await uploadFile(`covers/${id}_${Date.now()}_${c.name}`, c);
+/** 승인/거절 */
+export async function approveProject(id, approved = true) {
+  await authReady;
+  const refDoc = doc(db, "projects", id);
+  await updateDoc(refDoc, { adminApproved: approved });
+}
+
+/** ✅ 핵심: 등록(권한 대기 + 이미지 업로드 + coverUrl 생성) */
+export async function apiCreateProject(formEl) {
+  // 🔒 익명 인증 준비가 끝날 때까지 대기 (권한 오류 방지)
+  await authReady;
+
+  const fd = new FormData(formEl);
+
+  const name = (fd.get("name") || "").trim();
+  const kakaoLink = (fd.get("kakaoLink") || "").trim();
+  const description = (fd.get("description") || "").trim();
+  const goalAmount = Number(fd.get("goalAmount") || 0);
+  const rescuerContribution = Number(fd.get("rescuerContribution") || 0);
+
+  const heroInput = document.getElementById("hero");
+  const galleryInput = document.getElementById("gallery");
+  const receiptsInput = document.getElementById("receipts");
+
+  const heroFile = heroInput?.files?.[0] || null;
+  const galleryFiles = galleryInput ? Array.from(galleryInput.files || []) : [];
+  const receiptFiles = receiptsInput ? Array.from(receiptsInput.files || []) : [];
+
+  if (!name || !kakaoLink || !heroFile) {
+    throw new Error("필수 항목(이름/카카오링크/대표사진)을 입력하세요.");
   }
+
+  // 미리 doc ID 만들기 (Storage 경로에 사용)
+  const colRef = collection(db, "projects");
+  const newDoc = doc(colRef); // auto id
+  const id = newDoc.id;
+  const ts = Date.now();
+
+  // 1) 대표 이미지
+  const coverPath = `covers/${id}-${ts}.jpg`;
+  const coverUrl = await uploadAndGetURL(heroFile, coverPath);
+
+  // 2) 갤러리/영수증 이미지
   const galleryUrls = [];
-  for (const f of situFiles) {
-    if (f && f.size) {
-      const c = await compressImage(f, { maxDim: 1600, quality: 0.82 });
-      galleryUrls.push(await uploadFile(`gallery/${id}_${Date.now()}_${c.name}`, c));
-    }
+  for (let i = 0; i < galleryFiles.length; i++) {
+    const p = `gallery/${id}/${i}-${ts}.jpg`;
+    galleryUrls.push(await uploadAndGetURL(galleryFiles[i], p));
   }
   const receiptUrls = [];
-  for (const f of rcptFiles) {
-    if (f && f.size) {
-      const c = await compressImage(f, { maxDim: 1600, quality: 0.82 });
-      receiptUrls.push(await uploadFile(`receipts/${id}_${Date.now()}_${c.name}`, c));
-    }
+  for (let i = 0; i < receiptFiles.length; i++) {
+    const p = `receipts/${id}/${i}-${ts}.jpg`;
+    receiptUrls.push(await uploadAndGetURL(receiptFiles[i], p));
   }
 
-  await updateDoc(dRef, { representativeImageUrl: coverUrl || null, galleryUrls, receiptUrls });
-  return { id, ...dataCreate, representativeImageUrl: coverUrl, galleryUrls, receiptUrls };
-}
+  // 3) Firestore 저장 (초기엔 비승인)
+  const summary =
+    description.split(/\r?\n/)[0]?.slice(0, 60) || "";
 
-// 승인 토글
-export async function apiToggleApprove(id, will) {
-  const dRef = doc(db, 'projects', id);
-  await updateDoc(dRef, { adminApproved: will });
+  const payload = {
+    name,
+    kakaoLink,
+    description,
+    summary,
+    goalAmount,
+    rescuerContribution,
+    raisedAmount: 0,
+    coverUrl,
+    galleryUrls,
+    receiptUrls,
+    adminApproved: false,
+    createdAt: serverTimestamp(),
+  };
+
+  await setDoc(newDoc, payload);
+  return { id, ...payload };
 }
