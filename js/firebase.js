@@ -7,12 +7,12 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
 
-// ✅ Firebase 콘솔의 웹 앱 설정값 그대로 반영
+// ✅ Firebase 콘솔의 웹 앱 설정값 그대로 반영 (storageBucket만 .appspot.com 으로 교정)
 const firebaseConfig = {
   apiKey: "AIzaSyCNguz8K5MehFR5nydZ293hI60FQ9Jh5Tk",
   authDomain: "projectpaw-bf042.firebaseapp.com",
   projectId: "projectpaw-bf042",
-  storageBucket: "projectpaw-bf042.firebasestorage.app",
+  storageBucket: "projectpaw-bf042.appspot.com",   // ← 여기 교정!
   messagingSenderId: "340056180297",
   appId: "1:340056180297:web:20ae730ee45b0563062198",
   measurementId: "G-FEMJ80972P"
