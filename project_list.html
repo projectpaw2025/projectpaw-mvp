@@ -1,53 +1,69 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>프로젝트 목록 - Project.PAW</title>
-  <link rel="stylesheet" href="common.css"/>
-  <link rel="stylesheet" href="app.min.css"/>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>프로젝트 목록</title>
+<link rel="stylesheet" href="common.css"/>
+<link rel="stylesheet" href="app.min.css"/>
+<style>
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.card img{width:100%;height:180px;object-fit:cover;border-top-left-radius:16px;border-top-right-radius:16px}
+.card-body{padding:14px;display:flex;flex-direction:column;gap:8px}
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.8rem;border:1px solid #e5e7eb;color:#374151}
+.chip.approved{background:#ecfdf5;border-color:#bbf7d0;color:#065f46}
+.chip.pending{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+</style>
 </head>
 <body>
   <div data-include="header"></div>
 
-  <main class="projects">
-    <h1>진행 중인 프로젝트</h1>
-    <div id="projects-grid" class="grid">
-      <div class="muted">불러오는 중...</div>
-    </div>
+  <main class="container" style="padding:24px 16px">
+    <h1 style="margin:0 0 10px">프로젝트</h1>
+    <input id="q" placeholder="검색" style="padding:10px;border:1px solid #e5e7eb;border-radius:10px;width:100%;max-width:360px"/>
+    <div id="list" class="cards" style="margin-top:14px"></div>
   </main>
 
   <div data-include="footer"></div>
 
   <script type="module">
     import { injectLayout } from './js/include.js';
-    import { fetchApprovedProjects } from './js/api.js';
+    import { apiListProjects } from './js/api.js';
 
     injectLayout({ active:'list' });
 
-    const $grid = document.getElementById('projects-grid');
-    function fmt(n){ return Number(n||0).toLocaleString('ko-KR'); }
+    const $q=document.getElementById('q'),
+          $list=document.getElementById('list');
+
+    const cover=p=>p.coverUrl||p.representativeImageUrl||'img/placeholder.svg';
+
+    function match(p,q){
+      if(!q) return true;
+      const hay=[p.name,p.summary,p.description,p.rescuerName].map(x=>(x||'')+'').join(' ').toLowerCase();
+      return hay.includes(q.toLowerCase());
+    }
 
     async function render(){
-      try {
-        const list = await fetchApprovedProjects();
-        if(!list.length){
-          $grid.innerHTML = '<div class="muted">아직 승인된 프로젝트가 없습니다.</div>';
-          return;
-        }
-        $grid.innerHTML = list.map(p => `
-          <a class="card" href="project.html?id=${encodeURIComponent(p.id)}">
-            <img src="${p.coverUrl || (Array.isArray(p.images)&&p.images[0]) || 'img/placeholder.svg'}" alt=""/>
-            <h3>${p.name ?? '(이름 없음)'}</h3>
-            <div class="muted">${p.summary ?? ''}</div>
-            <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
-          </a>
-        `).join('');
-      } catch (e) {
-        console.error(e);
-        $grid.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
-      }
+      const all=await apiListProjects({status:'all'});
+      const list=all.filter(p=>match(p,$q.value.trim()));
+      $list.innerHTML=list.map(p=>`
+        <article class="card">
+          <img src="${cover(p)}"/>
+          <div class="card-body">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+              <strong>${p.name??'(이름 없음)'}</strong>
+              ${p.adminApproved?'<span class="chip approved">승인</span>':'<span class="chip pending">대기</span>'}
+            </div>
+            <div class="muted">${p.summary??''}</div>
+            <div style="text-align:right">
+              <a class="btn primary" style="padding:8px 12px;border-radius:10px" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a>
+            </div>
+          </div>
+        </article>`).join('');
+      if(!list.length) $list.innerHTML='<div class="muted">결과 없음</div>';
     }
+
+    $q.addEventListener('input', render);
     render();
   </script>
 </body>
