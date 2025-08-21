@@ -50,12 +50,18 @@
     const firstFromGallery = (p) =>
       Array.isArray(p.galleryUrls) && p.galleryUrls.length ? p.galleryUrls[0] : null;
 
-    // gs:// 또는 'covers/...' 같은 경로 → 표시 가능한 https URL
+    // gs:// 또는 '/covers/...', 'covers/...' 같은 경로 → 표시 가능한 https URL
     async function toHttpUrl(maybe) {
       if (!maybe) return null;
-      if (/^https?:\/\//i.test(maybe)) return maybe;   // 이미 URL
+      if (typeof maybe === 'string') maybe = maybe.trim();
+      if (/^https?:\/\//i.test(maybe)) return maybe; // 이미 URL
+      if (maybe.startsWith('/')) maybe = maybe.slice(1); // 선행 슬래시 제거
+      if (/^gs:\/\//i.test(maybe)) {
+        // 잘못 저장된 버킷 교정: *.firebasestorage.app → *.appspot.com
+        maybe = maybe.replace(/gs:\/\/([^/]+)\.firebasestorage\.app(\/|$)/i, 'gs://$1.appspot.com$2');
+      }
       try {
-        const r = ref(storage, maybe);                 // 'covers/...' 또는 'gs://...' 모두 허용
+        const r = ref(storage, maybe); // 'covers/...' 또는 교정된 gs://...
         return await getDownloadURL(r);
       } catch (e) {
         console.warn('getDownloadURL 실패:', maybe, e?.message || e);
