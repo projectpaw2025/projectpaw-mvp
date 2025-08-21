@@ -1,70 +1,48 @@
-// js/firebase.js (patched: anonymous auth + authReady)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+// assets/js/firebase.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
 import {
   getAuth,
-  signInAnonymously,
   onAuthStateChanged,
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-  getFirestore,
-  serverTimestamp,
-  collection,
-  doc,
-  setDoc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-  orderBy,
-  limit,
-  updateDoc,
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+  signInAnonymously,
+} from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js";
 
+/** 🔧 여기에 너의 Firebase config 붙여 넣어 */
 const firebaseConfig = {
-  apiKey: "AIzaSyCNguz8K5MehFR5nydZ293hI60FQ9Jh5Tk",
-  authDomain: "projectpaw-bf042.firebaseapp.com",
-  projectId: "projectpaw-bf042",
-  storageBucket: "projectpaw-bf042.appspot.com", // ⚠️ 반드시 appspot.com 으로!
-  messagingSenderId: "340056180297",
-  appId: "1:340056180297:web:20ae730ee45b0563062198",
-  measurementId: "G-FEMJ80972P"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",       // 예: projectpaw2025.firebaseapp.com
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",  // 예: projectpaw2025.appspot.com
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID",
 };
 
 export const app = initializeApp(firebaseConfig);
-
 export const auth = getAuth(app);
-let _resolveAuthReady;
-export const authReady = new Promise((res)=>{ _resolveAuthReady = res; });
-onAuthStateChanged(auth, (user)=>{
-  if (user) {
-    _resolveAuthReady && _resolveAuthReady(user);
-  } else {
-    signInAnonymously(auth).catch(err=>{ console.error("Anonymous sign-in failed:", err); _resolveAuthReady && _resolveAuthReady(null); });
-  }
-});
-
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-export {
-  serverTimestamp,
-  collection,
-  doc,
-  setDoc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-  orderBy,
-  limit,
-  updateDoc,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-};
+/** ✅ 익명 로그인 준비 Promise (어디서든 await 가능) */
+export const authReady = (async () => {
+  return new Promise((resolve, reject) => {
+    const unsub = onAuthStateChanged(
+      auth,
+      async (user) => {
+        if (user) {
+          unsub();
+          resolve(user);
+        } else {
+          try {
+            const cred = await signInAnonymously(auth);
+            unsub();
+            resolve(cred.user);
+          } catch (e) {
+            reject(e);
+          }
+        }
+      },
+      reject
+    );
+  });
+})();
