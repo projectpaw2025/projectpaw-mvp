@@ -3,116 +3,62 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>관리자 페이지</title>
+<title>관리자 로그인</title>
 <link rel="stylesheet" href="common.css"/>
 <link rel="stylesheet" href="app.min.css"/>
 <style>
-.wrap{max-width:960px;margin:0 auto;padding:20px 16px}
-table{width:100%;border-collapse:collapse;margin-top:20px}
-th,td{border:1px solid #e5e7eb;padding:10px;font-size:.9rem;text-align:left}
-th{background:#f9fafb}
-.actions{display:flex;gap:6px}
-button{padding:6px 10px;border-radius:8px;border:1px solid #ccc;cursor:pointer}
-button.approve{background:#16a34a;color:#fff;border:none}
-button.delete{background:#dc2626;color:#fff;border:none}
+.wrap{max-width:400px;margin:0 auto;padding:40px 16px;text-align:center}
+form{display:grid;gap:14px;margin-top:20px}
+input{padding:10px;border:1px solid #e5e7eb;border-radius:10px}
+button{padding:10px;border-radius:10px;background:#111;color:#fff;cursor:pointer}
+.error{color:#dc2626;font-size:.9rem;margin-top:10px}
 </style>
 </head>
 <body>
-  <div data-include="header"></div>
-
   <main class="wrap">
-    <h1>관리자 승인 페이지</h1>
-    <p>등록된 프로젝트를 확인하고 승인/삭제할 수 있습니다.</p>
-    <table>
-      <thead>
-        <tr>
-          <th>프로젝트명</th>
-          <th>구조자</th>
-          <th>요약</th>
-          <th>상태</th>
-          <th>액션</th>
-        </tr>
-      </thead>
-      <tbody id="projects-body">
-        <tr><td colspan="5" class="muted">불러오는 중...</td></tr>
-      </tbody>
-    </table>
+    <h1>관리자 로그인</h1>
+    <p>이메일과 비밀번호로 로그인하세요.</p>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="이메일" required/>
+      <input type="password" id="password" placeholder="비밀번호" required/>
+      <button type="submit">로그인</button>
+      <div id="error" class="error"></div>
+    </form>
   </main>
 
-  <div data-include="footer"></div>
-
   <script type="module">
-    import { injectLayout } from './js/include.js';
-    import { fetchAllProjects, approveProject, deleteProject } from './js/api.js';
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { app } from "./js/firebase.js";
 
-    injectLayout({ active:'admin' });
-
     const auth = getAuth(app);
-    const $body=document.getElementById('projects-body');
+    const form = document.getElementById("loginForm");
+    const errorDiv = document.getElementById("error");
 
-    // 로그인 체크 → 없으면 admin-login.html로 이동
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        alert("관리자 로그인이 필요합니다.");
-        window.location.href = "admin-login.html";
-      } else {
-        console.log("로그인된 사용자:", user.email);
-        render();
-      }
-    });
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorDiv.textContent = "";
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
 
-    function fmtStatus(p){return p.adminApproved?"승인됨 ✅":"대기중 ⏳"}
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        console.log("로그인 성공:", user.uid);
 
-    async function render(){
-      try{
-        const list=await fetchAllProjects();
-        if(!list.length){
-          $body.innerHTML='<tr><td colspan="5" class="muted">아직 등록된 프로젝트가 없습니다.</td></tr>';
-          return;
+        // 최신 토큰 가져오기 (custom claims 포함)
+        const token = await user.getIdTokenResult(true);
+        console.log("토큰 claims:", token.claims);
+
+        if (token.claims.admin === true) {
+          // 관리자 권한 있음 → admin.html로 이동
+          window.location.href = "admin.html";
+        } else {
+          errorDiv.textContent = "⚠️ 관리자 권한이 없는 계정입니다.";
         }
-        $body.innerHTML=list.map(p=>`
-          <tr>
-            <td>${p.name??'(이름 없음)'}</td>
-            <td>${p.rescuerName??'-'}</td>
-            <td>${p.summary??''}</td>
-            <td>${fmtStatus(p)}</td>
-            <td class="actions">
-              ${!p.adminApproved?`<button class="approve" data-id="${p.id}">승인</button>`:''}
-              <button class="delete" data-id="${p.id}">삭제</button>
-            </td>
-          </tr>`).join('');
-      }catch(e){
-        console.error("프로젝트 목록 불러오기 실패:", e);
-        $body.innerHTML='<tr><td colspan="5" class="muted">프로젝트를 불러오지 못했습니다.</td></tr>';
-      }
-    }
 
-    $body.addEventListener('click', async e=>{
-      if(e.target.matches('.approve')){
-        if(confirm("승인하시겠습니까?")){
-          try {
-            await approveProject(e.target.dataset.id);
-            alert("승인되었습니다.");
-          } catch(err) {
-            console.error("승인 실패:", err);
-            alert("승인 실패: " + (err.message || '권한 문제일 수 있습니다.'));
-          }
-          render();
-        }
-      }
-      if(e.target.matches('.delete')){
-        if(confirm("삭제하시겠습니까?")){
-          try {
-            await deleteProject(e.target.dataset.id);
-            alert("삭제되었습니다.");
-          } catch(err) {
-            console.error("삭제 실패:", err);
-            alert("삭제 실패: " + (err.message || '권한 문제일 수 있습니다.'));
-          }
-          render();
-        }
+      } catch (err) {
+        console.error("로그인 실패:", err);
+        errorDiv.textContent = "로그인 실패: " + (err.message || "");
       }
     });
   </script>
