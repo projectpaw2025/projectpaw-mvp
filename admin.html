@@ -28,15 +28,19 @@ button{padding:10px;border-radius:10px;background:#111;color:#fff;cursor:pointer
 
   <script type="module">
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { app } from "./js/firebase.js";
 
     const auth = getAuth(app);
+    const db = getFirestore(app);
+
     const form = document.getElementById("loginForm");
     const errorDiv = document.getElementById("error");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       errorDiv.textContent = "";
+
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
@@ -45,12 +49,12 @@ button{padding:10px;border-radius:10px;background:#111;color:#fff;cursor:pointer
         const user = userCredential.user;
         console.log("로그인 성공:", user.uid);
 
-        // 최신 토큰 가져오기 (custom claims 포함)
-        const token = await user.getIdTokenResult(true);
-        console.log("토큰 claims:", token.claims);
+        // Firestore에서 admin 여부 확인
+        const adminRef = doc(db, "admins", user.uid);
+        const adminSnap = await getDoc(adminRef);
 
-        if (token.claims.admin === true) {
-          // 관리자 권한 있음 → admin.html로 이동
+        if (adminSnap.exists() && adminSnap.data().role === "admin") {
+          console.log("✅ 관리자 권한 확인됨");
           window.location.href = "admin.html";
         } else {
           errorDiv.textContent = "⚠️ 관리자 권한이 없는 계정입니다.";
