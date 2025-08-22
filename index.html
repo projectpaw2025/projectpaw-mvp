@@ -54,11 +54,36 @@
     }
 
     /* Cases */
-    .cases{background:#f6f6f6}
-    .cases h2{text-align:center; font-size:1.8rem; font-weight:900; margin-bottom:30px}
-    .case-list{max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:14px}
-    .case-item{font-size:1.15rem; font-weight:600; line-height:1.55; text-align:center}
-    .case-item strong{color:var(--mocha)}
+    .cases{background:#f6f6f6; padding:64px 0}
+    .cases h2{
+      text-align:center; 
+      font-size:1.8rem; 
+      font-weight:900; 
+      margin-bottom:40px
+    }
+    .case-grid{
+      display:grid; 
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); 
+      gap:20px; 
+      max-width:900px; 
+      margin:0 auto;
+    }
+    .case-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:26px 22px;
+      font-size:1.15rem;
+      font-weight:600;
+      line-height:1.5;
+      text-align:center;
+      transition:.2s;
+    }
+    .case-card:hover{
+      background:#fafafa;
+      transform:translateY(-3px);
+      box-shadow:0 6px 14px rgba(0,0,0,.06);
+    }
 
     /* Projects */
     .projects h2{margin:0; font-size:1.7rem; font-weight:900; letter-spacing:-.01em}
@@ -100,11 +125,11 @@
   <section class="cases">
     <div class="container">
       <h2>이런 순간, PAW가 함께합니다</h2>
-      <div class="case-list">
-        <div class="case-item">“구조 후 병원에 갔지만 진료비가 큰 짐이 될 때”</div>
-        <div class="case-item">“국가지원 밖에서 홀로 감당해야 하는 중성화”</div>
-        <div class="case-item">“유기동물 입양 후 첫 건강검진과 예방접종”</div>
-        <div class="case-item">“그 외에도 투명한 영수증으로 확인 가능한 구조 활동”</div>
+      <div class="case-grid">
+        <div class="case-card">“구조 후 병원에 갔지만 진료비가 큰 짐이 될 때”</div>
+        <div class="case-card">“국가지원 밖에서 홀로 감당해야 하는 중성화”</div>
+        <div class="case-card">“유기동물 입양 후 첫 건강검진과 예방접종”</div>
+        <div class="case-card">“그 외에도 투명한 영수증으로 확인 가능한 구조 활동”</div>
       </div>
     </div>
   </section>
@@ -141,26 +166,3 @@
 
     async function render(){
       try {
-        const list = await apiListProjects({ status:'approved', limit:12 });
-        if(!list.length){
-          $grid.innerHTML = '<div class="muted">아직 승인된 프로젝트가 없습니다.</div>';
-          return;
-        }
-        $grid.innerHTML = list.map(p => `
-          <a class="project-card" href="project.html?id=${encodeURIComponent(p.id)}">
-            <img src="${cover(p)}" alt=""/>
-            <h3>${p.name ?? '(이름 없음)'}</h3>
-            <div class="muted">${p.summary ?? ''}</div>
-            <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
-          </a>
-        `).join('');
-      } catch (e) {
-        console.error(e);
-        $grid.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
-      }
-    }
-
-    render();
-  </script>
-</body>
-</html>
