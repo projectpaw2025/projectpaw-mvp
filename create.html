@@ -14,7 +14,7 @@ input,textarea{width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:10
 textarea{min-height:120px;resize:vertical}
 .grid2{display:grid;gap:12px;grid-template-columns:1fr 1fr}
 @media(max-width:760px){.grid2{grid-template-columns:1fr}}
-.note{color:#6b7280;font-size:.85rem}
+.note{color:#6b7280;font-size:.85rem;margin-top:4px}
 .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
 .disabled{opacity:.6;pointer-events:none}
 /* 작성 가이드 */
@@ -46,10 +46,23 @@ textarea{min-height:120px;resize:vertical}
     <h1 style="margin:0 0 6px">프로젝트 등록</h1>
     <form id="form">
       <div class="grid2">
-        <div><label>동물 이름</label><input name="name" required/></div>
-        <div><label>구조자 이름</label><input name="rescuerName" required/></div>
+        <div>
+          <label>동물 이름</label>
+          <input name="name" placeholder="예: 초코" required/>
+          <div class="note">구조한 동물의 이름이나 별칭을 입력해주세요.</div>
+        </div>
+        <div>
+          <label>구조자 이름</label>
+          <input name="rescuerName" placeholder="예: 김철수" required/>
+          <div class="note">본인의 이름이나 닉네임을 입력해주세요.</div>
+        </div>
       </div>
-      <div><label>상황 요약</label><input name="summary" required/></div>
+
+      <div>
+        <label>상황 요약</label>
+        <input name="summary" placeholder="예: 교통사고로 다친 강아지 치료비 모금" required/>
+        <div class="note">한 줄 요약은 목록 화면에 표시됩니다.</div>
+      </div>
 
       <!-- 작성 가이드 -->
       <div class="guide-box">
@@ -63,30 +76,46 @@ textarea{min-height:120px;resize:vertical}
       <div>
         <label>상세 설명</label>
         <textarea name="description" id="desc" maxlength="500" required></textarea>
-        <div class="note"><span id="descCount">0</span> / 500자</div>
+        <div class="note"><span id="descCount">0</span> / 500자 (최소 100자 이상 작성 권장)</div>
       </div>
 
       <div class="grid2">
-        <div><label>목표 금액(원)</label><input type="number" name="goalAmount" min="0" required/></div>
-        <div><label>구조자 부담액(원)</label><input type="number" name="rescuerContribution" min="0" required/></div>
+        <div>
+          <label>목표 금액</label>
+          <input type="text" id="goalAmount" placeholder="예: 500,000원" required/>
+          <div class="note">동물 치료·돌봄에 필요한 금액을 입력해주세요.</div>
+        </div>
+        <div>
+          <label>구조자 부담액</label>
+          <input type="text" id="rescuerContribution" placeholder="예: 100,000원" required/>
+          <div class="note">구조자가 직접 부담하는 금액을 입력해주세요.</div>
+        </div>
       </div>
-      <div><label>등록자 카카오톡 ID</label><input name="registrantKakaoId" required/></div>
+
+      <div>
+        <label>등록자 카카오톡 ID</label>
+        <input name="registrantKakaoId" placeholder="예: g123abcd" required/>
+        <div class="note">후원자와 소통할 수 있는 오픈채팅방 ID를 입력해주세요.</div>
+      </div>
 
       <div>
         <label>대표 사진 (1장)</label>
         <input type="file" id="repImage" accept="image/*" required/>
+        <div class="note">동물을 가장 잘 보여줄 수 있는 대표 사진 1장을 선택해주세요.</div>
         <div class="preview" id="previewRep"></div>
       </div>
 
       <div>
         <label>구조 상황 사진 (여러 장)</label>
         <input type="file" id="situationImages" accept="image/*" multiple/>
+        <div class="note">구조/치료 과정을 보여주는 사진을 추가해주세요.</div>
         <div class="preview" id="previewSituation"></div>
       </div>
 
       <div>
         <label>영수증 사진 (여러 장)</label>
         <input type="file" id="receiptImages" accept="image/*" multiple/>
+        <div class="note">진료비·치료비 증빙용 영수증을 첨부해주세요.</div>
         <div class="preview" id="previewReceipt"></div>
       </div>
 
@@ -116,6 +145,22 @@ textarea{min-height:120px;resize:vertical}
     desc.addEventListener('input', ()=>{
       descCount.textContent = desc.value.length;
     });
+
+    // 금액 입력 → 원화 표기
+    function setupCurrencyInput(el){
+      el.addEventListener("input", ()=>{
+        const raw = el.value.replace(/[^0-9]/g,"");
+        if(raw){
+          el.value = Number(raw).toLocaleString("ko-KR") + "원";
+          el.dataset.value = raw;
+        } else {
+          el.value = "";
+          el.dataset.value = "";
+        }
+      });
+    }
+    setupCurrencyInput(document.getElementById("goalAmount"));
+    setupCurrencyInput(document.getElementById("rescuerContribution"));
 
     // 미리보기 + 삭제 기능
     function setupPreview(inputId, previewId){
@@ -164,8 +209,8 @@ textarea{min-height:120px;resize:vertical}
           rescuerName: fd.get("rescuerName"),
           summary: fd.get("summary"),
           description: fd.get("description"),
-          goalAmount: fd.get("goalAmount"),
-          rescuerContribution: fd.get("rescuerContribution"),
+          goalAmount: document.getElementById("goalAmount").dataset.value || 0,
+          rescuerContribution: document.getElementById("rescuerContribution").dataset.value || 0,
           registrantKakaoId: fd.get("registrantKakaoId"),
           coverFile: document.getElementById('repImage').files[0] || null,
           galleryFiles: Array.from(document.getElementById('situationImages').files),
