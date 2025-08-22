@@ -33,14 +33,12 @@ button{padding:10px;border-radius:10px;background:#111;color:#fff;cursor:pointer
 
     const auth = getAuth(app);
     const db = getFirestore(app);
-
     const form = document.getElementById("loginForm");
     const errorDiv = document.getElementById("error");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       errorDiv.textContent = "";
-
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
@@ -49,12 +47,12 @@ button{padding:10px;border-radius:10px;background:#111;color:#fff;cursor:pointer
         const user = userCredential.user;
         console.log("로그인 성공:", user.uid);
 
-        // Firestore에서 admin 여부 확인
+        // ✅ Firestore에서 admin 여부 확인
         const adminRef = doc(db, "admins", user.uid);
-        const adminSnap = await getDoc(adminRef);
+        const snap = await getDoc(adminRef);
 
-        if (adminSnap.exists() && adminSnap.data().role === "admin") {
-          console.log("✅ 관리자 권한 확인됨");
+        if (snap.exists() && snap.data().role === "admin") {
+          // 관리자 권한 있음 → 관리자 페이지 이동
           window.location.href = "admin.html";
         } else {
           errorDiv.textContent = "⚠️ 관리자 권한이 없는 계정입니다.";
