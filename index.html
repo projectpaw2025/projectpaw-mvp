@@ -23,24 +23,12 @@
 
     /* Hero */
     .hero{text-align:center; padding:100px 20px 70px}
-    .hero h1{margin:0 0 20px; font-size:3.4rem; font-weight:900; line-height:1.15; letter-spacing:-.02em}
+    .hero h1{margin:0 0 28px; font-size:3.4rem; font-weight:900; line-height:1.15; letter-spacing:-.02em}
     .hero p.sub{margin:6px 0; font-size:1.25rem; font-weight:700; color:var(--sub); letter-spacing:-.01em}
 
-    /* Chips */
-    .chips{
-      margin-top:28px;
-      display:flex; gap:14px; justify-content:center; flex-wrap:wrap;
-    }
-    .chip{
-      background:var(--mocha);
-      color:#fff;
-      padding:14px 22px;
-      border-radius:999px;
-      font-weight:800;
-      font-size:1.1rem;
-      transition:.2s;
-    }
-    .chip:hover{ background:var(--mocha-dark) }
+    /* Brand Promises */
+    .promises{margin-top:34px; display:flex; flex-direction:column; gap:18px; align-items:center}
+    .promise{font-size:1.35rem; font-weight:900; letter-spacing:-.01em; color:var(--mocha)}
 
     /* Buttons */
     .btn{display:inline-block; padding:13px 20px; border-radius:12px; font-weight:800; text-decoration:none; transition:.2s}
@@ -49,23 +37,13 @@
     .btn.secondary{border:2px solid var(--mocha); color:var(--mocha); background:#fff}
     .btn.secondary:hover{background:#f7f5f4}
 
-    /* 환영하는 구조 케이스 */
+    /* Cases */
     .cases{background:#f6f6f6}
-    .cases h2{text-align:center; font-size:1.8rem; font-weight:900; margin-bottom:40px}
-    .case-list{max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:22px}
-    .case-item{
-      background:#fff;
-      border:2px solid var(--line);
-      border-radius:12px;
-      padding:22px 26px;
-      font-weight:800;
-      font-size:1.15rem;
-      line-height:1.45;
-      transition:.2s;
-    }
-    .case-item:hover{background:#fafafa; transform:translateY(-2px)}
+    .cases h2{text-align:center; font-size:1.8rem; font-weight:900; margin-bottom:30px}
+    .case-list{max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:14px}
+    .case-item{font-size:1.15rem; font-weight:600; line-height:1.55; text-align:center}
     .case-item strong{color:var(--mocha)}
-    
+
     /* Projects */
     .projects h2{margin:0; font-size:1.7rem; font-weight:900; letter-spacing:-.01em}
     .projects .header{display:flex; justify-content:space-between; align-items:center; margin-bottom:24px}
@@ -103,24 +81,24 @@
       <h1>개인↔개인을 연결하는, 국내 첫 기부 플랫폼</h1>
       <p class="sub">#흩어진 개인 구조 활동을 PAW에서 연결하고 싶었습니다.</p>
       <p class="sub">#혼자 시작한 구조가 혼자 끝나지 않도록 투명하게</p>
-      <div class="chips">
-        <span class="chip">개인↔개인</span>
-        <span class="chip">후원금 100% 전달</span>
-        <span class="chip">구조자 30% 책임</span>
-        <span class="chip">증빙 필수</span>
+      <div class="promises">
+        <div class="promise">개인 ↔ 개인 직접 연결</div>
+        <div class="promise">후원금 100% 전달</div>
+        <div class="promise">구조자 30% 책임</div>
+        <div class="promise">증빙 필수, 투명성 보장</div>
       </div>
     </div>
   </section>
 
-  <!-- 환영하는 구조케이스 -->
+  <!-- Cases -->
   <section class="cases">
     <div class="container">
-      <h2>등록 가능한 케이스 (환영합니다)</h2>
+      <h2>이런 순간, PAW가 함께합니다</h2>
       <div class="case-list">
-        <div class="case-item"><strong>병원비 증빙</strong>이 있는 유기동물 구조</div>
-        <div class="case-item"><strong>국가지원 제외</strong>된 중성화 수술</div>
-        <div class="case-item">입양 직후 <strong>필수 검진·예방 접종</strong> 비용</div>
-        <div class="case-item">그 외 보호·구조 활동에 <strong>투명한 영수증</strong>이 있는 경우</div>
+        <div class="case-item">“구조 후 병원에 갔지만 진료비가 큰 짐이 될 때”</div>
+        <div class="case-item">“국가지원 밖에서 홀로 감당해야 하는 중성화”</div>
+        <div class="case-item">“유기동물 입양 후 첫 건강검진과 예방접종”</div>
+        <div class="case-item">“그 외에도 투명한 영수증으로 확인 가능한 구조 활동”</div>
       </div>
     </div>
   </section>
