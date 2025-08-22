@@ -8,171 +8,90 @@
   <link rel="stylesheet" href="app.min.css"/>
   <style>
     :root{
-      --ink:#111;
-      --sub:#444;
-      --muted:#777;
-      --line:#eaeaea;
-      --bg:#fafafa;
-      --card:#ffffff;
-      --brand:#00C896;
+      --ink:#111; --sub:#444; --muted:#777; --line:#eaeaea;
+      --bg:#fafafa; --card:#fff; --brand:#00C896;
     }
-    /* Global */
-    html,body{background:var(--bg); color:var(--ink); font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; margin:0}
-    section{padding:88px 20px}
-    .container{max-width:1200px; margin:0 auto}
-    h1{font-size:3rem; line-height:1.2; letter-spacing:-.02em; margin:0 0 14px; font-weight:900}
-    h2{font-size:2rem; letter-spacing:-.01em; margin:0 0 34px; font-weight:800; text-align:center}
-    p{font-size:1.1rem; line-height:1.7; color:var(--sub); margin:0}
-    .btn{display:inline-block; padding:14px 24px; border-radius:12px; font-weight:700; text-decoration:none; transition:.2s}
+    html,body{margin:0; background:var(--bg); color:var(--ink); font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .container{max-width:1100px; margin:0 auto; padding:0 16px}
+
+    /* spacing & typography */
+    section{padding:72px 0}
+    h1{margin:0 0 12px; font-size:2.4rem; font-weight:900; letter-spacing:-.02em; line-height:1.25}
+    p{margin:0; color:var(--sub); line-height:1.6}
+    .btn{display:inline-block; padding:12px 20px; border-radius:10px; font-weight:700; text-decoration:none; transition:.2s}
     .btn.primary{background:var(--brand); color:#fff}
     .btn.primary:hover{filter:saturate(110%) brightness(.98)}
     .btn.secondary{border:2px solid var(--brand); color:var(--brand); background:#fff}
-    .btn.secondary:hover{background:#f4fffb}
-    .badge{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; font-size:.9rem; font-weight:700; background:#e8fff6; color:#046e54; border:1px solid #bff3e1}
+    .btn.secondary:hover{background:#f3fffb}
+    .badge{display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:999px; font-size:.9rem; font-weight:700; background:#e8fff6; color:#046e54; border:1px solid #bff3e1}
 
-    /* Hero */
-    .hero{background:linear-gradient(135deg,#fff 0%,#f6fbff 50%,#ffffff 100%); padding:110px 20px}
-    .hero-grid{display:grid; grid-template-columns:1.2fr .8fr; gap:40px; align-items:center}
-    .hero-copy p{margin-bottom:18px}
-    .hero-cta{margin-top:22px; display:flex; gap:12px; flex-wrap:wrap}
-    .hero-art{
-      height:320px; border-radius:20px; background:#fff; border:1px solid var(--line);
-      display:grid; place-items:center; position:relative; overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,.06)
-    }
-    .hero-art::before{
-      content:""; position:absolute; inset:-40% -20% auto -20%;
-      height:200%; transform:rotate(8deg);
-      background:repeating-linear-gradient(45deg, #f7fffb 0 16px, #ffffff 16px 32px);
-      opacity:.75
-    }
-    .hero-paw{
-      position:relative; z-index:1; font-size:84px; filter:drop-shadow(0 6px 14px rgba(0,0,0,.08))
-    }
-    .hero-kicker{margin-top:10px; font-size:.95rem; color:var(--muted)}
+    /* HERO (one column, compact) */
+    .hero{background:#fff}
+    .hero .cta{margin-top:18px; display:flex; gap:10px; flex-wrap:wrap}
+    .hero .micro{margin-top:10px; color:var(--muted); font-size:.95rem}
+    .hero .chips{margin-top:18px; display:flex; gap:8px; flex-wrap:wrap}
+    .chip{border:1px solid var(--line); background:#fff; padding:8px 12px; border-radius:999px; font-weight:700; font-size:.9rem}
 
-    /* Highlights (3~4 카드로 가로 공간 활용) */
-    .highlights{background:#f9fafb}
-    .hl-grid{display:grid; grid-template-columns:repeat(12,1fr); gap:20px}
-    .card{
-      background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px;
-      box-shadow:0 6px 18px rgba(0,0,0,.04); transition:.2s
-    }
-    .card:hover{transform:translateY(-4px); box-shadow:0 10px 24px rgba(0,0,0,.06)}
-    .hl-card{grid-column:span 4; text-align:center; font-weight:800; font-size:1.15rem; line-height:1.5}
-    .hl-card small{display:block; margin-top:8px; font-weight:600; color:var(--sub); font-size:.95rem}
+    /* VALUE STRIP (one band, 4 compact items) */
+    .values{background:#f8faf9; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+    .val-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+    .val{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; display:flex; align-items:center; gap:10px; font-weight:800}
+    .val i{font-style:normal; font-size:1.25rem}
+    .val small{display:block; font-weight:600; color:var(--sub); font-size:.9rem}
 
-    /* Trust (왼쪽 3카드 / 오른쪽 Beta 상태박스) */
-    .trust-grid{display:grid; grid-template-columns:2fr 1fr; gap:28px; align-items:stretch}
-    .trust-cards{display:grid; grid-template-columns:repeat(3,1fr); gap:20px}
-    .trust-card{text-align:center}
-    .trust-card .icon{font-size:1.8rem; margin-bottom:10px}
-    .stats{display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px}
-    .stats h3{margin:0; font-size:1.2rem; font-weight:800}
-    .stats strong{font-size:1.2rem; color:var(--brand)}
-    .stats .note{font-size:.95rem; color:var(--muted); text-align:center}
-
-    /* Projects (원본 그리드 유지, 시각 보정만) */
-    .projects h2{margin-bottom:22px}
-    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:22px}
-    .card.project{padding:16px}
-    .card.project img{width:100%; height:180px; object-fit:cover; border-radius:12px}
-    .card.project h3{font-size:1.05rem; margin:8px 0 4px}
+    /* PROJECTS (keep data + just polish cards) */
+    .projects h2{margin:0 0 16px; font-size:1.4rem; font-weight:900; letter-spacing:-.01em}
+    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px}
+    .card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; transition:.2s}
+    .card:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.06)}
+    .card img{width:100%; height:168px; object-fit:cover; border-radius:10px}
+    .card h3{margin:8px 0 4px; font-size:1.03rem}
     .muted{color:var(--muted); font-size:.9rem}
 
-    /* Closing (2컬럼: 좌 선언 / 우 예시) */
-    .closing{background:#fff}
-    .closing-grid{display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:center}
-    .closing strong{display:block; font-size:1.4rem; font-weight:900; line-height:1.5}
-    .example{font-size:.98rem; color:var(--sub)}
-    .example.card{padding:24px}
-
-    /* Responsive */
-    @media (max-width:1024px){
-      .hero-grid{grid-template-columns:1fr; gap:24px}
-      .trust-grid{grid-template-columns:1fr; gap:22px}
-      .trust-cards{grid-template-columns:1fr 1fr}
+    @media (max-width:900px){
+      .val-grid{grid-template-columns:repeat(2,1fr)}
     }
-    @media (max-width:720px){
-      section{padding:70px 16px}
-      h1{font-size:2.2rem}
-      h2{font-size:1.6rem}
-      .hl-card{grid-column:span 12}
-      .trust-cards{grid-template-columns:1fr}
-      .closing-grid{grid-template-columns:1fr}
+    @media (max-width:560px){
+      h1{font-size:2rem}
+      section{padding:56px 0}
+      .val-grid{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
-  <!-- header include 유지 -->
+  <!-- header include (원본 유지) -->
   <div data-include="header"></div>
 
-  <!-- Hero -->
+  <!-- HERO -->
   <section class="hero">
-    <div class="container hero-grid">
-      <div class="hero-copy">
-        <span class="badge">🐾 Beta 서비스 중 · 카톡방 모금 운영</span>
-        <h1>후원, 왜 이렇게 복잡했을까요?</h1>
-        <p>
-          Project.PAW는 <b>구조자(개인) ↔ 후원자(개인)</b>을 바로 연결합니다.<br/>
-          단순하고 투명한 방식, 이제 시작합니다.
-        </p>
-        <div class="hero-cta">
-          <a href="project_list.html" class="btn primary">지금 구조자 만나보기</a>
-          <a href="create.html" class="btn secondary">등록하기</a>
-        </div>
-        <div class="hero-kicker">결제(PG) 연동 준비 중 — 연결 경험은 지금도 매끄럽게.</div>
-      </div>
-      <div class="hero-art">
-        <div class="hero-paw">🐾</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Highlights -->
-  <section class="highlights">
     <div class="container">
-      <h2>우리가 해결하는 것</h2>
-      <div class="hl-grid">
-        <div class="card hl-card">돕고 싶은 마음,<br/>연결로 실현<small>개인 간 바로 연결되는 후원</small></div>
-        <div class="card hl-card">망설임 대신,<br/>행동으로<small>즉시 참여 가능한 구조 흐름</small></div>
-        <div class="card hl-card">돈보다 중요한 건<br/>신뢰와 연결<small>사진·영수증 기반의 투명성</small></div>
-        <div class="card hl-card">구조자 부담 30%<br/>원칙<small>도덕적 해이 방지, 책임 분담</small></div>
+      <span class="badge">🐾 Beta 서비스 · 지금은 카톡방 모금 운영</span>
+      <h1>후원, 왜 이렇게 복잡했을까요?</h1>
+      <p>Project.PAW는 <b>구조자(개인) ↔ 후원자(개인)</b>을 바로 연결합니다. 단순하고 투명하게.</p>
+      <div class="chips">
+        <span class="chip">개인 ↔ 개인 직연결</span>
+        <span class="chip">구조자 30% 부담 원칙</span>
+        <span class="chip">기부금 100% 전달</span>
       </div>
+      <div class="cta">
+        <a href="project_list.html" class="btn primary">지금 구조자 만나보기</a>
+        <a href="create.html" class="btn secondary">등록하기</a>
+      </div>
+      <div class="micro">결제(PG) 연동 준비 중 — 붙으면 더 매끄럽게 이어집니다.</div>
     </div>
   </section>
 
-  <!-- Trust -->
-  <section class="trust">
-    <div class="container">
-      <h2>신뢰 설계</h2>
-      <div class="trust-grid">
-        <div class="trust-cards">
-          <div class="card trust-card">
-            <div class="icon">🔒</div>
-            <div class="h3" style="font-weight:800; margin-bottom:6px">구조자 30% 부담</div>
-            <p>책임을 함께 나누는 원칙입니다.</p>
-          </div>
-          <div class="card trust-card">
-            <div class="icon">🏥</div>
-            <div class="h3" style="font-weight:800; margin-bottom:6px">Direct 결제 준비</div>
-            <p>곧 병원으로 바로 결제됩니다.</p>
-          </div>
-          <div class="card trust-card">
-            <div class="icon">🤝</div>
-            <div class="h3" style="font-weight:800; margin-bottom:6px">기부금 100% 전달</div>
-            <p>수수료는 플랫폼이 부담합니다.</p>
-          </div>
-        </div>
-        <div class="card stats">
-          <h3>📊 지금까지의 연결</h3>
-          <strong>Beta 서비스 중</strong>
-          <p class="note">지표는 쌓이는 중입니다.</p>
-        </div>
-      </div>
+  <!-- VALUE STRIP (압축 정보, 한 밴드) -->
+  <section class="values">
+    <div class="container val-grid">
+      <div class="val"><i>🔗</i>개인 간 연결<small>단체 통로 없이 바로</small></div>
+      <div class="val"><i>🔒</i>책임 설계<small>구조자 30% 부담</small></div>
+      <div class="val"><i>🏥</i>Direct 결제(준비)<small>병원으로 바로 결제</small></div>
+      <div class="val"><i>🤝</i>100% 전달<small>수수료는 플랫폼 부담</small></div>
     </div>
   </section>
 
-  <!-- Projects (원본 로직/ID 유지) -->
+  <!-- PROJECTS (원본 데이터 연동 유지) -->
   <section class="projects">
     <div class="container">
       <h2>진행 중인 프로젝트</h2>
@@ -182,25 +101,10 @@
     </div>
   </section>
 
-  <!-- Closing -->
-  <section class="closing">
-    <div class="container closing-grid">
-      <div>
-        <strong>Project.PAW — ‘개인 ↔ 개인 후원’을 위한 새로운 기본값.</strong>
-        <p>단체를 거치지 않고, 바로 이어집니다.</p>
-      </div>
-      <div class="card example">
-        <p><b>예시</b> · 한 구조자가 다친 고양이를 병원에 데려갔습니다.<br/>
-        치료비는 벅찼지만, Project.PAW에서 후원자와 바로 연결.<br/>
-        책임은 나누고, 치료는 이어졌습니다.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- footer include 유지 -->
+  <!-- footer include (원본 유지) -->
   <div data-include="footer"></div>
 
-  <!-- 원본 스크립트(백엔드 연동/화면간 연동) 그대로 유지 -->
+  <!-- 원본 스크립트/연동 그대로 -->
   <script type="module">
     import { injectLayout } from './js/include.js';
     import { apiListProjects } from './js/api.js';
@@ -226,7 +130,7 @@
           return;
         }
         $grid.innerHTML = list.map(p => `
-          <a class="card project" href="project.html?id=${encodeURIComponent(p.id)}">
+          <a class="card" href="project.html?id=${encodeURIComponent(p.id)}">
             <img src="${cover(p)}" alt=""/>
             <h3>${p.name ?? '(이름 없음)'}</h3>
             <div class="muted">${p.summary ?? ''}</div>
