@@ -29,29 +29,20 @@
     /* Hero */
     .hero{
       text-align:center;
-      padding:120px 20px 60px; /* 🔽 headline 더 내려옴 */
+      padding:80px 20px 20px; /* 🔽 위 여백 줄이고 아래 카드랑 더 가까워짐 */
       background:var(--bg);
     }
     .hero h1{
-      margin:0 0 24px;
+      margin:0;
       font-size:3rem;
       font-weight:900;
       line-height:1.3;
       letter-spacing:-.02em;
-      white-space:pre-line;
       color:var(--mocha);
-    }
-    .hero p.sub{
-      margin:8px 0;
-      font-size:1.2rem;
-      font-weight:600;
-      color:var(--sub);
-      letter-spacing:-.01em;
-      white-space:pre-line;
     }
 
     /* Story Cards */
-    .story-cards{background:var(--bg); padding:60px 0}
+    .story-cards{background:var(--bg); padding:40px 0} /* 🔽 위 padding 줄임 */
     .card-grid{
       display:grid;
       grid-template-columns:repeat(2,1fr); /* PC 2x2 */
@@ -175,8 +166,6 @@
   <section class="hero">
     <div class="container">
       <h1>개인↔개인을 연결하는, 국내 첫 기부 플랫폼</h1>
-      <p class="sub">#흩어진 개인 구조 활동을 PAW에서 연결하고 싶었습니다.</p>
-      <p class="sub">#혼자 시작한 구조가 혼자 끝나지 않도록 투명하게</p>
     </div>
   </section>
 
