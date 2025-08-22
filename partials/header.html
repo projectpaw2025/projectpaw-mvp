@@ -1,9 +1,19 @@
 <header class="paw-nav" style="position:sticky;top:0;z-index:50;backdrop-filter:blur(6px);background:rgba(255,255,255,.75);border-bottom:1px solid #eef2f7;">
   <div class="container" style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;">
-    <a class="paw-logo" href="index.html" style="display:flex;align-items:center;gap:10px;">
-      <span style="font-size:1.25rem">🐾</span><strong style="letter-spacing:-.02em">Project.PAW</strong>
-    </a>
-    <nav class="paw-menu" aria-label="Primary" style="display:flex;gap:12px">
+    <!-- 좌측: 로고 + 태그라인 -->
+    <div style="display:flex;align-items:center;gap:14px;min-width:0;">
+      <a class="paw-logo" href="index.html" style="display:flex;align-items:center;gap:10px;flex:0 0 auto;">
+        <span style="font-size:1.25rem">🐾</span><strong style="letter-spacing:-.02em">Project.PAW</strong>
+      </a>
+      <!-- 로고 옆 태그라인 (한 줄, 말줄임 처리) -->
+      <span class="paw-tagline"
+            style="flex:0 1 560px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#6b7280;font-weight:700;font-size:.95rem;">
+        Project.PAW는 구조자(개인) ↔ 후원자(개인)을 바로 연결합니다. 단순하고 투명하게.
+      </span>
+    </div>
+
+    <!-- 우측: 내비 -->
+    <nav class="paw-menu" aria-label="Primary" style="display:flex;gap:12px;flex:0 0 auto;">
       <a class="paw-link" data-match="project_list.html" href="project_list.html" style="padding:10px 14px;border-radius:12px;border:1px solid transparent;font-weight:700;color:#374151">프로젝트</a>
       <a class="paw-link" data-match="create.html" href="create.html" style="padding:10px 14px;border-radius:12px;border:1px solid transparent;font-weight:700;color:#374151">등록하기</a>
       <a class="paw-link" data-match="about.html" href="about.html" style="padding:10px 14px;border-radius:12px;border:1px solid transparent;font-weight:700;color:#374151">소개</a>
@@ -15,7 +25,11 @@
   try{
     const path=(location.pathname.split('/').pop()||'index.html');
     document.querySelectorAll('.paw-link').forEach(a=>{
-      if(a.dataset.match===path){ a.style.background='#111827'; a.style.color='#fff'; a.style.borderColor='#111827'; }
+      if(a.dataset.match===path){
+        a.style.background='#111827';
+        a.style.color='#fff';
+        a.style.borderColor='#111827';
+      }
     });
   }catch(e){}
 })();
