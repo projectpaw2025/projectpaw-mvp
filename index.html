@@ -8,20 +8,25 @@
   <link rel="stylesheet" href="app.min.css"/>
   <style>
     body { background:#fafafa; font-family:'Pretendard',sans-serif; }
-    .hero { text-align:center; padding:100px 20px; background:linear-gradient(135deg,#fff 0%,#fef9f9 50%,#f5f7ff 100%); }
-    .hero h1 { font-size:2rem; font-weight:900; margin-bottom:14px; }
-    .hero p { font-size:1.1rem; color:#555; margin-bottom:20px; }
-    .btn { display:inline-block; padding:12px 20px; border-radius:12px; font-weight:600; cursor:pointer; text-decoration:none; }
-    .btn.primary { background:#111; color:#fff; }
-    .btn.secondary { background:#fff; border:1px solid #ddd; color:#111; }
+    .hero { text-align:center; padding:110px 20px 80px; background:linear-gradient(135deg,#fff 0%,#fef9f9 50%,#f5f7ff 100%); }
+    .hero h1 { font-size:2.4rem; font-weight:900; margin-bottom:16px; }
+    .hero p { font-size:1.1rem; color:#444; margin-bottom:20px; line-height:1.6; }
+    .impact-lines { margin:40px auto 20px; font-size:1.2rem; font-weight:600; color:#222; line-height:1.8; }
+    .impact-lines div{margin-bottom:6px;}
+    .beta { background:#fff3cd; color:#7a5200; border:1px solid #ffeeba; border-radius:12px; padding:14px 20px; display:inline-block; font-size:.95rem; margin-top:24px; }
+    .btn { display:inline-block; padding:14px 22px; border-radius:12px; font-weight:600; cursor:pointer; text-decoration:none; }
+    .btn.primary { background:#111; color:#fff; margin:8px; }
+    .btn.secondary { background:#fff; border:1px solid #ddd; color:#111; margin:8px; }
     .projects { max-width:1040px; margin:50px auto; padding:0 16px; }
-    .projects h2 { font-size:1.4rem; font-weight:700; margin-bottom:16px; }
+    .projects h2 { font-size:1.4rem; font-weight:700; margin-bottom:16px; text-align:center; }
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
     .card { background:#fff; border:1px solid #eee; border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:10px; transition:all .2s; }
     .card:hover { box-shadow:0 4px 10px rgba(0,0,0,0.05); transform:translateY(-2px); }
     .card img { width:100%; height:180px; object-fit:cover; border-radius:10px; }
     .card h3 { font-size:1.1rem; font-weight:700; margin:6px 0; }
     .muted { color:#777; font-size:.9rem; }
+    .closing { text-align:center; margin:70px 20px; font-size:1.05rem; color:#444; line-height:1.7; }
+    .closing em { display:block; margin-top:20px; font-style:normal; color:#555; line-height:1.6; }
     footer { margin-top:60px; padding:30px; text-align:center; font-size:.9rem; color:#888; border-top:1px solid #eee; }
   </style>
 </head>
@@ -30,11 +35,31 @@
 
   <!-- Hero -->
   <section class="hero">
-    <h1>법인 없는 첫 후원 플랫폼</h1>
-    <p>현재 <strong>Beta 서비스</strong>입니다.<br/>
-       PG(결제) 연결 전까지는 <b>카카오톡 단톡방</b>을 통해 연결됩니다.</p>
-    <a href="project_list.html" class="btn primary">🐾 지금 구조자 만나보기</a>
-    <a href="create.html" class="btn secondary">등록하기</a>
+    <h1>왜 이게 이제야 나왔을까?</h1>
+    <p>
+      우리는 그동안 <b>법인과 단체</b>를 거쳐야만 후원할 수 있었습니다.<br/>
+      하지만 진짜 필요한 건,<br/>
+      <b>구조자(개인) ↔ 후원자(개인)</b>의 직접 연결입니다.
+    </p>
+
+    <!-- Impact Lines -->
+    <div class="impact-lines">
+      <div>🐾 도움은 본능, 연결은 선택</div>
+      <div>💡 망설임을 용기로 바꾸는 플랫폼</div>
+      <div>❤️ 숫자보다 감정, 돈보다 연결</div>
+    </div>
+
+    <!-- Beta 안내 -->
+    <div class="beta">
+      🐾 현재 <b>Beta 서비스</b>입니다.<br/>
+      아직 결제(PG) 연동 전이라, 프로젝트마다 생성된 <b>카톡 단톡방</b>에서 모금이 진행돼요.<br/>
+      조금만 기다려주세요~ 곧 더 편리해질 거예요 🤗
+    </div>
+
+    <div style="margin-top:30px">
+      <a href="project_list.html" class="btn primary">🐾 지금 구조자 만나보기</a>
+      <a href="create.html" class="btn secondary">등록하기</a>
+    </div>
   </section>
 
   <!-- Projects -->
@@ -43,6 +68,20 @@
     <div id="projects-grid" class="grid">
       <div class="muted">불러오는 중...</div>
     </div>
+  </section>
+
+  <!-- Closing -->
+  <section class="closing">
+    Project.PAW는 단순한 모금 서비스가 아닙니다.<br/>
+    우리는 <b>마음과 마음이 직접 연결되는</b>,<br/>
+    따뜻한 비영리 플랫폼입니다.
+
+    <em>
+      예를 들어, 한 구조자가 길에서 다친 고양이를 발견해 병원에 데려갔습니다.<br/>
+      하지만 치료비는 혼자 감당하기엔 너무 큰 부담이었죠.<br/>
+      이때 Project.PAW는 구조자의 책임감과<br/>
+      후원자의 선한 마음을 직접 연결해줍니다.
+    </em>
   </section>
 
   <div data-include="footer"></div>
@@ -56,7 +95,6 @@
     const $grid = document.getElementById('projects-grid');
     const fmt = n => Number(n||0).toLocaleString('ko-KR');
 
-    // 공통 커버 선택 체인
     const cover = (p) =>
       p.representativeImageUrl ||
       p.coverUrl ||
@@ -67,7 +105,6 @@
 
     async function render(){
       try {
-        // 홈은 승인된 프로젝트 위주 노출 (원하면 'all'로 바꿔도 됨)
         const list = await apiListProjects({ status:'approved', limit:12 });
         if(!list.length){
           $grid.innerHTML = '<div class="muted">아직 승인된 프로젝트가 없습니다.</div>';
