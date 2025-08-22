@@ -6,22 +6,43 @@
 <title>프로젝트 상세</title>
 <link rel="stylesheet" href="common.css"/>
 <link rel="stylesheet" href="app.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <style>
   .wrap{max-width:860px;margin:0 auto;padding:20px 16px}
-  h1{font-size:1.5rem;font-weight:800;margin-bottom:6px}
+  h1{font-size:1.6rem;font-weight:800;margin-bottom:8px}
   .muted{color:#6b7280;font-size:.9rem}
   .kv{width:100%;border-radius:12px;margin:16px 0}
-  .slider{position:relative;overflow:hidden;border-radius:12px;margin:20px 0}
+  .slider{position:relative;overflow:hidden;border-radius:12px;margin:20px 0;box-shadow:0 4px 10px rgba(0,0,0,0.05)}
   .slider img{width:100%;display:none}
   .slider img.active{display:block}
   .slider-nav{position:absolute;top:50%;width:100%;display:flex;justify-content:space-between;transform:translateY(-50%)}
   .slider-nav button{background:rgba(0,0,0,.5);color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer}
   .btn.kakao{background:#FEE500;color:#111;padding:12px 20px;border-radius:12px;display:inline-block;font-weight:600;margin-top:16px}
-  .share-buttons{margin:12px 0;display:flex;gap:10px}
-  .share-buttons button{padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer;border:none}
+  .share-buttons{margin:20px 0;display:flex;gap:12px;flex-wrap:wrap}
+  .share-buttons button{
+    flex:1;
+    min-width:120px;
+    display:flex;align-items:center;justify-content:center;
+    gap:8px;
+    padding:12px 18px;
+    border-radius:12px;
+    font-weight:600;
+    font-size:.95rem;
+    cursor:pointer;
+    border:none;
+    transition:all .2s ease;
+  }
+  .share-buttons button:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,0.15)}
   .share-kakao{background:#FEE500;color:#111}
   .share-insta{background:#E4405F;color:#fff}
   .share-copy{background:#6b7280;color:#fff}
+  .project-card{
+    background:#fff;
+    border-radius:16px;
+    padding:20px;
+    margin-top:20px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.05);
+  }
 </style>
 </head>
 <body>
@@ -113,16 +134,18 @@
 
           <!-- 공유 버튼 영역 -->
           <div class="share-buttons">
-            <button class="share-kakao" id="shareKakao">카카오톡</button>
-            <button class="share-insta" id="shareInsta">인스타그램</button>
-            <button class="share-copy" id="shareCopy">링크복사</button>
+            <button class="share-kakao" id="shareKakao"><i class="fa-solid fa-comment"></i> 카카오톡</button>
+            <button class="share-insta" id="shareInsta"><i class="fa-brands fa-instagram"></i> 인스타그램</button>
+            <button class="share-copy" id="shareCopy"><i class="fa-solid fa-link"></i> 링크복사</button>
           </div>
 
-          <p>${p.description ?? ''}</p>
-          <p class="muted">목표 금액: ${fmt(p.goalAmount)}원</p>
-          <p class="muted">구조자 부담금: ${fmt(p.rescuerContribution)}원</p>
-          <p class="muted">지지자 수: ${fmt(p.supportersCount)}</p>
-          ${p.registrantKakaoId ? `<a href="https://open.kakao.com/o/${p.registrantKakaoId}" target="_blank" class="btn kakao">카카오톡으로 참여하기</a>` : ''}
+          <div class="project-card">
+            <p>${p.description ?? ''}</p>
+            <p class="muted">목표 금액: ${fmt(p.goalAmount)}원</p>
+            <p class="muted">구조자 부담금: ${fmt(p.rescuerContribution)}원</p>
+            <p class="muted">지지자 수: ${fmt(p.supportersCount)}</p>
+            ${p.registrantKakaoId ? `<a href="https://open.kakao.com/o/${p.registrantKakaoId}" target="_blank" class="btn kakao">카카오톡으로 참여하기</a>` : ''}
+          </div>
         `;
 
         const sliderImgs = $detail.querySelectorAll('.slider img');
