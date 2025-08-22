@@ -13,36 +13,42 @@
     }
     html,body{margin:0; background:var(--bg); color:var(--ink); font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     .container{max-width:1100px; margin:0 auto; padding:0 16px}
-    section{padding:64px 0}
+    section{padding:60px 0}
     h1{margin:0 0 10px; font-size:2.4rem; font-weight:900; letter-spacing:-.02em; line-height:1.25}
-    h2{margin:0 0 26px; font-size:1.5rem; font-weight:900; letter-spacing:-.01em; text-align:center}
+    h2{margin:0 0 22px; font-size:1.4rem; font-weight:900; letter-spacing:-.01em; text-align:center}
     p{margin:0; color:var(--sub); line-height:1.6}
 
+    /* Buttons */
     .btn{display:inline-block; padding:12px 18px; border-radius:10px; font-weight:700; text-decoration:none; transition:.2s}
     .btn.primary{background:var(--brand); color:#fff}
     .btn.primary:hover{filter:saturate(110%) brightness(.98)}
     .btn.secondary{border:2px solid var(--brand); color:var(--brand); background:#fff}
     .btn.secondary:hover{background:#f3fffb}
-    .badge{display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:999px; font-size:.9rem; font-weight:700; background:#e8fff6; color:#046e54; border:1px solid #bff3e1}
 
-    /* HERO (compact, one column) */
-    .hero{background:#fff; padding:72px 0}
-    .hero .cta{margin-top:16px; display:flex; gap:10px; flex-wrap:wrap}
-    .hero .chips{margin-top:14px; display:flex; gap:8px; flex-wrap:wrap}
-    .chip{border:1px solid var(--line); background:#fff; padding:8px 12px; border-radius:999px; font-weight:700; font-size:.9rem}
-    .hero .micro{margin-top:10px; color:var(--muted); font-size:.95rem}
+    /* Chips & Badges */
+    .badge{display:inline-flex; gap:8px; align-items:center; padding:7px 11px; border-radius:999px; font-size:.9rem; font-weight:700; background:#e8fff6; color:#046e54; border:1px solid #bff3e1}
+    .chips{margin-top:12px; display:flex; gap:8px; flex-wrap:wrap}
+    .chip{border:1px solid var(--line); background:#fff; padding:7px 11px; border-radius:999px; font-weight:700; font-size:.9rem}
 
-    /* BLOCKS (운영철학 / 핵심가치 / 시스템) */
-    .band{background:#fff; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
-    .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
-    .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; display:flex; gap:10px; align-items:flex-start; transition:.2s}
-    .card:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,.06)}
-    .card i{font-style:normal; font-size:1.1rem}
-    .card b{display:block; font-size:1.05rem; margin-bottom:4px}
-    .card small{color:var(--sub)}
+    /* HERO (compact) */
+    .hero{background:#fff; padding:48px 0}
+    .hero .cta-inline{margin-top:14px; display:flex; gap:10px; flex-wrap:wrap}
+    .hero .micro{margin-top:8px; color:var(--muted); font-size:.95rem}
 
-    /* PROJECTS (원본 데이터 연동 유지, 시각만 보정) */
-    .projects h2{margin-bottom:16px}
+    /* TRIPLE BAND (운영철학/핵심가치/시스템 한 섹션) */
+    .triple{background:#fff; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+    .triple-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+    .tri{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; transition:.2s}
+    .tri:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,.06)}
+    .tri h3{margin:0 0 10px; font-size:1.05rem; font-weight:900}
+    .mini-list{display:grid; gap:8px}
+    .mini{display:flex; gap:10px; align-items:flex-start}
+    .mini i{font-style:normal; font-size:1.05rem}
+    .mini b{display:block; font-size:1rem}
+    .mini small{display:block; color:var(--sub)}
+
+    /* PROJECTS */
+    .projects h2{margin-bottom:14px}
     .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px}
     .project-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; transition:.2s}
     .project-card:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.06)}
@@ -50,13 +56,26 @@
     .project-card h3{margin:8px 0 4px; font-size:1.03rem}
     .muted{color:var(--muted); font-size:.9rem}
 
+    /* SCROLLING CTA (오른쪽 고정) */
+    .cta-dock{
+      position:fixed; right:22px; top:50%; transform:translateY(-50%);
+      display:flex; flex-direction:column; gap:10px; z-index:60;
+      filter:drop-shadow(0 8px 16px rgba(0,0,0,.12));
+    }
+    .cta-dock .btn{border-radius:12px}
+    .cta-dock .btn.secondary{background:#fff}
+
+    /* Responsive */
+    @media (max-width:1024px){
+      .cta-dock{top:auto; bottom:16px; transform:none; right:16px; flex-direction:row}
+    }
     @media (max-width:900px){
-      .cards{grid-template-columns:1fr 1fr}
+      .triple-grid{grid-template-columns:1fr 1fr}
     }
     @media (max-width:560px){
-      section{padding:52px 0}
+      section{padding:48px 0}
       h1{font-size:2rem}
-      .cards{grid-template-columns:1fr}
+      .triple-grid{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -64,57 +83,63 @@
   <!-- header include (원본 유지) -->
   <div data-include="header"></div>
 
+  <!-- RIGHT FLOATING CTA -->
+  <div class="cta-dock" aria-label="빠른 참여">
+    <a href="project_list.html" class="btn primary">지금 구조자 만나보기</a>
+    <a href="create.html" class="btn secondary">등록하기</a>
+  </div>
+
   <!-- HERO -->
   <section class="hero">
     <div class="container">
       <span class="badge">🐾 Beta 서비스 · 지금은 카톡방 모금 운영</span>
-      <h1>후원, 왜 이렇게 복잡했을까요?</h1>
-      <p>Project.PAW는 <b>구조자(개인) ↔ 후원자(개인)</b>을 바로 연결합니다. 단순하고 투명하게.</p>
+      <h1>돌아가지 말고, 바로 연결하세요.</h1>
+      <p>개인 ↔ 개인, 직진 후원. 복잡함은 빼고 본질만 남겼습니다.</p>
       <div class="chips">
         <span class="chip">개인 ↔ 개인 직연결</span>
         <span class="chip">구조자 30% 부담</span>
         <span class="chip">기부금 100% 전달</span>
       </div>
-      <div class="cta">
-        <a href="project_list.html" class="btn primary">지금 구조자 만나보기</a>
+      <div class="cta-inline">
+        <a href="project_list.html" class="btn primary">구조자 만나보기</a>
         <a href="create.html" class="btn secondary">등록하기</a>
       </div>
       <div class="micro">결제(PG) 연동 준비 중 — 붙으면 더 매끄럽게 이어집니다.</div>
     </div>
   </section>
 
-  <!-- BLOCK 1: 운영철학 -->
-  <section class="band">
+  <!-- TRIPLE BAND: 운영철학 / 핵심가치 / 시스템 -->
+  <section class="triple">
     <div class="container">
-      <h2>운영철학</h2>
-      <div class="cards">
-        <div class="card"><i>🔗</i><div><b>직접 연결</b><small>단체 통로 없이 개인 ↔ 개인으로 빠르게</small></div></div>
-        <div class="card"><i>🧭</i><div><b>책임 기반</b><small>도덕적 해이 방지를 위한 구조자 30% 부담</small></div></div>
-        <div class="card"><i>🔍</i><div><b>투명 우선</b><small>사진·영수증으로 흐름을 명확히</small></div></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- BLOCK 2: 핵심가치 -->
-  <section class="band">
-    <div class="container">
-      <h2>핵심가치</h2>
-      <div class="cards">
-        <div class="card"><i>⚡</i><div><b>실행</b><small>망설임 대신 행동으로 이어지게</small></div></div>
-        <div class="card"><i>🤝</i><div><b>신뢰</b><small>과정이 보이는 구조·후원</small></div></div>
-        <div class="card"><i>🌱</i><div><b>확장성</b><small>동물에서 시작해 사람까지 닿는 연결</small></div></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- BLOCK 3: 시스템 -->
-  <section class="band">
-    <div class="container">
-      <h2>시스템</h2>
-      <div class="cards">
-        <div class="card"><i>💬</i><div><b>지금</b><small>Beta · 카톡방에서 모금 운영</small></div></div>
-        <div class="card"><i>🏥</i><div><b>곧</b><small>동물병원 Direct 결제 도입 준비</small></div></div>
-        <div class="card"><i>💯</i><div><b>원칙</b><small>기부금 100% 전달 · 수수료는 플랫폼 부담</small></div></div>
+      <h2>운영철학 · 핵심가치 · 시스템</h2>
+      <div class="triple-grid">
+        <!-- 운영철학 -->
+        <div class="tri">
+          <h3>운영철학</h3>
+          <div class="mini-list">
+            <div class="mini"><i>🔗</i><div><b>직접 연결</b><small>단체 통로 없이 개인 ↔ 개인으로</small></div></div>
+            <div class="mini"><i>🧭</i><div><b>책임 기반</b><small>도덕적 해이 방지 · 구조자 30% 부담</small></div></div>
+            <div class="mini"><i>🔍</i><div><b>투명 우선</b><small>사진·영수증로 흐름이 보이게</small></div></div>
+          </div>
+        </div>
+        <!-- 핵심가치 -->
+        <div class="tri">
+          <h3>핵심가치</h3>
+          <div class="mini-list">
+            <div class="mini"><i>⚡</i><div><b>실행</b><small>망설임을 행동으로</small></div></div>
+            <div class="mini"><i>🤝</i><div><b>신뢰</b><small>과정이 보이는 구조·후원</small></div></div>
+            <div class="mini"><i>🌱</i><div><b>확장성</b><small>동물에서 시작해 사람까지</small></div></div>
+          </div>
+        </div>
+        <!-- 시스템 -->
+        <div class="tri">
+          <h3>시스템</h3>
+          <div class="mini-list">
+            <div class="mini"><i>💬</i><div><b>지금</b><small>Beta · 카톡방에서 모금 운영</small></div></div>
+            <div class="mini"><i>🏥</i><div><b>곧</b><small>동물병원 Direct 결제 도입</small></div></div>
+            <div class="mini"><i>💯</i><div><b>원칙</b><small>기부금 100% 전달 · 수수료는 플랫폼 부담</small></div></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
