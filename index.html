@@ -4,192 +4,131 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Project.PAW — 개인과 개인을 잇는 후원 플랫폼</title>
-
-  <!-- 공유 메타 -->
-  <meta property="og:title" content="개인↔개인, 국내 최초 기부 플랫폼 — Project.PAW"/>
-  <meta property="og:description" content="흩어진 개인 구조 모금을 한 곳에서 연결합니다. 구조자 30% 책임 · 후원금 100% 전달."/>
-  <meta property="og:image" content="img/og-paw.png"/>
-  <meta property="og:type" content="website"/>
-  <meta name="twitter:card" content="summary_large_image"/>
-
   <link rel="stylesheet" href="common.css"/>
   <link rel="stylesheet" href="app.min.css"/>
-
   <style>
     :root{
-      --ink:#111; --sub:#444; --muted:#777; --line:#eef1f5;
-      --bg:#fafafa; --card:#fff; --brand:#00C896;
-      /* 화면 상단 쏠림 방지: 화면이 클수록 여백↑ */
-      --fold-offset: clamp(24px, 6vh, 96px);
+      --ink:#000; --sub:#444; --muted:#777; --line:#eaeaea;
+      --bg:#fff; --card:#fff; --brand:#000;
     }
-    html,body{margin:0; background:var(--bg); color:var(--ink); font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    html,body{margin:0; background:var(--bg); color:var(--ink);
+      font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     .container{max-width:1040px; margin:0 auto; padding:0 20px}
-    section{padding:60px 0}
+    section{padding:64px 0}
     h1{margin:0 0 18px; font-size:3rem; font-weight:900; letter-spacing:-.02em; line-height:1.15}
     p{margin:0; color:var(--sub); line-height:1.65}
 
     /* 버튼 */
-    .btn{display:inline-block; padding:12px 18px; border-radius:12px; font-weight:700; text-decoration:none; transition:.2s}
+    .btn{display:inline-block; padding:12px 18px; border-radius:12px;
+      font-weight:700; text-decoration:none; transition:.2s}
     .btn.primary{background:var(--brand); color:#fff}
-    .btn.primary:hover{filter:saturate(110%) brightness(.98)}
+    .btn.primary:hover{background:#fff; color:#000; border:2px solid #000}
     .btn.secondary{border:2px solid var(--brand); color:var(--brand); background:#fff}
-    .btn.secondary:hover{background:#f3fffb}
+    .btn.secondary:hover{background:#f5f5f5}
 
-    /* 우측 고정 CTA (원본 유지) */
+    /* 고정 CTA */
     .cta-dock{
-      position:fixed; right:22px; top:58%; transform:translateY(-50%);
+      position:fixed; right:22px; top:50%; transform:translateY(-50%);
       display:flex; flex-direction:column; gap:10px; z-index:60;
-      filter:drop-shadow(0 8px 16px rgba(0,0,0,.12));
+      filter:drop-shadow(0 6px 12px rgba(0,0,0,.15));
+    }
+    .beta-label{
+      font-size:.8rem; font-weight:700;
+      background:#fff; border:1px solid #000; border-radius:999px;
+      padding:6px 10px; text-align:center; color:#000;
     }
     @media (max-width:1024px){
       .cta-dock{top:auto; bottom:16px; transform:none; right:16px; flex-direction:row}
     }
 
-    /* ===== 1) 히어로: 좌 메시지 / 우 안내 ===== */
-    .hero{background:#fff; padding:calc(88px + var(--fold-offset)) 0 48px; border-bottom:1px solid var(--line)}
-    .hero-grid{display:grid; grid-template-columns: minmax(540px,1fr) 300px; gap:24px; align-items:start}
-    .subs{display:grid; gap:4px; color:var(--muted); font-size:1.02rem}
-    .subs .line::before{content:"#"; margin-right:6px; color:var(--brand); font-weight:900}
-    .rule-strip{margin-top:18px; display:flex; flex-wrap:wrap; gap:8px}
-    .rule{
-      display:inline-flex; align-items:center; justify-content:center;
-      padding:12px 16px; background:#fff; border:2px solid #e8eef5; border-radius:12px;
-      font-weight:900; font-size:1rem; letter-spacing:-.01em; white-space:nowrap; outline:0;
-    }
-    .rule:focus-visible{outline:2px solid var(--brand); outline-offset:2px; border-color:transparent}
+    /* 히어로 */
+    .hero{background:#fff; padding:120px 0 60px; border-bottom:1px solid var(--line)}
+    .hero-grid{display:grid; grid-template-columns:1fr 320px; gap:40px; align-items:start}
+    .subs{display:grid; gap:6px; color:var(--sub); font-size:1.05rem}
+    .subs .line::before{content:"# "; color:#000; font-weight:900}
+    .rule-strip{margin-top:18px; display:flex; flex-wrap:wrap; gap:10px}
+    .rule{display:inline-flex; align-items:center; justify-content:center;
+      padding:12px 16px; background:#fff; border:2px solid #000; border-radius:12px;
+      font-weight:800; font-size:.95rem; white-space:nowrap}
 
-    .beta-card{
-      background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px;
-    }
-    .beta-card h3{margin:0 0 8px; font-size:1.05rem; font-weight:900}
-    .beta-card p{font-size:.96rem; color:var(--sub)}
-    .beta-card p + p{margin-top:6px}
+    /* 케이스 */
+    .case-card{background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px}
+    .case-card h3{margin:0 0 12px; font-size:1.1rem; font-weight:900}
+    .case-list{display:grid; grid-template-columns:1fr; gap:10px; list-style:none; padding:0; margin:0}
+    .case-item{padding:12px; border:1px dashed #ccc; border-radius:8px; font-size:.95rem; font-weight:600; text-align:center}
 
-    /* ===== 2) 케이스 타일(1줄 고정, 모바일 2x2) ===== */
-    .case{padding:18px 0}
-    .case-head{display:flex; align-items:center; gap:10px; margin-bottom:10px}
-    .case-head h3{margin:0; font-size:1.05rem; font-weight:900}
-    .caps{display:inline-block; padding:6px 10px; border:1px solid #e9f4ef; background:#f6fffb; color:#067b5f; border-radius:999px; font-size:.86rem; font-weight:800}
-    .case-list{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:0; padding:0; list-style:none}
-    .case-item{
-      display:flex; align-items:center; justify-content:center; text-align:center;
-      min-height:84px; padding:10px 12px; background:#fff; border:1px dashed #f1f4f8; border-radius:10px;
-      font-weight:600; color:#222;
-      transition:.15s;
-      outline:0;
-    }
-    .case-item:hover{background:#fbfdfc}
-    .case-item:focus-visible{outline:2px solid var(--brand); outline-offset:2px; border-color:transparent}
-
-    /* ===== 3) 섹션 디바이더 ===== */
-    .band{height:28px; background:#f3f6f8; border-top:1px solid #edf1f5; border-bottom:1px solid #edf1f5}
-
-    /* ===== 4) 프로젝트 프리뷰(6개 + 전체보기) ===== */
-    .projects{padding:56px 0}
-    .projects-head{display:flex; align-items:center; justify-content:space-between; margin:0 0 14px}
-    .projects h2{margin:0; font-size:1.4rem; font-weight:900; letter-spacing:-.01em}
-    .projects .all{font-weight:800; color:var(--brand); text-decoration:none}
+    /* 프로젝트 */
+    .projects h2{margin:0 0 14px; font-size:1.4rem; font-weight:900; text-align:center}
     .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px}
     .project-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; transition:.2s}
     .project-card:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.06)}
-    .project-card img{width:100%; height:auto; aspect-ratio:16/10; object-fit:cover; border-radius:10px}
+    .project-card img{width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:10px}
     .project-card h3{margin:8px 0 4px; font-size:1.05rem}
     .muted{color:var(--muted); font-size:.9rem}
 
-    /* 반응형 */
-    @media (max-width:1080px){
+    @media(max-width:900px){
       .hero-grid{grid-template-columns:1fr}
-      .beta-card{order:2}
-    }
-    @media (max-width:900px){
-      .case-list{grid-template-columns:1fr 1fr}
-    }
-    @media (max-width:720px){
-      section{padding:48px 0}
-      h1{font-size:2.3rem}
-      .subs{font-size:1rem}
-      .rule{font-size:.95rem; padding:10px 14px}
-      .projects{padding-bottom:72px} /* 모바일에서 고정 CTA와 겹침 방지 */
     }
   </style>
 </head>
 <body>
-  <!-- header include (원본 유지) -->
+  <!-- header include -->
   <div data-include="header"></div>
 
-  <!-- 우측 고정 CTA (원본 유지) -->
+  <!-- CTA 고정 -->
   <div class="cta-dock" aria-label="빠른 참여">
     <a href="project_list.html" class="btn primary">지금 구조자 만나보기</a>
     <a href="create.html" class="btn secondary">등록하기</a>
+    <span class="beta-label">Beta 서비스 · 카톡방 모금 운영 중</span>
   </div>
 
-  <!-- ===== 1) 히어로: 좌 메시지 / 우 안내 ===== -->
+  <!-- 히어로 -->
   <section class="hero" aria-labelledby="hero-title">
     <div class="container">
       <div class="hero-grid">
-        <!-- 좌측: 핵심 메시지 -->
+        <!-- 왼쪽 -->
         <div>
           <h1 id="hero-title">개인↔개인을 연결하는, 국내 최초 기부 플랫폼</h1>
-          <div class="subs" aria-label="설명">
+          <div class="subs">
             <p class="line">흩어진 개인 구조 모금을 PAW에서 연결합니다.</p>
             <p class="line">혼자 시작한 구조가 혼자 끝나지 않도록.</p>
           </div>
-          <ul class="rule-strip" role="list" aria-label="플랫폼 원칙">
-            <li class="rule" tabindex="0">개인↔개인</li>
-            <li class="rule" tabindex="0">후원금 100% 전달</li>
-            <li class="rule" tabindex="0">구조자 30% 책임</li>
-            <li class="rule" tabindex="0">증빙 필수</li>
-          </ul>
+          <div class="rule-strip">
+            <span class="rule">개인↔개인</span>
+            <span class="rule">후원금 100% 전달</span>
+            <span class="rule">구조자 30% 책임</span>
+            <span class="rule">증빙 필수</span>
+          </div>
         </div>
 
-        <!-- 우측: 안내 카드 -->
-        <aside class="beta-card" aria-labelledby="beta-title">
-          <h3 id="beta-title">Beta 안내</h3>
-          <p>지금은 <b>카톡방 모금</b>으로 운영합니다.</p>
-          <p><b>결제(PG)</b> 연동을 준비 중입니다.</p>
-          <p>진행 과정·증빙을 <b>투명하게 공개</b>합니다.</p>
+        <!-- 오른쪽: 케이스 -->
+        <aside class="case-card">
+          <h3>환영하는 구조 케이스</h3>
+          <ul class="case-list">
+            <li class="case-item">유기동물 구조 후 병원비</li>
+            <li class="case-item">보호 중 중성화(무지원)</li>
+            <li class="case-item">입양 후 첫 검진비</li>
+            <li class="case-item">기타 필수 구조/보호비</li>
+          </ul>
         </aside>
       </div>
-
-      <!-- 2) 환영하는 구조 케이스 (1줄 4칸) -->
-      <div class="case" aria-labelledby="case-title">
-        <div class="case-head">
-          <h3 id="case-title">환영하는 구조 케이스</h3>
-          <span class="caps">필수: 실제 발생 비용</span>
-        </div>
-        <ul class="case-list" role="list">
-          <li class="case-item" tabindex="0" onclick="location.href='create.html'">유기동물 구조 후 병원비</li>
-          <li class="case-item" tabindex="0" onclick="location.href='create.html'">보호 중 중성화(무지원)</li>
-          <li class="case-item" tabindex="0" onclick="location.href='create.html'">입양 후 첫 검진비</li>
-          <li class="case-item" tabindex="0" onclick="location.href='create.html'">기타 필수 구조/보호비</li>
-        </ul>
-      </div>
     </div>
   </section>
 
-  <!-- 3) 섹션 디바이더 -->
-  <div class="band" aria-hidden="true"></div>
-
-  <!-- ===== 4) 프로젝트 프리뷰(6개) ===== -->
+  <!-- 프로젝트 -->
   <section class="projects">
     <div class="container">
-      <div class="projects-head">
-        <h2>진행 중인 프로젝트</h2>
-        <a href="project_list.html" class="all">전체보기 →</a>
-      </div>
+      <h2>진행 중인 프로젝트</h2>
       <div id="projects-grid" class="grid">
-        <div class="muted">
-          아직 프로젝트가 없어요.
-          <a href="create.html" class="btn secondary" style="margin-left:8px">등록하기</a>
-        </div>
+        <div class="muted">불러오는 중...</div>
       </div>
     </div>
   </section>
 
-  <!-- footer include (원본 유지) -->
+  <!-- footer include -->
   <div data-include="footer"></div>
 
-  <!-- 원본 스크립트/연동 그대로 -->
+  <!-- 스크립트 -->
   <script type="module">
     import { injectLayout } from './js/include.js';
     import { apiListProjects } from './js/api.js';
@@ -209,19 +148,14 @@
 
     async function render(){
       try {
-        // 초화면 피로 줄이기: 6개만 프리뷰
         const list = await apiListProjects({ status:'approved', limit:6 });
         if(!list.length){
-          $grid.innerHTML = `
-            <div class="muted">
-              아직 프로젝트가 없어요.
-              <a href="create.html" class="btn secondary" style="margin-left:8px">등록하기</a>
-            </div>`;
+          $grid.innerHTML = '<div class="muted">아직 승인된 프로젝트가 없습니다.</div>';
           return;
         }
         $grid.innerHTML = list.map(p => `
           <a class="project-card" href="project.html?id=${encodeURIComponent(p.id)}">
-            <img src="${cover(p)}" loading="lazy" alt="${(p.name ?? '프로젝트') + ' 썸네일'}"/>
+            <img src="${cover(p)}" alt=""/>
             <h3>${p.name ?? '(이름 없음)'}</h3>
             <div class="muted">${p.summary ?? ''}</div>
             <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
@@ -232,7 +166,6 @@
         $grid.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
       }
     }
-
     render();
   </script>
 </body>
