@@ -4,35 +4,30 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Project.PAW — 개인과 개인을 잇는 후원 플랫폼</title>
-
-  <!-- 공유 메타 (SNS 카드 깔끔) -->
-  <meta property="og:title" content="개인↔개인, 국내 최초 기부 플랫폼 — Project.PAW"/>
-  <meta property="og:description" content="흩어진 개인 구조 모금을 한 곳에서 연결합니다. 구조자 30% 책임 · 후원금 100% 전달."/>
-  <meta property="og:image" content="img/og-paw.png"/>
-  <meta property="og:type" content="website"/>
-  <meta name="twitter:card" content="summary_large_image"/>
-
   <link rel="stylesheet" href="common.css"/>
   <link rel="stylesheet" href="app.min.css"/>
+
   <style>
     :root{
       --ink:#111; --sub:#444; --muted:#777; --line:#eef1f5;
       --bg:#fafafa; --card:#fff; --brand:#00C896;
     }
+
     html,body{margin:0; background:var(--bg); color:var(--ink); font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    .container{max-width:1200px; margin:0 auto; padding:0 20px}
+    /* 컨테이너 폭 축소: 한눈에 들어오게 */
+    .container{max-width:1040px; margin:0 auto; padding:0 20px}
     section{padding:60px 0}
-    h1{margin:0 0 20px; font-size:3rem; font-weight:900; letter-spacing:-.02em; line-height:1.15}
+    h1{margin:0 0 18px; font-size:3rem; font-weight:900; letter-spacing:-.02em; line-height:1.15}
     p{margin:0; color:var(--sub); line-height:1.65}
 
-    /* Buttons */
+    /* 버튼 (기존 유지) */
     .btn{display:inline-block; padding:12px 18px; border-radius:12px; font-weight:700; text-decoration:none; transition:.2s}
     .btn.primary{background:var(--brand); color:#fff}
     .btn.primary:hover{filter:saturate(110%) brightness(.98)}
     .btn.secondary{border:2px solid var(--brand); color:var(--brand); background:#fff}
     .btn.secondary:hover{background:#f3fffb}
 
-    /* 오른쪽 고정 CTA (원본 유지) */
+    /* 우측 고정 CTA (원본 유지) */
     .cta-dock{
       position:fixed; right:22px; top:50%; transform:translateY(-50%);
       display:flex; flex-direction:column; gap:10px; z-index:60;
@@ -42,42 +37,42 @@
       .cta-dock{top:auto; bottom:16px; transform:none; right:16px; flex-direction:row}
     }
 
-    /* ===== Unified Hero Block: 한 블록(헤드라인/서브2줄/룰/케이스) ===== */
-    .hero-unified{
+    /* ===== 1) 히어로(한 줄 메시지 + 보조 2줄 + 룰 4칸) ===== */
+    .hero-compact{
       background:#fff;
-      padding:88px 0 56px;
+      padding:88px 0 48px;
       border-bottom:1px solid var(--line);
     }
     .subs{display:grid; gap:4px; color:var(--muted); font-size:1.02rem}
     .subs .line::before{content:"#"; margin-right:6px; color:var(--brand); font-weight:900}
-
-    /* 룰 스트립 (해시태그 대신 규칙 버튼) */
     .rule-strip{margin-top:18px; display:flex; flex-wrap:wrap; gap:8px}
     .rule{
       display:inline-flex; align-items:center; justify-content:center;
       padding:12px 16px; background:#fff; border:2px solid #e8eef5; border-radius:12px;
-      font-weight:900; font-size:1rem; letter-spacing:-.01em; white-space:nowrap;
-      outline:0;
+      font-weight:900; font-size:1rem; letter-spacing:-.01em; white-space:nowrap; outline:0;
     }
     .rule:focus-visible{outline:2px solid var(--brand); outline-offset:2px; border-color:transparent}
 
-    /* 환영하는 구조 케이스 */
-    .case{margin-top:26px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px}
+    /* ===== 2) 정보 카드(왜/방향 한 카드로) ===== */
+    .info-card{margin-top:16px; background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px}
+    .info-row{display:grid; grid-template-columns:1fr; gap:12px}
+    .info h3{margin:0 0 6px; font-size:1.05rem; font-weight:900}
+    .divider{height:1px; background:var(--line); margin:4px 0}
+
+    /* ===== 3) 환영 케이스(2x2 타일) ===== */
+    .case{margin-top:18px; background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px}
     .case h3{margin:0 0 8px; font-size:1.05rem; font-weight:900}
     .case .caps{display:inline-block; padding:6px 10px; border:1px solid #e9f4ef; background:#f6fffb; color:#067b5f; border-radius:999px; font-size:.86rem; font-weight:800}
-    .case .desc{margin-top:8px; font-size:.95rem; color:var(--sub)}
-    .case-sub{margin:16px 0 8px; font-size:.95rem; font-weight:900; color:#222}
-    .case-list{display:grid; grid-template-columns:repeat(2,minmax(280px,1fr)); gap:10px; margin:0; padding:0; list-style:none}
-    .case-list li{
-      display:flex; gap:10px; align-items:flex-start; padding:10px 12px; border:1px dashed #f1f4f8; border-radius:10px; background:#fff;
-      outline:0;
-    }
+    .case-list{display:grid; grid-template-columns:repeat(2,minmax(280px,1fr)); gap:10px; margin:10px 0 0; padding:0; list-style:none}
+    .case-list li{display:flex; gap:10px; align-items:flex-start; padding:10px 12px; border:1px dashed #f1f4f8; border-radius:10px; background:#fff}
     .case-list li::before{content:"✓"; font-weight:900; color:var(--brand); line-height:1.2}
-    .case-list li:focus-visible{outline:2px solid var(--brand); outline-offset:2px; border-color:transparent}
     .case .hint{margin-top:10px; font-size:.92rem; color:var(--muted)}
 
-    /* 프로젝트 목록 */
-    .projects h2{margin:0 0 14px; font-size:1.4rem; font-weight:900; letter-spacing:-.01em; text-align:center}
+    /* ===== 4) 프로젝트 프리뷰(6개 제한 + 전체보기) ===== */
+    .projects{padding:56px 0}
+    .projects-head{display:flex; align-items:center; justify-content:space-between; margin:0 0 14px}
+    .projects h2{margin:0; font-size:1.4rem; font-weight:900; letter-spacing:-.01em}
+    .projects .all{font-weight:800; color:var(--brand); text-decoration:none}
     .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px}
     .project-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; transition:.2s}
     .project-card:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.06)}
@@ -90,11 +85,11 @@
       .case-list{grid-template-columns:1fr}
     }
     @media (max-width:720px){
-      .hero-unified{padding:64px 0 44px}
+      .hero-compact{padding:64px 0 40px}
       h1{font-size:2.3rem}
       .subs{font-size:1rem}
       .rule{font-size:.95rem; padding:10px 14px}
-      .projects{padding-bottom:72px} /* 모바일에서 고정 CTA와 겹침 방지 */
+      .projects{padding-bottom:72px} /* 고정 CTA와 겹침 방지 */
     }
   </style>
 </head>
@@ -108,19 +103,14 @@
     <a href="create.html" class="btn secondary">등록하기</a>
   </div>
 
-  <!-- ===== 첫 화면: 원블록 ===== -->
-  <section class="hero-unified" aria-labelledby="hero-title">
+  <!-- ===== 1) 히어로: 메시지 + 룰 ===== -->
+  <section class="hero-compact" aria-labelledby="hero-title">
     <div class="container">
-      <!-- 헤드라인 -->
       <h1 id="hero-title">개인↔개인을 연결하는, 국내 최초 기부 플랫폼</h1>
-
-      <!-- 서브 2줄(WHY & 방향, 작은 글씨) -->
       <div class="subs" aria-label="설명">
         <p class="line">흩어진 개인 구조 모금을 PAW에서 연결합니다.</p>
         <p class="line">혼자 시작한 구조가 혼자 끝나지 않도록.</p>
       </div>
-
-      <!-- 룰 스트립 (※ 헤더에서 Beta 표기하므로, 여기선 '증빙 필수'로 전환) -->
       <ul class="rule-strip" role="list" aria-label="플랫폼 원칙">
         <li class="rule" tabindex="0">개인↔개인</li>
         <li class="rule" tabindex="0">후원금 100% 전달</li>
@@ -128,28 +118,43 @@
         <li class="rule" tabindex="0">증빙 필수</li>
       </ul>
 
-      <!-- 환영하는 구조 케이스 -->
+      <!-- 2) 정보 카드(왜/방향) -->
+      <div class="info-card">
+        <div class="info-row">
+          <div class="info">
+            <h3>왜 시작했나요</h3>
+            <p>개인이 해낸 구조가 단톡방에서 끝나지 않도록. 모금·증빙·소통을 <b>한 화면</b>에 모았습니다.</p>
+          </div>
+          <div class="divider"></div>
+          <div class="info">
+            <h3>우리가 가는 방향</h3>
+            <p><b>더 많은 ‘개인 구조’</b>가 실제로 일어나게. 곧 <b>동물병원 Direct 결제</b>로 정산을 간결하게 만듭니다.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3) 환영하는 구조 케이스 -->
       <div class="case" aria-labelledby="case-title">
         <h3 id="case-title">환영하는 구조 케이스</h3>
-        <span class="caps">필수</span>
-        <p class="desc">구조/보호 활동으로 발생한 <b>실제 비용</b>에 한합니다.</p>
-
-        <div class="case-sub">예시</div>
+        <span class="caps">필수: 구조/보호 활동으로 발생한 실제 비용</span>
         <ul class="case-list" role="list">
-          <li tabindex="0">유기동물 구조 후 부담한 병원비</li>
-          <li tabindex="0">보살피는 유기동물 중성화 비용 <small style="color:var(--muted)">(국가지원 대상이 아닌 경우)</small></li>
-          <li tabindex="0">유기동물 입양 후 첫 검진비</li>
-          <li tabindex="0">기타 모든 구조/보호활동으로 발생한 필수 비용</li>
+          <li>유기동물 구조 후 병원비</li>
+          <li>보호 중 중성화 비용 <small style="color:var(--muted)">(국가지원 비대상)</small></li>
+          <li>입양 후 첫 검진비</li>
+          <li>기타 필수 구조/보호 비용</li>
         </ul>
         <p class="hint">등록은 간단합니다. 상황 설명과 <b>영수증/사진</b>만 준비하세요. 중복 모금은 불가하며, 진행 과정은 <b>투명하게 공개</b>됩니다.</p>
       </div>
     </div>
   </section>
 
-  <!-- ===== 프로젝트 목록 (백엔드 연동 그대로) ===== -->
+  <!-- ===== 4) 프로젝트 프리뷰(6개) ===== -->
   <section class="projects">
     <div class="container">
-      <h2>진행 중인 프로젝트</h2>
+      <div class="projects-head">
+        <h2>진행 중인 프로젝트</h2>
+        <a href="project_list.html" class="all">전체보기 →</a>
+      </div>
       <div id="projects-grid" class="grid">
         <div class="muted">
           아직 프로젝트가 없어요.
@@ -182,7 +187,8 @@
 
     async function render(){
       try {
-        const list = await apiListProjects({ status:'approved', limit:12 });
+        /* 초화면 피로 줄이기: 6개만 */
+        const list = await apiListProjects({ status:'approved', limit:6 });
         if(!list.length){
           $grid.innerHTML = `
             <div class="muted">
