@@ -14,26 +14,8 @@
     html,body{margin:0; background:var(--bg); color:var(--ink); font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     .container{max-width:1100px; margin:0 auto; padding:0 16px}
     section{padding:60px 0}
-    h1{margin:0 0 10px; font-size:2.4rem; font-weight:900; letter-spacing:-.02em; line-height:1.25}
     h2{margin:0 0 22px; font-size:1.4rem; font-weight:900; letter-spacing:-.01em; text-align:center}
     p{margin:0; color:var(--sub); line-height:1.6}
-
-    /* Buttons */
-    .btn{display:inline-block; padding:12px 18px; border-radius:10px; font-weight:700; text-decoration:none; transition:.2s}
-    .btn.primary{background:var(--brand); color:#fff}
-    .btn.primary:hover{filter:saturate(110%) brightness(.98)}
-    .btn.secondary{border:2px solid var(--brand); color:var(--brand); background:#fff}
-    .btn.secondary:hover{background:#f3fffb}
-
-    /* Chips & Badges */
-    .badge{display:inline-flex; gap:8px; align-items:center; padding:7px 11px; border-radius:999px; font-size:.9rem; font-weight:700; background:#e8fff6; color:#046e54; border:1px solid #bff3e1}
-    .chips{margin-top:12px; display:flex; gap:8px; flex-wrap:wrap}
-    .chip{border:1px solid var(--line); background:#fff; padding:7px 11px; border-radius:999px; font-weight:700; font-size:.9rem}
-
-    /* HERO (compact) */
-    .hero{background:#fff; padding:48px 0}
-    .hero .cta-inline{margin-top:14px; display:flex; gap:10px; flex-wrap:wrap}
-    .hero .micro{margin-top:8px; color:var(--muted); font-size:.95rem}
 
     /* TRIPLE BAND (운영철학/핵심가치/시스템 한 섹션) */
     .triple{background:#fff; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
@@ -62,8 +44,11 @@
       display:flex; flex-direction:column; gap:10px; z-index:60;
       filter:drop-shadow(0 8px 16px rgba(0,0,0,.12));
     }
-    .cta-dock .btn{border-radius:12px}
-    .cta-dock .btn.secondary{background:#fff}
+    .btn{display:inline-block; padding:12px 18px; border-radius:10px; font-weight:700; text-decoration:none; transition:.2s}
+    .btn.primary{background:var(--brand); color:#fff}
+    .btn.primary:hover{filter:saturate(110%) brightness(.98)}
+    .btn.secondary{border:2px solid var(--brand); color:var(--brand); background:#fff}
+    .btn.secondary:hover{background:#f3fffb}
 
     /* Responsive */
     @media (max-width:1024px){
@@ -74,7 +59,6 @@
     }
     @media (max-width:560px){
       section{padding:48px 0}
-      h1{font-size:2rem}
       .triple-grid{grid-template-columns:1fr}
     }
   </style>
@@ -83,30 +67,11 @@
   <!-- header include (원본 유지) -->
   <div data-include="header"></div>
 
-  <!-- RIGHT FLOATING CTA -->
+  <!-- RIGHT FLOATING CTA (스크롤 따라오는 버튼) -->
   <div class="cta-dock" aria-label="빠른 참여">
     <a href="project_list.html" class="btn primary">지금 구조자 만나보기</a>
     <a href="create.html" class="btn secondary">등록하기</a>
   </div>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="container">
-      <span class="badge">🐾 Beta 서비스 · 지금은 카톡방 모금 운영</span>
-      <h1>돌아가지 말고, 바로 연결하세요.</h1>
-      <p>개인 ↔ 개인, 직진 후원. 복잡함은 빼고 본질만 남겼습니다.</p>
-      <div class="chips">
-        <span class="chip">개인 ↔ 개인 직연결</span>
-        <span class="chip">구조자 30% 부담</span>
-        <span class="chip">기부금 100% 전달</span>
-      </div>
-      <div class="cta-inline">
-        <a href="project_list.html" class="btn primary">구조자 만나보기</a>
-        <a href="create.html" class="btn secondary">등록하기</a>
-      </div>
-      <div class="micro">결제(PG) 연동 준비 중 — 붙으면 더 매끄럽게 이어집니다.</div>
-    </div>
-  </section>
 
   <!-- TRIPLE BAND: 운영철학 / 핵심가치 / 시스템 -->
   <section class="triple">
