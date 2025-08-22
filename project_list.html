@@ -7,13 +7,38 @@
 <link rel="stylesheet" href="common.css"/>
 <link rel="stylesheet" href="app.min.css"/>
 <style>
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-  .card{border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;background:#fff}
-  .card img{width:100%;height:180px;object-fit:cover}
-  .card-body{padding:14px;display:flex;flex-direction:column;gap:8px}
-  .chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.8rem;border:1px solid #e5e7eb;color:#374151}
-  .chip.approved{background:#ecfdf5;border-color:#bbf7d0;color:#065f46}
-  .chip.pending{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+  .card{
+    display:flex;flex-direction:column;
+    border:1px solid #e5e7eb;border-radius:16px;
+    overflow:hidden;background:#fff;
+    text-decoration:none;color:inherit;transition:.2s;
+  }
+  .card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.1)}
+  .card .thumb{position:relative}
+  .card .thumb img{width:100%;height:180px;object-fit:cover}
+  .card .badge{
+    position:absolute;bottom:8px;left:8px;
+    background:rgba(0,0,0,0.6);color:#fff;
+    padding:4px 8px;border-radius:8px;font-size:.8rem
+  }
+  .card-body{padding:14px;display:flex;flex-direction:column}
+  .card-body h3{margin:0 0 6px;font-size:1.2rem;font-weight:700}
+  .card-body .summary{
+    margin:0 0 12px;font-size:.95rem;color:#444;
+    line-height:1.4;max-height:2.7em;overflow:hidden
+  }
+  .progress{background:#eee;border-radius:6px;overflow:hidden;height:8px;margin-bottom:8px}
+  .progress .bar{background:#A47864;height:100%}
+  .stats{display:flex;justify-content:space-between;font-size:.85rem;color:#777;margin-bottom:10px}
+  .rescuer{display:flex;align-items:center;gap:6px;font-size:.9rem;font-weight:600;color:#111}
+  .rescuer .avatar{font-size:1rem}
+  @media(max-width:760px){
+    .cards{grid-template-columns:1fr}
+    .card img{height:160px}
+    .card-body h3{font-size:1.25rem}
+    .card-body .summary{font-size:1rem}
+  }
 </style>
 </head>
 <body>
@@ -37,9 +62,8 @@
 
     const $q = document.getElementById('q');
     const $list = document.getElementById('list');
-    if (!$list) console.error('[project_list] #list 요소가 없습니다.');
+    const fmt = n => Number(n||0).toLocaleString('ko-KR');
 
-    // 후보 수집
     function candidatesOf(p){
       const out = [];
       const push = v => { if (typeof v === 'string' && v.trim()) out.push(v.trim()); };
@@ -54,14 +78,12 @@
       return out;
     }
 
-    // 경로/gs:// → 표시가능한 URL
     async function toHttpUrl(raw){
       if (!raw) return null;
       let v = String(raw).trim();
-      if (/^(https?:|data:|blob:)/i.test(v)) return v;    // 이미 URL
-      if (v.startsWith('/')) v = v.slice(1);              // /covers → covers
+      if (/^(https?:|data:|blob:)/i.test(v)) return v;
+      if (v.startsWith('/')) v = v.slice(1);
       try {
-        // ref(storage, 'gs://bucket/path')를 그대로 넣으면 버킷 상관없이 동작함
         return await getDownloadURL(ref(storage, v));
       } catch (e) {
         console.warn('getDownloadURL 실패:', v, e?.message || e);
@@ -83,8 +105,6 @@
       return hay.includes(q.toLowerCase());
     }
 
-    const fmt = n => Number(n||0).toLocaleString('ko-KR');
-
     async function render(){
       try{
         const all = await apiListProjects({ status:'all' });
@@ -97,20 +117,28 @@
         const withCovers = await Promise.all(list.map(async p => ({ ...p, _cover: await coverUrlOf(p) })));
 
         $list.innerHTML = withCovers.map(p => `
-          <article class="card">
-            <img src="${p._cover}" alt="cover"/>
+          <a class="card" href="project.html?id=${encodeURIComponent(p.id)}">
+            <div class="thumb">
+              <img src="${p._cover}" alt="cover"/>
+              <span class="badge">${p.adminApproved ? '진행중' : '대기중'}</span>
+            </div>
             <div class="card-body">
-              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-                <strong>${p.name ?? '(이름 없음)'}</strong>
-                ${p.adminApproved ? '<span class="chip approved">승인</span>' : '<span class="chip pending">대기</span>'}
+              <h3>${p.name ?? '(이름 없음)'}</h3>
+              <p class="summary">${p.summary ?? ''}</p>
+              <div class="progress">
+                <div class="bar" style="width:${Math.min(100, Math.round((p.currentAmount||0)/p.goalAmount*100))}%"></div>
               </div>
-              <div class="muted">${p.summary ?? ''}</div>
-              <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
-              <div style="text-align:right">
-                <a class="btn primary" style="padding:8px 12px;border-radius:10px" href="project.html?id=${encodeURIComponent(p.id)}">상세보기</a>
+              <div class="stats">
+                <span>목표 ${fmt(p.goalAmount)}원</span>
+                <span>달성 ${fmt(p.currentAmount||0)}원</span>
+                <span>참여 ${p.supporterCount ?? 0}명</span>
+              </div>
+              <div class="rescuer">
+                <span class="avatar">🐾</span>
+                <span class="name">${p.rescuerName ?? '익명 구조자'}</span>
               </div>
             </div>
-          </article>
+          </a>
         `).join('');
       }catch(e){
         console.error(e);
