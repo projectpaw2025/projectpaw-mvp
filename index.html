@@ -6,33 +6,24 @@
   <title>Project.PAW — 개인과 개인을 잇는 후원 플랫폼</title>
   <link rel="stylesheet" href="common.css"/>
   <link rel="stylesheet" href="app.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"/>
   <style>
     :root{
-      --ink:#111; --sub:#5a4a43; --muted:#777; --line:#eaeaea;
-      --bg:#fafafa; --card:#fff; --brand:#A47864; /* Mocha Mousse */
+      --ink:#111; --sub:#444; --muted:#777; --line:#eaeaea;
+      --bg:#fafafa; --card:#fff;
+      --brand:#A47864; /* Mocha Mousse */
+      --brand-hover:#8b6452;
     }
     html,body{margin:0; background:var(--bg); color:var(--ink); font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     .container{max-width:1200px; margin:0 auto; padding:0 20px}
     section{padding:60px 0}
-    h1{margin:0 0 12px; font-size:3rem; font-weight:900; letter-spacing:-.02em; line-height:1.15}
-    p{margin:0; color:var(--sub); line-height:1.65}
 
-    /* Buttons (Mocha tone) */
-    .btn{
-      display:inline-block; padding:12px 18px; border-radius:12px; font-weight:700; text-decoration:none; transition:.2s
-    }
-    .btn.primary{
-      background:var(--brand); color:#fff;
-    }
-    .btn.primary:hover{
-      background:#8b6452; /* darker mocha hover */
-    }
-    .btn.secondary{
-      border:2px solid var(--brand); color:var(--brand); background:#fff;
-    }
-    .btn.secondary:hover{
-      background:#F7F5F4; /* soft mocha background */
-    }
+    /* CTA Buttons */
+    .btn{display:inline-block; padding:12px 18px; border-radius:12px; font-weight:700; text-decoration:none; transition:.2s}
+    .btn.primary{background:var(--brand); color:#fff}
+    .btn.primary:hover{background:var(--brand-hover)}
+    .btn.secondary{border:2px solid var(--brand); color:var(--brand); background:#fff}
+    .btn.secondary:hover{background:#f7f5f4}
 
     /* 오른쪽 고정 CTA */
     .cta-dock{
@@ -44,17 +35,29 @@
       .cta-dock{top:auto; bottom:16px; transform:none; right:16px; flex-direction:row}
     }
 
-    /* Hero 블록 */
-    .hero{
-      background:#fff; padding:88px 0 36px; border-bottom:1px solid var(--line);
+    /* ===== HERO SLIDER ===== */
+    .hero-slider{
+      background: linear-gradient(135deg, #A47864 0%, #d2b6a8 100%);
+      padding: 80px 0;
     }
-    .hero h1{font-size:2.6rem}
-    .sub-lines{margin-top:14px; display:flex; flex-direction:column; gap:6px; font-weight:600; color:var(--sub)}
+    .slide-card{
+      background:#fff; border-radius:16px; padding:40px; max-width:700px; margin:0 auto;
+      box-shadow:0 10px 24px rgba(0,0,0,.08); text-align:center;
+    }
+    .slide-card h1{font-size:2.4rem; font-weight:900; margin-bottom:14px}
+    .slide-card h2{font-size:1.8rem; font-weight:800; margin-bottom:14px}
+    .slide-card .sub{color:#555; font-size:1rem; margin-bottom:16px; line-height:1.6}
+    .chips{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:10px}
+    .chip{background:#fafafa; border:1px solid #ddd; border-radius:999px; padding:8px 14px; font-weight:700; font-size:.95rem}
+    .cases{list-style:none; padding:0; margin:0; display:grid; gap:10px; text-align:left}
+    .cases li{font-size:1rem; font-weight:600; color:#333}
 
-    .chips{margin-top:18px; display:flex; gap:10px; flex-wrap:wrap}
-    .chip{border:1px solid var(--line); background:#fff; padding:8px 14px; border-radius:999px; font-weight:700; font-size:.95rem}
-
-    /* 프로젝트 목록 */
+    /* Swiper 기본 커스터마이징 */
+    .swiper-button-prev, .swiper-button-next{color:#A47864}
+    .swiper-pagination-bullet{background:#ccc; opacity:1}
+    .swiper-pagination-bullet-active{background:#A47864}
+    
+    /* ===== 프로젝트 목록 ===== */
     .projects h2{margin:0 0 14px; font-size:1.4rem; font-weight:900; letter-spacing:-.01em; text-align:center}
     .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px}
     .project-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; transition:.2s}
@@ -63,14 +66,15 @@
     .project-card h3{margin:8px 0 4px; font-size:1.05rem}
     .muted{color:var(--muted); font-size:.9rem}
 
+    /* 반응형 */
     @media (max-width:560px){
       section{padding:48px 0}
-      h1{font-size:2.2rem}
+      .slide-card h1{font-size:2rem}
     }
   </style>
 </head>
 <body>
-  <!-- header include -->
+  <!-- header include (원본 유지) -->
   <div data-include="header"></div>
 
   <!-- 오른쪽 고정 CTA -->
@@ -79,27 +83,48 @@
     <a href="create.html" class="btn secondary">등록하기</a>
   </div>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container">
-      <h1>개인↔개인을 연결하는, 국내 첫 기부 플랫폼</h1>
-      <div class="sub-lines">
-        <span>#흩어진 개인 구조 활동을 PAW에서 연결하고 싶었습니다.</span>
-        <span>#혼자 시작한 구조가 혼자 끝나지 않도록 투명하게</span>
+  <!-- ===== HERO SLIDER ===== -->
+  <section class="hero-slider">
+    <div class="swiper">
+      <div class="swiper-wrapper">
+        <!-- Slide 1 -->
+        <div class="swiper-slide">
+          <div class="slide-card">
+            <h1>개인↔개인을 연결하는,<br/>국내 첫 기부 플랫폼</h1>
+            <p class="sub">#흩어진 개인 구조 활동을 PAW에서 연결하고 싶었습니다.<br/>
+            #혼자 시작한 구조가 혼자 끝나지 않도록 투명하게</p>
+            <div class="chips">
+              <span class="chip">개인↔개인</span>
+              <span class="chip">후원금 100% 전달</span>
+              <span class="chip">구조자 30% 책임</span>
+              <span class="chip">증빙 필수</span>
+            </div>
+          </div>
+        </div>
+        <!-- Slide 2 -->
+        <div class="swiper-slide">
+          <div class="slide-card">
+            <h2>환영하는 구조 케이스</h2>
+            <ul class="cases">
+              <li>🐾 유기동물 구조 후 병원비</li>
+              <li>🐾 중성화 비용 (지원 불가 케이스)</li>
+              <li>🐾 입양 후 첫 검진비</li>
+              <li>🐾 기타 보호/구조 활동 비용</li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <div class="chips">
-        <span class="chip">개인↔개인</span>
-        <span class="chip">후원금 100% 전달</span>
-        <span class="chip">구조자 30% 책임</span>
-        <span class="chip">증빙 필수</span>
-      </div>
+      <!-- 네비게이션 -->
+      <div class="swiper-pagination"></div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
     </div>
   </section>
 
-  <!-- 프로젝트 목록 -->
+  <!-- ===== 프로젝트 목록 ===== -->
   <section class="projects">
     <div class="container">
-      <h2>진행 중인 프로젝트 <a href="project_list.html" class="btn secondary" style="margin-left:10px; font-size:.85rem; padding:6px 12px">모두보기</a></h2>
+      <h2>진행 중인 프로젝트</h2>
       <div id="projects-grid" class="grid">
         <div class="muted">불러오는 중...</div>
       </div>
@@ -109,7 +134,7 @@
   <!-- footer include -->
   <div data-include="footer"></div>
 
-  <!-- Script -->
+  <!-- Scripts -->
   <script type="module">
     import { injectLayout } from './js/include.js';
     import { apiListProjects } from './js/api.js';
@@ -149,6 +174,16 @@
     }
 
     render();
+  </script>
+
+  <!-- Swiper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+  <script>
+    new Swiper('.swiper', {
+      loop: true,
+      pagination: { el: '.swiper-pagination', clickable: true },
+      navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+    });
   </script>
 </body>
 </html>
