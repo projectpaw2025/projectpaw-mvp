@@ -27,11 +27,14 @@
     .hero p.sub{margin:8px 0; font-size:1.2rem; font-weight:600; color:var(--sub); letter-spacing:-.01em; white-space:pre-line}
 
     /* 카드뉴스 */
-    .cards{background:#f6f6f6}
+    .cards{background:#f6f6f6; padding:80px 0}
     .cards h2{text-align:center; font-size:1.8rem; font-weight:900; margin-bottom:40px}
     .card-grid{
-      display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-      gap:20px; max-width:1000px; margin:0 auto;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:20px;
+      max-width:1000px;
+      margin:0 auto;
     }
     .card{
       background:#fff;
@@ -39,14 +42,14 @@
       padding:28px 22px;
       border:2px solid var(--green);
       text-align:center;
-      font-size:1.15rem;
+      font-size:1.1rem;
       font-weight:600;
       line-height:1.5;
       transition:.2s;
     }
     .card strong{
       display:block;
-      font-size:1.25rem;
+      font-size:1.2rem;
       font-weight:900;
       color:var(--green-dark);
       margin-bottom:12px;
@@ -83,16 +86,19 @@
     </div>
   </section>
 
-  <!-- 카드뉴스 -->
+  <!-- 카드뉴스 (기획서 반영) -->
   <section class="cards">
     <div class="container">
-      <h2>PAW는 이런 순간을 연결합니다</h2>
+      <h2>PAW가 전하는 메시지</h2>
       <div class="card-grid">
-        <div class="card"><strong>*PAW는 연결합니다*</strong>개인과 개인을 이어주는 새로운 후원의 방식</div>
-        <div class="card">구조 후 병원 진료비가 큰 짐이 될 때</div>
-        <div class="card">국가지원을 받지 못하는 중성화 수술비용</div>
-        <div class="card">유기동물 입양 후 첫 건강검진과 예방접종비용</div>
-        <div class="card">그 외에도 투명한 영수증으로 확인 가능한 구조 활동</div>
+        <div class="card"><strong>🐾 PAW는 연결합니다</strong>혼자가 아닌, 함께하는 구조</div>
+        <div class="card">💊 구조 후 병원 진료비가 큰 짐이 될 때</div>
+        <div class="card">✂️ 국가지원을 받지 못하는 중성화 수술비용</div>
+        <div class="card">🍼 유기동물 입양 후 첫 건강검진과 예방접종</div>
+        <div class="card">🧾 투명한 영수증으로 확인 가능한 모든 활동</div>
+        <div class="card">🤝 후원금 100% 전달<br/>(수수료는 PAW가 부담)</div>
+        <div class="card">⚖️ 구조자 30% 비용부담 필수<br/>(도덕적 헤이 방지)</div>
+        <div class="card">🌱 개인↔개인, 직접 연결의 힘</div>
       </div>
     </div>
   </section>
