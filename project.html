@@ -11,38 +11,36 @@
   .wrap{max-width:860px;margin:0 auto;padding:20px 16px}
   h1{font-size:1.6rem;font-weight:800;margin-bottom:8px}
   .muted{color:#6b7280;font-size:.9rem}
-  .kv{width:100%;border-radius:12px;margin:16px 0}
-  .slider{position:relative;overflow:hidden;border-radius:12px;margin:20px 0;box-shadow:0 4px 10px rgba(0,0,0,0.05)}
-  .slider img{width:100%;display:none}
+  /* 이미지 영역 */
+  .slider{position:relative;overflow:hidden;border-radius:12px;margin:20px 0;box-shadow:0 4px 10px rgba(0,0,0,0.05);max-height:320px}
+  .slider img{width:100%;height:320px;object-fit:cover;display:none}
   .slider img.active{display:block}
   .slider-nav{position:absolute;top:50%;width:100%;display:flex;justify-content:space-between;transform:translateY(-50%)}
   .slider-nav button{background:rgba(0,0,0,.5);color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer}
+  /* CTA 버튼 */
   .btn.kakao{background:#FEE500;color:#111;padding:12px 20px;border-radius:12px;display:inline-block;font-weight:600;margin-top:16px}
   .share-buttons{margin:20px 0;display:flex;gap:12px;flex-wrap:wrap}
   .share-buttons button{
-    flex:1;
-    min-width:120px;
+    flex:1;min-width:120px;
     display:flex;align-items:center;justify-content:center;
-    gap:8px;
-    padding:12px 18px;
-    border-radius:12px;
-    font-weight:600;
-    font-size:.95rem;
-    cursor:pointer;
-    border:none;
-    transition:all .2s ease;
+    gap:8px;padding:12px 18px;
+    border-radius:12px;font-weight:600;font-size:.95rem;
+    cursor:pointer;border:none;transition:all .2s ease;
   }
   .share-buttons button:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,0.15)}
   .share-kakao{background:#FEE500;color:#111}
   .share-insta{background:#E4405F;color:#fff}
   .share-copy{background:#6b7280;color:#fff}
+  /* 상세설명 강조 */
   .project-card{
     background:#fff;
     border-radius:16px;
-    padding:20px;
-    margin-top:20px;
-    box-shadow:0 2px 6px rgba(0,0,0,0.05);
+    padding:24px;
+    margin-top:24px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.06);
   }
+  .project-card p{font-size:1rem;line-height:1.5;margin-bottom:12px}
+  .project-card .muted{font-size:.95rem;margin-bottom:8px}
 </style>
 </head>
 <body>
@@ -105,7 +103,7 @@
     function renderSlider(imgs){
       if(!imgs || !imgs.length) return '';
       if(imgs.length === 1){
-        return `<img class="kv" src="${imgs[0]}" alt="project image"/>`;
+        return `<div class="slider"><img class="active" src="${imgs[0]}" alt="project image"/></div>`;
       }
       return `
         <div class="slider">
@@ -132,13 +130,14 @@
           <div class="muted">구조자: ${p.rescuerName ?? ''}</div>
           ${renderSlider(imgs)}
 
-          <!-- 공유 버튼 영역 -->
+          <!-- 공유 버튼 -->
           <div class="share-buttons">
             <button class="share-kakao" id="shareKakao"><i class="fa-solid fa-comment"></i> 카카오톡</button>
             <button class="share-insta" id="shareInsta"><i class="fa-brands fa-instagram"></i> 인스타그램</button>
             <button class="share-copy" id="shareCopy"><i class="fa-solid fa-link"></i> 링크복사</button>
           </div>
 
+          <!-- 상세설명 강조 -->
           <div class="project-card">
             <p>${p.description ?? ''}</p>
             <p class="muted">목표 금액: ${fmt(p.goalAmount)}원</p>
@@ -148,6 +147,7 @@
           </div>
         `;
 
+        // 슬라이더 동작
         const sliderImgs = $detail.querySelectorAll('.slider img');
         if(sliderImgs.length){
           let idx = 0;
