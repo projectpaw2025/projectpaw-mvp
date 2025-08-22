@@ -6,7 +6,7 @@
   <title>Project.PAW — 개인과 개인을 잇는 후원 플랫폼</title>
   <link rel="stylesheet" href="common.css"/>
   <link rel="stylesheet" href="app.min.css"/>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=SUIT:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     :root{
       --ink:#111; --sub:#444; --muted:#777; --line:#eaeaea;
@@ -14,11 +14,17 @@
       --brand:#A47864; /* Mocha Mousse */
       --brand-hover:#8b6452;
     }
-    html,body{margin:0; background:var(--bg); color:var(--ink); font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    html,body{
+      margin:0; background:var(--bg); color:var(--ink);
+      font-family:'SUIT','Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
+    }
     .container{max-width:1200px; margin:0 auto; padding:0 20px}
-    section{padding:60px 0}
+    section{padding:70px 0}
+    h1{margin:0 0 14px; font-size:2.6rem; font-weight:800; line-height:1.25}
+    h2{margin:0 0 18px; font-size:1.6rem; font-weight:700; text-align:center}
+    p{margin:0; color:var(--sub); line-height:1.65}
 
-    /* CTA Buttons */
+    /* Buttons */
     .btn{display:inline-block; padding:12px 18px; border-radius:12px; font-weight:700; text-decoration:none; transition:.2s}
     .btn.primary{background:var(--brand); color:#fff}
     .btn.primary:hover{background:var(--brand-hover)}
@@ -35,30 +41,25 @@
       .cta-dock{top:auto; bottom:16px; transform:none; right:16px; flex-direction:row}
     }
 
-    /* ===== HERO SLIDER ===== */
-    .hero-slider{
-      background: linear-gradient(135deg, #A47864 0%, #d2b6a8 100%);
-      padding: 80px 0;
-    }
-    .slide-card{
-      background:#fff; border-radius:16px; padding:40px; max-width:700px; margin:0 auto;
-      box-shadow:0 10px 24px rgba(0,0,0,.08); text-align:center;
-    }
-    .slide-card h1{font-size:2.4rem; font-weight:900; margin-bottom:14px}
-    .slide-card h2{font-size:1.8rem; font-weight:800; margin-bottom:14px}
-    .slide-card .sub{color:#555; font-size:1rem; margin-bottom:16px; line-height:1.6}
-    .chips{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:10px}
-    .chip{background:#fafafa; border:1px solid #ddd; border-radius:999px; padding:8px 14px; font-weight:700; font-size:.95rem}
-    .cases{list-style:none; padding:0; margin:0; display:grid; gap:10px; text-align:left}
-    .cases li{font-size:1rem; font-weight:600; color:#333}
+    /* HERO */
+    .hero{background:#fff; text-align:center; padding:100px 20px}
+    .hero .sub{color:var(--sub); margin:14px 0; font-size:1.1rem; line-height:1.6}
+    .chips{margin-top:18px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
+    .chip{background:#fafafa; border:1px solid var(--line); border-radius:999px; padding:8px 14px; font-weight:600; font-size:.95rem}
 
-    /* Swiper 기본 커스터마이징 */
-    .swiper-button-prev, .swiper-button-next{color:#A47864}
-    .swiper-pagination-bullet{background:#ccc; opacity:1}
-    .swiper-pagination-bullet-active{background:#A47864}
-    
-    /* ===== 프로젝트 목록 ===== */
-    .projects h2{margin:0 0 14px; font-size:1.4rem; font-weight:900; letter-spacing:-.01em; text-align:center}
+    /* CASES BLOCK */
+    .cases-block{background:#f6f6f6}
+    .cases-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px}
+    .case-card{
+      background:#fff; border:1px solid var(--line); border-radius:12px; padding:20px; text-align:center;
+      transition:.2s
+    }
+    .case-card:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.06)}
+    .case-card i{font-size:1.5rem; display:block; margin-bottom:8px}
+    .case-card b{display:block; margin-bottom:6px; font-size:1.05rem}
+
+    /* PROJECTS */
+    .projects h2{margin:0 0 14px; font-size:1.4rem; font-weight:800; text-align:center}
     .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px}
     .project-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; transition:.2s}
     .project-card:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.06)}
@@ -66,62 +67,53 @@
     .project-card h3{margin:8px 0 4px; font-size:1.05rem}
     .muted{color:var(--muted); font-size:.9rem}
 
-    /* 반응형 */
     @media (max-width:560px){
-      section{padding:48px 0}
-      .slide-card h1{font-size:2rem}
+      h1{font-size:2rem}
+      section{padding:52px 0}
     }
   </style>
 </head>
 <body>
-  <!-- header include (원본 유지) -->
+  <!-- header include -->
   <div data-include="header"></div>
 
   <!-- 오른쪽 고정 CTA -->
-  <div class="cta-dock" aria-label="빠른 참여">
+  <div class="cta-dock">
     <a href="project_list.html" class="btn primary">지금 구조자 만나보기</a>
     <a href="create.html" class="btn secondary">등록하기</a>
   </div>
 
-  <!-- ===== HERO SLIDER ===== -->
-  <section class="hero-slider">
-    <div class="swiper">
-      <div class="swiper-wrapper">
-        <!-- Slide 1 -->
-        <div class="swiper-slide">
-          <div class="slide-card">
-            <h1>개인↔개인을 연결하는,<br/>국내 첫 기부 플랫폼</h1>
-            <p class="sub">#흩어진 개인 구조 활동을 PAW에서 연결하고 싶었습니다.<br/>
-            #혼자 시작한 구조가 혼자 끝나지 않도록 투명하게</p>
-            <div class="chips">
-              <span class="chip">개인↔개인</span>
-              <span class="chip">후원금 100% 전달</span>
-              <span class="chip">구조자 30% 책임</span>
-              <span class="chip">증빙 필수</span>
-            </div>
-          </div>
-        </div>
-        <!-- Slide 2 -->
-        <div class="swiper-slide">
-          <div class="slide-card">
-            <h2>환영하는 구조 케이스</h2>
-            <ul class="cases">
-              <li>🐾 유기동물 구조 후 병원비</li>
-              <li>🐾 중성화 비용 (지원 불가 케이스)</li>
-              <li>🐾 입양 후 첫 검진비</li>
-              <li>🐾 기타 보호/구조 활동 비용</li>
-            </ul>
-          </div>
-        </div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <h1>개인↔개인을 연결하는, 국내 첫 기부 플랫폼</h1>
+      <p class="sub">
+        #흩어진 개인 구조 활동을 PAW에서 연결하고 싶었습니다.<br/>
+        #혼자 시작한 구조가 혼자 끝나지 않도록 투명하게
+      </p>
+      <div class="chips">
+        <span class="chip">개인↔개인</span>
+        <span class="chip">후원금 100% 전달</span>
+        <span class="chip">구조자 30% 책임</span>
+        <span class="chip">증빙 필수</span>
       </div>
-      <!-- 네비게이션 -->
-      <div class="swiper-pagination"></div>
-      <div class="swiper-button-prev"></div>
-      <div class="swiper-button-next"></div>
     </div>
   </section>
 
-  <!-- ===== 프로젝트 목록 ===== -->
+  <!-- CASES -->
+  <section class="cases-block">
+    <div class="container">
+      <h2>환영하는 구조 케이스</h2>
+      <div class="cases-grid">
+        <div class="case-card"><i>🐾</i><b>유기동물 구조</b>병원비 지원</div>
+        <div class="case-card"><i>✂️</i><b>중성화 비용</b>지원 불가 케이스</div>
+        <div class="case-card"><i>🩺</i><b>입양 후 검진</b>첫 건강검진 비용</div>
+        <div class="case-card"><i>🏠</i><b>보호/구조 활동</b>기타 발생 비용</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
   <section class="projects">
     <div class="container">
       <h2>진행 중인 프로젝트</h2>
@@ -174,16 +166,6 @@
     }
 
     render();
-  </script>
-
-  <!-- Swiper.js -->
-  <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
-  <script>
-    new Swiper('.swiper', {
-      loop: true,
-      pagination: { el: '.swiper-pagination', clickable: true },
-      navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-    });
   </script>
 </body>
 </html>
