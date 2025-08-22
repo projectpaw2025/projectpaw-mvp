@@ -10,7 +10,6 @@
     :root{
       --ink:#111; --sub:#444; --muted:#777; --line:#eaeaea;
       --bg:#fafafa; --card:#fff; --brand:#00C896;
-      --ok:#0ea765; --no:#9ca3af; --head:#f6f8fb;
     }
     html,body{margin:0; background:var(--bg); color:var(--ink); font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     .container{max-width:1200px; margin:0 auto; padding:0 20px}
@@ -25,7 +24,7 @@
     .btn.secondary{border:2px solid var(--brand); color:var(--brand); background:#fff}
     .btn.secondary:hover{background:#f3fffb}
 
-    /* 오른쪽 고정 CTA */
+    /* 오른쪽 고정 CTA (원본 유지) */
     .cta-dock{
       position:fixed; right:22px; top:50%; transform:translateY(-50%);
       display:flex; flex-direction:column; gap:10px; z-index:60;
@@ -35,65 +34,43 @@
       .cta-dock{top:auto; bottom:16px; transform:none; right:16px; flex-direction:row}
     }
 
-    /* ===== 첫 블록(히어로 + Compared 표) ===== */
-    .hero-pro{
-      background:
-        radial-gradient(1100px 520px at 10% -10%, #f6fffb 0%, transparent 60%),
-        radial-gradient(900px 420px at 90% 0%, #f2f7ff 0%, transparent 60%),
-        #fff;
-      padding:88px 0 36px;
+    /* ===== Unified Hero Block: 한 블록에 모두 담기 ===== */
+    .hero-unified{
+      background:#fff;
+      padding:88px 0 48px;
       border-bottom:1px solid var(--line);
     }
-    .hero-grid{
-      display:grid; grid-template-columns: minmax(420px,1fr) minmax(420px,1fr);
-      gap:40px; align-items:start;
-    }
-    .lead{font-size:1.15rem; color:var(--sub); margin-top:6px}
-
-    /* Compared 표 */
-    .compare{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:16px;
-      box-shadow:0 14px 34px rgba(0,0,0,.07);
-      overflow:hidden;
-    }
-    .compare-head{
-      display:grid; grid-template-columns:1fr auto; align-items:center;
-      padding:16px 18px; background:var(--head); border-bottom:1px solid #ecf0f6;
-    }
-    .compare-title{font-weight:900; font-size:1.05rem; letter-spacing:-.01em}
-    .badges{display:flex; gap:8px; flex-wrap:wrap}
-    .badge-pill{
-      padding:6px 10px; border-radius:999px; font-size:.85rem; font-weight:800;
-      border:1px solid #e8f5ef; background:#f4fffb; color:#0a8b65;
+    .hero-unified .lead{
+      margin:0; font-size:1.15rem; color:var(--sub);
     }
 
-    .table{display:grid}
-    .thead, .row{
-      display:grid; grid-template-columns:1.1fr .95fr .95fr; gap:0; align-items:center;
+    /* 룰 스트립 (해시태그 대신 규칙 버튼) */
+    .rule-strip{margin-top:22px; display:flex; flex-wrap:wrap; gap:10px}
+    .rule{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:12px 16px; background:#fff; border:2px solid #e8eef5; border-radius:12px;
+      font-weight:900; font-size:1rem; letter-spacing:-.01em; white-space:nowrap;
     }
-    .thead{background:#fbfcff; border-bottom:1px solid #edf1f5; font-weight:900; color:#1f2937}
-    .th, .td{padding:14px 18px; border-bottom:1px dashed #edf1f5; font-size:.97rem}
-    .row:nth-child(odd) .td{background:linear-gradient(180deg,#fafafa 0,transparent 100%)}
-    .td .k{display:flex; align-items:center; gap:8px; color:var(--sub)}
-    .ok{color:var(--ok); font-weight:900}
-    .no{color:var(--no); font-weight:800}
-    .legend{padding:12px 18px; font-size:.88rem; color:#8a8f99}
 
-    /* ===== 해시태그 스트립 ===== */
-    .hashtags{
-      margin-top:26px; padding-top:18px; border-top:1px solid #eef2f7;
-      display:flex; flex-wrap:wrap; gap:10px;
+    /* Why / Where 2열 */
+    .whywhere{margin-top:28px; display:grid; grid-template-columns:1fr 1fr; gap:16px}
+    .whywhere .card{
+      background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px;
     }
-    .hash{
-      display:inline-flex; align-items:center; gap:8px;
-      background:#fff; border:2px solid #e8eef5; border-radius:999px;
-      padding:10px 14px; font-weight:900; font-size:1rem; letter-spacing:-.01em;
-    }
-    .hash:before{content:"#"; color:var(--brand)}
+    .whywhere h3{margin:0 0 8px; font-size:1.05rem; font-weight:900; letter-spacing:-.01em}
+    .whywhere p{margin:0; color:var(--sub); line-height:1.6}
 
-    /* ===== 프로젝트 목록 ===== */
+    /* 환영하는 구조 케이스 */
+    .case{margin-top:24px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px}
+    .case h3{margin:0 0 10px; font-size:1.05rem; font-weight:900}
+    .case-list{display:grid; grid-template-columns:repeat(2,minmax(280px,1fr)); gap:10px; margin:0; padding:0; list-style:none}
+    .case-list li{
+      display:flex; gap:10px; align-items:flex-start; padding:10px 12px; border:1px dashed #e9edf3; border-radius:10px; background:#fff;
+    }
+    .case-list li::before{content:"✓"; font-weight:900; color:var(--brand); line-height:1.2}
+    .case .hint{margin-top:10px; font-size:.92rem; color:var(--muted)}
+
+    /* 프로젝트 목록 */
     .projects h2{margin:0 0 14px; font-size:1.4rem; font-weight:900; letter-spacing:-.01em; text-align:center}
     .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px}
     .project-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; transition:.2s}
@@ -103,13 +80,15 @@
     .muted{color:var(--muted); font-size:.9rem}
 
     /* 반응형 */
-    @media (max-width:980px){ .hero-grid{grid-template-columns:1fr} }
-    @media (max-width:560px){
-      section{padding:48px 0}
-      h1{font-size:2.4rem}
-      .thead, .row{grid-template-columns:1fr 1fr}
-      .th:nth-child(1){grid-column:1 / -1}
-      .td:nth-child(1){grid-column:1 / -1}
+    @media (max-width:900px){
+      .whywhere{grid-template-columns:1fr}
+      .case-list{grid-template-columns:1fr}
+    }
+    @media (max-width:720px){
+      .hero-unified{padding:64px 0 36px}
+      h1{font-size:2.2rem}
+      .hero-unified .lead{font-size:1rem}
+      .rule{font-size:.95rem; padding:10px 14px}
     }
   </style>
 </head>
@@ -123,70 +102,46 @@
     <a href="create.html" class="btn secondary">등록하기</a>
   </div>
 
-  <!-- ===== 첫 블록: 임팩트 + Compared + 해시태그 ===== -->
-  <section class="hero-pro">
+  <!-- ===== 첫 화면: 한 블록에 모두 담기 ===== -->
+  <section class="hero-unified" aria-labelledby="hero-title">
     <div class="container">
-      <div class="hero-grid">
-        <!-- 왼쪽: 임팩트 카피 (중복 제거) -->
-        <div>
-          <h1>돌아가지 말고, 바로 연결하세요</h1>
-          <p class="lead">법인 없이 개인↔개인. Project.PAW가 표준이 됩니다.</p>
-        </div>
+      <!-- 헤드라인 & 서브 -->
+      <h1 id="hero-title">개인↔개인을 연결하는, 국내 최초 기부 플랫폼</h1>
+      <p class="lead">단톡방 / 인스타에 흩어져있던 마음, PAW로 연결합니다</p>
 
-        <!-- 오른쪽: Compared 표 -->
-        <aside class="compare" aria-label="기존 플랫폼과의 차이">
-          <div class="compare-head">
-            <div class="compare-title">Compared</div>
-            <div class="badges">
-              <span class="badge-pill">개인↔개인</span>
-              <span class="badge-pill">100% 전달</span>
-              <span class="badge-pill">30% 책임</span>
-            </div>
-          </div>
+      <!-- 룰 스트립 -->
+      <ul class="rule-strip" role="list" aria-label="플랫폼 원칙">
+        <li class="rule">개인↔개인</li>
+        <li class="rule">후원금 100% 전달</li>
+        <li class="rule">구조자 30% 책임</li>
+        <li class="rule">Beta 운영 중</li>
+      </ul>
 
-          <div class="table">
-            <div class="thead">
-              <div class="th">항목</div>
-              <div class="th">기존</div>
-              <div class="th">PAW</div>
-            </div>
+      <!-- Why / Where (2열, 짧고 팩트) -->
+      <div class="whywhere" aria-label="왜 시작했고, 어디로 가는가">
+        <article class="card" aria-labelledby="why-title">
+          <h3 id="why-title">왜 시작했나요</h3>
+          <p>개인이 해낸 구조가 단톡방에서 끝나지 않도록. 모금·증빙·소통이 흩어지던 흐름을 <b>한 화면</b>에서 연결합니다.</p>
+          <p style="margin-top:6px">우리의 룰은 간단합니다 — <b>구조자 30% 책임</b>, <b>후원금 100% 전달</b>.</p>
+        </article>
 
-            <div class="row">
-              <div class="td">연결 방식</div>
-              <div class="td"><div class="k"><span class="no">—</span>단체 경유</div></div>
-              <div class="td"><div class="k"><span class="ok">✓</span>개인↔개인 직연결</div></div>
-            </div>
-
-            <div class="row">
-              <div class="td">전달 구조</div>
-              <div class="td"><div class="k"><span class="no">—</span>일부 공제</div></div>
-              <div class="td"><div class="k"><span class="ok">✓</span>기부금 100% 전달</div></div>
-            </div>
-
-            <div class="row">
-              <div class="td">책임 설계</div>
-              <div class="td"><div class="k"><span class="no">—</span>규정 중심</div></div>
-              <div class="td"><div class="k"><span class="ok">✓</span>구조자 30% 부담</div></div>
-            </div>
-
-            <div class="row">
-              <div class="td">결제 흐름</div>
-              <div class="td"><div class="k"><span class="no">—</span>단체→병원</div></div>
-              <div class="td"><div class="k"><span class="ok">✓</span>병원 Direct(준비)</div></div>
-            </div>
-          </div>
-
-          <div class="legend">* Beta — 현재는 카톡방 모금 운영. 결제(PG) 연동 예정.</div>
-        </aside>
+        <article class="card" aria-labelledby="where-title">
+          <h3 id="where-title">우리가 가는 방향</h3>
+          <p><b>더 많은 ‘개인 구조’</b>가 실제로 일어나게. 곧 <b>동물병원 Direct 결제</b>로 정산을 간결하게 만들겠습니다.</p>
+          <p style="margin-top:6px">개인↔개인 연결을 <b>표준</b>으로 만드는 것이 목표입니다.</p>
+        </article>
       </div>
 
-      <!-- 해시태그 5개 (차별성 포인트) -->
-      <div class="hashtags" aria-label="핵심 차별성">
-        <span class="hash">개인↔개인</span>
-        <span class="hash">100%전달</span>
-        <span class="hash">구조자30%부담</span>
-        <span class="hash">병원Direct(준비)</span>
-        <span class="hash">투명한흐름</span>
+      <!-- 환영하는 구조 케이스 -->
+      <div class="case" aria-labelledby="case-title">
+        <h3 id="case-title">환영하는 구조 케이스</h3>
+        <ul class="case-list" role="list">
+          <li>유기동물 구조 후 부담한 병원비</li>
+          <li>보살피는 유기동물 중성화 비용 <small style="color:var(--muted)">(국가지원 대상이 아닌 경우)</small></li>
+          <li>유기동물 입양 후 첫 검진비</li>
+          <li>기타 모든 구조/보호활동으로 발생한 필수 비용</li>
+        </ul>
+        <p class="hint">등록은 간단합니다. 상황 설명과 <b>영수증/사진</b>만 준비하세요. 중복 모금은 불가하며, 진행 과정은 <b>투명하게 공개</b>됩니다.</p>
       </div>
     </div>
   </section>
