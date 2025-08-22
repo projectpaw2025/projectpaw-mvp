@@ -1,81 +1,257 @@
-:root{
-  --ink:#111;
-  --sub:#444;
-  --muted:#777;
-  --line:#eaeaea;
-  --bg:#F4F1EE;         /* Gardenia */
-  --card:#fff;
-  --mocha:#A47864;      /* Mocha Mousse */
-}
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Project.PAW — 개인과 개인을 잇는 후원 플랫폼</title>
+  <link rel="stylesheet" href="common.css"/>
+  <link rel="stylesheet" href="app.min.css"/>
+  <style>
+    :root{
+      --ink:#111;
+      --sub:#444;
+      --muted:#777;
+      --line:#eaeaea;
+      --bg:#F4F1EE;        /* Gardenia */
+      --card:#fff;
+      --mocha:#A47864;     /* Mocha Mousse */
+    }
+    html,body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font-family:'Inter','SUIT','Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
+    }
+    .container{max-width:1200px; margin:0 auto; padding:0 20px}
+    section{padding:64px 0}
 
-/* Hero */
-.hero{
-  text-align:center;
-  padding:140px 20px 90px;  /* 헤더 문구 좀 더 내려줌 */
-  background:var(--bg);
-}
-.hero h1{
-  margin:0 0 28px;
-  font-size:3.2rem;
-  font-weight:900;
-  line-height:1.3;
-  letter-spacing:-.02em;
-  white-space:pre-line;
-  color:var(--mocha);
-}
-.hero p.sub{
-  margin:10px 0;
-  font-size:1.25rem;
-  font-weight:600;
-  color:var(--sub);
-  letter-spacing:-.01em;
-  white-space:pre-line;
-}
+    /* Hero */
+    .hero{text-align:center; padding:140px 20px 90px; background:var(--bg)}
+    .hero h1{
+      margin:0 0 28px;
+      font-size:3.2rem;
+      font-weight:900;
+      line-height:1.3;
+      letter-spacing:-.02em;
+      white-space:pre-line;
+      color:var(--mocha);
+    }
+    .hero p.sub{
+      margin:10px 0;
+      font-size:1.25rem;
+      font-weight:600;
+      color:var(--sub);
+      letter-spacing:-.01em;
+      white-space:pre-line;
+    }
 
-/* Story Cards */
-.story-cards{background:var(--bg); padding:90px 0}
-.story-card{
-  background:#fff;
-  border:2px solid var(--mocha);
-  border-radius:18px;
-  padding:28px 22px;
-  text-align:left;
-  box-shadow:0 6px 14px rgba(0,0,0,.06);
-}
-.story-card h2{
-  font-size:1.45rem;
-  font-weight:900;
-  margin:0 0 20px;
-  line-height:1.4;
-  color:var(--mocha);
-}
-.story-card p{
-  font-size:1.1rem;
-  line-height:1.7;
-  margin:0 0 22px;
-  color:var(--ink);
-}
-.story-card ul{
-  list-style:none;
-  padding:0; margin:0;
-  display:flex; flex-direction:column; gap:14px;
-}
-.story-card li{
-  border:2px solid var(--mocha);
-  border-radius:14px;
-  padding:12px 16px;
-  font-size:1.05rem;
-  font-weight:600;
-  line-height:1.5;
-  background:#fff;
-  transition:.2s;
-}
-.story-card li:hover{
-  background:var(--bg);
-}
-.card-top{
-  display:flex; justify-content:space-between; align-items:center;
-  font-size:.9rem; font-weight:700;
-  margin-bottom:18px; color:var(--mocha);
-}
-.card-top .dots{font-size:1rem; letter-spacing:4px}
+    /* Story Cards */
+    .story-cards{background:var(--bg); padding:90px 0}
+    .card-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:24px;
+    }
+    .story-card{
+      background:#fff;
+      border:2px solid var(--mocha);
+      border-radius:18px;
+      padding:28px 22px;
+      text-align:left;
+      box-shadow:0 6px 14px rgba(0,0,0,.06);
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+    }
+    .card-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:.9rem;
+      font-weight:700;
+      margin-bottom:18px;
+      color:var(--mocha);
+    }
+    .card-top .dots{font-size:1rem; letter-spacing:4px}
+    .story-card h2{
+      font-size:1.45rem;
+      font-weight:900;
+      margin:0 0 20px;
+      line-height:1.4;
+      color:var(--mocha);
+    }
+    .story-card p{
+      font-size:1.1rem;
+      line-height:1.7;
+      margin:0 0 22px;
+      color:var(--ink);
+    }
+    .story-card ul{
+      list-style:none; padding:0; margin:0;
+      display:flex; flex-direction:column; gap:14px
+    }
+    .story-card li{
+      border:2px solid var(--mocha);
+      border-radius:14px;
+      padding:12px 16px;
+      font-size:1.05rem;
+      font-weight:600;
+      line-height:1.5;
+      background:#fff;
+      transition:.2s;
+    }
+    .story-card li:hover{background:var(--bg)}
+
+    /* Projects */
+    .projects h2{margin:0; font-size:1.7rem; font-weight:900; letter-spacing:-.01em}
+    .projects .header{display:flex; justify-content:space-between; align-items:center; margin-bottom:24px}
+    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px}
+    .project-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; transition:.2s}
+    .project-card:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.06)}
+    .project-card img{width:100%; height:180px; object-fit:cover; border-radius:10px}
+    .project-card h3{margin:8px 0 4px; font-size:1.15rem; font-weight:700}
+    .muted{color:var(--muted); font-size:.9rem}
+  </style>
+</head>
+<body>
+  <!-- header include -->
+  <div data-include="header"></div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>개인↔개인을 연결하는, 국내 첫 기부 플랫폼</h1>
+      <p class="sub">#흩어진 개인 구조 활동을 PAW에서 연결하고 싶었습니다.</p>
+      <p class="sub">#혼자 시작한 구조가 혼자 끝나지 않도록 투명하게</p>
+    </div>
+  </section>
+
+  <!-- Story Cards -->
+  <section class="story-cards">
+    <div class="container card-grid">
+
+      <!-- Card 1 -->
+      <div class="story-card">
+        <div class="card-top">
+          <span class="brand">PROJECT PAW</span>
+          <span class="dots">● ● ●</span>
+        </div>
+        <h2>우리가 시작한 이유</h2>
+        <p>
+          우리는 돈을 모으지 않습니다.<br/>
+          우리는 마음을 이어 생명을 살립니다.<br/>
+          이 프로젝트는 혼자가 버겁던 그 순간들에서 시작됐습니다.<br/>
+          따뜻함은 모여야 힘이 되니까요.
+        </p>
+        <ul>
+          <li>✓ 돈보다 생명이 먼저였던 그 순간</li>
+          <li>✓ 함께한 마음이 만든 작은 기적</li>
+          <li>✓ 도움은 본능, 연결은 선택</li>
+        </ul>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="story-card">
+        <div class="card-top">
+          <span class="brand">PROJECT PAW</span>
+          <span class="dots">● ● ●</span>
+        </div>
+        <h2>"선함엔 기준이 필요해"</h2>
+        <ul>
+          <li>✓ 구조자는 30% 직접 부담</li>
+          <li>✓ 후원금은 병원에 바로 지급</li>
+          <li>✓ 후기와 치료 전후 변화 공유</li>
+          <li>✓ 3개월간 모든 후원 기록 공개</li>
+        </ul>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="story-card">
+        <div class="card-top">
+          <span class="brand">PROJECT PAW</span>
+          <span class="dots">● ● ●</span>
+        </div>
+        <h2>이렇게 만들거야</h2>
+        <ul>
+          <li>✓ 발바닥은 따뜻한 약속</li>
+          <li>✓ 후원은 쉽고, 마음은 깊게</li>
+          <li>✓ 이야기가 먼저 닿는 구조</li>
+          <li>✓ 로그인은 어렵지 않아야 해</li>
+          <li>✓ 기부는 쉽고 투명해야 해</li>
+        </ul>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="story-card">
+        <div class="card-top">
+          <span class="brand">PROJECT PAW</span>
+          <span class="dots">● ● ●</span>
+        </div>
+        <h2>고양이보다 부드럽게,<br/>해파리보다 투명하게.</h2>
+        <ul>
+          <li>✓ 구조자·후원자 실시간 소통</li>
+          <li>✓ 지역별 PAW 병원 (구조병원 LIST)</li>
+          <li>✓ 모금액 전액 전달</li>
+          <li>✓ 100% 재능기부 운영 플랫폼</li>
+          <li>✓ 한 없이 투명에 가까운 PAW</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section class="projects">
+    <div class="container">
+      <div class="header">
+        <h2>진행 중인 프로젝트</h2>
+        <a href="project_list.html" class="btn primary">모두 보기 →</a>
+      </div>
+      <div id="projects-grid" class="grid">
+        <div class="muted">불러오는 중...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- footer include -->
+  <div data-include="footer"></div>
+
+  <script type="module">
+    import { injectLayout } from './js/include.js';
+    import { apiListProjects } from './js/api.js';
+
+    injectLayout({ active:'home' });
+
+    const $grid = document.getElementById('projects-grid');
+    const fmt = n => Number(n||0).toLocaleString('ko-KR');
+    const cover = (p) =>
+      p.representativeImageUrl || p.coverUrl ||
+      (Array.isArray(p.galleryUrls) && p.galleryUrls[0]) ||
+      (Array.isArray(p.images) && p.images[0]) ||
+      p.image || p.thumbnailUrl || 'img/placeholder.svg';
+
+    async function render(){
+      try {
+        const list = await apiListProjects({ status:'approved', limit:12 });
+        if(!list.length){
+          $grid.innerHTML = '<div class="muted">아직 승인된 프로젝트가 없습니다.</div>';
+          return;
+        }
+        $grid.innerHTML = list.map(p => `
+          <a class="project-card" href="project.html?id=${encodeURIComponent(p.id)}">
+            <img src="${cover(p)}" alt=""/>
+            <h3>${p.name ?? '(이름 없음)'}</h3>
+            <div class="muted">${p.summary ?? ''}</div>
+            <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
+          </a>
+        `).join('');
+      } catch (e) {
+        console.error(e);
+        $grid.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
