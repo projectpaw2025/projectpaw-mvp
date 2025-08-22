@@ -14,10 +14,10 @@ input,textarea{width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:10
 textarea{min-height:120px;resize:vertical}
 .grid2{display:grid;gap:12px;grid-template-columns:1fr 1fr}
 @media(max-width:760px){.grid2{grid-template-columns:1fr}}
-.note{color:#6b7280}
+.note{color:#6b7280;font-size:.85rem}
 .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
 .disabled{opacity:.6;pointer-events:none}
-/* 추가: 작성 가이드 */
+/* 작성 가이드 */
 .guide-box{
   background:#f9fafb;
   border:1px dashed #d1d5db;
@@ -27,9 +27,16 @@ textarea{min-height:120px;resize:vertical}
   line-height:1.5;
   margin-bottom:10px;
 }
-/* 추가: 미리보기 썸네일 */
+/* 사진 미리보기 */
 .preview{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.preview-item{position:relative}
 .preview img{width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb}
+.remove-btn{
+  position:absolute;top:4px;right:4px;
+  background:rgba(0,0,0,0.6);color:#fff;
+  border:none;border-radius:50%;width:22px;height:22px;
+  font-size:.8rem;cursor:pointer;line-height:1;
+}
 </style>
 </head>
 <body>
@@ -53,7 +60,12 @@ textarea{min-height:120px;resize:vertical}
         • 🙏 부탁의 말 (후원자에게 하고 싶은 메시지)
       </div>
 
-      <div><label>상세 설명</label><textarea name="description" required></textarea></div>
+      <div>
+        <label>상세 설명</label>
+        <textarea name="description" id="desc" maxlength="500" required></textarea>
+        <div class="note"><span id="descCount">0</span> / 500자</div>
+      </div>
+
       <div class="grid2">
         <div><label>목표 금액(원)</label><input type="number" name="goalAmount" min="0" required/></div>
         <div><label>구조자 부담액(원)</label><input type="number" name="rescuerContribution" min="0" required/></div>
@@ -98,18 +110,36 @@ textarea{min-height:120px;resize:vertical}
     const form = document.getElementById('form');
     const submitBtn = document.getElementById('submitBtn');
 
-    // ✅ 미리보기 기능
+    // 글자 수 카운터
+    const desc = document.getElementById('desc');
+    const descCount = document.getElementById('descCount');
+    desc.addEventListener('input', ()=>{
+      descCount.textContent = desc.value.length;
+    });
+
+    // 미리보기 + 삭제 기능
     function setupPreview(inputId, previewId){
       const input = document.getElementById(inputId);
       const preview = document.getElementById(previewId);
+
       input.addEventListener('change', ()=>{
         preview.innerHTML = '';
-        [...input.files].forEach(file=>{
+        [...input.files].forEach((file,idx)=>{
           const reader = new FileReader();
           reader.onload = e=>{
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            preview.appendChild(img);
+            const div = document.createElement('div');
+            div.className = 'preview-item';
+            div.innerHTML = `
+              <img src="${e.target.result}" alt="preview"/>
+              <button type="button" class="remove-btn">&times;</button>
+            `;
+            div.querySelector('.remove-btn').addEventListener('click', ()=>{
+              const dt = new DataTransfer();
+              [...input.files].forEach((f,i)=>{ if(i!==idx) dt.items.add(f); });
+              input.files = dt.files;
+              div.remove();
+            });
+            preview.appendChild(div);
           };
           reader.readAsDataURL(file);
         });
