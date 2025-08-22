@@ -23,24 +23,8 @@
 
     /* Hero */
     .hero{text-align:center; padding:100px 20px 70px}
-    .hero h1{margin:0 0 20px; font-size:3.4rem; font-weight:900; line-height:1.15; letter-spacing:-.02em}
-    .hero p.sub{margin:6px 0; font-size:1.25rem; font-weight:700; color:var(--sub); letter-spacing:-.01em}
-
-    /* Chips (bigger emphasis) */
-    .chips{
-      margin-top:32px;
-      display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
-    }
-    .chip{
-      background:var(--mocha);
-      color:#fff;
-      padding:18px 26px;
-      border-radius:999px;
-      font-weight:900;
-      font-size:1.25rem;
-      transition:.2s;
-    }
-    .chip:hover{ background:var(--mocha-dark) }
+    .hero h1{margin:0 0 28px; font-size:3.2rem; font-weight:900; line-height:1.25; letter-spacing:-.02em; white-space:pre-line}
+    .hero p.sub{margin:8px 0; font-size:1.2rem; font-weight:600; color:var(--sub); letter-spacing:-.01em; white-space:pre-line}
 
     /* Buttons & CTA Dock */
     .btn{display:inline-block; padding:13px 20px; border-radius:12px; font-weight:800; text-decoration:none; transition:.2s}
@@ -50,7 +34,7 @@
     .btn.secondary:hover{background:#f7f5f4}
 
     .cta-dock{
-      position:fixed; right:22px; top:50%; transform:translateY(-50%);
+      position:fixed; right:22px; bottom:22px;
       display:flex; flex-direction:column; gap:12px; z-index:60;
       filter:drop-shadow(0 8px 16px rgba(0,0,0,.12));
       background:#fff; padding:18px; border-radius:14px; border:1px solid var(--line);
@@ -67,7 +51,7 @@
     .cta-cases div{font-style:italic}
 
     @media (max-width:1024px){
-      .cta-dock{top:auto; bottom:16px; right:16px; transform:none; flex-direction:column; width:calc(100% - 32px)}
+      .cta-dock{bottom:16px; right:16px; width:calc(100% - 32px)}
     }
 
     /* Projects */
@@ -103,12 +87,8 @@
       <h1>개인↔개인을 연결하는, 국내 첫 기부 플랫폼</h1>
       <p class="sub">#흩어진 개인 구조 활동을 PAW에서 연결하고 싶었습니다.</p>
       <p class="sub">#혼자 시작한 구조가 혼자 끝나지 않도록 투명하게</p>
-      <div class="chips">
-        <span class="chip">개인↔개인</span>
-        <span class="chip">후원금 100% 전달</span>
-        <span class="chip">구조자 30% 비용 부담 (도덕적 헤이 방지)</span>
-        <span class="chip">증빙 필수</span>
-      </div>
+      <p class="sub">#개인<->개인 #후원금100%전달구조(수수료는 PAW부담)</p>
+      <p class="sub">#구조자 30% 비용부담필수 (도덕적헤이방지)</p>
     </div>
   </section>
 
