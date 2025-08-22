@@ -51,11 +51,21 @@
 
     /* 환영하는 구조 케이스 */
     .cases{background:#f6f6f6}
-    .cases h2{text-align:center; font-size:1.7rem; font-weight:900; margin-bottom:30px}
-    .case-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px}
-    .case-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:20px; font-weight:700; font-size:1.15rem; text-align:center; transition:.2s}
-    .case-card:hover{transform:translateY(-3px); box-shadow:0 8px 18px rgba(0,0,0,.08)}
-
+    .cases h2{text-align:center; font-size:1.8rem; font-weight:900; margin-bottom:40px}
+    .case-list{max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:22px}
+    .case-item{
+      background:#fff;
+      border:2px solid var(--line);
+      border-radius:12px;
+      padding:22px 26px;
+      font-weight:800;
+      font-size:1.15rem;
+      line-height:1.45;
+      transition:.2s;
+    }
+    .case-item:hover{background:#fafafa; transform:translateY(-2px)}
+    .case-item strong{color:var(--mocha)}
+    
     /* Projects */
     .projects h2{margin:0; font-size:1.7rem; font-weight:900; letter-spacing:-.01em}
     .projects .header{display:flex; justify-content:space-between; align-items:center; margin-bottom:24px}
@@ -105,12 +115,12 @@
   <!-- 환영하는 구조케이스 -->
   <section class="cases">
     <div class="container">
-      <h2>이런 구조 케이스를 환영합니다</h2>
-      <div class="case-grid">
-        <div class="case-card">유기동물 구조 후 병원비</div>
-        <div class="case-card">중성화 비용 (국가지원 불가 케이스)</div>
-        <div class="case-card">입양 후 첫 검진비</div>
-        <div class="case-card">기타 보호/구조 활동 비용</div>
+      <h2>등록 가능한 케이스 (환영합니다)</h2>
+      <div class="case-list">
+        <div class="case-item"><strong>병원비 증빙</strong>이 있는 유기동물 구조</div>
+        <div class="case-item"><strong>국가지원 제외</strong>된 중성화 수술</div>
+        <div class="case-item">입양 직후 <strong>필수 검진·예방 접종</strong> 비용</div>
+        <div class="case-item">그 외 보호·구조 활동에 <strong>투명한 영수증</strong>이 있는 경우</div>
       </div>
     </div>
   </section>
