@@ -1,6 +1,47 @@
-...
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>프로젝트 상세</title>
+<link rel="stylesheet" href="common.css"/>
+<link rel="stylesheet" href="app.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <style>
-  /* 기존 스타일 유지 + progress bar 추가 */
+  .wrap{max-width:860px;margin:0 auto;padding:20px 16px}
+  h1{font-size:1.6rem;font-weight:800;margin-bottom:8px}
+  .muted{color:#6b7280;font-size:.9rem}
+  /* 이미지 영역 */
+  .slider{position:relative;overflow:hidden;border-radius:12px;margin:20px 0;box-shadow:0 4px 10px rgba(0,0,0,0.05);max-height:320px}
+  .slider img{width:100%;height:320px;object-fit:cover;display:none}
+  .slider img.active{display:block}
+  .slider-nav{position:absolute;top:50%;width:100%;display:flex;justify-content:space-between;transform:translateY(-50%)}
+  .slider-nav button{background:rgba(0,0,0,.5);color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer}
+  /* CTA 버튼 */
+  .btn.kakao{background:#FEE500;color:#111;padding:12px 20px;border-radius:12px;display:inline-block;font-weight:600;margin-top:16px}
+  .share-buttons{margin:20px 0;display:flex;gap:12px;flex-wrap:wrap}
+  .share-buttons button{
+    flex:1;min-width:120px;
+    display:flex;align-items:center;justify-content:center;
+    gap:8px;padding:12px 18px;
+    border-radius:12px;font-weight:600;font-size:.95rem;
+    cursor:pointer;border:none;transition:all .2s ease;
+  }
+  .share-buttons button:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,0.15)}
+  .share-kakao{background:#FEE500;color:#111}
+  .share-insta{background:#E4405F;color:#fff}
+  .share-copy{background:#6b7280;color:#fff}
+  /* 상세설명 강조 */
+  .project-card{
+    background:#fff;
+    border-radius:16px;
+    padding:24px;
+    margin-top:24px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.06);
+  }
+  .project-card p{font-size:1rem;line-height:1.5;margin-bottom:12px}
+  .project-card .muted{font-size:.95rem;margin-bottom:8px}
+  /* Progress Bar */
   .progress-wrap{margin:20px 0}
   .progress{background:#e5e7eb;border-radius:12px;overflow:hidden;height:20px}
   .progress-bar{
@@ -11,53 +52,156 @@
     font-size:.85rem;
     font-weight:600;
     line-height:20px;
-    transition:width .3s ease;
+    width:0%; /* 항상 0% */
   }
 </style>
-...
-<script type="module">
-  ...
-  async function render(){
-    const id = getId();
-    if(!id){ $detail.innerHTML = '<div class="muted">잘못된 접근입니다.</div>'; return; }
+</head>
+<body>
+  <div data-include="header"></div>
 
-    try{
-      const p = await getProjectById(id);
-      if(!p){ $detail.innerHTML = '<div class="muted">존재하지 않는 프로젝트입니다.</div>'; return; }
+  <main class="wrap">
+    <div id="project-detail"><div class="muted">불러오는 중...</div></div>
+  </main>
 
-      const imgs = await galleryHttpUrls(p);
-      const goal = Number(p.goalAmount||0);
-      const current = Number(p.currentAmount||0);
-      const rate = goal>0 ? Math.min(100, Math.round((current/goal)*100)) : 0;
+  <div data-include="footer"></div>
 
-      $detail.innerHTML = `
-        <h1>${p.name ?? '(이름 없음)'}</h1>
-        <div class="muted">구조자: ${p.rescuerName ?? ''}</div>
-        ${renderSlider(imgs)}
+  <script type="module">
+    import { injectLayout } from './js/include.js';
+    import { getProjectById } from './js/api.js';
+    import { storage } from './js/firebase.js';
+    import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-        <!-- 공유 버튼 -->
-        <div class="share-buttons">
-          <button class="share-kakao" id="shareKakao"><i class="fa-solid fa-comment"></i> 카카오톡</button>
-          <button class="share-insta" id="shareInsta"><i class="fa-brands fa-instagram"></i> 인스타그램</button>
-          <button class="share-copy" id="shareCopy"><i class="fa-solid fa-link"></i> 링크복사</button>
-        </div>
+    injectLayout({ active:'project' });
 
-        <!-- 상세설명 카드 -->
-        <div class="project-card">
-          <p>${p.description ?? ''}</p>
-          <p class="muted">목표 금액: ${fmt(goal)}원</p>
-          <p class="muted">현재 모금: ${fmt(current)}원</p>
+    const $detail = document.getElementById('project-detail');
+    const fmt = n => Number(n||0).toLocaleString('ko-KR');
 
-          <!-- 달성률 progress bar -->
-          <div class="progress-wrap">
-            <div class="progress">
-              <div class="progress-bar" style="width:${rate}%">${rate}%</div>
-            </div>
+    function candidatesOf(p){
+      const out = [];
+      const push = v => { if (typeof v === 'string' && v.trim()) out.push(v.trim()); };
+      ['representativeImageUrl','representativeImage','representImg','coverUrl','coverURL','cover','mainImageUrl','mainImage','thumbnailUrl','thumbnail','thumbUrl','image','imageUrl','photo','photoUrl']
+        .forEach(k => push(p[k]));
+      ['galleryUrls','images','photos','pictures','media','attachments','files'].forEach(k => {
+        const arr = p[k]; if (Array.isArray(arr)) arr.forEach(it => {
+          if (typeof it === 'string') push(it);
+          else if (it && (it.url || it.downloadUrl || it.path)) push(it.url || it.downloadUrl || it.path);
+        });
+      });
+      return out;
+    }
+
+    async function toHttpUrl(raw){
+      if (!raw) return null;
+      let v = String(raw).trim();
+      if (/^(https?:|data:|blob:)/i.test(v)) return v;
+      if (v.startsWith('/')) v = v.slice(1);
+      try {
+        return await getDownloadURL(ref(storage, v));
+      } catch (e) {
+        console.warn('[project] getDownloadURL 실패:', v, e?.message || e);
+        return null;
+      }
+    }
+
+    async function galleryHttpUrls(p){
+      const cands = candidatesOf(p);
+      const urls  = await Promise.all(cands.map(toHttpUrl));
+      const uniq = [], seen = new Set();
+      for (const u of urls) { if (u && !seen.has(u)) { seen.add(u); uniq.push(u); } }
+      return uniq.length ? uniq : ['img/placeholder.svg'];
+    }
+
+    function getId(){ return new URLSearchParams(location.search).get("id"); }
+
+    function renderSlider(imgs){
+      if(!imgs || !imgs.length) return '';
+      if(imgs.length === 1){
+        return `<div class="slider"><img class="active" src="${imgs[0]}" alt="project image"/></div>`;
+      }
+      return `
+        <div class="slider">
+          ${imgs.map((u,i)=>`<img src="${u}" class="${i===0?'active':''}" alt="gallery ${i+1}"/>`).join('')}
+          <div class="slider-nav">
+            <button id="prevBtn">◀</button>
+            <button id="nextBtn">▶</button>
+          </div>
+        </div>`;
+    }
+
+    async function render(){
+      const id = getId();
+      if(!id){ $detail.innerHTML = '<div class="muted">잘못된 접근입니다.</div>'; return; }
+
+      try{
+        const p = await getProjectById(id);
+        if(!p){ $detail.innerHTML = '<div class="muted">존재하지 않는 프로젝트입니다.</div>'; return; }
+
+        const imgs = await galleryHttpUrls(p);
+
+        const goal = Number(p.goalAmount || 0);
+        const current = 0;   // 모금액 없음 → 임시 0
+        const rate = 0;      // 달성률 항상 0%
+
+        $detail.innerHTML = `
+          <h1>${p.name ?? '(이름 없음)'}</h1>
+          <div class="muted">구조자: ${p.rescuerName ?? ''}</div>
+          ${renderSlider(imgs)}
+
+          <!-- 공유 버튼 -->
+          <div class="share-buttons">
+            <button class="share-kakao" id="shareKakao"><i class="fa-solid fa-comment"></i> 카카오톡</button>
+            <button class="share-insta" id="shareInsta"><i class="fa-brands fa-instagram"></i> 인스타그램</button>
+            <button class="share-copy" id="shareCopy"><i class="fa-solid fa-link"></i> 링크복사</button>
           </div>
 
-          <p class="muted">구조자 부담금: ${fmt(p.rescuerContribution)}원</p>
-          <p class="muted">지지자 수: ${fmt(p.supportersCount)}</p>
-          ${p.registrantKakaoId ? `<a href="https://open.kakao.com/o/${p.registrantKakaoId}" target="_blank" class="btn kakao">카카오톡으로 참여하기</a>` : ''}
-        </div>
-      `;
-      ...
+          <!-- 상세설명 카드 -->
+          <div class="project-card">
+            <p>${p.description ?? ''}</p>
+            <p class="muted">목표 금액: ${fmt(goal)}원</p>
+            <p class="muted">현재 모금: ${fmt(current)}원</p>
+
+            <!-- 달성률 Progress Bar (항상 0%) -->
+            <div class="progress-wrap">
+              <div class="progress">
+                <div class="progress-bar">0%</div>
+              </div>
+            </div>
+
+            <p class="muted">구조자 부담금: ${fmt(p.rescuerContribution)}원</p>
+            <p class="muted">지지자 수: ${fmt(p.supportersCount)}</p>
+            ${p.registrantKakaoId ? `<a href="https://open.kakao.com/o/${p.registrantKakaoId}" target="_blank" class="btn kakao">카카오톡으로 참여하기</a>` : ''}
+          </div>
+        `;
+
+        // 슬라이더 동작
+        const sliderImgs = $detail.querySelectorAll('.slider img');
+        if(sliderImgs.length){
+          let idx = 0;
+          const prev = document.getElementById('prevBtn');
+          const next = document.getElementById('nextBtn');
+          const show = (i) => sliderImgs.forEach((img,j)=>img.classList.toggle('active', j===i));
+          prev?.addEventListener('click', ()=>{ idx = (idx-1+sliderImgs.length)%sliderImgs.length; show(idx); });
+          next?.addEventListener('click', ()=>{ idx = (idx+1)%sliderImgs.length; show(idx); });
+        }
+
+        // 공유 버튼 이벤트
+        document.getElementById("shareCopy")?.addEventListener("click", () => {
+          navigator.clipboard.writeText(window.location.href).then(()=>alert("링크가 복사되었습니다!"));
+        });
+        document.getElementById("shareKakao")?.addEventListener("click", () => {
+          window.open("https://sharer.kakao.com/talk/friends/picker/link","_blank");
+        });
+        document.getElementById("shareInsta")?.addEventListener("click", () => {
+          alert("인스타그램은 직접 URL을 복사해 공유해주세요.");
+        });
+
+      }catch(e){
+        console.error(e);
+        $detail.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
