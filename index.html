@@ -8,13 +8,13 @@
   <link rel="stylesheet" href="app.min.css"/>
   <style>
     :root{
-      --ink:#111; --sub:#444; --muted:#777; --line:#eaeaea;
+      --ink:#111; --sub:#444; --muted:#777; --line:#eef1f5;
       --bg:#fafafa; --card:#fff; --brand:#00C896;
     }
     html,body{margin:0; background:var(--bg); color:var(--ink); font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     .container{max-width:1200px; margin:0 auto; padding:0 20px}
     section{padding:60px 0}
-    h1{margin:0 0 12px; font-size:3rem; font-weight:900; letter-spacing:-.02em; line-height:1.15}
+    h1{margin:0 0 16px; font-size:3rem; font-weight:900; letter-spacing:-.02em; line-height:1.15}
     p{margin:0; color:var(--sub); line-height:1.65}
 
     /* Buttons */
@@ -34,31 +34,22 @@
       .cta-dock{top:auto; bottom:16px; transform:none; right:16px; flex-direction:row}
     }
 
-    /* ===== Unified Hero Block: 한 블록에 모두 담기 ===== */
+    /* ===== Unified Hero Block: 한 블록(헤드라인/서브2줄/룰/케이스) ===== */
     .hero-unified{
       background:#fff;
       padding:88px 0 48px;
       border-bottom:1px solid var(--line);
     }
-    .hero-unified .lead{
-      margin:0; font-size:1.15rem; color:var(--sub);
-    }
+    .subs{display:grid; gap:4px; color:var(--muted); font-size:1.02rem}
+    .subs .line::before{content:"#"; margin-right:6px; color:var(--brand); font-weight:900}
 
     /* 룰 스트립 (해시태그 대신 규칙 버튼) */
-    .rule-strip{margin-top:22px; display:flex; flex-wrap:wrap; gap:10px}
+    .rule-strip{margin-top:18px; display:flex; flex-wrap:wrap; gap:8px}
     .rule{
       display:inline-flex; align-items:center; justify-content:center;
       padding:12px 16px; background:#fff; border:2px solid #e8eef5; border-radius:12px;
       font-weight:900; font-size:1rem; letter-spacing:-.01em; white-space:nowrap;
     }
-
-    /* Why / Where 2열 */
-    .whywhere{margin-top:28px; display:grid; grid-template-columns:1fr 1fr; gap:16px}
-    .whywhere .card{
-      background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px;
-    }
-    .whywhere h3{margin:0 0 8px; font-size:1.05rem; font-weight:900; letter-spacing:-.01em}
-    .whywhere p{margin:0; color:var(--sub); line-height:1.6}
 
     /* 환영하는 구조 케이스 */
     .case{margin-top:24px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px}
@@ -75,20 +66,20 @@
     .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px}
     .project-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; transition:.2s}
     .project-card:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.06)}
-    .project-card img{width:100%; height:180px; object-fit:cover; border-radius:10px}
+    .project-card img{width:100%; height:auto; aspect-ratio:16/10; object-fit:cover; border-radius:10px}
     .project-card h3{margin:8px 0 4px; font-size:1.05rem}
     .muted{color:var(--muted); font-size:.9rem}
 
     /* 반응형 */
     @media (max-width:900px){
-      .whywhere{grid-template-columns:1fr}
       .case-list{grid-template-columns:1fr}
     }
     @media (max-width:720px){
       .hero-unified{padding:64px 0 36px}
-      h1{font-size:2.2rem}
-      .hero-unified .lead{font-size:1rem}
+      h1{font-size:2.3rem}
+      .subs{font-size:1rem}
       .rule{font-size:.95rem; padding:10px 14px}
+      .projects{padding-bottom:72px} /* 모바일에서 고정 CTA와 겹침 방지 */
     }
   </style>
 </head>
@@ -102,12 +93,17 @@
     <a href="create.html" class="btn secondary">등록하기</a>
   </div>
 
-  <!-- ===== 첫 화면: 한 블록에 모두 담기 ===== -->
+  <!-- ===== 첫 화면: 원블록 ===== -->
   <section class="hero-unified" aria-labelledby="hero-title">
     <div class="container">
-      <!-- 헤드라인 & 서브 -->
+      <!-- 헤드라인 -->
       <h1 id="hero-title">개인↔개인을 연결하는, 국내 최초 기부 플랫폼</h1>
-      <p class="lead">단톡방 / 인스타에 흩어져있던 마음, PAW로 연결합니다</p>
+
+      <!-- 서브 2줄(WHY & 방향, 작은 글씨) -->
+      <div class="subs" aria-label="설명">
+        <p class="line">흩어진 개인 구조 모금을 PAW에서 연결합니다.</p>
+        <p class="line">혼자 시작한 구조가 혼자 끝나지 않도록</p>
+      </div>
 
       <!-- 룰 스트립 -->
       <ul class="rule-strip" role="list" aria-label="플랫폼 원칙">
@@ -116,21 +112,6 @@
         <li class="rule">구조자 30% 책임</li>
         <li class="rule">Beta 운영 중</li>
       </ul>
-
-      <!-- Why / Where (2열, 짧고 팩트) -->
-      <div class="whywhere" aria-label="왜 시작했고, 어디로 가는가">
-        <article class="card" aria-labelledby="why-title">
-          <h3 id="why-title">왜 시작했나요</h3>
-          <p>개인이 해낸 구조가 단톡방에서 끝나지 않도록. 모금·증빙·소통이 흩어지던 흐름을 <b>한 화면</b>에서 연결합니다.</p>
-          <p style="margin-top:6px">우리의 룰은 간단합니다 — <b>구조자 30% 책임</b>, <b>후원금 100% 전달</b>.</p>
-        </article>
-
-        <article class="card" aria-labelledby="where-title">
-          <h3 id="where-title">우리가 가는 방향</h3>
-          <p><b>더 많은 ‘개인 구조’</b>가 실제로 일어나게. 곧 <b>동물병원 Direct 결제</b>로 정산을 간결하게 만들겠습니다.</p>
-          <p style="margin-top:6px">개인↔개인 연결을 <b>표준</b>으로 만드는 것이 목표입니다.</p>
-        </article>
-      </div>
 
       <!-- 환영하는 구조 케이스 -->
       <div class="case" aria-labelledby="case-title">
@@ -151,7 +132,7 @@
     <div class="container">
       <h2>진행 중인 프로젝트</h2>
       <div id="projects-grid" class="grid">
-        <div class="muted">불러오는 중...</div>
+        <div class="muted">아직 프로젝트가 없어요. <a href="create.html">등록하기</a>로 첫 구조를 시작해 주세요.</div>
       </div>
     </div>
   </section>
@@ -181,12 +162,12 @@
       try {
         const list = await apiListProjects({ status:'approved', limit:12 });
         if(!list.length){
-          $grid.innerHTML = '<div class="muted">아직 승인된 프로젝트가 없습니다.</div>';
+          $grid.innerHTML = '<div class="muted">아직 프로젝트가 없어요. <a href="create.html">등록하기</a>로 첫 구조를 시작해 주세요.</div>';
           return;
         }
         $grid.innerHTML = list.map(p => `
           <a class="project-card" href="project.html?id=${encodeURIComponent(p.id)}">
-            <img src="${cover(p)}" alt=""/>
+            <img src="${cover(p)}" alt="${(p.name ?? '프로젝트') + ' 썸네일'}"/>
             <h3>${p.name ?? '(이름 없음)'}</h3>
             <div class="muted">${p.summary ?? ''}</div>
             <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
