@@ -29,30 +29,40 @@
     .story-cards{background:#fafafa; padding:80px 0}
     .card-grid{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
       gap:24px;
     }
     .story-card{
       background:#fff;
       border:2px solid #111;
       border-radius:18px;
-      padding:28px 24px;
+      padding:24px 20px;
       text-align:left;
       box-shadow:0 6px 14px rgba(0,0,0,.06);
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
     }
-    .story-card .top{
+    .card-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
       font-size:.85rem;
       font-weight:700;
       margin-bottom:16px;
     }
+    .card-top .dots{font-size:1rem; letter-spacing:4px}
     .story-card h2{
-      font-size:1.4rem;
+      font-size:1.3rem;
       font-weight:900;
       margin:0 0 18px;
       line-height:1.4;
     }
     .story-card p{font-size:1rem; line-height:1.6; margin:0 0 20px}
-    .story-card ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:12px}
+    .story-card ul{
+      list-style:none; padding:0; margin:0;
+      display:flex; flex-direction:column; gap:12px
+    }
     .story-card li{
       border:2px solid #111;
       border-radius:14px;
@@ -91,7 +101,10 @@
 
       <!-- Card 1 -->
       <div class="story-card">
-        <div class="top">PROJECT PAW</div>
+        <div class="card-top">
+          <span class="brand">PROJECT PAW</span>
+          <span class="dots">● ● ●</span>
+        </div>
         <h2>우리가 시작한 이유</h2>
         <p>
           우리는 돈을 모으지 않습니다.<br/>
@@ -108,7 +121,10 @@
 
       <!-- Card 2 -->
       <div class="story-card">
-        <div class="top">PROJECT PAW</div>
+        <div class="card-top">
+          <span class="brand">PROJECT PAW</span>
+          <span class="dots">● ● ●</span>
+        </div>
         <h2>"선함엔 기준이 필요해"</h2>
         <ul>
           <li>✓ 구조자는 30% 직접 부담</li>
@@ -120,7 +136,10 @@
 
       <!-- Card 3 -->
       <div class="story-card">
-        <div class="top">PROJECT PAW</div>
+        <div class="card-top">
+          <span class="brand">PROJECT PAW</span>
+          <span class="dots">● ● ●</span>
+        </div>
         <h2>이렇게 만들거야</h2>
         <ul>
           <li>✓ 발바닥은 따뜻한 약속</li>
@@ -133,7 +152,10 @@
 
       <!-- Card 4 -->
       <div class="story-card">
-        <div class="top">PROJECT PAW</div>
+        <div class="card-top">
+          <span class="brand">PROJECT PAW</span>
+          <span class="dots">● ● ●</span>
+        </div>
         <h2>고양이보다 부드럽게,<br/>해파리보다 투명하게.</h2>
         <ul>
           <li>✓ 구조자·후원자 실시간 소통</li>
