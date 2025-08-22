@@ -15,7 +15,6 @@
       --bg:#F4F1EE;        /* Gardenia */
       --card:#fff;
       --mocha:#A47864;     /* Mocha Mousse */
-      --mint:#AEE1D2;      /* Point color */
     }
     html,body{
       margin:0;
@@ -29,11 +28,11 @@
     /* Hero */
     .hero{
       text-align:center;
-      padding:80px 20px 20px; /* 🔽 위 여백 줄이고 아래 카드랑 더 가까워짐 */
+      padding:100px 20px 40px;
       background:var(--bg);
     }
     .hero h1{
-      margin:0;
+      margin:0 0 24px;
       font-size:3rem;
       font-weight:900;
       line-height:1.3;
@@ -42,119 +41,56 @@
     }
 
     /* Story Cards */
-    .story-cards{background:var(--bg); padding:40px 0} /* 🔽 위 padding 줄임 */
-    .card-grid{
-      display:grid;
-      grid-template-columns:repeat(2,1fr); /* PC 2x2 */
-      gap:32px;
-    }
-    @media (max-width:1024px){
-      .card-grid{grid-template-columns:1fr}
-    }
+    .story-cards{background:var(--bg); padding:60px 0}
+    .card-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:32px}
+    @media (max-width:768px){.card-grid{grid-template-columns:1fr}}
     .story-card{
-      background:#fff;
-      border:2px solid var(--mocha);
-      border-radius:20px;
-      padding:28px 24px;
-      text-align:left;
-      box-shadow:0 6px 14px rgba(0,0,0,.06);
-      display:flex;
-      flex-direction:column;
+      background:#fff; border:2px solid var(--mocha); border-radius:20px;
+      padding:32px 26px; text-align:left; box-shadow:0 6px 14px rgba(0,0,0,.06);
+      display:flex; flex-direction:column; justify-content:flex-start;
     }
-    .card-top{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      font-size:.95rem;
-      font-weight:700;
-      color:var(--mocha);
-      padding-bottom:10px;
-      border-bottom:2px solid var(--mocha);
-      margin-bottom:20px;
-    }
-    .story-card h2{
-      font-size:1.5rem;
-      font-weight:900;
-      margin:0 0 20px;
-      line-height:1.4;
-      color:var(--mocha);
-    }
-    .story-card p{
-      font-size:1.15rem;
-      line-height:1.8;
-      margin:0 0 24px;
-      color:var(--ink);
-    }
-    .story-card ul{
-      list-style:none; padding:0; margin:0;
-      display:flex; flex-direction:column; gap:16px;
-      flex:1;
-    }
-    .story-card li{
-      border:2px solid var(--mocha);
-      border-radius:16px;
-      padding:14px 18px;
-      font-size:1.05rem;
-      font-weight:600;
-      line-height:1.6;
-      background:#fff;
-      transition:.2s;
-    }
+    .card-top{display:flex; justify-content:space-between; align-items:center; font-size:.95rem; font-weight:700; margin-bottom:12px; color:var(--mocha); padding-bottom:8px; border-bottom:1px solid var(--line)}
+    .story-card h2{font-size:1.5rem; font-weight:900; margin:0 0 20px; line-height:1.4; color:var(--mocha)}
+    .story-card p{font-size:1.05rem; line-height:1.7; margin:0 0 20px; color:var(--ink)}
+    .story-card ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:14px}
+    .story-card li{border:2px solid var(--mocha); border-radius:16px; padding:12px 16px; font-size:1rem; font-weight:600; line-height:1.5; background:#fff; transition:.2s}
     .story-card li:hover{background:var(--bg)}
-    .story-card .spacer{flex:1} /* 빈 공간 채우기용 */
-
-    /* 📱 Mobile readability tweaks */
-    @media (max-width:768px){
-      .story-card{padding:24px 18px}
-      .story-card h2{font-size:1.35rem; line-height:1.5}
-      .story-card p{font-size:1.05rem; line-height:1.7}
-      .story-card li{font-size:1rem; padding:12px 14px; line-height:1.6}
-      .story-card ul{gap:14px}
-    }
 
     /* Projects */
     .projects h2{margin:0; font-size:1.7rem; font-weight:900; letter-spacing:-.01em}
     .projects .header{display:flex; justify-content:space-between; align-items:center; margin-bottom:24px}
-    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px}
-    .project-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; transition:.2s}
-    .project-card:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.06)}
-    .project-card img{width:100%; height:180px; object-fit:cover; border-radius:10px}
-    .project-card h3{margin:8px 0 4px; font-size:1.15rem; font-weight:700}
-    .muted{color:var(--muted); font-size:.9rem}
-
-    /* 📱 Mobile readability tweaks for project cards */
+    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px}
+    .project-card{
+      display:flex; flex-direction:column;
+      background:#fff; border:1px solid var(--line);
+      border-radius:16px; overflow:hidden;
+      transition:.2s; text-decoration:none; color:inherit;
+    }
+    .project-card:hover{transform:translateY(-3px); box-shadow:0 6px 16px rgba(0,0,0,.1)}
+    .project-card .thumb{position:relative}
+    .project-card .thumb img{width:100%; height:180px; object-fit:cover}
+    .project-card .badge{
+      position:absolute; bottom:8px; left:8px;
+      background:rgba(0,0,0,0.6); color:#fff;
+      padding:4px 8px; border-radius:8px; font-size:.8rem
+    }
+    .project-card .body{padding:14px}
+    .project-card h3{margin:0 0 6px; font-size:1.2rem; font-weight:700}
+    .project-card .summary{
+      margin:0 0 12px; font-size:.95rem; color:var(--sub);
+      line-height:1.4; max-height:2.7em; overflow:hidden
+    }
+    .progress{background:#eee; border-radius:6px; overflow:hidden; height:8px; margin-bottom:8px}
+    .progress .bar{background:var(--mocha); height:100%}
+    .stats{display:flex; justify-content:space-between; font-size:.85rem; color:var(--muted); margin-bottom:10px}
+    .rescuer{display:flex; align-items:center; gap:6px; font-size:.9rem; font-weight:600; color:var(--ink)}
+    .rescuer .avatar{font-size:1rem}
     @media (max-width:768px){
       .grid{grid-template-columns:1fr; gap:20px}
-      .project-card{padding:18px}
       .project-card img{height:160px}
-      .project-card h3{font-size:1.2rem}
-      .project-card .muted{font-size:1rem; line-height:1.5}
-    }
-
-    /* Floating CTA */
-    .cta-fab{
-      position:fixed;
-      right:20px;
-      bottom:20px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      z-index:100;
-    }
-    .cta-fab a{
-      display:inline-block;
-      padding:14px 22px;
-      border-radius:999px;
-      font-weight:800;
-      text-decoration:none;
-      color:#fff;
-      background:var(--mocha);
-      box-shadow:0 6px 16px rgba(0,0,0,.15);
-      transition:.25s;
-    }
-    .cta-fab a:hover{background:var(--mint); color:#fff}
-    @media(max-width:768px){
-      .cta-fab{flex-direction:row; right:50%; transform:translateX(50%); bottom:16px}
+      .project-card h3{font-size:1.25rem}
+      .project-card .summary{font-size:1rem}
+      .stats{font-size:.9rem}
     }
   </style>
 </head>
@@ -172,13 +108,9 @@
   <!-- Story Cards -->
   <section class="story-cards">
     <div class="container card-grid">
-
       <!-- Card 1 -->
       <div class="story-card">
-        <div class="card-top">
-          <span class="brand">PROJECT PAW</span>
-          <span class="dots">● ● ●</span>
-        </div>
+        <div class="card-top"><span>PROJECT PAW</span><span class="dots">● ● ●</span></div>
         <h2>우리가 시작한 이유</h2>
         <p>
           우리는 돈을 모으지 않습니다.<br/>
@@ -195,10 +127,7 @@
 
       <!-- Card 2 -->
       <div class="story-card">
-        <div class="card-top">
-          <span class="brand">PROJECT PAW</span>
-          <span class="dots">● ● ●</span>
-        </div>
+        <div class="card-top"><span>PROJECT PAW</span><span class="dots">● ● ●</span></div>
         <h2>"선함엔 기준이 필요해"</h2>
         <ul>
           <li>✓ 구조자는 30% 직접 부담 (도덕적헤이방지)</li>
@@ -206,20 +135,16 @@
           <li>✓ 후기와 치료 전후 변화 공유</li>
           <li>✓ 치료영수증 업로드 필수</li>
         </ul>
-        <div class="spacer"></div>
       </div>
 
       <!-- Card 3 -->
       <div class="story-card">
-        <div class="card-top">
-          <span class="brand">PROJECT PAW</span>
-          <span class="dots">● ● ●</span>
-        </div>
-        <h2>고양이보다 부드럽게,<br/>해파리보다 투명하게</h2>
+        <div class="card-top"><span>PROJECT PAW</span><span class="dots">● ● ●</span></div>
+        <h2>고양이보다 부드럽게,<br/>해파리보다 투명하게.</h2>
         <ul>
           <li>✓ 구조자·후원자 실시간 소통</li>
           <li>✓ 지역별 PAW 병원 (구조병원 LIST) (개발 중)</li>
-          <li>✓ 모금액 전액 전달 (PG연결 전까지 단톡방으로 연결)</li>
+          <li>✓ 모금액 전액 전달 (PG연결 전까지 단톡방 연결)</li>
           <li>✓ 100% 재능기부 운영 플랫폼</li>
           <li>✓ 한 없이 투명에 가까운 PAW</li>
         </ul>
@@ -227,20 +152,15 @@
 
       <!-- Card 4 -->
       <div class="story-card">
-        <div class="card-top">
-          <span class="brand">PROJECT PAW</span>
-          <span class="dots">● ● ●</span>
-        </div>
-        <h2>함께하자, 등록해줘, 연결할게 ✅</h2>
+        <div class="card-top"><span>PROJECT PAW</span><span class="dots">● ● ●</span></div>
+        <h2>함께하자, 등록해줘, 연결할게</h2>
         <ul>
-          <li>✓ 구조 후 병원비, 카드 명세서가 두렵던 순간에도</li>
-          <li>✓ 국가지원 못 받는 중성화, 혼자 감당하지 말고</li>
-          <li>✓ 입양 직후, 첫 건강검진과 예방접종이 막막할 때</li>
-          <li>✓ 투명한 영수증으로 증명되는 모든 보호·구조 활동까지</li>
+          <li>✓ 병원비 증빙이 있는 구조 활동</li>
+          <li>✓ 국가지원 제외된 중성화 수술</li>
+          <li>✓ 입양 직후 검진·예방 접종</li>
+          <li>✓ 투명한 영수증이 있는 경우라면 언제든</li>
         </ul>
-        <div class="spacer"></div>
       </div>
-
     </div>
   </section>
 
@@ -259,12 +179,6 @@
 
   <!-- footer include -->
   <div data-include="footer"></div>
-
-  <!-- Floating CTA -->
-  <div class="cta-fab" aria-label="빠른 참여">
-    <a href="project_list.html">🐾 구조 활동 보러가기</a>
-    <a href="create.html">➕ 구조 활동 등록하기</a>
-  </div>
 
   <script type="module">
     import { injectLayout } from './js/include.js';
@@ -289,10 +203,26 @@
         }
         $grid.innerHTML = list.map(p => `
           <a class="project-card" href="project.html?id=${encodeURIComponent(p.id)}">
-            <img src="${cover(p)}" alt=""/>
-            <h3>${p.name ?? '(이름 없음)'}</h3>
-            <div class="muted">${p.summary ?? ''}</div>
-            <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
+            <div class="thumb">
+              <img src="${cover(p)}" alt=""/>
+              <span class="badge">${p.status === 'approved' ? '진행중' : '대기중'}</span>
+            </div>
+            <div class="body">
+              <h3>${p.name ?? '(이름 없음)'}</h3>
+              <p class="summary">${p.summary ?? ''}</p>
+              <div class="progress">
+                <div class="bar" style="width:${Math.min(100, Math.round((p.currentAmount||0)/p.goalAmount*100))}%"></div>
+              </div>
+              <div class="stats">
+                <span>목표 ${fmt(p.goalAmount)}원</span>
+                <span>달성 ${fmt(p.currentAmount||0)}원</span>
+                <span>참여자 ${p.supporterCount ?? 0}명</span>
+              </div>
+              <div class="rescuer">
+                <span class="avatar">🐾</span>
+                <span class="name">${p.rescuerName ?? '익명 구조자'}</span>
+              </div>
+            </div>
           </a>
         `).join('');
       } catch (e) {
