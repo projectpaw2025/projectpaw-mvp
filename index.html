@@ -3,56 +3,64 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Project.PAW — 법인 없는 첫 후원 플랫폼</title>
+  <title>Project.PAW — 개인과 개인을 잇는 후원 플랫폼</title>
   <link rel="stylesheet" href="common.css"/>
   <link rel="stylesheet" href="app.min.css"/>
   <style>
-    body { background:#fafafa; font-family:'Pretendard',sans-serif; }
-    section { padding:70px 40px; }
-    h2 { font-size:1.6rem; font-weight:800; margin-bottom:24px; text-align:center; }
+    body { font-family:'Pretendard',sans-serif; color:#111; margin:0; background:#fafafa; }
+    section { padding:100px 20px; }
+    .container { max-width:1200px; margin:0 auto; }
+
+    h1 { font-size:3rem; font-weight:900; margin-bottom:20px; line-height:1.3; }
+    h2 { font-size:2rem; font-weight:800; margin-bottom:50px; text-align:center; }
+    p { font-size:1.1rem; line-height:1.7; color:#444; }
+
+    /* Buttons */
+    .btn { display:inline-block; padding:14px 28px; border-radius:12px; font-weight:600; cursor:pointer; text-decoration:none; transition:.2s; }
+    .btn.primary { background:#00C896; color:#fff; margin:8px; }
+    .btn.primary:hover { background:#00a97a; }
+    .btn.secondary { border:2px solid #00C896; color:#00C896; margin:8px; background:#fff; }
+    .btn.secondary:hover { background:#f3fffb; }
 
     /* Hero */
-    .hero { text-align:center; padding:120px 20px 100px; background:linear-gradient(135deg,#fff 0%,#fef9f9 50%,#f5f7ff 100%); }
-    .hero h1 { font-size:2.6rem; font-weight:900; margin-bottom:20px; }
-    .hero p { font-size:1.15rem; color:#444; margin-bottom:24px; line-height:1.7; }
-    .beta { background:#fff3cd; color:#7a5200; border:1px solid #ffeeba; border-radius:12px; padding:14px 20px; display:inline-block; font-size:.95rem; margin-top:24px; }
-    .btn { display:inline-block; padding:14px 22px; border-radius:12px; font-weight:600; cursor:pointer; text-decoration:none; }
-    .btn.primary { background:#111; color:#fff; margin:8px; }
-    .btn.secondary { background:#fff; border:1px solid #ddd; color:#111; margin:8px; }
+    .hero { text-align:center; padding:140px 20px; background:#fff; }
+    .hero p { margin-bottom:24px; font-size:1.2rem; }
+    .beta { background:#e8fff6; color:#00664c; border:1px solid #baf2dc; border-radius:12px; padding:14px 20px; display:inline-block; font-size:.95rem; margin-top:24px; }
 
-    /* Impact Lines */
+    /* Impact */
     .impact { background:#f9fafb; }
-    .impact-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; max-width:960px; margin:0 auto; }
-    .impact-card { background:#fff; border:1px solid #eee; border-radius:12px; padding:28px; text-align:center; font-weight:700; font-size:1.1rem; }
+    .impact-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; }
+    .impact-card { background:#fff; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.05); padding:32px; font-size:1.2rem; font-weight:700; transition:.2s; }
+    .impact-card:hover { transform:translateY(-4px); box-shadow:0 8px 18px rgba(0,0,0,0.08); }
 
-    /* Trust Section */
+    /* Trust */
     .trust { background:#fff; }
-    .trust-layout { display:grid; grid-template-columns:2fr 1fr; gap:30px; max-width:1100px; margin:0 auto; }
-    .trust-points { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; }
-    .trust-card { background:#f9fafb; border:1px solid #eee; border-radius:14px; padding:28px 20px; text-align:center; }
-    .trust-card .icon { font-size:2rem; margin-bottom:10px; }
-    .trust-card h3 { font-size:1.2rem; font-weight:700; margin-bottom:8px; }
-    .trust-card p { font-size:.95rem; color:#555; line-height:1.5; }
-    .stats { background:#f9fafb; border:1px solid #eee; border-radius:14px; padding:28px; text-align:center; align-self:center; }
-    .stats h3 { font-size:1.2rem; margin-bottom:16px; }
-    .stats strong { font-size:1.4rem; font-weight:800; display:block; margin-bottom:6px; }
+    .trust-layout { display:grid; grid-template-columns:2fr 1fr; gap:40px; align-items:start; }
+    .trust-points { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:24px; }
+    .trust-card { background:#fafafa; border-radius:16px; padding:32px; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.04); }
+    .trust-card .icon { font-size:2rem; margin-bottom:14px; }
+    .trust-card h3 { font-size:1.2rem; font-weight:700; margin-bottom:10px; }
+    .trust-card p { font-size:.95rem; color:#555; }
+    .stats { background:#f9fafb; border-radius:16px; padding:40px; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.04); }
+    .stats h3 { font-size:1.3rem; margin-bottom:20px; }
+    .stats strong { font-size:1.5rem; font-weight:800; display:block; margin-bottom:10px; color:#00C896; }
     .stats .note { font-size:.9rem; color:#666; line-height:1.6; }
 
     /* Projects */
     .projects { background:#fafafa; }
-    .projects h2 { margin-bottom:16px; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; max-width:1040px; margin:0 auto; }
-    .card { background:#fff; border:1px solid #eee; border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:10px; transition:all .2s; }
-    .card:hover { box-shadow:0 4px 10px rgba(0,0,0,0.05); transform:translateY(-2px); }
-    .card img { width:100%; height:180px; object-fit:cover; border-radius:10px; }
+    .projects h2 { margin-bottom:30px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:24px; }
+    .card { background:#fff; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.05); padding:18px; display:flex; flex-direction:column; gap:10px; transition:.2s; }
+    .card:hover { transform:translateY(-4px); box-shadow:0 8px 18px rgba(0,0,0,0.08); }
+    .card img { width:100%; height:180px; object-fit:cover; border-radius:12px; }
     .card h3 { font-size:1.1rem; font-weight:700; margin:6px 0; }
     .muted { color:#777; font-size:.9rem; }
 
     /* Closing */
     .closing { background:#fff; }
-    .closing-layout { max-width:1000px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center; }
-    .closing strong { font-size:1.3rem; font-weight:800; display:block; margin-bottom:16px; line-height:1.5; }
-    .example-box { background:#f9fafb; border:1px solid #eee; border-radius:14px; padding:24px; font-size:.95rem; color:#555; line-height:1.6; }
+    .closing-layout { display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:center; }
+    .closing strong { font-size:1.4rem; font-weight:800; display:block; margin-bottom:20px; line-height:1.5; }
+    .example-box { background:#f9fafb; border-radius:16px; padding:28px; font-size:.95rem; color:#555; line-height:1.6; box-shadow:0 4px 10px rgba(0,0,0,0.04); }
     @media(max-width:768px){
       .trust-layout { grid-template-columns:1fr; }
       .closing-layout { grid-template-columns:1fr; }
@@ -64,80 +72,88 @@
 
   <!-- Hero -->
   <section class="hero">
-    <h1>후원, 왜 이렇게 복잡했을까요?</h1>
-    <p>
-      Project.PAW는 <b>구조자(개인) ↔ 후원자(개인)</b> 바로 연결.<br/>
-      단순하고 투명한 방식, 이제 시작합니다.
-    </p>
-
-    <div class="beta">
-      🐾 Beta 서비스 중<br/>
-      지금은 카톡방에서 모금이 진행돼요.<br/>
-      결제(PG) 붙으면 더 매끄럽게 이어집니다.
-    </div>
-
-    <div style="margin-top:30px">
-      <a href="project_list.html" class="btn primary">🐾 지금 구조자 만나보기</a>
-      <a href="create.html" class="btn secondary">등록하기</a>
-    </div>
-  </section>
-
-  <!-- Impact Lines -->
-  <section class="impact">
-    <div class="impact-grid">
-      <div class="impact-card">🐾 돕고 싶은 마음,<br/>연결로 실현</div>
-      <div class="impact-card">💡 망설임 대신,<br/>행동으로</div>
-      <div class="impact-card">❤️ 돈보다 중요한 건<br/>신뢰와 연결</div>
-    </div>
-  </section>
-
-  <!-- Trust Section -->
-  <section class="trust">
-    <h2>Project.PAW의 신뢰 설계</h2>
-    <div class="trust-layout">
-      <div class="trust-points">
-        <div class="trust-card">
-          <div class="icon">🔒</div>
-          <h3>구조자 부담금 30%</h3>
-          <p>책임을 함께 나누는 원칙입니다.</p>
-        </div>
-        <div class="trust-card">
-          <div class="icon">🏥</div>
-          <h3>Direct Payment 준비</h3>
-          <p>곧 병원으로 바로 결제됩니다.</p>
-        </div>
-        <div class="trust-card">
-          <div class="icon">🤝</div>
-          <h3>기부금 100% 전달</h3>
-          <p>수수료는 플랫폼이 부담합니다.</p>
-        </div>
+    <div class="container">
+      <h1>후원, 왜 이렇게 복잡했을까요?</h1>
+      <p>
+        Project.PAW는 <b>구조자(개인) ↔ 후원자(개인)</b> 바로 연결.<br/>
+        단순하고 투명한 방식, 이제 시작합니다.
+      </p>
+      <div class="beta">
+        🐾 Beta 서비스 중<br/>
+        지금은 카톡방에서 모금이 진행돼요.<br/>
+        결제(PG) 붙으면 더 매끄럽게 이어집니다.
       </div>
-      <div class="stats">
-        <h3>📊 지금까지의 연결</h3>
-        <strong>🐾 Beta 서비스 중</strong>
-        <p class="note">아직은 시작 단계지만,<br/>곧 지표가 쌓여갑니다.</p>
+      <div style="margin-top:30px">
+        <a href="project_list.html" class="btn primary">🐾 지금 구조자 만나보기</a>
+        <a href="create.html" class="btn secondary">등록하기</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Impact -->
+  <section class="impact">
+    <div class="container">
+      <div class="impact-grid">
+        <div class="impact-card">🐾 돕고 싶은 마음,<br/>연결로 실현</div>
+        <div class="impact-card">💡 망설임 대신,<br/>행동으로</div>
+        <div class="impact-card">❤️ 돈보다 중요한 건<br/>신뢰와 연결</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust -->
+  <section class="trust">
+    <div class="container">
+      <h2>Project.PAW의 신뢰 설계</h2>
+      <div class="trust-layout">
+        <div class="trust-points">
+          <div class="trust-card">
+            <div class="icon">🔒</div>
+            <h3>구조자 부담금 30%</h3>
+            <p>책임을 함께 나누는 원칙입니다.</p>
+          </div>
+          <div class="trust-card">
+            <div class="icon">🏥</div>
+            <h3>Direct Payment 준비</h3>
+            <p>곧 병원으로 바로 결제됩니다.</p>
+          </div>
+          <div class="trust-card">
+            <div class="icon">🤝</div>
+            <h3>기부금 100% 전달</h3>
+            <p>수수료는 플랫폼이 부담합니다.</p>
+          </div>
+        </div>
+        <div class="stats">
+          <h3>📊 지금까지의 연결</h3>
+          <strong>🐾 Beta 서비스 중</strong>
+          <p class="note">아직은 시작 단계지만,<br/>곧 지표가 쌓여갑니다.</p>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Projects -->
   <section class="projects">
-    <h2>진행 중인 프로젝트</h2>
-    <div id="projects-grid" class="grid">
-      <div class="muted">불러오는 중...</div>
+    <div class="container">
+      <h2>진행 중인 프로젝트</h2>
+      <div id="projects-grid" class="grid">
+        <div class="muted">불러오는 중...</div>
+      </div>
     </div>
   </section>
 
   <!-- Closing -->
   <section class="closing">
-    <div class="closing-layout">
-      <div>
-        <strong>Project.PAW는<br/>‘개인 ↔ 개인 후원’을 위한<br/>새로운 플랫폼입니다.</strong>
-      </div>
-      <div class="example-box">
-        예: 한 구조자가 다친 고양이를 병원에 데려갔습니다.<br/>
-        치료비는 벅찼지만, Project.PAW에서 후원자와 바로 연결.<br/>
-        책임은 줄고, 고양이는 치료를 받을 수 있었습니다.
+    <div class="container">
+      <div class="closing-layout">
+        <div>
+          <strong>Project.PAW는<br/>‘개인 ↔ 개인 후원’을 위한<br/>새로운 플랫폼입니다.</strong>
+        </div>
+        <div class="example-box">
+          예: 한 구조자가 다친 고양이를 병원에 데려갔습니다.<br/>
+          치료비는 벅찼지만, Project.PAW에서 후원자와 바로 연결.<br/>
+          책임은 줄고, 고양이는 치료를 받을 수 있었습니다.
+        </div>
       </div>
     </div>
   </section>
@@ -154,35 +170,4 @@
     const fmt = n => Number(n||0).toLocaleString('ko-KR');
 
     const cover = (p) =>
-      p.representativeImageUrl ||
-      p.coverUrl ||
-      (Array.isArray(p.galleryUrls) && p.galleryUrls[0]) ||
-      (Array.isArray(p.images) && p.images[0]) ||
-      p.image || p.thumbnailUrl ||
-      'img/placeholder.svg';
-
-    async function render(){
-      try {
-        const list = await apiListProjects({ status:'approved', limit:12 });
-        if(!list.length){
-          $grid.innerHTML = '<div class="muted">아직 승인된 프로젝트가 없습니다.</div>';
-          return;
-        }
-        $grid.innerHTML = list.map(p => `
-          <a class="card" href="project.html?id=${encodeURIComponent(p.id)}">
-            <img src="${cover(p)}" alt=""/>
-            <h3>${p.name ?? '(이름 없음)'}</h3>
-            <div class="muted">${p.summary ?? ''}</div>
-            <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
-          </a>
-        `).join('');
-      } catch (e) {
-        console.error(e);
-        $grid.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
-      }
-    }
-
-    render();
-  </script>
-</body>
-</html>
+      p.representativeIma
