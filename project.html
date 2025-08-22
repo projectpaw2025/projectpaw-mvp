@@ -1,147 +1,158 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project.PAW - 프로젝트 상세</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-  <style>
-    body { background-color: #f8f9fa; }
-    .project-header { margin-bottom: 20px; }
-    .share-buttons .btn { margin-left: 8px; }
-    .carousel-item img {
-      max-height: 400px;
-      object-fit: cover;
-      width: 100%;
-      border-radius: 10px;
-    }
-    .project-card {
-      padding: 20px;
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-      margin-bottom: 30px;
-    }
-    .btn-paw {
-      background-color: #007bff;
-      color: #fff;
-      font-weight: bold;
-    }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>프로젝트 상세</title>
+<link rel="stylesheet" href="common.css"/>
+<link rel="stylesheet" href="app.min.css"/>
+<style>
+  .wrap{max-width:860px;margin:0 auto;padding:20px 16px}
+  h1{font-size:1.5rem;font-weight:800;margin-bottom:6px}
+  .muted{color:#6b7280;font-size:.9rem}
+  .kv{width:100%;border-radius:12px;margin:16px 0}
+  .slider{position:relative;overflow:hidden;border-radius:12px;margin:20px 0}
+  .slider img{width:100%;display:none}
+  .slider img.active{display:block}
+  .slider-nav{position:absolute;top:50%;width:100%;display:flex;justify-content:space-between;transform:translateY(-50%)}
+  .slider-nav button{background:rgba(0,0,0,.5);color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer}
+  .btn.kakao{background:#FEE500;color:#111;padding:12px 20px;border-radius:12px;display:inline-block;font-weight:600;margin-top:16px}
+  .share-buttons{margin:12px 0;display:flex;gap:10px}
+  .share-buttons button{padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer;border:none}
+  .share-kakao{background:#FEE500;color:#111}
+  .share-insta{background:#E4405F;color:#fff}
+  .share-copy{background:#6b7280;color:#fff}
+</style>
 </head>
 <body>
-  <div class="container py-4">
+  <div data-include="header"></div>
 
-    <!-- 프로젝트 제목 -->
-    <div class="text-center mb-4">
-      <h2 id="projectTitle">프로젝트 제목</h2>
-      <p class="text-muted">책임의 끝과 공감의 시작이 만나는 곳</p>
-    </div>
+  <main class="wrap">
+    <div id="project-detail"><div class="muted">불러오는 중...</div></div>
+  </main>
 
-    <!-- 이미지 슬라이더 -->
-    <div id="projectCarousel" class="carousel slide mb-3" data-bs-ride="carousel">
-      <div class="carousel-inner" id="carouselImages">
-        <!-- Firebase에서 불러온 이미지들이 여기에 들어감 -->
-      </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon"></span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#projectCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon"></span>
-      </button>
-    </div>
+  <div data-include="footer"></div>
 
-    <!-- CTA 버튼 영역 -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <button class="btn btn-paw" id="donateBtn"><i class="fa-solid fa-heart"></i> 후원하기</button>
-      <div class="share-buttons">
-        <button class="btn btn-outline-success" id="shareKakao"><i class="fa-brands fa-kakao"></i> 카톡</button>
-        <button class="btn btn-outline-danger" id="shareInsta"><i class="fa-brands fa-instagram"></i></button>
-        <button class="btn btn-outline-secondary" id="shareCopy"><i class="fa-solid fa-link"></i></button>
-      </div>
-    </div>
-
-    <!-- 프로젝트 상세 카드 -->
-    <div class="project-card">
-      <h5>프로젝트 설명</h5>
-      <p id="projectDescription">여기에 프로젝트 상세 설명이 들어갑니다.</p>
-      <p><strong>목표 금액:</strong> <span id="projectGoal">₩0</span></p>
-      <p><strong>구조자 부담:</strong> <span id="rescuerShare">₩0</span></p>
-      <p><strong>연결된 마음:</strong> <span id="supporters">0명</span></p>
-    </div>
-
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script type="module">
-    // Firebase SDK import
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { injectLayout } from './js/include.js';
+    import { getProjectById } from './js/api.js';
+    import { storage } from './js/firebase.js';
+    import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-    // Firebase config (이미 연결된 값 그대로 유지)
-    import { firebaseConfig } from "./firebase-config.js"; 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    injectLayout({ active:'project' });
 
-    // URL 파라미터에서 프로젝트 ID 가져오기
-    const urlParams = new URLSearchParams(window.location.search);
-    const projectId = urlParams.get("id");
+    const $detail = document.getElementById('project-detail');
+    const fmt = n => Number(n||0).toLocaleString('ko-KR');
 
-    async function loadProject() {
-      if (!projectId) return;
+    function candidatesOf(p){
+      const out = [];
+      const push = v => { if (typeof v === 'string' && v.trim()) out.push(v.trim()); };
+      ['representativeImageUrl','representativeImage','representImg','coverUrl','coverURL','cover','mainImageUrl','mainImage','thumbnailUrl','thumbnail','thumbUrl','image','imageUrl','photo','photoUrl']
+        .forEach(k => push(p[k]));
+      ['galleryUrls','images','photos','pictures','media','attachments','files'].forEach(k => {
+        const arr = p[k]; if (Array.isArray(arr)) arr.forEach(it => {
+          if (typeof it === 'string') push(it);
+          else if (it && (it.url || it.downloadUrl || it.path)) push(it.url || it.downloadUrl || it.path);
+        });
+      });
+      return out;
+    }
 
-      const docRef = doc(db, "projects", projectId);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-
-        // 제목/설명/금액
-        document.getElementById("projectTitle").innerText = data.title || "제목 없음";
-        document.getElementById("projectDescription").innerText = data.description || "";
-        document.getElementById("projectGoal").innerText = "₩" + (data.goal || 0).toLocaleString();
-        document.getElementById("rescuerShare").innerText = "₩" + (data.rescuerShare || 0).toLocaleString();
-        document.getElementById("supporters").innerText = (data.supporters || 0) + "명";
-
-        // 이미지 슬라이더
-        const carousel = document.getElementById("carouselImages");
-        carousel.innerHTML = "";
-        if (data.images && data.images.length > 0) {
-          data.images.forEach((imgUrl, idx) => {
-            const div = document.createElement("div");
-            div.className = "carousel-item" + (idx === 0 ? " active" : "");
-            div.innerHTML = `<img src="${imgUrl}" alt="project image">`;
-            carousel.appendChild(div);
-          });
-        } else {
-          // 이미지 없을 때 기본
-          const div = document.createElement("div");
-          div.className = "carousel-item active";
-          div.innerHTML = `<img src="https://via.placeholder.com/800x400.png?text=No+Image">`;
-          carousel.appendChild(div);
-        }
-      } else {
-        alert("해당 프로젝트를 찾을 수 없습니다.");
+    async function toHttpUrl(raw){
+      if (!raw) return null;
+      let v = String(raw).trim();
+      if (/^(https?:|data:|blob:)/i.test(v)) return v;
+      if (v.startsWith('/')) v = v.slice(1);
+      try {
+        return await getDownloadURL(ref(storage, v));
+      } catch (e) {
+        console.warn('[project] getDownloadURL 실패:', v, e?.message || e);
+        return null;
       }
     }
 
-    loadProject();
+    async function galleryHttpUrls(p){
+      const cands = candidatesOf(p);
+      const urls  = await Promise.all(cands.map(toHttpUrl));
+      const uniq = [], seen = new Set();
+      for (const u of urls) { if (u && !seen.has(u)) { seen.add(u); uniq.push(u); } }
+      return uniq.length ? uniq : ['img/placeholder.svg'];
+    }
 
-    // 공유 버튼들
-    document.getElementById("shareCopy").addEventListener("click", function() {
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        alert("링크가 복사되었습니다!");
-      });
-    });
+    function getId(){ return new URLSearchParams(location.search).get("id"); }
 
-    document.getElementById("shareKakao").addEventListener("click", function() {
-      window.open("https://sharer.kakao.com/talk/friends/picker/link", "_blank");
-    });
+    function renderSlider(imgs){
+      if(!imgs || !imgs.length) return '';
+      if(imgs.length === 1){
+        return `<img class="kv" src="${imgs[0]}" alt="project image"/>`;
+      }
+      return `
+        <div class="slider">
+          ${imgs.map((u,i)=>`<img src="${u}" class="${i===0?'active':''}" alt="gallery ${i+1}"/>`).join('')}
+          <div class="slider-nav">
+            <button id="prevBtn">◀</button>
+            <button id="nextBtn">▶</button>
+          </div>
+        </div>`;
+    }
 
-    document.getElementById("shareInsta").addEventListener("click", function() {
-      alert("인스타그램은 직접 URL을 복사해 공유해주세요.");
-    });
+    async function render(){
+      const id = getId();
+      if(!id){ $detail.innerHTML = '<div class="muted">잘못된 접근입니다.</div>'; return; }
+
+      try{
+        const p = await getProjectById(id);
+        if(!p){ $detail.innerHTML = '<div class="muted">존재하지 않는 프로젝트입니다.</div>'; return; }
+
+        const imgs = await galleryHttpUrls(p);
+
+        $detail.innerHTML = `
+          <h1>${p.name ?? '(이름 없음)'}</h1>
+          <div class="muted">구조자: ${p.rescuerName ?? ''}</div>
+          ${renderSlider(imgs)}
+
+          <!-- 공유 버튼 영역 -->
+          <div class="share-buttons">
+            <button class="share-kakao" id="shareKakao">카카오톡</button>
+            <button class="share-insta" id="shareInsta">인스타그램</button>
+            <button class="share-copy" id="shareCopy">링크복사</button>
+          </div>
+
+          <p>${p.description ?? ''}</p>
+          <p class="muted">목표 금액: ${fmt(p.goalAmount)}원</p>
+          <p class="muted">구조자 부담금: ${fmt(p.rescuerContribution)}원</p>
+          <p class="muted">지지자 수: ${fmt(p.supportersCount)}</p>
+          ${p.registrantKakaoId ? `<a href="https://open.kakao.com/o/${p.registrantKakaoId}" target="_blank" class="btn kakao">카카오톡으로 참여하기</a>` : ''}
+        `;
+
+        const sliderImgs = $detail.querySelectorAll('.slider img');
+        if(sliderImgs.length){
+          let idx = 0;
+          const prev = document.getElementById('prevBtn');
+          const next = document.getElementById('nextBtn');
+          const show = (i) => sliderImgs.forEach((img,j)=>img.classList.toggle('active', j===i));
+          prev?.addEventListener('click', ()=>{ idx = (idx-1+sliderImgs.length)%sliderImgs.length; show(idx); });
+          next?.addEventListener('click', ()=>{ idx = (idx+1)%sliderImgs.length; show(idx); });
+        }
+
+        // 공유 버튼 이벤트
+        document.getElementById("shareCopy")?.addEventListener("click", () => {
+          navigator.clipboard.writeText(window.location.href).then(()=>alert("링크가 복사되었습니다!"));
+        });
+        document.getElementById("shareKakao")?.addEventListener("click", () => {
+          window.open("https://sharer.kakao.com/talk/friends/picker/link","_blank");
+        });
+        document.getElementById("shareInsta")?.addEventListener("click", () => {
+          alert("인스타그램은 직접 URL을 복사해 공유해주세요.");
+        });
+
+      }catch(e){
+        console.error(e);
+        $detail.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
+      }
+    }
+
+    render();
   </script>
 </body>
 </html>
