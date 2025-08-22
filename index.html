@@ -26,32 +26,31 @@
     .hero h1{margin:0 0 28px; font-size:3.2rem; font-weight:900; line-height:1.25; letter-spacing:-.02em; white-space:pre-line}
     .hero p.sub{margin:8px 0; font-size:1.2rem; font-weight:600; color:var(--sub); letter-spacing:-.01em; white-space:pre-line}
 
-    /* Buttons & CTA Dock */
-    .btn{display:inline-block; padding:13px 20px; border-radius:12px; font-weight:800; text-decoration:none; transition:.2s}
-    .btn.primary{background:var(--mocha); color:#fff}
-    .btn.primary:hover{background:var(--mocha-dark)}
-    .btn.secondary{border:2px solid var(--mocha); color:var(--mocha); background:#fff}
-    .btn.secondary:hover{background:#f7f5f4}
-
+    /* CTA Dock (only message) */
     .cta-dock{
       position:fixed; right:22px; bottom:22px;
-      display:flex; flex-direction:column; gap:12px; z-index:60;
+      z-index:60;
       filter:drop-shadow(0 8px 16px rgba(0,0,0,.12));
-      background:#fff; padding:18px; border-radius:14px; border:1px solid var(--line);
-      max-width:280px;
+      background:#fff; padding:20px; border-radius:14px; border:1px solid var(--line);
+      max-width:300px;
+      font-size:1rem;
+      line-height:1.6;
     }
-    .cta-cases{
-      margin-top:14px;
-      font-size:.9rem;
+    .cta-dock strong{
+      display:block;
+      font-size:1.05rem;
+      font-weight:800;
+      margin-bottom:10px;
+      color:var(--mocha);
+    }
+    .cta-dock div{
+      margin-top:6px;
       font-weight:600;
       color:var(--ink);
-      display:flex; flex-direction:column; gap:8px;
-      line-height:1.45;
     }
-    .cta-cases div{font-style:italic}
 
     @media (max-width:1024px){
-      .cta-dock{bottom:16px; right:16px; width:calc(100% - 32px)}
+      .cta-dock{bottom:16px; right:16px; width:calc(100% - 32px); max-width:none}
     }
 
     /* Projects */
@@ -69,16 +68,13 @@
   <!-- header include -->
   <div data-include="header"></div>
 
-  <!-- Fixed CTA -->
-  <div class="cta-dock" aria-label="빠른 참여">
-    <a href="project_list.html" class="btn primary">지금 구조자 만나보기</a>
-    <a href="create.html" class="btn secondary">등록하기</a>
-    <div class="cta-cases">
-      <div>“구조 후 병원에 갔지만 진료비가 큰 짐이 될 때”</div>
-      <div>“국가지원 밖에서 홀로 감당해야 하는 중성화”</div>
-      <div>“유기동물 입양 후 첫 건강검진과 예방접종”</div>
-      <div>“그 외에도 투명한 영수증으로 확인 가능한 구조 활동”</div>
-    </div>
+  <!-- Fixed CTA (only text) -->
+  <div class="cta-dock" aria-label="PAW 안내">
+    <strong>*PAW는 연결합니다</strong>
+    <div>구조 후 병원 진료비가 큰 짐이 될 때</div>
+    <div>국가지원을 받지 못하는 중성화 수술비용</div>
+    <div>유기동물 입양 후 첫 건강검진과 예방접종비용</div>
+    <div>그 외에도 투명한 영수증으로 확인 가능한 구조 활동</div>
   </div>
 
   <!-- Hero -->
