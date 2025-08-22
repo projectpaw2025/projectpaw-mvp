@@ -28,7 +28,7 @@
 
     /* 고정 CTA */
     .cta-dock{
-      position:fixed; right:22px; top:50%; transform:translateY(-50%);
+      position:fixed; right:22px; bottom:24px;
       display:flex; flex-direction:column; gap:10px; z-index:60;
       filter:drop-shadow(0 6px 12px rgba(0,0,0,.15));
     }
@@ -38,7 +38,7 @@
       padding:6px 10px; text-align:center; color:#000;
     }
     @media (max-width:1024px){
-      .cta-dock{top:auto; bottom:16px; transform:none; right:16px; flex-direction:row}
+      .cta-dock{top:auto; bottom:16px; right:16px; flex-direction:row}
     }
 
     /* 히어로 */
@@ -58,7 +58,11 @@
     .case-item{padding:12px; border:1px dashed #ccc; border-radius:8px; font-size:.95rem; font-weight:600; text-align:center}
 
     /* 프로젝트 */
-    .projects h2{margin:0 0 14px; font-size:1.4rem; font-weight:900; text-align:center}
+    .projects-header{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px}
+    .projects-header h2{margin:0; font-size:1.4rem; font-weight:900}
+    .projects-header a{font-size:.9rem; font-weight:700; color:#000; text-decoration:none}
+    .projects-header a:hover{text-decoration:underline}
+
     .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px}
     .project-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; transition:.2s}
     .project-card:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.06)}
@@ -88,10 +92,10 @@
       <div class="hero-grid">
         <!-- 왼쪽 -->
         <div>
-          <h1 id="hero-title">개인↔개인을 연결하는, 국내 최초 기부 플랫폼</h1>
+          <h1 id="hero-title">개인↔개인을 연결하는, 국내 첫 기부 플랫폼</h1>
           <div class="subs">
-            <p class="line">흩어진 개인 구조 모금을 PAW에서 연결합니다.</p>
-            <p class="line">혼자 시작한 구조가 혼자 끝나지 않도록.</p>
+            <p class="line">흩어진 개인 구조 활동을 PAW에서 연결하고 싶었습니다.</p>
+            <p class="line">혼자 시작한 구조가 혼자 끝나지 않도록 투명하게</p>
           </div>
           <div class="rule-strip">
             <span class="rule">개인↔개인</span>
@@ -118,7 +122,10 @@
   <!-- 프로젝트 -->
   <section class="projects">
     <div class="container">
-      <h2>진행 중인 프로젝트</h2>
+      <div class="projects-header">
+        <h2>진행 중인 프로젝트</h2>
+        <a href="project_list.html">모두 보기 →</a>
+      </div>
       <div id="projects-grid" class="grid">
         <div class="muted">불러오는 중...</div>
       </div>
