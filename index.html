@@ -8,28 +8,29 @@
   <link rel="stylesheet" href="app.min.css"/>
   <style>
     :root{
-      --ink:#2B2B2B; /* Charcoal Black */
-      --sub:#5C5C5C; /* Warm Gray */
+      --ink:#2B2B2B; /* 본문: Charcoal Black */
+      --sub:#5C5C5C; /* 서브텍스트: Warm Gray */
       --muted:#777; --line:#eaeaea;
       --bg:#fff; --card:#fff;
-      --brand:#000; /* Black */
+      --brand:#000; /* 기본 블랙 */
       --accent:#A47864; /* Mocha Mousse */
       --light:#F7F5F4; /* Warm White */
     }
-    html,body{margin:0; background:var(--bg); color:var(--ink);
-      font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    html,body{
+      margin:0; background:var(--bg); color:var(--ink);
+      font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
+    }
     .container{max-width:1040px; margin:0 auto; padding:0 20px}
     section{padding:64px 0}
-    h1{margin:0 0 18px; font-size:3rem; font-weight:900; letter-spacing:-.02em; line-height:1.15}
+    h1{margin:0 0 18px; font-size:3rem; font-weight:900; letter-spacing:-.02em; line-height:1.15; color:var(--ink)}
     p{margin:0; color:var(--sub); line-height:1.65}
 
     /* 버튼 */
-    .btn{display:inline-block; padding:12px 18px; border-radius:12px;
-      font-weight:700; text-decoration:none; transition:.2s}
-    .btn.primary{background:var(--accent); color:var(--light)}
-    .btn.primary:hover{background:var(--brand); color:#fff}
-    .btn.secondary{border:2px solid var(--accent); color:var(--accent); background:#fff}
-    .btn.secondary:hover{background:var(--accent); color:var(--light)}
+    .btn{display:inline-block; padding:12px 18px; border-radius:12px; font-weight:700; text-decoration:none; transition:.2s}
+    .btn.primary{background:var(--brand); color:#fff}
+    .btn.primary:hover{background:var(--accent); color:var(--light)}
+    .btn.secondary{border:2px solid var(--brand); color:var(--brand); background:#fff}
+    .btn.secondary:hover{background:var(--accent); color:var(--light); border-color:var(--accent)}
 
     /* 고정 CTA */
     .cta-dock{
@@ -64,7 +65,7 @@
 
     /* 프로젝트 */
     .projects-header{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px}
-    .projects-header h2{margin:0; font-size:1.4rem; font-weight:900}
+    .projects-header h2{margin:0; font-size:1.4rem; font-weight:900; color:var(--ink)}
     .projects-header a{font-size:.9rem; font-weight:700; color:var(--accent); text-decoration:none}
     .projects-header a:hover{text-decoration:underline}
 
@@ -72,7 +73,7 @@
     .project-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; transition:.2s}
     .project-card:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.06)}
     .project-card img{width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:10px}
-    .project-card h3{margin:8px 0 4px; font-size:1.05rem}
+    .project-card h3{margin:8px 0 4px; font-size:1.05rem; color:var(--ink)}
     .muted{color:var(--muted); font-size:.9rem}
 
     @media(max-width:900px){
