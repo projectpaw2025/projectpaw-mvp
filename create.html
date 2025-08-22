@@ -17,6 +17,19 @@ textarea{min-height:120px;resize:vertical}
 .note{color:#6b7280}
 .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
 .disabled{opacity:.6;pointer-events:none}
+/* 추가: 작성 가이드 */
+.guide-box{
+  background:#f9fafb;
+  border:1px dashed #d1d5db;
+  border-radius:12px;
+  padding:16px;
+  font-size:.9rem;
+  line-height:1.5;
+  margin-bottom:10px;
+}
+/* 추가: 미리보기 썸네일 */
+.preview{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.preview img{width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb}
 </style>
 </head>
 <body>
@@ -30,15 +43,41 @@ textarea{min-height:120px;resize:vertical}
         <div><label>구조자 이름</label><input name="rescuerName" required/></div>
       </div>
       <div><label>상황 요약</label><input name="summary" required/></div>
+
+      <!-- 작성 가이드 -->
+      <div class="guide-box">
+        ✍️ <strong>작성 가이드</strong><br/>
+        • 🐾 구조 동물 소개 (언제, 어디서 발견되었나요?)<br/>
+        • 💔 현재 상황 (치료/임시보호 현황)<br/>
+        • 🎯 목표 (후원금 사용 계획)<br/>
+        • 🙏 부탁의 말 (후원자에게 하고 싶은 메시지)
+      </div>
+
       <div><label>상세 설명</label><textarea name="description" required></textarea></div>
       <div class="grid2">
         <div><label>목표 금액(원)</label><input type="number" name="goalAmount" min="0" required/></div>
         <div><label>구조자 부담액(원)</label><input type="number" name="rescuerContribution" min="0" required/></div>
       </div>
       <div><label>등록자 카카오톡 ID</label><input name="registrantKakaoId" required/></div>
-      <div><label>대표 사진 (1장)</label><input type="file" id="repImage" accept="image/*" required/></div>
-      <div><label>구조 상황 사진 (여러 장)</label><input type="file" id="situationImages" accept="image/*" multiple/></div>
-      <div><label>영수증 사진 (여러 장)</label><input type="file" id="receiptImages" accept="image/*" multiple/></div>
+
+      <div>
+        <label>대표 사진 (1장)</label>
+        <input type="file" id="repImage" accept="image/*" required/>
+        <div class="preview" id="previewRep"></div>
+      </div>
+
+      <div>
+        <label>구조 상황 사진 (여러 장)</label>
+        <input type="file" id="situationImages" accept="image/*" multiple/>
+        <div class="preview" id="previewSituation"></div>
+      </div>
+
+      <div>
+        <label>영수증 사진 (여러 장)</label>
+        <input type="file" id="receiptImages" accept="image/*" multiple/>
+        <div class="preview" id="previewReceipt"></div>
+      </div>
+
       <p class="note">* 병원명/계좌/카카오톡 초대링크는 <b>관리자 전용</b> 화면에서 등록됩니다.</p>
       <div class="actions">
         <a class="btn ghost" href="index.html">취소</a>
@@ -59,6 +98,27 @@ textarea{min-height:120px;resize:vertical}
     const form = document.getElementById('form');
     const submitBtn = document.getElementById('submitBtn');
 
+    // ✅ 미리보기 기능
+    function setupPreview(inputId, previewId){
+      const input = document.getElementById(inputId);
+      const preview = document.getElementById(previewId);
+      input.addEventListener('change', ()=>{
+        preview.innerHTML = '';
+        [...input.files].forEach(file=>{
+          const reader = new FileReader();
+          reader.onload = e=>{
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            preview.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+    }
+    setupPreview('repImage','previewRep');
+    setupPreview('situationImages','previewSituation');
+    setupPreview('receiptImages','previewReceipt');
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       await authReady;
@@ -69,7 +129,6 @@ textarea{min-height:120px;resize:vertical}
       try {
         const fd = new FormData(form);
 
-        // ✅ api.js에서 기대하는 구조로 변환
         const projectData = {
           name: fd.get("name"),
           rescuerName: fd.get("rescuerName"),
