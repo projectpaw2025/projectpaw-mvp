@@ -42,9 +42,7 @@
     <!-- 이미지 슬라이더 -->
     <div id="projectCarousel" class="carousel slide mb-3" data-bs-ride="carousel">
       <div class="carousel-inner" id="carouselImages">
-        <div class="carousel-item active">
-          <img src="https://via.placeholder.com/800x400.png?text=대표이미지" alt="프로젝트 이미지">
-        </div>
+        <!-- Firebase에서 불러온 이미지들이 여기에 들어감 -->
       </div>
       <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel" data-bs-slide="prev">
         <span class="carousel-control-prev-icon"></span>
@@ -76,20 +74,71 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // 링크 복사
+  <script type="module">
+    // Firebase SDK import
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // Firebase config (이미 연결된 값 그대로 유지)
+    import { firebaseConfig } from "./firebase-config.js"; 
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // URL 파라미터에서 프로젝트 ID 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get("id");
+
+    async function loadProject() {
+      if (!projectId) return;
+
+      const docRef = doc(db, "projects", projectId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+
+        // 제목/설명/금액
+        document.getElementById("projectTitle").innerText = data.title || "제목 없음";
+        document.getElementById("projectDescription").innerText = data.description || "";
+        document.getElementById("projectGoal").innerText = "₩" + (data.goal || 0).toLocaleString();
+        document.getElementById("rescuerShare").innerText = "₩" + (data.rescuerShare || 0).toLocaleString();
+        document.getElementById("supporters").innerText = (data.supporters || 0) + "명";
+
+        // 이미지 슬라이더
+        const carousel = document.getElementById("carouselImages");
+        carousel.innerHTML = "";
+        if (data.images && data.images.length > 0) {
+          data.images.forEach((imgUrl, idx) => {
+            const div = document.createElement("div");
+            div.className = "carousel-item" + (idx === 0 ? " active" : "");
+            div.innerHTML = `<img src="${imgUrl}" alt="project image">`;
+            carousel.appendChild(div);
+          });
+        } else {
+          // 이미지 없을 때 기본
+          const div = document.createElement("div");
+          div.className = "carousel-item active";
+          div.innerHTML = `<img src="https://via.placeholder.com/800x400.png?text=No+Image">`;
+          carousel.appendChild(div);
+        }
+      } else {
+        alert("해당 프로젝트를 찾을 수 없습니다.");
+      }
+    }
+
+    loadProject();
+
+    // 공유 버튼들
     document.getElementById("shareCopy").addEventListener("click", function() {
       navigator.clipboard.writeText(window.location.href).then(() => {
         alert("링크가 복사되었습니다!");
       });
     });
 
-    // 카카오톡 공유 (샘플 - SDK 연동 필요)
     document.getElementById("shareKakao").addEventListener("click", function() {
       window.open("https://sharer.kakao.com/talk/friends/picker/link", "_blank");
     });
 
-    // 인스타그램 (API 없음 → 안내 메시지)
     document.getElementById("shareInsta").addEventListener("click", function() {
       alert("인스타그램은 직접 URL을 복사해 공유해주세요.");
     });
