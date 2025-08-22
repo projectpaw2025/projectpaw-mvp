@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="app.min.css"/>
   <style>
     body { background:#fafafa; font-family:'Pretendard',sans-serif; }
-    section { padding:70px 20px; }
+    section { padding:70px 40px; }
     h2 { font-size:1.6rem; font-weight:800; margin-bottom:24px; text-align:center; }
 
     /* Hero */
@@ -21,22 +21,22 @@
     .btn.secondary { background:#fff; border:1px solid #ddd; color:#111; margin:8px; }
 
     /* Impact Lines */
-    .impact { background:#f9fafb; text-align:center; }
-    .impact-lines { font-size:1.3rem; font-weight:700; color:#222; line-height:2; max-width:700px; margin:0 auto; }
+    .impact { background:#f9fafb; }
+    .impact-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; max-width:960px; margin:0 auto; }
+    .impact-card { background:#fff; border:1px solid #eee; border-radius:12px; padding:28px; text-align:center; font-weight:700; font-size:1.1rem; }
 
     /* Trust Section */
     .trust { background:#fff; }
-    .trust-points { max-width:1000px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; }
+    .trust-layout { display:grid; grid-template-columns:2fr 1fr; gap:30px; max-width:1100px; margin:0 auto; }
+    .trust-points { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; }
     .trust-card { background:#f9fafb; border:1px solid #eee; border-radius:14px; padding:28px 20px; text-align:center; }
     .trust-card .icon { font-size:2rem; margin-bottom:10px; }
     .trust-card h3 { font-size:1.2rem; font-weight:700; margin-bottom:8px; }
     .trust-card p { font-size:.95rem; color:#555; line-height:1.5; }
-
-    .stats { margin-top:50px; text-align:center; }
+    .stats { background:#f9fafb; border:1px solid #eee; border-radius:14px; padding:28px; text-align:center; align-self:center; }
     .stats h3 { font-size:1.2rem; margin-bottom:16px; }
-    .stats .numbers { font-size:1.1rem; font-weight:600; color:#444; }
-    .stats .numbers strong { font-size:1.4rem; font-weight:800; display:block; margin-bottom:6px; }
-    .stats .note { margin-top:12px; font-size:.9rem; color:#666; line-height:1.6; }
+    .stats strong { font-size:1.4rem; font-weight:800; display:block; margin-bottom:6px; }
+    .stats .note { font-size:.9rem; color:#666; line-height:1.6; }
 
     /* Projects */
     .projects { background:#fafafa; }
@@ -49,9 +49,14 @@
     .muted { color:#777; font-size:.9rem; }
 
     /* Closing */
-    .closing { background:#fff; text-align:center; }
-    .closing strong { font-size:1.3rem; font-weight:800; display:block; margin-bottom:16px; }
-    .example-box { background:#f9fafb; border:1px solid #eee; border-radius:14px; padding:24px; max-width:700px; margin:0 auto; font-size:.95rem; color:#555; line-height:1.6; }
+    .closing { background:#fff; }
+    .closing-layout { max-width:1000px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center; }
+    .closing strong { font-size:1.3rem; font-weight:800; display:block; margin-bottom:16px; line-height:1.5; }
+    .example-box { background:#f9fafb; border:1px solid #eee; border-radius:14px; padding:24px; font-size:.95rem; color:#555; line-height:1.6; }
+    @media(max-width:768px){
+      .trust-layout { grid-template-columns:1fr; }
+      .closing-layout { grid-template-columns:1fr; }
+    }
   </style>
 </head>
 <body>
@@ -59,17 +64,16 @@
 
   <!-- Hero -->
   <section class="hero">
-    <h1>왜 이게 이제야 나왔을까?</h1>
+    <h1>후원, 왜 이렇게 복잡했을까요?</h1>
     <p>
-      우리는 그동안 <b>법인과 단체</b>를 거쳐야만 후원할 수 있었습니다.<br/>
-      하지만 진짜 필요한 건,<br/>
-      <b>구조자(개인) ↔ 후원자(개인)</b>의 직접 연결입니다.
+      Project.PAW는 <b>구조자(개인) ↔ 후원자(개인)</b> 바로 연결.<br/>
+      단순하고 투명한 방식, 이제 시작합니다.
     </p>
 
     <div class="beta">
-      🐾 현재 <b>Beta 서비스</b>입니다.<br/>
-      아직 결제(PG) 연동 전이라, 프로젝트마다 생성된 <b>카톡 단톡방</b>에서 모금이 진행돼요.<br/>
-      조금만 기다려주세요~ 곧 더 편리해질 거예요 🤗
+      🐾 Beta 서비스 중<br/>
+      지금은 카톡방에서 모금이 진행돼요.<br/>
+      결제(PG) 붙으면 더 매끄럽게 이어집니다.
     </div>
 
     <div style="margin-top:30px">
@@ -80,41 +84,39 @@
 
   <!-- Impact Lines -->
   <section class="impact">
-    <div class="impact-lines">
-      🐾 도움은 본능, 연결은 선택<br/>
-      💡 망설임을 용기로 바꾸는 플랫폼<br/>
-      ❤️ 숫자보다 감정, 돈보다 연결
+    <div class="impact-grid">
+      <div class="impact-card">🐾 돕고 싶은 마음,<br/>연결로 실현</div>
+      <div class="impact-card">💡 망설임 대신,<br/>행동으로</div>
+      <div class="impact-card">❤️ 돈보다 중요한 건<br/>신뢰와 연결</div>
     </div>
   </section>
 
   <!-- Trust Section -->
   <section class="trust">
-    <h2>Project.PAW의 신뢰를 위한 약속</h2>
-    <div class="trust-points">
-      <div class="trust-card">
-        <div class="icon">🔒</div>
-        <h3>구조자 부담금 30% 필수</h3>
-        <p>도덕적 해이를 막고, 진정성 있는 프로젝트만 올라올 수 있도록 설계했습니다.</p>
+    <h2>Project.PAW의 신뢰 설계</h2>
+    <div class="trust-layout">
+      <div class="trust-points">
+        <div class="trust-card">
+          <div class="icon">🔒</div>
+          <h3>구조자 부담금 30%</h3>
+          <p>책임을 함께 나누는 원칙입니다.</p>
+        </div>
+        <div class="trust-card">
+          <div class="icon">🏥</div>
+          <h3>Direct Payment 준비</h3>
+          <p>곧 병원으로 바로 결제됩니다.</p>
+        </div>
+        <div class="trust-card">
+          <div class="icon">🤝</div>
+          <h3>기부금 100% 전달</h3>
+          <p>수수료는 플랫폼이 부담합니다.</p>
+        </div>
       </div>
-      <div class="trust-card">
-        <div class="icon">🏥</div>
-        <h3>Direct Payment 준비 중</h3>
-        <p>곧 동물병원과 협력해 후원금이 병원으로 직접 결제될 수 있게 준비 중입니다.</p>
+      <div class="stats">
+        <h3>📊 지금까지의 연결</h3>
+        <strong>🐾 Beta 서비스 중</strong>
+        <p class="note">아직은 시작 단계지만,<br/>곧 지표가 쌓여갑니다.</p>
       </div>
-      <div class="trust-card">
-        <div class="icon">🤝</div>
-        <h3>기부금 100% 전달</h3>
-        <p>PG 수수료는 플랫폼이 부담하며, 후원자는 전액을 동물 구조에 보탤 수 있습니다.</p>
-      </div>
-    </div>
-
-    <!-- Stats (Beta 상태) -->
-    <div class="stats">
-      <h3>📊 지금까지의 연결</h3>
-      <div class="numbers">
-        <div><strong>🐾 Beta 서비스 중</strong></div>
-      </div>
-      <p class="note">아직은 시작 단계예요.<br/>조금만 기다려주세요~ 곧 더 많은 연결이 쌓여갈 거예요 🤗</p>
     </div>
   </section>
 
@@ -128,12 +130,15 @@
 
   <!-- Closing -->
   <section class="closing">
-    <strong>Project.PAW는 마음과 마음이 직접 연결되는,<br/>따뜻한 비영리 플랫폼입니다.</strong>
-    <div class="example-box">
-      예를 들어, 한 구조자가 길에서 다친 고양이를 발견해 병원에 데려갔습니다.<br/>
-      하지만 치료비는 혼자 감당하기엔 너무 큰 부담이었죠.<br/>
-      이때 Project.PAW는 구조자의 책임감과<br/>
-      후원자의 선한 마음을 직접 연결해줍니다.
+    <div class="closing-layout">
+      <div>
+        <strong>Project.PAW는<br/>‘개인 ↔ 개인 후원’을 위한<br/>새로운 플랫폼입니다.</strong>
+      </div>
+      <div class="example-box">
+        예: 한 구조자가 다친 고양이를 병원에 데려갔습니다.<br/>
+        치료비는 벅찼지만, Project.PAW에서 후원자와 바로 연결.<br/>
+        책임은 줄고, 고양이는 치료를 받을 수 있었습니다.
+      </div>
     </div>
   </section>
 
