@@ -8,76 +8,81 @@
   <link rel="stylesheet" href="app.min.css"/>
   <style>
     :root{
-      --ink:#2B2B2B; /* 본문: Charcoal Black */
-      --sub:#5C5C5C; /* 서브텍스트: Warm Gray */
-      --muted:#777; --line:#eaeaea;
-      --bg:#fff; --card:#fff;
-      --brand:#000; /* 기본 블랙 */
+      --ink:#111; --sub:#444; --muted:#777; --line:#eaeaea;
+      --bg:#fafafa; --card:#fff;
       --accent:#A47864; /* Mocha Mousse */
-      --light:#F7F5F4; /* Warm White */
+      --light:#F7F5F4; 
     }
-    html,body{
-      margin:0; background:var(--bg); color:var(--ink);
-      font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
-    }
-    .container{max-width:1040px; margin:0 auto; padding:0 20px}
-    section{padding:64px 0}
-    h1{margin:0 0 18px; font-size:3rem; font-weight:900; letter-spacing:-.02em; line-height:1.15; color:var(--ink)}
-    p{margin:0; color:var(--sub); line-height:1.65}
+    html,body{margin:0; background:var(--bg); color:var(--ink); font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .container{max-width:1200px; margin:0 auto; padding:0 20px}
+    section{padding:60px 0}
 
     /* 버튼 */
     .btn{display:inline-block; padding:12px 18px; border-radius:12px; font-weight:700; text-decoration:none; transition:.2s}
-    .btn.primary{background:var(--brand); color:#fff}
-    .btn.primary:hover{background:var(--accent); color:var(--light)}
-    .btn.secondary{border:2px solid var(--brand); color:var(--brand); background:#fff}
-    .btn.secondary:hover{background:var(--accent); color:var(--light); border-color:var(--accent)}
+    .btn.primary{background:#111; color:#fff}
+    .btn.primary:hover{background:var(--accent); color:#fff}
+    .btn.secondary{border:2px solid #111; color:#111; background:#fff}
+    .btn.secondary:hover{background:var(--accent); color:#fff; border-color:var(--accent)}
 
-    /* 고정 CTA */
+    /* 오른쪽 고정 CTA */
     .cta-dock{
-      position:fixed; right:22px; bottom:24px;
+      position:fixed; right:22px; top:50%; transform:translateY(-50%);
       display:flex; flex-direction:column; gap:10px; z-index:60;
-      filter:drop-shadow(0 6px 12px rgba(0,0,0,.15));
-    }
-    .beta-label{
-      font-size:.8rem; font-weight:700;
-      background:#fff; border:1px solid var(--accent); border-radius:999px;
-      padding:6px 10px; text-align:center; color:var(--accent);
+      filter:drop-shadow(0 8px 16px rgba(0,0,0,.12));
     }
     @media (max-width:1024px){
-      .cta-dock{top:auto; bottom:16px; right:16px; flex-direction:row}
+      .cta-dock{top:auto; bottom:16px; transform:none; right:16px; flex-direction:row}
     }
 
-    /* 히어로 */
-    .hero{background:#fff; padding:120px 0 60px; border-bottom:1px solid var(--line)}
-    .hero-grid{display:grid; grid-template-columns:1fr 320px; gap:40px; align-items:start}
-    .subs{display:grid; gap:6px; color:var(--sub); font-size:1.05rem}
-    .subs .line::before{content:"# "; color:var(--accent); font-weight:900}
-    .rule-strip{margin-top:18px; display:flex; flex-wrap:wrap; gap:10px}
-    .rule{display:inline-flex; align-items:center; justify-content:center;
-      padding:12px 16px; background:#fff; border:2px solid var(--accent); border-radius:12px;
-      font-weight:800; font-size:.95rem; color:var(--accent); white-space:nowrap}
+    /* ===== Hero 블록 ===== */
+    .hero-block{
+      background:var(--light);
+      padding:90px 0 70px;
+      text-align:center;
+      border-bottom:1px solid var(--line);
+    }
+    .hero-block h1{
+      font-size:2.6rem; font-weight:900; margin-bottom:16px; color:var(--ink);
+    }
+    .hero-block .sub{
+      font-size:1.05rem; color:var(--sub); margin-bottom:28px; line-height:1.6;
+    }
+    .rules{
+      display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:50px;
+    }
+    .rule{
+      background:#fff; border:2px solid var(--accent); color:var(--accent);
+      padding:8px 14px; border-radius:999px; font-weight:700; font-size:.95rem;
+    }
 
-    /* 케이스 */
-    .case-card{background:#fff; border:2px solid var(--accent); border-radius:14px; padding:20px}
-    .case-card h3{margin:0 0 12px; font-size:1.1rem; font-weight:900; color:var(--accent)}
-    .case-list{display:grid; grid-template-columns:1fr; gap:10px; list-style:none; padding:0; margin:0}
-    .case-item{padding:12px; border:1px dashed var(--accent); border-radius:8px; font-size:.95rem; font-weight:600; text-align:center; color:var(--ink)}
+    .cases{
+      display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
+    }
+    .case-card{
+      background:#fff; border:2px solid var(--accent); border-radius:12px;
+      padding:20px; font-weight:600; font-size:1rem; color:var(--ink);
+      transition:.2s; text-align:center;
+    }
+    .case-card:hover{
+      background:var(--accent); color:#fff;
+    }
 
-    /* 프로젝트 */
-    .projects-header{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px}
-    .projects-header h2{margin:0; font-size:1.4rem; font-weight:900; color:var(--ink)}
-    .projects-header a{font-size:.9rem; font-weight:700; color:var(--accent); text-decoration:none}
-    .projects-header a:hover{text-decoration:underline}
-
+    /* ===== 프로젝트 목록 ===== */
+    .projects h2{margin:0 0 14px; font-size:1.4rem; font-weight:900; letter-spacing:-.01em; text-align:center}
+    .projects .more{text-align:center; margin-top:12px}
     .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px}
     .project-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; transition:.2s}
     .project-card:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.06)}
-    .project-card img{width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:10px}
-    .project-card h3{margin:8px 0 4px; font-size:1.05rem; color:var(--ink)}
+    .project-card img{width:100%; height:180px; object-fit:cover; border-radius:10px}
+    .project-card h3{margin:8px 0 4px; font-size:1.05rem}
     .muted{color:var(--muted); font-size:.9rem}
 
-    @media(max-width:900px){
-      .hero-grid{grid-template-columns:1fr}
+    /* 반응형 */
+    @media(max-width:900px){ .cases{grid-template-columns:1fr 1fr} }
+    @media(max-width:560px){
+      section{padding:48px 0}
+      .hero-block h1{font-size:2.1rem}
+      .cases{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -85,55 +90,46 @@
   <!-- header include -->
   <div data-include="header"></div>
 
-  <!-- CTA 고정 -->
+  <!-- 오른쪽 고정 CTA -->
   <div class="cta-dock" aria-label="빠른 참여">
     <a href="project_list.html" class="btn primary">지금 구조자 만나보기</a>
     <a href="create.html" class="btn secondary">등록하기</a>
-    <span class="beta-label">Beta 서비스 · 카톡방 모금 운영 중</span>
   </div>
 
-  <!-- 히어로 -->
-  <section class="hero" aria-labelledby="hero-title">
+  <!-- Hero 블록 -->
+  <section class="hero-block">
     <div class="container">
-      <div class="hero-grid">
-        <!-- 왼쪽 -->
-        <div>
-          <h1 id="hero-title">개인↔개인을 연결하는, 국내 첫 기부 플랫폼</h1>
-          <div class="subs">
-            <p class="line">흩어진 개인 구조 활동을 PAW에서 연결하고 싶었습니다.</p>
-            <p class="line">혼자 시작한 구조가 혼자 끝나지 않도록 투명하게</p>
-          </div>
-          <div class="rule-strip">
-            <span class="rule">개인↔개인</span>
-            <span class="rule">후원금 100% 전달</span>
-            <span class="rule">구조자 30% 책임</span>
-            <span class="rule">증빙 필수</span>
-          </div>
-        </div>
+      <h1>개인↔개인을 연결하는, 국내 첫 기부 플랫폼</h1>
+      <p class="sub">
+        #흩어진 개인 구조 활동을 PAW에서 연결하고 싶었습니다.<br/>
+        #혼자 시작한 구조가 혼자 끝나지 않도록 투명하게
+      </p>
 
-        <!-- 오른쪽: 케이스 -->
-        <aside class="case-card">
-          <h3>환영하는 구조 케이스</h3>
-          <ul class="case-list">
-            <li class="case-item">유기동물 구조 후 병원비</li>
-            <li class="case-item">보호 중 중성화(무지원)</li>
-            <li class="case-item">입양 후 첫 검진비</li>
-            <li class="case-item">기타 필수 구조/보호비</li>
-          </ul>
-        </aside>
+      <div class="rules">
+        <span class="rule">개인↔개인</span>
+        <span class="rule">후원금 100% 전달</span>
+        <span class="rule">구조자 30% 책임</span>
+        <span class="rule">Beta 운영 중</span>
+      </div>
+
+      <div class="cases">
+        <div class="case-card">🐾 유기동물 구조 후 병원비</div>
+        <div class="case-card">✂️ 중성화 비용(무지원)</div>
+        <div class="case-card">🩺 입양 후 첫 검진비</div>
+        <div class="case-card">🏠 기타 보호 활동</div>
       </div>
     </div>
   </section>
 
-  <!-- 프로젝트 -->
+  <!-- 프로젝트 목록 -->
   <section class="projects">
     <div class="container">
-      <div class="projects-header">
-        <h2>진행 중인 프로젝트</h2>
-        <a href="project_list.html">모두 보기 →</a>
-      </div>
+      <h2>진행 중인 프로젝트</h2>
       <div id="projects-grid" class="grid">
         <div class="muted">불러오는 중...</div>
+      </div>
+      <div class="more">
+        <a href="project_list.html" class="btn secondary">모두 보기</a>
       </div>
     </div>
   </section>
@@ -161,7 +157,7 @@
 
     async function render(){
       try {
-        const list = await apiListProjects({ status:'approved', limit:6 });
+        const list = await apiListProjects({ status:'approved', limit:12 });
         if(!list.length){
           $grid.innerHTML = '<div class="muted">아직 승인된 프로젝트가 없습니다.</div>';
           return;
