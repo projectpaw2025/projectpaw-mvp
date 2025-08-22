@@ -10,6 +10,7 @@
     :root{
       --ink:#000; --sub:#444; --muted:#777; --line:#eaeaea;
       --bg:#fff; --card:#fff; --brand:#000;
+      --accent:#A47864; /* Pantone Mocha Mousse 17-1230 */
     }
     html,body{margin:0; background:var(--bg); color:var(--ink);
       font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -22,9 +23,9 @@
     .btn{display:inline-block; padding:12px 18px; border-radius:12px;
       font-weight:700; text-decoration:none; transition:.2s}
     .btn.primary{background:var(--brand); color:#fff}
-    .btn.primary:hover{background:#fff; color:#000; border:2px solid #000}
+    .btn.primary:hover{background:var(--accent); color:#fff; border:none}
     .btn.secondary{border:2px solid var(--brand); color:var(--brand); background:#fff}
-    .btn.secondary:hover{background:#f5f5f5}
+    .btn.secondary:hover{border:2px solid var(--accent); color:var(--accent)}
 
     /* 고정 CTA */
     .cta-dock{
@@ -34,8 +35,8 @@
     }
     .beta-label{
       font-size:.8rem; font-weight:700;
-      background:#fff; border:1px solid #000; border-radius:999px;
-      padding:6px 10px; text-align:center; color:#000;
+      background:#fff; border:1px solid var(--accent); border-radius:999px;
+      padding:6px 10px; text-align:center; color:var(--accent);
     }
     @media (max-width:1024px){
       .cta-dock{top:auto; bottom:16px; right:16px; flex-direction:row}
@@ -45,22 +46,22 @@
     .hero{background:#fff; padding:120px 0 60px; border-bottom:1px solid var(--line)}
     .hero-grid{display:grid; grid-template-columns:1fr 320px; gap:40px; align-items:start}
     .subs{display:grid; gap:6px; color:var(--sub); font-size:1.05rem}
-    .subs .line::before{content:"# "; color:#000; font-weight:900}
+    .subs .line::before{content:"# "; color:var(--accent); font-weight:900}
     .rule-strip{margin-top:18px; display:flex; flex-wrap:wrap; gap:10px}
     .rule{display:inline-flex; align-items:center; justify-content:center;
-      padding:12px 16px; background:#fff; border:2px solid #000; border-radius:12px;
-      font-weight:800; font-size:.95rem; white-space:nowrap}
+      padding:12px 16px; background:#fff; border:2px solid var(--accent); border-radius:12px;
+      font-weight:800; font-size:.95rem; color:var(--accent); white-space:nowrap}
 
     /* 케이스 */
-    .case-card{background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px}
-    .case-card h3{margin:0 0 12px; font-size:1.1rem; font-weight:900}
+    .case-card{background:#fff; border:2px solid var(--accent); border-radius:14px; padding:20px}
+    .case-card h3{margin:0 0 12px; font-size:1.1rem; font-weight:900; color:var(--accent)}
     .case-list{display:grid; grid-template-columns:1fr; gap:10px; list-style:none; padding:0; margin:0}
-    .case-item{padding:12px; border:1px dashed #ccc; border-radius:8px; font-size:.95rem; font-weight:600; text-align:center}
+    .case-item{padding:12px; border:1px dashed var(--accent); border-radius:8px; font-size:.95rem; font-weight:600; text-align:center; color:var(--ink)}
 
     /* 프로젝트 */
     .projects-header{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px}
     .projects-header h2{margin:0; font-size:1.4rem; font-weight:900}
-    .projects-header a{font-size:.9rem; font-weight:700; color:#000; text-decoration:none}
+    .projects-header a{font-size:.9rem; font-weight:700; color:var(--accent); text-decoration:none}
     .projects-header a:hover{text-decoration:underline}
 
     .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px}
