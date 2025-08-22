@@ -14,12 +14,12 @@
     html,body{margin:0; background:var(--bg); color:var(--ink); font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     .container{max-width:1100px; margin:0 auto; padding:0 16px}
     section{padding:60px 0}
-    h1{margin:0 0 12px; font-size:2.8rem; font-weight:900; letter-spacing:-.02em; line-height:1.2}
+    h1{margin:0 0 12px; font-size:2.8rem; font-weight:900; letter-spacing:-.02em; line-height:1.18}
     h2{margin:0 0 22px; font-size:1.4rem; font-weight:900; letter-spacing:-.01em; text-align:center}
     p{margin:0; color:var(--sub); line-height:1.65}
 
-    /* Buttons (for dock & inline) */
-    .btn{display:inline-block; padding:12px 18px; border-radius:10px; font-weight:700; text-decoration:none; transition:.2s}
+    /* Buttons */
+    .btn{display:inline-block; padding:12px 18px; border-radius:12px; font-weight:700; text-decoration:none; transition:.2s}
     .btn.primary{background:var(--brand); color:#fff}
     .btn.primary:hover{filter:saturate(110%) brightness(.98)}
     .btn.secondary{border:2px solid var(--brand); color:var(--brand); background:#fff}
@@ -35,25 +35,52 @@
       .cta-dock{top:auto; bottom:16px; transform:none; right:16px; flex-direction:row}
     }
 
-    /* HERO PRO (차별화 강조) */
-    .hero-pro{background:#fff; padding:56px 0; border-bottom:1px solid var(--line)}
-    .hero-grid{display:grid; grid-template-columns:1.3fr .9fr; gap:28px; align-items:start}
-    .lead{font-size:1.15rem; color:var(--sub)}
+    /* HERO PRO (임팩트 + 비교 패널) */
+    .hero-pro{
+      background:
+        radial-gradient(1200px 600px at 10% -10%, #f6fffb 0%, transparent 60%),
+        radial-gradient(1000px 500px at 90% 0%, #f2f7ff 0%, transparent 60%),
+        #fff;
+      padding:72px 0 56px;
+      border-bottom:1px solid var(--line);
+    }
+    .hero-grid{display:grid; grid-template-columns:1.2fr .95fr; gap:30px; align-items:start}
+    .lead{font-size:1.15rem; color:var(--sub); margin-bottom:12px}
     .pills{margin-top:14px; display:flex; gap:8px; flex-wrap:wrap}
     .pill{border:1px solid var(--line); background:#fff; padding:8px 12px; border-radius:999px; font-weight:700; font-size:.92rem}
 
-    .comp-card{
-      background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px;
-      box-shadow:0 8px 22px rgba(0,0,0,.06)
+    /* COMPARED 패널 */
+    .compare{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px 18px 12px;
+      box-shadow:0 12px 30px rgba(0,0,0,.06);
+      position:relative;
+      overflow:hidden;
     }
-    .comp-head{font-weight:900; margin-bottom:10px; font-size:1.05rem}
-    .comp-row{display:grid; grid-template-columns:1.2fr .9fr .9fr; gap:10px; padding:10px 0; border-top:1px dashed #edf1f5; align-items:center}
-    .comp-row:first-of-type{border-top:none; padding-top:0}
-    .comp-label{color:#222; font-weight:800; font-size:.96rem}
-    .comp-col{display:flex; gap:8px; align-items:center; font-size:.95rem; color:var(--sub)}
+    .compare::before{
+      content:""; position:absolute; left:0; top:0; bottom:0; width:6px;
+      background:linear-gradient(180deg, #00C896 0%, #12d8a0 100%);
+    }
+    .compare-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px}
+    .compare-title{font-weight:900; font-size:1.02rem; letter-spacing:-.01em}
+    .badges{display:flex; gap:6px; flex-wrap:wrap}
+    .badge-pill{
+      padding:6px 10px; border-radius:999px; font-size:.85rem; font-weight:800;
+      border:1px solid #e8f5ef; background:#f4fffb; color:#0a8b65;
+    }
+    .table{margin-top:6px; border-top:1px dashed #edf1f5; display:grid; gap:0}
+    .row{
+      display:grid; grid-template-columns:1.15fr .95fr .95fr; gap:12px;
+      padding:12px 0; align-items:center;
+    }
+    .row:nth-child(odd){background:linear-gradient(180deg, #fafafa 0, transparent 100%)}
+    .cell-label{font-weight:800; color:#222; font-size:.97rem}
+    .cell{display:flex; align-items:center; gap:8px; color:var(--sub); font-size:.95rem}
     .ok{color:var(--ok); font-weight:800}
     .no{color:var(--no); font-weight:700}
-    .legend{margin-top:10px; font-size:.88rem; color:var(--muted)}
+    .legend{margin-top:10px; font-size:.88rem; color:#888}
 
     /* TRIPLE BAND (운영철학/핵심가치/시스템 한 섹션) */
     .triple{background:#fff; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
@@ -79,8 +106,8 @@
     /* Responsive */
     @media (max-width:980px){
       .hero-grid{grid-template-columns:1fr}
-      .comp-row{grid-template-columns:1fr 1fr; grid-template-areas:"label label" "old new"}
-      .comp-label{grid-area:label}
+      .row{grid-template-columns:1fr 1fr; grid-template-areas:"label label" "old new"}
+      .cell-label{grid-area:label}
     }
     @media (max-width:560px){
       section{padding:48px 0}
@@ -93,18 +120,19 @@
   <!-- header include (원본 유지) -->
   <div data-include="header"></div>
 
-  <!-- RIGHT FLOATING CTA (스크롤 따라오는 버튼, 원본 유지) -->
+  <!-- RIGHT FLOATING CTA (스크롤 따라오는 버튼) -->
   <div class="cta-dock" aria-label="빠른 참여">
     <a href="project_list.html" class="btn primary">지금 구조자 만나보기</a>
     <a href="create.html" class="btn secondary">등록하기</a>
   </div>
 
-  <!-- HERO PRO: 임팩트 + 차별화 -->
+  <!-- HERO PRO: 임팩트 + Compared -->
   <section class="hero-pro">
     <div class="container hero-grid">
+      <!-- 왼쪽: 임팩트 카피 -->
       <div>
-        <h1>법인 없이, 개인↔개인.<br/>후원은 직진이어야 합니다.</h1>
-        <p class="lead">Project.PAW — 빠른 실행 · 투명한 흐름 · 책임 있는 설계.</p>
+        <h1>돌아가지 말고, 바로 연결하세요.</h1>
+        <p class="lead">법인 없이 개인↔개인. Project.PAW가 표준이 됩니다.</p>
         <div class="pills">
           <span class="pill">직접 연결</span>
           <span class="pill">기부금 100% 전달</span>
@@ -113,30 +141,41 @@
         </div>
       </div>
 
-      <!-- 차별화 비교 카드 -->
-      <aside class="comp-card" aria-label="기존 플랫폼과의 차이">
-        <div class="comp-head">Compared</div>
-        <div class="comp-row">
-          <div class="comp-label">연결 방식</div>
-          <div class="comp-col"><span class="no">기존</span> 단체 경유</div>
-          <div class="comp-col"><span class="ok">PAW</span> 개인↔개인 직연결</div>
+      <!-- 오른쪽: Compared 패널 -->
+      <aside class="compare" aria-label="기존 플랫폼과의 차이">
+        <div class="compare-head">
+          <div class="compare-title">Compared</div>
+          <div class="badges">
+            <span class="badge-pill">개인↔개인 직연결</span>
+            <span class="badge-pill">100% 전달</span>
+            <span class="badge-pill">30% 책임 설계</span>
+          </div>
         </div>
-        <div class="comp-row">
-          <div class="comp-label">전달 구조</div>
-          <div class="comp-col"><span class="no">기존</span> 일부 공제</div>
-          <div class="comp-col"><span class="ok">PAW</span> 기부금 100% 전달</div>
+
+        <div class="table">
+          <div class="row">
+            <div class="cell-label">연결 방식</div>
+            <div class="cell"><span class="no">—</span>기존: 단체 경유</div>
+            <div class="cell"><span class="ok">✓</span>PAW: 개인↔개인 직연결</div>
+          </div>
+          <div class="row">
+            <div class="cell-label">전달 구조</div>
+            <div class="cell"><span class="no">—</span>기존: 일부 공제</div>
+            <div class="cell"><span class="ok">✓</span>PAW: 기부금 100% 전달</div>
+          </div>
+          <div class="row">
+            <div class="cell-label">책임 설계</div>
+            <div class="cell"><span class="no">—</span>기존: 규정 중심</div>
+            <div class="cell"><span class="ok">✓</span>PAW: 구조자 30% 부담</div>
+          </div>
+          <div class="row">
+            <div class="cell-label">결제 흐름</div>
+            <div class="cell"><span class="no">—</span>기존: 단체→병원</div>
+            <div class="cell"><span class="ok">✓</span>PAW: 병원 Direct(준비)</div>
+          </div>
         </div>
-        <div class="comp-row">
-          <div class="comp-label">책임 설계</div>
-          <div class="comp-col"><span class="no">기존</span> 기본 규정 위주</div>
-          <div class="comp-col"><span class="ok">PAW</span> 구조자 30% 부담</div>
-        </div>
-        <div class="comp-row">
-          <div class="comp-label">결제 흐름</div>
-          <div class="comp-col"><span class="no">기존</span> 단체→병원</div>
-          <div class="comp-col"><span class="ok">PAW</span> 병원 Direct(준비)</div>
-        </div>
-        <div class="legend">* 현재 Beta — 카톡방 모금 운영. 결제(PG) 연동 예정.</div>
+
+        <div class="legend">* Beta — 현재는 카톡방 모금 운영. 결제(PG) 연동 예정.</div>
       </aside>
     </div>
   </section>
@@ -177,7 +216,7 @@
     </div>
   </section>
 
-  <!-- PROJECTS (원본 데이터 연동 유지) -->
+  <!-- PROJECTS (백엔드 연동 그대로) -->
   <section class="projects">
     <div class="container">
       <h2>진행 중인 프로젝트</h2>
