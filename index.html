@@ -8,9 +8,13 @@
   <link rel="stylesheet" href="app.min.css"/>
   <style>
     :root{
-      --ink:#000; --sub:#444; --muted:#777; --line:#eaeaea;
-      --bg:#fff; --card:#fff; --brand:#000;
-      --accent:#A47864; /* Pantone Mocha Mousse 17-1230 */
+      --ink:#2B2B2B; /* Charcoal Black */
+      --sub:#5C5C5C; /* Warm Gray */
+      --muted:#777; --line:#eaeaea;
+      --bg:#fff; --card:#fff;
+      --brand:#000; /* Black */
+      --accent:#A47864; /* Mocha Mousse */
+      --light:#F7F5F4; /* Warm White */
     }
     html,body{margin:0; background:var(--bg); color:var(--ink);
       font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -22,10 +26,10 @@
     /* 버튼 */
     .btn{display:inline-block; padding:12px 18px; border-radius:12px;
       font-weight:700; text-decoration:none; transition:.2s}
-    .btn.primary{background:var(--brand); color:#fff}
-    .btn.primary:hover{background:var(--accent); color:#fff; border:none}
-    .btn.secondary{border:2px solid var(--brand); color:var(--brand); background:#fff}
-    .btn.secondary:hover{border:2px solid var(--accent); color:var(--accent)}
+    .btn.primary{background:var(--accent); color:var(--light)}
+    .btn.primary:hover{background:var(--brand); color:#fff}
+    .btn.secondary{border:2px solid var(--accent); color:var(--accent); background:#fff}
+    .btn.secondary:hover{background:var(--accent); color:var(--light)}
 
     /* 고정 CTA */
     .cta-dock{
