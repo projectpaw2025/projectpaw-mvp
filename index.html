@@ -4,6 +4,14 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Project.PAW — 개인과 개인을 잇는 후원 플랫폼</title>
+
+  <!-- 공유 메타 (SNS 카드 깔끔) -->
+  <meta property="og:title" content="개인↔개인, 국내 최초 기부 플랫폼 — Project.PAW"/>
+  <meta property="og:description" content="흩어진 개인 구조 모금을 한 곳에서 연결합니다. 구조자 30% 책임 · 후원금 100% 전달."/>
+  <meta property="og:image" content="img/og-paw.png"/>
+  <meta property="og:type" content="website"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+
   <link rel="stylesheet" href="common.css"/>
   <link rel="stylesheet" href="app.min.css"/>
   <style>
@@ -14,7 +22,7 @@
     html,body{margin:0; background:var(--bg); color:var(--ink); font-family:'Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     .container{max-width:1200px; margin:0 auto; padding:0 20px}
     section{padding:60px 0}
-    h1{margin:0 0 16px; font-size:3rem; font-weight:900; letter-spacing:-.02em; line-height:1.15}
+    h1{margin:0 0 20px; font-size:3rem; font-weight:900; letter-spacing:-.02em; line-height:1.15}
     p{margin:0; color:var(--sub); line-height:1.65}
 
     /* Buttons */
@@ -37,7 +45,7 @@
     /* ===== Unified Hero Block: 한 블록(헤드라인/서브2줄/룰/케이스) ===== */
     .hero-unified{
       background:#fff;
-      padding:88px 0 48px;
+      padding:88px 0 56px;
       border-bottom:1px solid var(--line);
     }
     .subs{display:grid; gap:4px; color:var(--muted); font-size:1.02rem}
@@ -49,16 +57,23 @@
       display:inline-flex; align-items:center; justify-content:center;
       padding:12px 16px; background:#fff; border:2px solid #e8eef5; border-radius:12px;
       font-weight:900; font-size:1rem; letter-spacing:-.01em; white-space:nowrap;
+      outline:0;
     }
+    .rule:focus-visible{outline:2px solid var(--brand); outline-offset:2px; border-color:transparent}
 
     /* 환영하는 구조 케이스 */
-    .case{margin-top:24px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px}
-    .case h3{margin:0 0 10px; font-size:1.05rem; font-weight:900}
+    .case{margin-top:26px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px}
+    .case h3{margin:0 0 8px; font-size:1.05rem; font-weight:900}
+    .case .caps{display:inline-block; padding:6px 10px; border:1px solid #e9f4ef; background:#f6fffb; color:#067b5f; border-radius:999px; font-size:.86rem; font-weight:800}
+    .case .desc{margin-top:8px; font-size:.95rem; color:var(--sub)}
+    .case-sub{margin:16px 0 8px; font-size:.95rem; font-weight:900; color:#222}
     .case-list{display:grid; grid-template-columns:repeat(2,minmax(280px,1fr)); gap:10px; margin:0; padding:0; list-style:none}
     .case-list li{
-      display:flex; gap:10px; align-items:flex-start; padding:10px 12px; border:1px dashed #e9edf3; border-radius:10px; background:#fff;
+      display:flex; gap:10px; align-items:flex-start; padding:10px 12px; border:1px dashed #f1f4f8; border-radius:10px; background:#fff;
+      outline:0;
     }
     .case-list li::before{content:"✓"; font-weight:900; color:var(--brand); line-height:1.2}
+    .case-list li:focus-visible{outline:2px solid var(--brand); outline-offset:2px; border-color:transparent}
     .case .hint{margin-top:10px; font-size:.92rem; color:var(--muted)}
 
     /* 프로젝트 목록 */
@@ -75,7 +90,7 @@
       .case-list{grid-template-columns:1fr}
     }
     @media (max-width:720px){
-      .hero-unified{padding:64px 0 36px}
+      .hero-unified{padding:64px 0 44px}
       h1{font-size:2.3rem}
       .subs{font-size:1rem}
       .rule{font-size:.95rem; padding:10px 14px}
@@ -102,25 +117,29 @@
       <!-- 서브 2줄(WHY & 방향, 작은 글씨) -->
       <div class="subs" aria-label="설명">
         <p class="line">흩어진 개인 구조 모금을 PAW에서 연결합니다.</p>
-        <p class="line">혼자 시작한 구조가 혼자 끝나지 않도록</p>
+        <p class="line">혼자 시작한 구조가 혼자 끝나지 않도록.</p>
       </div>
 
-      <!-- 룰 스트립 -->
+      <!-- 룰 스트립 (※ 헤더에서 Beta 표기하므로, 여기선 '증빙 필수'로 전환) -->
       <ul class="rule-strip" role="list" aria-label="플랫폼 원칙">
-        <li class="rule">개인↔개인</li>
-        <li class="rule">후원금 100% 전달</li>
-        <li class="rule">구조자 30% 책임</li>
-        <li class="rule">Beta 운영 중</li>
+        <li class="rule" tabindex="0">개인↔개인</li>
+        <li class="rule" tabindex="0">후원금 100% 전달</li>
+        <li class="rule" tabindex="0">구조자 30% 책임</li>
+        <li class="rule" tabindex="0">증빙 필수</li>
       </ul>
 
       <!-- 환영하는 구조 케이스 -->
       <div class="case" aria-labelledby="case-title">
         <h3 id="case-title">환영하는 구조 케이스</h3>
+        <span class="caps">필수</span>
+        <p class="desc">구조/보호 활동으로 발생한 <b>실제 비용</b>에 한합니다.</p>
+
+        <div class="case-sub">예시</div>
         <ul class="case-list" role="list">
-          <li>유기동물 구조 후 부담한 병원비</li>
-          <li>보살피는 유기동물 중성화 비용 <small style="color:var(--muted)">(국가지원 대상이 아닌 경우)</small></li>
-          <li>유기동물 입양 후 첫 검진비</li>
-          <li>기타 모든 구조/보호활동으로 발생한 필수 비용</li>
+          <li tabindex="0">유기동물 구조 후 부담한 병원비</li>
+          <li tabindex="0">보살피는 유기동물 중성화 비용 <small style="color:var(--muted)">(국가지원 대상이 아닌 경우)</small></li>
+          <li tabindex="0">유기동물 입양 후 첫 검진비</li>
+          <li tabindex="0">기타 모든 구조/보호활동으로 발생한 필수 비용</li>
         </ul>
         <p class="hint">등록은 간단합니다. 상황 설명과 <b>영수증/사진</b>만 준비하세요. 중복 모금은 불가하며, 진행 과정은 <b>투명하게 공개</b>됩니다.</p>
       </div>
@@ -132,7 +151,10 @@
     <div class="container">
       <h2>진행 중인 프로젝트</h2>
       <div id="projects-grid" class="grid">
-        <div class="muted">아직 프로젝트가 없어요. <a href="create.html">등록하기</a>로 첫 구조를 시작해 주세요.</div>
+        <div class="muted">
+          아직 프로젝트가 없어요.
+          <a href="create.html" class="btn secondary" style="margin-left:8px">등록하기</a>
+        </div>
       </div>
     </div>
   </section>
@@ -162,12 +184,16 @@
       try {
         const list = await apiListProjects({ status:'approved', limit:12 });
         if(!list.length){
-          $grid.innerHTML = '<div class="muted">아직 프로젝트가 없어요. <a href="create.html">등록하기</a>로 첫 구조를 시작해 주세요.</div>';
+          $grid.innerHTML = `
+            <div class="muted">
+              아직 프로젝트가 없어요.
+              <a href="create.html" class="btn secondary" style="margin-left:8px">등록하기</a>
+            </div>`;
           return;
         }
         $grid.innerHTML = list.map(p => `
           <a class="project-card" href="project.html?id=${encodeURIComponent(p.id)}">
-            <img src="${cover(p)}" alt="${(p.name ?? '프로젝트') + ' 썸네일'}"/>
+            <img src="${cover(p)}" loading="lazy" alt="${(p.name ?? '프로젝트') + ' 썸네일'}"/>
             <h3>${p.name ?? '(이름 없음)'}</h3>
             <div class="muted">${p.summary ?? ''}</div>
             <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
