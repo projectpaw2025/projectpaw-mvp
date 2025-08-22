@@ -8,26 +8,50 @@
   <link rel="stylesheet" href="app.min.css"/>
   <style>
     body { background:#fafafa; font-family:'Pretendard',sans-serif; }
-    .hero { text-align:center; padding:110px 20px 80px; background:linear-gradient(135deg,#fff 0%,#fef9f9 50%,#f5f7ff 100%); }
-    .hero h1 { font-size:2.4rem; font-weight:900; margin-bottom:16px; }
-    .hero p { font-size:1.1rem; color:#444; margin-bottom:20px; line-height:1.6; }
-    .impact-lines { margin:40px auto 20px; font-size:1.2rem; font-weight:600; color:#222; line-height:1.8; }
-    .impact-lines div{margin-bottom:6px;}
+    section { padding:70px 20px; }
+    h2 { font-size:1.6rem; font-weight:800; margin-bottom:24px; text-align:center; }
+
+    /* Hero */
+    .hero { text-align:center; padding:120px 20px 100px; background:linear-gradient(135deg,#fff 0%,#fef9f9 50%,#f5f7ff 100%); }
+    .hero h1 { font-size:2.6rem; font-weight:900; margin-bottom:20px; }
+    .hero p { font-size:1.15rem; color:#444; margin-bottom:24px; line-height:1.7; }
     .beta { background:#fff3cd; color:#7a5200; border:1px solid #ffeeba; border-radius:12px; padding:14px 20px; display:inline-block; font-size:.95rem; margin-top:24px; }
     .btn { display:inline-block; padding:14px 22px; border-radius:12px; font-weight:600; cursor:pointer; text-decoration:none; }
     .btn.primary { background:#111; color:#fff; margin:8px; }
     .btn.secondary { background:#fff; border:1px solid #ddd; color:#111; margin:8px; }
-    .projects { max-width:1040px; margin:50px auto; padding:0 16px; }
-    .projects h2 { font-size:1.4rem; font-weight:700; margin-bottom:16px; text-align:center; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
+
+    /* Impact Lines */
+    .impact { background:#f9fafb; text-align:center; }
+    .impact-lines { font-size:1.3rem; font-weight:700; color:#222; line-height:2; max-width:700px; margin:0 auto; }
+
+    /* Trust Section */
+    .trust { background:#fff; }
+    .trust-points { max-width:1000px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; }
+    .trust-card { background:#f9fafb; border:1px solid #eee; border-radius:14px; padding:28px 20px; text-align:center; }
+    .trust-card .icon { font-size:2rem; margin-bottom:10px; }
+    .trust-card h3 { font-size:1.2rem; font-weight:700; margin-bottom:8px; }
+    .trust-card p { font-size:.95rem; color:#555; line-height:1.5; }
+
+    .stats { margin-top:50px; text-align:center; }
+    .stats h3 { font-size:1.2rem; margin-bottom:16px; }
+    .stats .numbers { font-size:1.1rem; font-weight:600; color:#444; }
+    .stats .numbers strong { font-size:1.4rem; font-weight:800; display:block; margin-bottom:6px; }
+    .stats .note { margin-top:12px; font-size:.9rem; color:#666; line-height:1.6; }
+
+    /* Projects */
+    .projects { background:#fafafa; }
+    .projects h2 { margin-bottom:16px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; max-width:1040px; margin:0 auto; }
     .card { background:#fff; border:1px solid #eee; border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:10px; transition:all .2s; }
     .card:hover { box-shadow:0 4px 10px rgba(0,0,0,0.05); transform:translateY(-2px); }
     .card img { width:100%; height:180px; object-fit:cover; border-radius:10px; }
     .card h3 { font-size:1.1rem; font-weight:700; margin:6px 0; }
     .muted { color:#777; font-size:.9rem; }
-    .closing { text-align:center; margin:70px 20px; font-size:1.05rem; color:#444; line-height:1.7; }
-    .closing em { display:block; margin-top:20px; font-style:normal; color:#555; line-height:1.6; }
-    footer { margin-top:60px; padding:30px; text-align:center; font-size:.9rem; color:#888; border-top:1px solid #eee; }
+
+    /* Closing */
+    .closing { background:#fff; text-align:center; }
+    .closing strong { font-size:1.3rem; font-weight:800; display:block; margin-bottom:16px; }
+    .example-box { background:#f9fafb; border:1px solid #eee; border-radius:14px; padding:24px; max-width:700px; margin:0 auto; font-size:.95rem; color:#555; line-height:1.6; }
   </style>
 </head>
 <body>
@@ -42,14 +66,6 @@
       <b>구조자(개인) ↔ 후원자(개인)</b>의 직접 연결입니다.
     </p>
 
-    <!-- Impact Lines -->
-    <div class="impact-lines">
-      <div>🐾 도움은 본능, 연결은 선택</div>
-      <div>💡 망설임을 용기로 바꾸는 플랫폼</div>
-      <div>❤️ 숫자보다 감정, 돈보다 연결</div>
-    </div>
-
-    <!-- Beta 안내 -->
     <div class="beta">
       🐾 현재 <b>Beta 서비스</b>입니다.<br/>
       아직 결제(PG) 연동 전이라, 프로젝트마다 생성된 <b>카톡 단톡방</b>에서 모금이 진행돼요.<br/>
@@ -59,6 +75,46 @@
     <div style="margin-top:30px">
       <a href="project_list.html" class="btn primary">🐾 지금 구조자 만나보기</a>
       <a href="create.html" class="btn secondary">등록하기</a>
+    </div>
+  </section>
+
+  <!-- Impact Lines -->
+  <section class="impact">
+    <div class="impact-lines">
+      🐾 도움은 본능, 연결은 선택<br/>
+      💡 망설임을 용기로 바꾸는 플랫폼<br/>
+      ❤️ 숫자보다 감정, 돈보다 연결
+    </div>
+  </section>
+
+  <!-- Trust Section -->
+  <section class="trust">
+    <h2>Project.PAW의 신뢰를 위한 약속</h2>
+    <div class="trust-points">
+      <div class="trust-card">
+        <div class="icon">🔒</div>
+        <h3>구조자 부담금 30% 필수</h3>
+        <p>도덕적 해이를 막고, 진정성 있는 프로젝트만 올라올 수 있도록 설계했습니다.</p>
+      </div>
+      <div class="trust-card">
+        <div class="icon">🏥</div>
+        <h3>Direct Payment 준비 중</h3>
+        <p>곧 동물병원과 협력해 후원금이 병원으로 직접 결제될 수 있게 준비 중입니다.</p>
+      </div>
+      <div class="trust-card">
+        <div class="icon">🤝</div>
+        <h3>기부금 100% 전달</h3>
+        <p>PG 수수료는 플랫폼이 부담하며, 후원자는 전액을 동물 구조에 보탤 수 있습니다.</p>
+      </div>
+    </div>
+
+    <!-- Stats (Beta 상태) -->
+    <div class="stats">
+      <h3>📊 지금까지의 연결</h3>
+      <div class="numbers">
+        <div><strong>🐾 Beta 서비스 중</strong></div>
+      </div>
+      <p class="note">아직은 시작 단계예요.<br/>조금만 기다려주세요~ 곧 더 많은 연결이 쌓여갈 거예요 🤗</p>
     </div>
   </section>
 
@@ -72,16 +128,13 @@
 
   <!-- Closing -->
   <section class="closing">
-    Project.PAW는 단순한 모금 서비스가 아닙니다.<br/>
-    우리는 <b>마음과 마음이 직접 연결되는</b>,<br/>
-    따뜻한 비영리 플랫폼입니다.
-
-    <em>
+    <strong>Project.PAW는 마음과 마음이 직접 연결되는,<br/>따뜻한 비영리 플랫폼입니다.</strong>
+    <div class="example-box">
       예를 들어, 한 구조자가 길에서 다친 고양이를 발견해 병원에 데려갔습니다.<br/>
       하지만 치료비는 혼자 감당하기엔 너무 큰 부담이었죠.<br/>
       이때 Project.PAW는 구조자의 책임감과<br/>
       후원자의 선한 마음을 직접 연결해줍니다.
-    </em>
+    </div>
   </section>
 
   <div data-include="footer"></div>
