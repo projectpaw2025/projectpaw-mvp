@@ -10,7 +10,6 @@
     :root{
       --ink:#111; --sub:#444; --muted:#777; --line:#eaeaea;
       --bg:#fafafa; --card:#fff;
-      --green:#4CAF50; --green-dark:#3d8b41;
     }
     html,body{
       margin:0;
@@ -23,41 +22,43 @@
 
     /* Hero */
     .hero{text-align:center; padding:100px 20px 70px}
-    .hero h1{margin:0 0 28px; font-size:3.2rem; font-weight:900; line-height:1.25; letter-spacing:-.02em; white-space:pre-line}
+    .hero h1{margin:0 0 28px; font-size:3.2rem; font-weight:900; line-height:1.3; letter-spacing:-.02em; white-space:pre-line}
     .hero p.sub{margin:8px 0; font-size:1.2rem; font-weight:600; color:var(--sub); letter-spacing:-.01em; white-space:pre-line}
 
-    /* 카드뉴스 */
-    .cards{background:#f6f6f6; padding:80px 0}
-    .cards h2{text-align:center; font-size:1.8rem; font-weight:900; margin-bottom:40px}
+    /* Story Cards */
+    .story-cards{background:#fafafa; padding:80px 0}
     .card-grid{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-      gap:20px;
-      max-width:1000px;
-      margin:0 auto;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:24px;
     }
-    .card{
+    .story-card{
       background:#fff;
-      border-radius:16px;
-      padding:28px 22px;
-      border:2px solid var(--green);
-      text-align:center;
-      font-size:1.1rem;
-      font-weight:600;
-      line-height:1.5;
-      transition:.2s;
+      border:2px solid #111;
+      border-radius:18px;
+      padding:28px 24px;
+      text-align:left;
+      box-shadow:0 6px 14px rgba(0,0,0,.06);
     }
-    .card strong{
-      display:block;
-      font-size:1.2rem;
+    .story-card .top{
+      font-size:.85rem;
+      font-weight:700;
+      margin-bottom:16px;
+    }
+    .story-card h2{
+      font-size:1.4rem;
       font-weight:900;
-      color:var(--green-dark);
-      margin-bottom:12px;
+      margin:0 0 18px;
+      line-height:1.4;
     }
-    .card:hover{
-      background:#f9fef9;
-      transform:translateY(-4px);
-      box-shadow:0 8px 18px rgba(0,0,0,.08);
+    .story-card p{font-size:1rem; line-height:1.6; margin:0 0 20px}
+    .story-card ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:12px}
+    .story-card li{
+      border:2px solid #111;
+      border-radius:14px;
+      padding:10px 14px;
+      font-size:1rem;
+      font-weight:600;
     }
 
     /* Projects */
@@ -81,25 +82,68 @@
       <h1>개인↔개인을 연결하는, 국내 첫 기부 플랫폼</h1>
       <p class="sub">#흩어진 개인 구조 활동을 PAW에서 연결하고 싶었습니다.</p>
       <p class="sub">#혼자 시작한 구조가 혼자 끝나지 않도록 투명하게</p>
-      <p class="sub">#개인<->개인 #후원금100%전달구조(수수료는 PAW부담)</p>
-      <p class="sub">#구조자 30% 비용부담필수 (도덕적헤이방지)</p>
     </div>
   </section>
 
-  <!-- 카드뉴스 (기획서 반영) -->
-  <section class="cards">
-    <div class="container">
-      <h2>PAW가 전하는 메시지</h2>
-      <div class="card-grid">
-        <div class="card"><strong>🐾 PAW는 연결합니다</strong>혼자가 아닌, 함께하는 구조</div>
-        <div class="card">💊 구조 후 병원 진료비가 큰 짐이 될 때</div>
-        <div class="card">✂️ 국가지원을 받지 못하는 중성화 수술비용</div>
-        <div class="card">🍼 유기동물 입양 후 첫 건강검진과 예방접종</div>
-        <div class="card">🧾 투명한 영수증으로 확인 가능한 모든 활동</div>
-        <div class="card">🤝 후원금 100% 전달<br/>(수수료는 PAW가 부담)</div>
-        <div class="card">⚖️ 구조자 30% 비용부담 필수<br/>(도덕적 헤이 방지)</div>
-        <div class="card">🌱 개인↔개인, 직접 연결의 힘</div>
+  <!-- Story Cards -->
+  <section class="story-cards">
+    <div class="container card-grid">
+
+      <!-- Card 1 -->
+      <div class="story-card">
+        <div class="top">PROJECT PAW</div>
+        <h2>우리가 시작한 이유</h2>
+        <p>
+          우리는 돈을 모으지 않습니다.<br/>
+          우리는 마음을 이어 생명을 살립니다.<br/>
+          이 프로젝트는 혼자가 버겁던 그 순간들에서 시작됐습니다.<br/>
+          따뜻함은 모여야 힘이 되니까요.
+        </p>
+        <ul>
+          <li>✓ 돈보다 생명이 먼저였던 그 순간</li>
+          <li>✓ 함께한 마음이 만든 작은 기적</li>
+          <li>✓ 도움은 본능, 연결은 선택</li>
+        </ul>
       </div>
+
+      <!-- Card 2 -->
+      <div class="story-card">
+        <div class="top">PROJECT PAW</div>
+        <h2>"선함엔 기준이 필요해"</h2>
+        <ul>
+          <li>✓ 구조자는 30% 직접 부담</li>
+          <li>✓ 후원금은 병원에 바로 지급</li>
+          <li>✓ 후기와 치료 전후 변화 공유</li>
+          <li>✓ 3개월간 모든 후원 기록 공개</li>
+        </ul>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="story-card">
+        <div class="top">PROJECT PAW</div>
+        <h2>이렇게 만들거야</h2>
+        <ul>
+          <li>✓ 발바닥은 따뜻한 약속</li>
+          <li>✓ 후원은 쉽고, 마음은 깊게</li>
+          <li>✓ 이야기가 먼저 닿는 구조</li>
+          <li>✓ 로그인은 어렵지 않아야 해</li>
+          <li>✓ 기부는 쉽고 투명해야 해</li>
+        </ul>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="story-card">
+        <div class="top">PROJECT PAW</div>
+        <h2>고양이보다 부드럽게,<br/>해파리보다 투명하게.</h2>
+        <ul>
+          <li>✓ 구조자·후원자 실시간 소통</li>
+          <li>✓ 지역별 PAW 병원 (구조병원 LIST)</li>
+          <li>✓ 모금액 전액 전달</li>
+          <li>✓ 100% 재능기부 운영 플랫폼</li>
+          <li>✓ 한 없이 투명에 가까운 PAW</li>
+        </ul>
+      </div>
+
     </div>
   </section>
 
