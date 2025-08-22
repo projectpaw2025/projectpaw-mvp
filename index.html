@@ -10,7 +10,7 @@
     :root{
       --ink:#111; --sub:#444; --muted:#777; --line:#eaeaea;
       --bg:#fafafa; --card:#fff;
-      --mocha:#A47864; --mocha-dark:#8b6452;
+      --green:#4CAF50; --green-dark:#3d8b41;
     }
     html,body{
       margin:0;
@@ -26,31 +26,35 @@
     .hero h1{margin:0 0 28px; font-size:3.2rem; font-weight:900; line-height:1.25; letter-spacing:-.02em; white-space:pre-line}
     .hero p.sub{margin:8px 0; font-size:1.2rem; font-weight:600; color:var(--sub); letter-spacing:-.01em; white-space:pre-line}
 
-    /* CTA Dock (only message) */
-    .cta-dock{
-      position:fixed; right:22px; bottom:22px;
-      z-index:60;
-      filter:drop-shadow(0 8px 16px rgba(0,0,0,.12));
-      background:#fff; padding:20px; border-radius:14px; border:1px solid var(--line);
-      max-width:300px;
-      font-size:1rem;
-      line-height:1.6;
+    /* 카드뉴스 */
+    .cards{background:#f6f6f6}
+    .cards h2{text-align:center; font-size:1.8rem; font-weight:900; margin-bottom:40px}
+    .card-grid{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:20px; max-width:1000px; margin:0 auto;
     }
-    .cta-dock strong{
-      display:block;
-      font-size:1.05rem;
-      font-weight:800;
-      margin-bottom:10px;
-      color:var(--mocha);
-    }
-    .cta-dock div{
-      margin-top:6px;
+    .card{
+      background:#fff;
+      border-radius:16px;
+      padding:28px 22px;
+      border:2px solid var(--green);
+      text-align:center;
+      font-size:1.15rem;
       font-weight:600;
-      color:var(--ink);
+      line-height:1.5;
+      transition:.2s;
     }
-
-    @media (max-width:1024px){
-      .cta-dock{bottom:16px; right:16px; width:calc(100% - 32px); max-width:none}
+    .card strong{
+      display:block;
+      font-size:1.25rem;
+      font-weight:900;
+      color:var(--green-dark);
+      margin-bottom:12px;
+    }
+    .card:hover{
+      background:#f9fef9;
+      transform:translateY(-4px);
+      box-shadow:0 8px 18px rgba(0,0,0,.08);
     }
 
     /* Projects */
@@ -68,15 +72,6 @@
   <!-- header include -->
   <div data-include="header"></div>
 
-  <!-- Fixed CTA (only text) -->
-  <div class="cta-dock" aria-label="PAW 안내">
-    <strong>*PAW는 연결합니다</strong>
-    <div>구조 후 병원 진료비가 큰 짐이 될 때</div>
-    <div>국가지원을 받지 못하는 중성화 수술비용</div>
-    <div>유기동물 입양 후 첫 건강검진과 예방접종비용</div>
-    <div>그 외에도 투명한 영수증으로 확인 가능한 구조 활동</div>
-  </div>
-
   <!-- Hero -->
   <section class="hero">
     <div class="container">
@@ -85,6 +80,20 @@
       <p class="sub">#혼자 시작한 구조가 혼자 끝나지 않도록 투명하게</p>
       <p class="sub">#개인<->개인 #후원금100%전달구조(수수료는 PAW부담)</p>
       <p class="sub">#구조자 30% 비용부담필수 (도덕적헤이방지)</p>
+    </div>
+  </section>
+
+  <!-- 카드뉴스 -->
+  <section class="cards">
+    <div class="container">
+      <h2>PAW는 이런 순간을 연결합니다</h2>
+      <div class="card-grid">
+        <div class="card"><strong>*PAW는 연결합니다*</strong>개인과 개인을 이어주는 새로운 후원의 방식</div>
+        <div class="card">구조 후 병원 진료비가 큰 짐이 될 때</div>
+        <div class="card">국가지원을 받지 못하는 중성화 수술비용</div>
+        <div class="card">유기동물 입양 후 첫 건강검진과 예방접종비용</div>
+        <div class="card">그 외에도 투명한 영수증으로 확인 가능한 구조 활동</div>
+      </div>
     </div>
   </section>
 
