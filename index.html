@@ -15,6 +15,7 @@
       --bg:#F4F1EE;        /* Gardenia */
       --card:#fff;
       --mocha:#A47864;     /* Mocha Mousse */
+      --mint:#AEE1D2;      /* Point color */
     }
     html,body{
       margin:0;
@@ -28,14 +29,14 @@
     /* Hero */
     .hero{
       text-align:center;
-      padding:100px 20px 40px; /* 더 내려와서 카드랑 가까워짐 */
-      background:var(--bg);
+      padding:110px 20px 60px;
+      background:var(--bg) url('img/paw-pattern.svg') repeat center/200px; /* 패턴 예시 */
     }
     .hero h1{
       margin:0 0 24px;
       font-size:3rem;
       font-weight:900;
-      line-height:1.3;
+      line-height:1.35;
       letter-spacing:-.02em;
       white-space:pre-line;
       color:var(--mocha);
@@ -50,38 +51,33 @@
     }
 
     /* Story Cards */
-    .story-cards{background:var(--bg); padding:60px 0}
+    .story-cards{background:var(--bg); padding:70px 0}
     .card-grid{
       display:grid;
-      grid-template-columns:repeat(2,1fr); /* PC 2x2 */
+      grid-template-columns:repeat(2,1fr);
       gap:32px;
     }
     @media (max-width:768px){
-      .card-grid{grid-template-columns:1fr} /* 모바일 1열 */
+      .card-grid{grid-template-columns:1fr}
     }
     .story-card{
-      background:#fff;
       border:2px solid var(--mocha);
       border-radius:20px;
-      padding:32px 26px;
+      padding:36px 28px;
       text-align:left;
       box-shadow:0 6px 14px rgba(0,0,0,.06);
       display:flex;
       flex-direction:column;
       justify-content:flex-start;
+      background:var(--card);
     }
-    .card-top{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      font-size:.95rem;
-      font-weight:700;
-      margin-bottom:20px;
-      color:var(--mocha);
+    .story-card.alt{background:var(--bg)}
+    .card-icon{
+      font-size:2rem;
+      margin-bottom:14px;
     }
-    .card-top .dots{font-size:1rem; letter-spacing:4px}
     .story-card h2{
-      font-size:1.5rem;
+      font-size:1.55rem;
       font-weight:900;
       margin:0 0 20px;
       line-height:1.4;
@@ -107,14 +103,32 @@
       background:#fff;
       transition:.2s;
     }
-    .story-card li:hover{background:var(--bg)}
+    .story-card li:hover{background:var(--mint); color:#fff; border-color:var(--mint)}
 
     /* Projects */
     .projects h2{margin:0; font-size:1.7rem; font-weight:900; letter-spacing:-.01em}
     .projects .header{display:flex; justify-content:space-between; align-items:center; margin-bottom:24px}
     .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px}
-    .project-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; transition:.2s}
-    .project-card:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.06)}
+    .project-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:14px;
+      transition:.3s;
+      position:relative;
+      overflow:hidden;
+    }
+    .project-card::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:var(--mocha);
+      opacity:0;
+      transition:.3s;
+      z-index:1;
+    }
+    .project-card:hover::after{opacity:0.1}
+    .project-card *{position:relative; z-index:2}
     .project-card img{width:100%; height:180px; object-fit:cover; border-radius:10px}
     .project-card h3{margin:8px 0 4px; font-size:1.15rem; font-weight:700}
     .muted{color:var(--muted); font-size:.9rem}
@@ -139,10 +153,7 @@
 
       <!-- Card 1 -->
       <div class="story-card">
-        <div class="card-top">
-          <span class="brand">PROJECT PAW</span>
-          <span class="dots">● ● ●</span>
-        </div>
+        <div class="card-icon">🐾</div>
         <h2>우리가 시작한 이유</h2>
         <p>
           우리는 돈을 모으지 않습니다.<br/>
@@ -151,56 +162,47 @@
           따뜻함은 모여야 힘이 되니까요.
         </p>
         <ul>
-          <li>✓ 돈보다 생명이 먼저였던 그 순간</li>
-          <li>✓ 함께한 마음이 만든 작은 기적</li>
-          <li>✓ 도움은 본능, 연결은 선택</li>
+          <li>돈보다 생명이 먼저였던 그 순간</li>
+          <li>함께한 마음이 만든 작은 기적</li>
+          <li>도움은 본능, 연결은 선택</li>
         </ul>
       </div>
 
       <!-- Card 2 -->
-      <div class="story-card">
-        <div class="card-top">
-          <span class="brand">PROJECT PAW</span>
-          <span class="dots">● ● ●</span>
-        </div>
+      <div class="story-card alt">
+        <div class="card-icon">⚖️</div>
         <h2>"선함엔 기준이 필요해"</h2>
         <ul>
-          <li>✓ 구조자는 30% 직접 부담</li>
-          <li>✓ 후원금은 병원에 바로 지급</li>
-          <li>✓ 후기와 치료 전후 변화 공유</li>
-          <li>✓ 3개월간 모든 후원 기록 공개</li>
+          <li>구조자는 30% 직접 부담</li>
+          <li>후원금은 병원에 바로 지급</li>
+          <li>후기와 치료 전후 변화 공유</li>
+          <li>3개월간 모든 후원 기록 공개</li>
         </ul>
       </div>
 
       <!-- Card 3 -->
       <div class="story-card">
-        <div class="card-top">
-          <span class="brand">PROJECT PAW</span>
-          <span class="dots">● ● ●</span>
-        </div>
+        <div class="card-icon">🛠️</div>
         <h2>이렇게 만들거야</h2>
         <ul>
-          <li>✓ 발바닥은 따뜻한 약속</li>
-          <li>✓ 후원은 쉽고, 마음은 깊게</li>
-          <li>✓ 이야기가 먼저 닿는 구조</li>
-          <li>✓ 로그인은 어렵지 않아야 해</li>
-          <li>✓ 기부는 쉽고 투명해야 해</li>
+          <li>발바닥은 따뜻한 약속</li>
+          <li>후원은 쉽고, 마음은 깊게</li>
+          <li>이야기가 먼저 닿는 구조</li>
+          <li>로그인은 어렵지 않아야 해</li>
+          <li>기부는 쉽고 투명해야 해</li>
         </ul>
       </div>
 
       <!-- Card 4 -->
-      <div class="story-card">
-        <div class="card-top">
-          <span class="brand">PROJECT PAW</span>
-          <span class="dots">● ● ●</span>
-        </div>
+      <div class="story-card alt">
+        <div class="card-icon">🌊</div>
         <h2>고양이보다 부드럽게,<br/>해파리보다 투명하게.</h2>
         <ul>
-          <li>✓ 구조자·후원자 실시간 소통</li>
-          <li>✓ 지역별 PAW 병원 (구조병원 LIST)</li>
-          <li>✓ 모금액 전액 전달</li>
-          <li>✓ 100% 재능기부 운영 플랫폼</li>
-          <li>✓ 한 없이 투명에 가까운 PAW</li>
+          <li>구조자·후원자 실시간 소통</li>
+          <li>지역별 PAW 병원 (구조병원 LIST)</li>
+          <li>모금액 전액 전달</li>
+          <li>100% 재능기부 운영 플랫폼</li>
+          <li>한 없이 투명에 가까운 PAW</li>
         </ul>
       </div>
 
