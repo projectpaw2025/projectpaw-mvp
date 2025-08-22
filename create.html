@@ -7,119 +7,164 @@
 <link rel="stylesheet" href="common.css"/>
 <link rel="stylesheet" href="app.min.css"/>
 <style>
-.wrap{max-width:860px;margin:0 auto;padding:20px 16px}
-form{display:grid;gap:12px}
-label{font-weight:800;margin-top:6px}
-input,textarea{width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:10px}
-textarea{min-height:120px;resize:vertical}
-.grid2{display:grid;gap:12px;grid-template-columns:1fr 1fr}
-@media(max-width:760px){.grid2{grid-template-columns:1fr}}
-.note{color:#6b7280;font-size:.85rem;margin-top:4px}
-.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
-.disabled{opacity:.6;pointer-events:none}
-/* 작성 가이드 */
-.guide-box{
-  background:#f9fafb;
-  border:1px dashed #d1d5db;
-  border-radius:12px;
-  padding:16px;
-  font-size:.9rem;
-  line-height:1.5;
-  margin-bottom:10px;
-}
-/* 사진 미리보기 */
-.preview{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
-.preview-item{position:relative}
-.preview img{width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb}
-.remove-btn{
-  position:absolute;top:4px;right:4px;
-  background:rgba(0,0,0,0.6);color:#fff;
-  border:none;border-radius:50%;width:22px;height:22px;
-  font-size:.8rem;cursor:pointer;line-height:1;
-}
+  body{background:#fafafa;font-family:'Inter','SUIT','Pretendard',system-ui,sans-serif;color:#111;margin:0}
+  .wrap{max-width:880px;margin:0 auto;padding:30px 16px}
+
+  h1{font-size:2rem;font-weight:900;margin-bottom:24px;color:#A47864;text-align:center}
+
+  form{display:flex;flex-direction:column;gap:24px}
+
+  /* 카드형 섹션 */
+  .form-section{
+    background:#fff;
+    border-radius:16px;
+    padding:24px 28px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.06);
+    border:1px solid #eee;
+  }
+  .form-section h2{
+    font-size:1.2rem;
+    font-weight:800;
+    margin:0 0 14px;
+    color:#A47864;
+  }
+
+  label{font-weight:700;margin:10px 0 6px;display:block}
+  input,textarea{
+    width:100%;padding:12px 14px;
+    border:1px solid #ddd;border-radius:10px;
+    font-size:1rem;line-height:1.4
+  }
+  input:focus,textarea:focus{border-color:#A47864;outline:none;box-shadow:0 0 0 2px rgba(164,120,100,0.2)}
+  textarea{min-height:120px;resize:vertical}
+
+  .grid2{display:grid;gap:16px;grid-template-columns:1fr 1fr}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+
+  .note{color:#666;font-size:.85rem;margin-top:4px}
+
+  /* 작성 가이드 */
+  .guide-box{
+    background:#fdfbf9;
+    border:1px dashed #e5d4c7;
+    border-radius:12px;
+    padding:16px;
+    font-size:.9rem;
+    line-height:1.6;
+    margin-top:12px;
+  }
+  .guide-box strong{color:#A47864}
+
+  /* 업로드 영역 */
+  .upload-box{
+    border:2px dashed #ddd;
+    border-radius:12px;
+    padding:20px;
+    text-align:center;
+    color:#666;
+    cursor:pointer;
+    transition:.2s;
+  }
+  .upload-box:hover{border-color:#A47864;background:#faf7f5;color:#A47864}
+  .preview{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+  .preview img{width:110px;height:110px;object-fit:cover;border-radius:10px;border:1px solid #ddd}
+
+  .actions{display:flex;gap:12px;justify-content:flex-end}
+  .btn{padding:12px 20px;border-radius:10px;font-weight:700;cursor:pointer;text-decoration:none;border:none}
+  .btn.primary{background:#A47864;color:#fff}
+  .btn.primary:hover{background:#8c6250}
+  .btn.ghost{background:#f5f5f5;color:#444}
 </style>
 </head>
 <body>
   <div data-include="header"></div>
 
   <main class="wrap">
-    <h1 style="margin:0 0 6px">프로젝트 등록</h1>
+    <h1>🐾 프로젝트 등록</h1>
     <form id="form">
-      <div class="grid2">
-        <div>
-          <label>동물 이름</label>
-          <input name="name" placeholder="예: 초코" required/>
-          <div class="note">구조한 동물의 이름이나 별칭을 입력해주세요.</div>
-        </div>
-        <div>
-          <label>구조자 이름</label>
-          <input name="rescuerName" placeholder="예: 김철수" required/>
-          <div class="note">본인의 이름이나 닉네임을 입력해주세요.</div>
+
+      <!-- 동물 & 구조자 -->
+      <div class="form-section">
+        <h2>1. 기본 정보</h2>
+        <div class="grid2">
+          <div>
+            <label>동물 이름</label>
+            <input name="name" placeholder="예: 초코" required/>
+            <div class="note">구조한 동물의 이름이나 별칭</div>
+          </div>
+          <div>
+            <label>구조자 이름</label>
+            <input name="rescuerName" placeholder="예: 김철수" required/>
+            <div class="note">본인의 이름이나 닉네임</div>
+          </div>
         </div>
       </div>
 
-      <div>
+      <!-- 요약 & 설명 -->
+      <div class="form-section">
+        <h2>2. 프로젝트 소개</h2>
         <label>상황 요약</label>
         <input name="summary" placeholder="예: 교통사고로 다친 강아지 치료비 모금" required/>
-        <div class="note">한 줄 요약은 목록 화면에 표시됩니다.</div>
-      </div>
+        <div class="note">한 줄 요약은 목록에 표시됩니다.</div>
 
-      <!-- 작성 가이드 -->
-      <div class="guide-box">
-        ✍️ <strong>작성 가이드</strong><br/>
-        • 🐾 구조 동물 소개 (언제, 어디서 발견되었나요?)<br/>
-        • 💔 현재 상황 (치료/임시보호 현황)<br/>
-        • 🎯 목표 (후원금 사용 계획)<br/>
-        • 🙏 부탁의 말 (후원자에게 하고 싶은 메시지)
-      </div>
+        <div class="guide-box">
+          ✍️ <strong>작성 가이드</strong><br/>
+          • 🐾 구조 동물 소개 (언제, 어디서 발견되었나요?)<br/>
+          • 💔 현재 상황 (치료/임시보호 현황)<br/>
+          • 🎯 목표 (후원금 사용 계획)<br/>
+          • 🙏 부탁의 말 (후원자에게 하고 싶은 메시지)
+        </div>
 
-      <div>
         <label>상세 설명</label>
         <textarea name="description" id="desc" maxlength="500" required></textarea>
-        <div class="note"><span id="descCount">0</span> / 500자 (최소 100자 이상 작성 권장)</div>
+        <div class="note"><span id="descCount">0</span> / 500자</div>
       </div>
 
-      <div class="grid2">
-        <div>
-          <label>목표 금액</label>
-          <input type="text" id="goalAmount" placeholder="예: 500,000원" required/>
-          <div class="note">동물 치료·돌봄에 필요한 금액을 입력해주세요.</div>
-        </div>
-        <div>
-          <label>구조자 부담액</label>
-          <input type="text" id="rescuerContribution" placeholder="예: 100,000원" required/>
-          <div class="note">구조자가 직접 부담하는 금액을 입력해주세요.</div>
+      <!-- 금액 -->
+      <div class="form-section">
+        <h2>3. 목표 금액</h2>
+        <div class="grid2">
+          <div>
+            <label>목표 금액</label>
+            <input type="text" id="goalAmount" placeholder="예: 500,000원" required/>
+            <div class="note">동물 치료·돌봄에 필요한 금액</div>
+          </div>
+          <div>
+            <label>구조자 부담액</label>
+            <input type="text" id="rescuerContribution" placeholder="예: 100,000원" required/>
+            <div class="note">구조자가 직접 부담하는 금액</div>
+          </div>
         </div>
       </div>
 
-      <div>
+      <!-- 소통 -->
+      <div class="form-section">
+        <h2>4. 소통 정보</h2>
         <label>등록자 카카오톡 ID</label>
         <input name="registrantKakaoId" placeholder="예: g123abcd" required/>
-        <div class="note">후원자와 소통할 수 있는 오픈채팅방 ID를 입력해주세요.</div>
+        <div class="note">후원자와 연결할 오픈채팅방 ID</div>
       </div>
 
-      <div>
+      <!-- 이미지 -->
+      <div class="form-section">
+        <h2>5. 사진 업로드</h2>
+
         <label>대표 사진 (1장)</label>
-        <input type="file" id="repImage" accept="image/*" required/>
-        <div class="note">동물을 가장 잘 보여줄 수 있는 대표 사진 1장을 선택해주세요.</div>
+        <input type="file" id="repImage" accept="image/*" required class="upload-box"/>
         <div class="preview" id="previewRep"></div>
-      </div>
 
-      <div>
         <label>구조 상황 사진 (여러 장)</label>
-        <input type="file" id="situationImages" accept="image/*" multiple/>
-        <div class="note">구조/치료 과정을 보여주는 사진을 추가해주세요.</div>
+        <input type="file" id="situationImages" accept="image/*" multiple class="upload-box"/>
         <div class="preview" id="previewSituation"></div>
-      </div>
 
-      <div>
         <label>영수증 사진 (여러 장)</label>
-        <input type="file" id="receiptImages" accept="image/*" multiple/>
+        <input type="file" id="receiptImages" accept="image/*" multiple class="upload-box"/>
         <div class="note">진료비·치료비 증빙용 영수증을 첨부해주세요.</div>
         <div class="preview" id="previewReceipt"></div>
       </div>
 
       <p class="note">* 병원명/계좌/카카오톡 초대링크는 <b>관리자 전용</b> 화면에서 등록됩니다.</p>
+
       <div class="actions">
         <a class="btn ghost" href="index.html">취소</a>
         <button class="btn primary" type="submit" id="submitBtn">등록하기</button>
@@ -142,9 +187,7 @@ textarea{min-height:120px;resize:vertical}
     // 글자 수 카운터
     const desc = document.getElementById('desc');
     const descCount = document.getElementById('descCount');
-    desc.addEventListener('input', ()=>{
-      descCount.textContent = desc.value.length;
-    });
+    desc.addEventListener('input', ()=>{ descCount.textContent = desc.value.length; });
 
     // 금액 입력 → 원화 표기
     function setupCurrencyInput(el){
@@ -153,10 +196,7 @@ textarea{min-height:120px;resize:vertical}
         if(raw){
           el.value = Number(raw).toLocaleString("ko-KR") + "원";
           el.dataset.value = raw;
-        } else {
-          el.value = "";
-          el.dataset.value = "";
-        }
+        } else { el.value = ""; el.dataset.value = ""; }
       });
     }
     setupCurrencyInput(document.getElementById("goalAmount"));
@@ -173,17 +213,7 @@ textarea{min-height:120px;resize:vertical}
           const reader = new FileReader();
           reader.onload = e=>{
             const div = document.createElement('div');
-            div.className = 'preview-item';
-            div.innerHTML = `
-              <img src="${e.target.result}" alt="preview"/>
-              <button type="button" class="remove-btn">&times;</button>
-            `;
-            div.querySelector('.remove-btn').addEventListener('click', ()=>{
-              const dt = new DataTransfer();
-              [...input.files].forEach((f,i)=>{ if(i!==idx) dt.items.add(f); });
-              input.files = dt.files;
-              div.remove();
-            });
+            div.innerHTML = `<img src="${e.target.result}" alt="preview"/>`;
             preview.appendChild(div);
           };
           reader.readAsDataURL(file);
@@ -203,7 +233,6 @@ textarea{min-height:120px;resize:vertical}
 
       try {
         const fd = new FormData(form);
-
         const projectData = {
           name: fd.get("name"),
           rescuerName: fd.get("rescuerName"),
@@ -216,10 +245,8 @@ textarea{min-height:120px;resize:vertical}
           galleryFiles: Array.from(document.getElementById('situationImages').files),
           receiptFiles: Array.from(document.getElementById('receiptImages').files)
         };
-
         const savedId = await apiCreateProject(projectData);
         location.href = 'project.html?id=' + encodeURIComponent(savedId);
-
       } catch (err) {
         alert('업로드 실패: ' + (err.message || ''));
       } finally {
