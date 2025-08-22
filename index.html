@@ -26,75 +26,48 @@
     .hero h1{margin:0 0 20px; font-size:3.4rem; font-weight:900; line-height:1.15; letter-spacing:-.02em}
     .hero p.sub{margin:6px 0; font-size:1.25rem; font-weight:700; color:var(--sub); letter-spacing:-.01em}
 
-    /* Chips */
+    /* Chips (bigger emphasis) */
     .chips{
-      margin-top:28px;
-      display:flex; gap:14px; justify-content:center; flex-wrap:wrap;
+      margin-top:32px;
+      display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
     }
     .chip{
       background:var(--mocha);
       color:#fff;
-      padding:14px 22px;
+      padding:18px 26px;
       border-radius:999px;
-      font-weight:800;
-      font-size:1.1rem;
+      font-weight:900;
+      font-size:1.25rem;
       transition:.2s;
     }
     .chip:hover{ background:var(--mocha-dark) }
 
-    /* Buttons */
+    /* Buttons & CTA Dock */
     .btn{display:inline-block; padding:13px 20px; border-radius:12px; font-weight:800; text-decoration:none; transition:.2s}
     .btn.primary{background:var(--mocha); color:#fff}
     .btn.primary:hover{background:var(--mocha-dark)}
     .btn.secondary{border:2px solid var(--mocha); color:var(--mocha); background:#fff}
     .btn.secondary:hover{background:#f7f5f4}
 
-    /* Fixed CTA Dock */
     .cta-dock{
       position:fixed; right:22px; top:50%; transform:translateY(-50%);
-      display:flex; flex-direction:column; gap:10px; z-index:60;
+      display:flex; flex-direction:column; gap:12px; z-index:60;
       filter:drop-shadow(0 8px 16px rgba(0,0,0,.12));
       background:#fff; padding:18px; border-radius:14px; border:1px solid var(--line);
+      max-width:280px;
     }
-    .cta-promises{
-      margin-top:10px;
+    .cta-cases{
+      margin-top:14px;
       font-size:.9rem;
-      font-weight:700;
-      color:var(--sub);
-      display:flex; flex-direction:column; gap:6px;
-      line-height:1.4;
+      font-weight:600;
+      color:var(--ink);
+      display:flex; flex-direction:column; gap:8px;
+      line-height:1.45;
     }
-    .cta-promises span::before{content:"• "; color:var(--mocha); font-weight:900}
+    .cta-cases div{font-style:italic}
 
     @media (max-width:1024px){
-      .cta-dock{top:auto; bottom:16px; transform:none; right:16px; flex-direction:column; width:calc(100% - 32px)}
-    }
-
-    /* Cases */
-    .cases{background:#f6f6f6}
-    .cases h2{text-align:center; font-size:1.8rem; font-weight:900; margin-bottom:40px}
-    .case-grid{
-      display:grid; 
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:20px;
-      max-width:900px;
-      margin:0 auto;
-    }
-    .case-card{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:26px 22px;
-      font-size:1.15rem;
-      font-weight:600;
-      line-height:1.5;
-      text-align:center;
-      transition:.2s;
-    }
-    .case-card:hover{
-      background:#fafafa;
-      transform:translateY(-3px);
-      box-shadow:0 6px 14px rgba(0,0,0,.06);
+      .cta-dock{top:auto; bottom:16px; right:16px; transform:none; flex-direction:column; width:calc(100% - 32px)}
     }
 
     /* Projects */
@@ -116,11 +89,11 @@
   <div class="cta-dock" aria-label="빠른 참여">
     <a href="project_list.html" class="btn primary">지금 구조자 만나보기</a>
     <a href="create.html" class="btn secondary">등록하기</a>
-    <div class="cta-promises">
-      <span>개인 ↔ 개인 직접 연결</span>
-      <span>후원금 100% 전달</span>
-      <span>구조자 30% 책임</span>
-      <span>증빙 필수, 투명성 보장</span>
+    <div class="cta-cases">
+      <div>“구조 후 병원에 갔지만 진료비가 큰 짐이 될 때”</div>
+      <div>“국가지원 밖에서 홀로 감당해야 하는 중성화”</div>
+      <div>“유기동물 입양 후 첫 건강검진과 예방접종”</div>
+      <div>“그 외에도 투명한 영수증으로 확인 가능한 구조 활동”</div>
     </div>
   </div>
 
@@ -133,21 +106,8 @@
       <div class="chips">
         <span class="chip">개인↔개인</span>
         <span class="chip">후원금 100% 전달</span>
-        <span class="chip">구조자 30% 책임</span>
+        <span class="chip">구조자 30% 비용 부담 (도덕적 헤이 방지)</span>
         <span class="chip">증빙 필수</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Cases -->
-  <section class="cases">
-    <div class="container">
-      <h2>이런 순간, PAW가 함께합니다</h2>
-      <div class="case-grid">
-        <div class="case-card">“구조 후 병원에 갔지만 진료비가 큰 짐이 될 때”</div>
-        <div class="case-card">“국가지원 밖에서 홀로 감당해야 하는 중성화”</div>
-        <div class="case-card">“유기동물 입양 후 첫 건강검진과 예방접종”</div>
-        <div class="case-card">“그 외에도 투명한 영수증으로 확인 가능한 구조 활동”</div>
       </div>
     </div>
   </section>
