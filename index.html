@@ -64,12 +64,11 @@
       background:#fff;
       border:2px solid var(--mocha);
       border-radius:20px;
-      padding:32px 26px;
+      padding:28px 24px;
       text-align:left;
       box-shadow:0 6px 14px rgba(0,0,0,.06);
       display:flex;
       flex-direction:column;
-      justify-content:flex-start;
     }
     .card-top{
       display:flex;
@@ -77,10 +76,11 @@
       align-items:center;
       font-size:.95rem;
       font-weight:700;
-      margin-bottom:20px;
       color:var(--mocha);
+      padding-bottom:10px;
+      border-bottom:2px solid var(--mocha);
+      margin-bottom:20px;
     }
-    .card-top .dots{font-size:1rem; letter-spacing:4px}
     .story-card h2{
       font-size:1.5rem;
       font-weight:900;
@@ -97,6 +97,7 @@
     .story-card ul{
       list-style:none; padding:0; margin:0;
       display:flex; flex-direction:column; gap:16px;
+      flex:1;
     }
     .story-card li{
       border:2px solid var(--mocha);
@@ -109,6 +110,16 @@
       transition:.2s;
     }
     .story-card li:hover{background:var(--bg)}
+    .story-card .spacer{flex:1} /* 빈 공간 채우기용 */
+
+    /* 📱 Mobile readability tweaks */
+    @media (max-width:768px){
+      .story-card{padding:24px 18px}
+      .story-card h2{font-size:1.35rem; line-height:1.5}
+      .story-card p{font-size:1.05rem; line-height:1.7}
+      .story-card li{font-size:1rem; padding:12px 14px; line-height:1.6}
+      .story-card ul{gap:14px}
+    }
 
     /* Projects */
     .projects h2{margin:0; font-size:1.7rem; font-weight:900; letter-spacing:-.01em}
@@ -141,17 +152,9 @@
       box-shadow:0 6px 16px rgba(0,0,0,.15);
       transition:.25s;
     }
-    .cta-fab a:hover{
-      background:var(--mint);
-      color:#fff;
-    }
+    .cta-fab a:hover{background:var(--mint); color:#fff}
     @media(max-width:768px){
-      .cta-fab{
-        flex-direction:row;
-        right:50%;
-        transform:translateX(50%);
-        bottom:16px;
-      }
+      .cta-fab{flex-direction:row; right:50%; transform:translateX(50%); bottom:16px}
     }
   </style>
 </head>
@@ -205,6 +208,7 @@
           <li>✓ 후기와 치료 전후 변화 공유</li>
           <li>✓ 치료영수증 업로드 필수</li>
         </ul>
+        <div class="spacer"></div>
       </div>
 
       <!-- Card 3 -->
@@ -236,6 +240,7 @@
           <li>✓ 입양 직후, 첫 건강검진과 예방접종이 막막할 때</li>
           <li>✓ 투명한 영수증으로 증명되는 모든 보호·구조 활동까지</li>
         </ul>
+        <div class="spacer"></div>
       </div>
 
     </div>
