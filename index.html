@@ -23,19 +23,36 @@
 
     /* Hero */
     .hero{text-align:center; padding:100px 20px 70px}
-    .hero h1{margin:0 0 28px; font-size:3.4rem; font-weight:900; line-height:1.15; letter-spacing:-.02em}
+    .hero h1{margin:0 0 20px; font-size:3.4rem; font-weight:900; line-height:1.15; letter-spacing:-.02em}
     .hero p.sub{margin:6px 0; font-size:1.25rem; font-weight:700; color:var(--sub); letter-spacing:-.01em}
 
-    /* Buttons & CTA Dock */
+    /* Chips */
+    .chips{
+      margin-top:28px;
+      display:flex; gap:14px; justify-content:center; flex-wrap:wrap;
+    }
+    .chip{
+      background:var(--mocha);
+      color:#fff;
+      padding:14px 22px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:1.1rem;
+      transition:.2s;
+    }
+    .chip:hover{ background:var(--mocha-dark) }
+
+    /* Buttons */
     .btn{display:inline-block; padding:13px 20px; border-radius:12px; font-weight:800; text-decoration:none; transition:.2s}
     .btn.primary{background:var(--mocha); color:#fff}
     .btn.primary:hover{background:var(--mocha-dark)}
     .btn.secondary{border:2px solid var(--mocha); color:var(--mocha); background:#fff}
     .btn.secondary:hover{background:#f7f5f4}
 
+    /* Fixed CTA Dock */
     .cta-dock{
       position:fixed; right:22px; top:50%; transform:translateY(-50%);
-      display:flex; flex-direction:column; gap:12px; z-index:60;
+      display:flex; flex-direction:column; gap:10px; z-index:60;
       filter:drop-shadow(0 8px 16px rgba(0,0,0,.12));
       background:#fff; padding:18px; border-radius:14px; border:1px solid var(--line);
     }
@@ -50,22 +67,17 @@
     .cta-promises span::before{content:"• "; color:var(--mocha); font-weight:900}
 
     @media (max-width:1024px){
-      .cta-dock{top:auto; bottom:16px; right:16px; transform:none; flex-direction:column; width:calc(100% - 32px)}
+      .cta-dock{top:auto; bottom:16px; transform:none; right:16px; flex-direction:column; width:calc(100% - 32px)}
     }
 
     /* Cases */
-    .cases{background:#f6f6f6; padding:64px 0}
-    .cases h2{
-      text-align:center; 
-      font-size:1.8rem; 
-      font-weight:900; 
-      margin-bottom:40px
-    }
+    .cases{background:#f6f6f6}
+    .cases h2{text-align:center; font-size:1.8rem; font-weight:900; margin-bottom:40px}
     .case-grid{
       display:grid; 
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); 
-      gap:20px; 
-      max-width:900px; 
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:20px;
+      max-width:900px;
       margin:0 auto;
     }
     .case-card{
@@ -118,6 +130,12 @@
       <h1>개인↔개인을 연결하는, 국내 첫 기부 플랫폼</h1>
       <p class="sub">#흩어진 개인 구조 활동을 PAW에서 연결하고 싶었습니다.</p>
       <p class="sub">#혼자 시작한 구조가 혼자 끝나지 않도록 투명하게</p>
+      <div class="chips">
+        <span class="chip">개인↔개인</span>
+        <span class="chip">후원금 100% 전달</span>
+        <span class="chip">구조자 30% 책임</span>
+        <span class="chip">증빙 필수</span>
+      </div>
     </div>
   </section>
 
@@ -166,3 +184,26 @@
 
     async function render(){
       try {
+        const list = await apiListProjects({ status:'approved', limit:12 });
+        if(!list.length){
+          $grid.innerHTML = '<div class="muted">아직 승인된 프로젝트가 없습니다.</div>';
+          return;
+        }
+        $grid.innerHTML = list.map(p => `
+          <a class="project-card" href="project.html?id=${encodeURIComponent(p.id)}">
+            <img src="${cover(p)}" alt=""/>
+            <h3>${p.name ?? '(이름 없음)'}</h3>
+            <div class="muted">${p.summary ?? ''}</div>
+            <div class="muted">목표 ${fmt(p.goalAmount)} · 부담 ${fmt(p.rescuerContribution)}</div>
+          </a>
+        `).join('');
+      } catch (e) {
+        console.error(e);
+        $grid.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
