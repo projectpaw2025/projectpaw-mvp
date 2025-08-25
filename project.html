@@ -42,16 +42,6 @@
   .section-card h2{font-size:1.3rem;font-weight:800;margin-bottom:14px;color:var(--accent)}
   .section-card p{font-size:1.05rem;line-height:1.7;color:var(--ink)}
 
-  .highlight {
-    font-size:1.2rem;
-    font-weight:700;
-    color:var(--accent);
-    margin:0 0 20px;
-    padding-left:16px;
-    border-left:4px solid var(--accent);
-    line-height:1.6;
-  }
-
   .info-card p{margin:6px 0;font-size:1rem;color:var(--sub)}
 
   .share-buttons{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
@@ -70,10 +60,13 @@
   .cta-dock a:hover{background:#d56612}
 
   /* ✅ 후기 스타일 */
-  .review-list{display:flex;flex-direction:column;gap:14px}
-  .review-card{background:#fafafa;border:1px solid #eee;border-radius:10px;padding:14px 16px}
-  .review-card .author{font-weight:700;margin-bottom:6px;color:var(--ink)}
-  .review-card .text{font-size:.95rem;line-height:1.5;color:var(--sub)}
+  .preview{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+  .preview img{width:80px;height:80px;object-fit:cover;border-radius:6px;border:1px solid #ddd}
+  .review-card{border-top:1px solid #eee;padding:12px 0}
+  .review-card .author{font-weight:700;color:var(--ink);margin-bottom:4px}
+  .review-card .text{white-space:pre-line;color:var(--sub)}
+  .review-card .photos{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .review-card .photos img{width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid #eee}
 </style>
 </head>
 <body>
@@ -81,6 +74,19 @@
 
   <main class="wrap">
     <div id="project-detail"><div class="muted">불러오는 중...</div></div>
+
+    <!-- ✅ 후기 섹션 -->
+    <section class="section-card" id="reviews">
+      <h2>후기</h2>
+      <form id="reviewForm" style="margin-bottom:20px">
+        <input type="text" id="reviewer" placeholder="이름 또는 닉네임" required/>
+        <textarea id="reviewText" placeholder="후기를 남겨주세요" required></textarea>
+        <input type="file" id="reviewImages" accept="image/*" multiple/>
+        <div id="reviewPreview" class="preview"></div>
+        <button type="submit" class="btn primary">등록</button>
+      </form>
+      <div id="reviewList" class="review-list muted">아직 후기가 없습니다.</div>
+    </section>
   </main>
 
   <div class="cta-dock" id="ctaDock" style="display:none">
@@ -94,181 +100,142 @@
   <script type="module">
     import { injectLayout } from './js/include.js';
     import { getProjectById } from './js/api.js';
-    import { storage } from './js/firebase.js';
-    import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+    import { storage, db, authReady } from './js/firebase.js';
+    import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+    import { collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     injectLayout({ active:'project' });
 
     const $detail=document.getElementById('project-detail');
     const $ctaDock=document.getElementById('ctaDock');
     const $ctaBtn=document.getElementById('ctaBtn');
-
     const fmt=n=>Number(n||0).toLocaleString('ko-KR');
 
-    function candidatesOf(p){
-      const out=[];const push=v=>{if(typeof v==='string'&&v.trim())out.push(v.trim());};
-      ['representativeImageUrl','coverUrl','mainImageUrl','thumbnailUrl','image','photo'].forEach(k=>push(p[k]));
-      ['galleryUrls','images','photos','files','receiptUrls'].forEach(k=>{
-        const arr=p[k];if(Array.isArray(arr))arr.forEach(it=>{
-          if(typeof it==='string') push(it);
-          else if(it&&(it.url||it.path)) push(it.url||it.path);
-        });
-      });
-      return out;
-    }
-
-    async function toHttpUrl(raw){
-      if(!raw) return null;
-      let v=String(raw).trim();
-      if(/^(https?:|data:|blob:)/i.test(v)) return v;
-      if(v.startsWith('/')) v=v.slice(1);
-      try{return await getDownloadURL(ref(storage,v));}catch{return null;}
-    }
-
-    async function galleryHttpUrls(p){
-      const cands=candidatesOf(p);
-      const urls=await Promise.all(cands.map(toHttpUrl));
-      const uniq=[],seen=new Set();
-      for(const u of urls){if(u&&!seen.has(u)){seen.add(u);uniq.push(u);}}
-      return uniq.length?uniq:['img/placeholder.svg'];
-    }
-
     function getId(){return new URLSearchParams(location.search).get("id");}
+    const projectId=getId();
 
-    // ✅ 후기 API (localStorage 기반)
-    const reviewsKey=id=>`paw_reviews_${id}`;
-    function loadReviews(id){return JSON.parse(localStorage.getItem(reviewsKey(id))||"[]");}
-    function saveReviews(id,list){localStorage.setItem(reviewsKey(id),JSON.stringify(list));}
-    function renderReviews(id){
-      const list=loadReviews(id);
-      const $list=document.getElementById("reviewList");
-      if(!list.length){$list.innerHTML='<div class="muted">아직 후기가 없습니다.</div>';return;}
-      $list.innerHTML=list.map(r=>`
-        <div class="review-card">
-          <div class="author">🐾 ${r.reviewer}</div>
-          <div class="text">${r.text.replace(/\\n/g,"<br/>")}</div>
-        </div>
-      `).join('');
-    }
-    function setupReviewForm(id){
-      const form=document.getElementById("reviewForm");
-      form.addEventListener("submit",e=>{
-        e.preventDefault();
-        const reviewer=document.getElementById("reviewer").value.trim();
-        const text=document.getElementById("reviewText").value.trim();
-        if(!reviewer||!text) return;
-        const list=loadReviews(id);
-        list.unshift({reviewer,text,date:Date.now()});
-        saveReviews(id,list);
-        form.reset();
-        renderReviews(id);
-      });
-    }
-
-    async function render(){
-      const id=getId();
-      if(!id){$detail.innerHTML='<div class="muted">잘못된 접근입니다.</div>';return;}
-
+    /* ------------------- 프로젝트 상세 ------------------- */
+    async function renderProject(){
+      if(!projectId){$detail.innerHTML='<div class="muted">잘못된 접근입니다.</div>';return;}
       try{
-        const p=await getProjectById(id);
+        const p=await getProjectById(projectId);
         if(!p){$detail.innerHTML='<div class="muted">존재하지 않는 프로젝트입니다.</div>';return;}
 
-        const imgs=await galleryHttpUrls(p);
         const goal=Number(p.goalAmount||0);
         const current=Number(p.currentAmount||0);
         const rate=goal?Math.floor(current/goal*100):0;
 
         $detail.innerHTML=`
-          <!-- Hero -->
           <section class="hero-card">
-            <div id="carouselProject" class="carousel slide" data-bs-ride="carousel">
-              <div class="carousel-inner">
-                ${imgs.map((url,i)=>`
-                  <div class="carousel-item ${i===0?'active':''}">
-                    <img src="${url}" class="d-block w-100" style="height:320px;object-fit:cover" alt="img${i}">
-                  </div>`).join('')}
-              </div>
-              <button class="carousel-control-prev" type="button" data-bs-target="#carouselProject" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-              </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#carouselProject" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-              </button>
-            </div>
-
             <div class="hero-body">
               <h1>${p.name??'(이름 없음)'}</h1>
               <div class="muted">구조자: ${p.rescuerName??'익명'}</div>
-
-              <div class="hearts">❤️ 연결된 마음 <strong>${fmt(p.supportersCount||0)}</strong>명</div>
-
               <div class="progress"><div class="bar" style="width:${rate}%">${rate}%</div></div>
               <div class="stats">
                 <span>목표 <strong>${fmt(goal)}</strong>원</span>
                 <span>현재 <strong>${fmt(current)}</strong>원</span>
-                <span>구조자 부담 <strong>${fmt(p.rescuerContribution)}</strong>원</span>
               </div>
-
-              ${p.registrantKakaoId?`<a href="https://open.kakao.com/o/${p.registrantKakaoId}" target="_blank" class="btn primary">마음 보태기</a>`:''}
+              ${p.registrantKakaoId?`<a href="https://open.kakao.com/o/${p.registrantKakaoId}" target="_blank" class="btn primary">참여하기</a>`:''}
             </div>
           </section>
 
           <section class="section-card">
             <h2>스토리</h2>
-            ${p.keyMessage ? `<div class="highlight">❝ ${p.keyMessage} ❞</div>` : ''}
-            <p>${(p.description||'').replace(/\\n/g,'<br/>')}</p>
+            <p>${(p.description||'').replace(/\n/g,'<br/>')}</p>
           </section>
 
           <section class="section-card info-card">
             <h2>프로젝트 정보</h2>
             <p><strong>구조자 부담금:</strong> ${fmt(p.rescuerContribution)}원</p>
-            <p><strong>지지자 수:</strong> ${fmt(p.supportersCount||0)}명</p>
+            <p><strong>지지자 수:</strong> ${fmt(p.supporterCount||0)}명</p>
             <p><strong>승인 상태:</strong> ${p.adminApproved?'승인됨':'대기중'}</p>
-          </section>
-
-          <!-- ✅ 후기 섹션 -->
-          <section class="section-card" id="reviews">
-            <h2>후기</h2>
-            <form id="reviewForm" style="margin-bottom:20px">
-              <input type="text" id="reviewer" placeholder="이름 또는 닉네임" 
-                     style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin-bottom:10px" required/>
-              <textarea id="reviewText" placeholder="후기를 남겨주세요" 
-                        style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;min-height:80px" required></textarea>
-              <button type="submit" class="btn primary" 
-                      style="margin-top:10px;padding:10px 16px;border:none;border-radius:8px;font-weight:700">등록</button>
-            </form>
-            <div id="reviewList" class="review-list muted">아직 후기가 없습니다.</div>
-          </section>
-
-          <section class="section-card">
-            <h2>공유하기</h2>
-            <div class="share-buttons">
-              <button class="share-kakao" id="shareKakao"><i class="fa-solid fa-comment"></i> 카카오톡</button>
-              <button class="share-insta" id="shareInsta"><i class="fa-brands fa-instagram"></i> 인스타그램</button>
-              <button class="share-copy" id="shareCopy"><i class="fa-solid fa-link"></i> 링크복사</button>
-            </div>
           </section>
         `;
 
         if(p.registrantKakaoId){
           $ctaDock.style.display='flex';
           $ctaBtn.href=`https://open.kakao.com/o/${p.registrantKakaoId}`;
-          $ctaBtn.textContent='마음 보태기';
         }
-
-        // 후기 초기화
-        renderReviews(id);
-        setupReviewForm(id);
-
-        document.getElementById("shareCopy")?.addEventListener("click",()=>navigator.clipboard.writeText(window.location.href).then(()=>alert("링크 복사됨!")));
-        document.getElementById("shareKakao")?.addEventListener("click",()=>window.open("https://sharer.kakao.com/talk/friends/picker/link","_blank"));
-        document.getElementById("shareInsta")?.addEventListener("click",()=>alert("인스타그램은 직접 URL을 복사해 공유해주세요."));
       }catch(e){
         console.error(e);
         $detail.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
       }
     }
-    render();
+
+    /* ------------------- 후기 ------------------- */
+    const reviewForm=document.getElementById("reviewForm");
+    const reviewPreview=document.getElementById("reviewPreview");
+    const reviewList=document.getElementById("reviewList");
+
+    document.getElementById("reviewImages").addEventListener("change",e=>{
+      reviewPreview.innerHTML="";
+      [...e.target.files].forEach(file=>{
+        const reader=new FileReader();
+        reader.onload=ev=>{
+          const img=document.createElement("img");
+          img.src=ev.target.result;
+          reviewPreview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    reviewForm.addEventListener("submit",async e=>{
+      e.preventDefault();
+      await authReady;
+
+      const reviewer=document.getElementById("reviewer").value.trim();
+      const text=document.getElementById("reviewText").value.trim();
+      const files=[...document.getElementById("reviewImages").files];
+
+      if(!reviewer||!text) return;
+
+      try{
+        const imageUrls=[];
+        for(const file of files){
+          const storageRef=ref(storage,`reviews/${projectId}/${Date.now()}-${file.name}`);
+          await uploadBytes(storageRef,file);
+          const url=await getDownloadURL(storageRef);
+          imageUrls.push(url);
+        }
+
+        await addDoc(collection(db,`reviews_${projectId}`),{
+          reviewer,text,imageUrls,date:Date.now()
+        });
+
+        reviewForm.reset();
+        reviewPreview.innerHTML="";
+        renderReviews();
+      }catch(err){
+        alert("후기 등록 실패: "+err.message);
+      }
+    });
+
+    async function renderReviews(){
+      const q=query(collection(db,`reviews_${projectId}`),orderBy("date","desc"));
+      const snap=await getDocs(q);
+
+      if(snap.empty){
+        reviewList.innerHTML='<div class="muted">아직 후기가 없습니다.</div>';
+        return;
+      }
+
+      reviewList.innerHTML=snap.docs.map(doc=>{
+        const r=doc.data();
+        return `
+          <div class="review-card">
+            <div class="author">🐾 ${r.reviewer}</div>
+            <div class="text">${r.text}</div>
+            ${r.imageUrls?.length ? 
+              `<div class="photos">${r.imageUrls.map(u=>`<img src="${u}" alt="후기사진">`).join("")}</div>` 
+            : ""}
+          </div>
+        `;
+      }).join('');
+    }
+
+    renderProject();
+    renderReviews();
   </script>
 </body>
 </html>
