@@ -8,13 +8,11 @@
   <link rel="stylesheet" href="app.min.css"/>
   <style>
     :root{
-      --ink:#111;
-      --sub:#555;
-      --muted:#888;
-      --line:#eaeaea;
-      --bg:#F4F1EE;        /* Gardenia */
-      --card:#fff;
-      --mocha:#A47864;     /* Mocha Mousse */
+      --ink:#111;     /* Black: 기본 텍스트 */
+      --sub:#555;     /* Gray: 보조 텍스트 */
+      --mocha:#A47864;/* Mocha: 브랜드 포인트 */
+      --line:#eaeaea; /* 라인 구분 */
+      --bg:#fff;      /* 배경은 화이트 고정 */
     }
     html,body{
       margin:0;
@@ -26,17 +24,12 @@
     section{padding:64px 0}
 
     /* Hero */
-    .hero{
-      text-align:center;
-      padding:100px 20px 40px;
-      background:var(--bg);
-    }
+    .hero{text-align:center;padding:100px 20px 40px;background:var(--bg)}
     .hero h1{
       margin:0 0 24px;
       font-size:3rem;
       font-weight:900;
       line-height:1.25;
-      letter-spacing:-.02em;
       color:var(--mocha);
     }
 
@@ -47,7 +40,7 @@
     .story-card{
       background:#fff; border:2px solid var(--mocha); border-radius:20px;
       padding:36px 28px; text-align:left; box-shadow:0 6px 14px rgba(0,0,0,.06);
-      display:flex; flex-direction:column; justify-content:flex-start;
+      display:flex; flex-direction:column;
     }
     .card-top{
       display:flex; justify-content:space-between; align-items:center;
@@ -58,7 +51,7 @@
       font-size:1.7rem; font-weight:800; margin:0 0 22px; line-height:1.4; color:var(--mocha)
     }
     .story-card p{
-      font-size:1.1rem; line-height:1.8; margin:0 0 22px; color:var(--ink); font-weight:400
+      font-size:1.05rem; line-height:1.7; margin:0 0 22px; color:var(--ink); font-weight:400
     }
     .story-card ul{
       list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:14px
@@ -66,9 +59,9 @@
     .story-card li{
       border:2px solid var(--mocha); border-radius:14px;
       padding:12px 16px; font-size:1rem; font-weight:600; line-height:1.6;
-      background:#fff; transition:.2s; color:var(--ink)
+      background:#fff; color:var(--ink)
     }
-    .story-card li:hover{background:var(--bg)}
+    .story-card li:hover{background:#fafafa}
     .hashtags {
       margin-top: 14px;
       font-size: .95rem;
@@ -84,9 +77,7 @@
     }
 
     /* Projects */
-    .projects h2{
-      margin:0; font-size:1.9rem; font-weight:900; letter-spacing:-.01em; color:var(--mocha)
-    }
+    .projects h2{margin:0; font-size:1.9rem; font-weight:900; color:var(--mocha)}
     .projects .header{display:flex; justify-content:space-between; align-items:center; margin-bottom:28px}
     .grid{
       display:grid;
@@ -107,12 +98,8 @@
       background:rgba(0,0,0,0.65); color:#fff;
       padding:5px 10px; border-radius:8px; font-size:.85rem; font-weight:600
     }
-    .project-card .body{
-      padding:22px;
-    }
-    .project-card h3{
-      margin:0 0 12px; font-size:1.35rem; font-weight:800; color:var(--ink)
-    }
+    .project-card .body{padding:22px}
+    .project-card h3{margin:0 0 12px; font-size:1.3rem; font-weight:800; color:var(--ink)}
     .project-card .summary{
       margin:0 0 18px; font-size:1.05rem; color:var(--sub);
       line-height:1.6; max-height:3.2em; overflow:hidden; font-weight:400
@@ -132,7 +119,7 @@
     @media (max-width:768px){
       .grid{grid-template-columns:1fr; gap:24px}
       .project-card img{height:160px}
-      .project-card h3{font-size:1.3rem}
+      .project-card h3{font-size:1.25rem}
       .project-card .summary{font-size:1rem}
       .stats{font-size:.9rem}
     }
