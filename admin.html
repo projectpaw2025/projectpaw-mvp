@@ -9,7 +9,7 @@
 <style>
 .wrap{max-width:960px;margin:0 auto;padding:20px 16px}
 table{width:100%;border-collapse:collapse;margin-top:20px}
-th,td{border:1px solid #e5e7eb;padding:10px;font-size:.9rem;text-align:left}
+th,td{border:1px solid #e5e7eb;padding:10px;font-size:.9rem;text-align:left;vertical-align:top}
 th{background:#f9fafb}
 .actions{display:flex;gap:6px}
 button{padding:6px 10px;border-radius:8px;border:1px solid #ccc;cursor:pointer}
@@ -37,12 +37,13 @@ button.delete{background:#dc2626;color:#fff;border:none}
             <th>프로젝트명</th>
             <th>구조자</th>
             <th>요약</th>
+            <th>관리자 연락처<br/><small>(privateContact)</small></th>
             <th>상태</th>
             <th>액션</th>
           </tr>
         </thead>
         <tbody id="projects-body">
-          <tr><td colspan="5" class="muted">불러오는 중...</td></tr>
+          <tr><td colspan="6" class="muted">불러오는 중...</td></tr>
         </tbody>
       </table>
     </section>
@@ -78,6 +79,7 @@ button.delete{background:#dc2626;color:#fff;border:none}
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
+        console.log("로그인 UID:", user.uid);
 
         const ok = await isAdminUser(user.uid);
         if (!ok) {
@@ -102,7 +104,7 @@ button.delete{background:#dc2626;color:#fff;border:none}
       try{
         const list=await fetchAllProjects();
         if(!list.length){
-          $body.innerHTML='<tr><td colspan="5" class="muted">아직 등록된 프로젝트가 없습니다.</td></tr>';
+          $body.innerHTML='<tr><td colspan="6" class="muted">아직 등록된 프로젝트가 없습니다.</td></tr>';
           return;
         }
         $body.innerHTML=list.map(p=>`
@@ -110,6 +112,7 @@ button.delete{background:#dc2626;color:#fff;border:none}
             <td>${p.name??'(이름 없음)'}</td>
             <td>${p.rescuerName??'-'}</td>
             <td>${p.summary??''}</td>
+            <td>${p.privateContact??''}</td>
             <td>${fmtStatus(p)}</td>
             <td class="actions">
               ${!p.adminApproved?`<button class="approve" data-id="${p.id}">승인</button>`:''}
@@ -118,18 +121,14 @@ button.delete{background:#dc2626;color:#fff;border:none}
           </tr>`).join('');
       }catch(e){
         console.error(e);
-        $body.innerHTML='<tr><td colspan="5" class="muted">프로젝트를 불러오지 못했습니다.</td></tr>';
+        $body.innerHTML='<tr><td colspan="6" class="muted">프로젝트를 불러오지 못했습니다.</td></tr>';
       }
     }
 
     $body.addEventListener('click', async e=>{
       if(e.target.matches('.approve')){
-        const projectId = e.target.dataset.id;
-        const kakaoId = prompt("승인 시 연결할 카카오톡 오픈채팅 ID를 입력하세요 (예: g123abcd)");
-        if(!kakaoId){ alert("카카오톡 ID를 입력해야 승인됩니다."); return; }
-
         if(confirm("승인하시겠습니까?")){
-          await approveProject(projectId, { registrantKakaoId:kakaoId });
+          await approveProject(e.target.dataset.id);
           alert("승인되었습니다.");
           render();
         }
