@@ -127,7 +127,7 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         }
         $body.innerHTML=list.map(p=>`
           <tr>
-            <td>${p.name??'(이름 없음)'}</td>
+            <td>PAW #${p.projectNumber ?? '-'} ${p.name??'(이름 없음)'}</td>
             <td>${p.rescuerName??'-'}</td>
             <td>${p.summary??''}</td>
             <td>${p.privateContact??''}</td>
