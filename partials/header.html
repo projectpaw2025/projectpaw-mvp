@@ -1,44 +1,67 @@
 <header class="paw-nav" style="position:sticky;top:0;z-index:50;backdrop-filter:blur(6px);background:rgba(255,255,255,.94);border-bottom:1px solid #e5e7eb;">
-  <div class="container" style="display:flex;align-items:center;justify-content:space-between;padding:28px 0;font-family:'SUIT Variable','Pretendard',sans-serif;">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;padding:26px 0;font-family:'SUIT Variable','Pretendard',sans-serif;">
     
     <!-- 좌측: 로고 + 태그라인 -->
-    <div style="display:flex;align-items:center;gap:22px;min-width:0;">
-      <a class="paw-logo" href="index.html" style="display:flex;align-items:center;gap:12px;flex:0 0 auto;text-decoration:none;color:#111;">
+    <div style="display:flex;align-items:center;gap:18px;min-width:0;">
+      <a class="paw-logo" href="index.html" style="display:flex;align-items:center;gap:10px;flex:0 0 auto;text-decoration:none;color:#111;">
         <span style="font-size:1.9rem">🐾</span>
-        <strong style="letter-spacing:-.02em;font-size:1.45rem;font-weight:800;">Project.PAW</strong>
+        <strong style="letter-spacing:-.02em;font-size:1.4rem;font-weight:800;">Project.PAW</strong>
       </a>
-      <span class="paw-tagline"
+      <span class="paw-tagline desktop-only"
             style="flex:0 1 420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-                   color:#555;font-weight:600;font-size:1.1rem;">
+                   color:#555;font-weight:600;font-size:1.05rem;">
         Beta 서비스 · 지금은 카톡방 모금 운영 중
       </span>
     </div>
 
     <!-- 우측: 내비 -->
-    <nav class="paw-menu" aria-label="Primary" style="display:flex;gap:20px;flex:0 0 auto;">
-      <a class="paw-link" data-match="index.html" href="index.html" 
-         style="padding:16px 24px;border-radius:12px;border:1px solid transparent;
-                font-weight:700;font-size:1.25rem;color:#111;text-decoration:none;">
-        홈
-      </a>
-      <a class="paw-link" data-match="project_list.html" href="project_list.html" 
-         style="padding:16px 24px;border-radius:12px;border:1px solid transparent;
-                font-weight:700;font-size:1.25rem;color:#111;text-decoration:none;">
-        프로젝트
-      </a>
-      <a class="paw-link" data-match="create.html" href="create.html" 
-         style="padding:16px 24px;border-radius:12px;border:1px solid transparent;
-                font-weight:700;font-size:1.25rem;color:#111;text-decoration:none;">
-        등록하기
-      </a>
-      <a class="paw-link" data-match="about.html" href="about.html" 
-         style="padding:16px 24px;border-radius:12px;border:1px solid transparent;
-                font-weight:700;font-size:1.25rem;color:#111;text-decoration:none;">
-        소개
-      </a>
+    <nav class="paw-menu desktop-only" aria-label="Primary" style="display:flex;gap:20px;flex:0 0 auto;">
+      <a class="paw-link" data-match="index.html" href="index.html">홈</a>
+      <a class="paw-link" data-match="project_list.html" href="project_list.html">프로젝트</a>
+      <a class="paw-link" data-match="create.html" href="create.html">등록하기</a>
+      <a class="paw-link" data-match="about.html" href="about.html">소개</a>
     </nav>
+
+    <!-- 모바일 햄버거 -->
+    <button id="paw-menu-toggle" class="mobile-only" style="background:none;border:none;font-size:1.8rem;cursor:pointer;">☰</button>
+  </div>
+
+  <!-- 모바일 드롭다운 -->
+  <div id="paw-mobile-menu" class="mobile-only" style="display:none;flex-direction:column;gap:8px;padding:16px;background:#fff;border-top:1px solid #e5e7eb;">
+    <a class="paw-link" data-match="index.html" href="index.html">홈</a>
+    <a class="paw-link" data-match="project_list.html" href="project_list.html">프로젝트</a>
+    <a class="paw-link" data-match="create.html" href="create.html">등록하기</a>
+    <a class="paw-link" data-match="about.html" href="about.html">소개</a>
   </div>
 </header>
+
+<style>
+  .paw-link {
+    padding:16px 24px;
+    border-radius:12px;
+    border:1px solid transparent;
+    font-weight:700;
+    font-size:1.25rem; /* 데스크탑 기준 20px */
+    color:#111;
+    text-decoration:none;
+  }
+  /* 반응형 */
+  @media (max-width:1024px) {
+    .paw-link { font-size:1.1rem; padding:14px 20px; }
+  }
+  @media (max-width:768px) {
+    .desktop-only { display:none !important; }
+    .mobile-only { display:block !important; }
+    #paw-mobile-menu .paw-link {
+      font-size:1.1rem;
+      padding:12px 16px;
+      border-radius:8px;
+    }
+  }
+  @media (min-width:769px) {
+    .mobile-only { display:none !important; }
+  }
+</style>
 
 <script>
 (function(){
@@ -53,5 +76,14 @@
       }
     });
   }catch(e){}
+
+  // 모바일 메뉴 토글
+  const toggleBtn=document.getElementById('paw-menu-toggle');
+  const mobileMenu=document.getElementById('paw-mobile-menu');
+  if(toggleBtn){
+    toggleBtn.addEventListener('click',()=>{
+      mobileMenu.style.display=mobileMenu.style.display==='flex'?'none':'flex';
+    });
+  }
 })();
 </script>
