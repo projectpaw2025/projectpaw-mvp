@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ko">
 <head>
@@ -6,101 +7,207 @@
 <title>프로젝트 상세</title>
 <link rel="stylesheet" href="common.css"/>
 <link rel="stylesheet" href="app.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <style>
-  .hero{text-align:center;padding:30px 16px}
-  .hero h1{margin:0 0 10px;font-size:1.8rem;font-weight:800}
-  .badge{display:inline-block;padding:6px 12px;border-radius:8px;background:#A47864;color:#fff;font-size:.9rem;font-weight:600;margin-bottom:10px}
-  .progress{background:#eee;border-radius:6px;overflow:hidden;height:10px;margin:16px 0}
-  .progress .bar{background:#A47864;height:100%}
-  .stats{display:flex;justify-content:space-between;font-size:.9rem;color:#666;margin-bottom:18px}
-  .stats span strong{font-size:1.1rem;font-weight:800;color:#111;margin-left:4px}
-  .gallery{display:flex;flex-wrap:wrap;gap:10px}
-  .gallery img{width:calc(33% - 8px);border-radius:10px;border:1px solid #ddd}
-  @media(max-width:760px){
-    .gallery img{width:100%}
+  body{background:#fafafa}
+  .wrap{max-width:860px;margin:0 auto;padding:20px 16px}
+
+  /* Hero */
+  .hero-card{
+    background:#fff;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 6px 14px rgba(0,0,0,0.08);
+    margin-bottom:24px;
   }
+  .hero-card img{width:100%;height:280px;object-fit:cover}
+  .hero-body{padding:20px}
+  .hero-body h1{font-size:1.6rem;font-weight:900;margin:0 0 6px}
+  .hero-body .muted{color:#6b7280;margin-bottom:12px}
+  .progress{background:#e5e7eb;height:18px;border-radius:12px;overflow:hidden;margin:10px 0}
+  .progress .bar{height:100%;background:#A47864;color:#fff;text-align:center;font-size:.8rem;font-weight:600}
+  .stats{display:flex;justify-content:space-between;font-size:.95rem;color:#444;margin-top:6px}
+  .hero-body .btn.primary{
+    display:block;margin-top:16px;text-align:center;padding:12px 16px;
+    background:#A47864;color:#fff;border-radius:12px;font-weight:700;font-size:1rem;
+  }
+  .hero-body .btn.primary:hover{background:#8b6452}
+
+  /* Section cards */
+  .section-card{
+    background:#fff;
+    border-radius:16px;
+    padding:24px;
+    margin-top:20px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.05);
+  }
+  .section-card h2{font-size:1.2rem;font-weight:800;margin-bottom:12px;color:#A47864}
+  .section-card p{font-size:1.05rem;line-height:1.7;color:#222}
+
+  /* Info */
+  .info-card p{margin:6px 0;font-size:.95rem;color:#444}
+
+  /* 공유 */
+  .share-buttons{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+  .share-buttons button{
+    flex:1;min-width:120px;
+    display:flex;align-items:center;justify-content:center;
+    gap:8px;padding:12px 18px;
+    border-radius:12px;font-weight:600;font-size:.95rem;
+    cursor:pointer;border:none;transition:.2s;
+  }
+  .share-buttons button:hover{transform:translateY(-2px)}
+  .share-kakao{background:#FEE500;color:#111}
+  .share-insta{background:#E4405F;color:#fff}
+  .share-copy{background:#6b7280;color:#fff}
+
+  /* 하단 CTA dock */
+  .cta-dock{
+    position:fixed;bottom:16px;right:16px;z-index:50;
+    display:flex;flex-direction:column;gap:10px;
+    filter:drop-shadow(0 6px 12px rgba(0,0,0,0.15));
+  }
+  .cta-dock a{
+    background:#A47864;color:#fff;
+    padding:12px 18px;border-radius:14px;
+    font-weight:700;font-size:.95rem;text-align:center;
+  }
+  .cta-dock a:hover{background:#8b6452}
 </style>
 </head>
 <body>
   <div data-include="header"></div>
 
-  <main class="container" style="padding:24px 16px">
-    <section class="hero">
-      <span id="status" class="badge">상태</span>
-      <h1 id="title">제목</h1>
-      <img id="cover" src="img/placeholder.svg" alt="대표 이미지" style="max-width:100%;border-radius:16px;margin:16px 0"/>
-      <div class="progress"><div id="progress-bar" class="bar" style="width:0%"></div></div>
-      <div class="stats">
-        <span>목표 <strong id="goal">0</strong>원</span>
-        <span>달성 <strong id="current">0</strong>원</span>
-        <span>참여자 <strong id="supporters">0</strong>명</span>
-      </div>
-    </section>
-
-    <section>
-      <h2>프로젝트 소개</h2>
-      <p id="summary"></p>
-      <p id="description"></p>
-    </section>
-
-    <section>
-      <h2>사진</h2>
-      <div id="gallery" class="gallery"></div>
-    </section>
+  <main class="wrap">
+    <div id="project-detail"><div class="muted">불러오는 중...</div></div>
   </main>
+
+  <!-- CTA Dock -->
+  <div class="cta-dock" id="ctaDock" style="display:none">
+    <a id="ctaBtn" target="_blank">참여하기</a>
+  </div>
 
   <div data-include="footer"></div>
 
   <script type="module">
     import { injectLayout } from './js/include.js';
-    import { apiGetProject } from './js/api.js';
+    import { getProjectById } from './js/api.js';
     import { storage } from './js/firebase.js';
     import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-    injectLayout();
+    injectLayout({ active:'project' });
+
+    const $detail = document.getElementById('project-detail');
+    const $ctaDock = document.getElementById('ctaDock');
+    const $ctaBtn = document.getElementById('ctaBtn');
 
     const fmt = n => Number(n||0).toLocaleString('ko-KR');
 
-    async function load(){
-      const params = new URLSearchParams(location.search);
-      const id = params.get('id');
-      if(!id) return;
-
-      try{
-        const p = await apiGetProject(id);
-        if(!p) return;
-
-        document.getElementById('title').textContent = p.name ?? '(제목 없음)';
-        document.getElementById('summary').textContent = p.summary ?? '';
-        document.getElementById('description').textContent = p.description ?? '';
-        document.getElementById('goal').textContent = fmt(p.goalAmount);
-        document.getElementById('current').textContent = fmt(p.currentAmount||0);
-        document.getElementById('supporters').textContent = p.supporterCount ?? 0;
-        document.getElementById('progress-bar').style.width = Math.min(100, Math.round((p.currentAmount||0)/p.goalAmount*100))+'%';
-        document.getElementById('status').textContent = p.adminApproved ? '진행중' : '대기중';
-
-        if(p.representativeImagePath){
-          try{
-            const url = await getDownloadURL(ref(storage, p.representativeImagePath));
-            document.getElementById('cover').src = url;
-          }catch(e){console.warn(e);}
-        }
-
-        if(Array.isArray(p.images)){
-          const gallery = document.getElementById('gallery');
-          for(const path of p.images){
-            try{
-              const url = await getDownloadURL(ref(storage, path));
-              const img = document.createElement('img');
-              img.src = url;
-              gallery.appendChild(img);
-            }catch(e){console.warn(e);}
-          }
-        }
-      }catch(e){console.error(e);}
+    function candidatesOf(p){
+      const out = [];
+      const push = v => { if (typeof v === 'string' && v.trim()) out.push(v.trim()); };
+      ['representativeImageUrl','coverUrl','mainImageUrl','thumbnailUrl','image','photo']
+        .forEach(k => push(p[k]));
+      ['galleryUrls','images','photos','files'].forEach(k => {
+        const arr = p[k]; if(Array.isArray(arr)) arr.forEach(it=>{
+          if(typeof it==='string') push(it);
+          else if(it && (it.url||it.path)) push(it.url||it.path);
+        });
+      });
+      return out;
     }
 
-    load();
+    async function toHttpUrl(raw){
+      if (!raw) return null;
+      let v = String(raw).trim();
+      if (/^(https?:|data:|blob:)/i.test(v)) return v;
+      if (v.startsWith('/')) v = v.slice(1);
+      try { return await getDownloadURL(ref(storage, v)); }
+      catch { return null; }
+    }
+
+    async function galleryHttpUrls(p){
+      const cands = candidatesOf(p);
+      const urls = await Promise.all(cands.map(toHttpUrl));
+      const uniq = [], seen = new Set();
+      for(const u of urls){ if(u && !seen.has(u)){ seen.add(u); uniq.push(u); } }
+      return uniq.length ? uniq : ['img/placeholder.svg'];
+    }
+
+    function getId(){ return new URLSearchParams(location.search).get("id"); }
+
+    async function render(){
+      const id = getId();
+      if(!id){ $detail.innerHTML='<div class="muted">잘못된 접근입니다.</div>'; return; }
+
+      try{
+        const p = await getProjectById(id);
+        if(!p){ $detail.innerHTML='<div class="muted">존재하지 않는 프로젝트입니다.</div>'; return; }
+
+        const imgs = await galleryHttpUrls(p);
+        const goal = Number(p.goalAmount||0);
+        const current = 0; // 모금액 연동 전이라 0
+        const rate = goal ? Math.floor(current/goal*100) : 0;
+
+        $detail.innerHTML = `
+          <!-- Hero -->
+          <section class="hero-card">
+            <img src="${imgs[0]}" alt="cover"/>
+            <div class="hero-body">
+              <h1>${p.name ?? '(이름 없음)'}</h1>
+              <div class="muted">구조자: ${p.rescuerName ?? '익명'}</div>
+              <div class="progress"><div class="bar" style="width:${rate}%">${rate}%</div></div>
+              <div class="stats">
+                <span>목표 ${fmt(goal)}원</span>
+                <span>현재 ${fmt(current)}원</span>
+              </div>
+              ${p.registrantKakaoId ? `<a href="https://open.kakao.com/o/${p.registrantKakaoId}" target="_blank" class="btn primary">참여하기</a>` : ''}
+            </div>
+          </section>
+
+          <!-- Story -->
+          <section class="section-card">
+            <h2>스토리</h2>
+            <p>${(p.description||'').replace(/\n/g,'<br/>')}</p>
+          </section>
+
+          <!-- Info -->
+          <section class="section-card info-card">
+            <h2>프로젝트 정보</h2>
+            <p><strong>구조자 부담금:</strong> ${fmt(p.rescuerContribution)}원</p>
+            <p><strong>지지자 수:</strong> ${fmt(p.supportersCount||0)}명</p>
+            <p><strong>승인 상태:</strong> ${p.adminApproved?'승인됨':'대기중'}</p>
+          </section>
+
+          <!-- 공유 -->
+          <section class="section-card">
+            <h2>공유하기</h2>
+            <div class="share-buttons">
+              <button class="share-kakao" id="shareKakao"><i class="fa-solid fa-comment"></i> 카카오톡</button>
+              <button class="share-insta" id="shareInsta"><i class="fa-brands fa-instagram"></i> 인스타그램</button>
+              <button class="share-copy" id="shareCopy"><i class="fa-solid fa-link"></i> 링크복사</button>
+            </div>
+          </section>
+        `;
+
+        // 하단 CTA dock 연결
+        if(p.registrantKakaoId){
+          $ctaDock.style.display='flex';
+          $ctaBtn.href=`https://open.kakao.com/o/${p.registrantKakaoId}`;
+          $ctaBtn.textContent='참여하기';
+        }
+
+        // 공유 버튼
+        document.getElementById("shareCopy")?.addEventListener("click",()=>navigator.clipboard.writeText(window.location.href).then(()=>alert("링크 복사됨!")));
+        document.getElementById("shareKakao")?.addEventListener("click",()=>window.open("https://sharer.kakao.com/talk/friends/picker/link","_blank"));
+        document.getElementById("shareInsta")?.addEventListener("click",()=>alert("인스타그램은 직접 URL을 복사해 공유해주세요."));
+      }catch(e){
+        console.error(e);
+        $detail.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
+      }
+    }
+
+    render();
   </script>
 </body>
 </html>
