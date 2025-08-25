@@ -2,13 +2,13 @@
   <div class="container" style="display:flex;align-items:center;justify-content:space-between;padding:28px 0;font-family:'SUIT Variable','Pretendard',sans-serif;">
     
     <!-- 좌측: 로고 + 태그라인 -->
-    <div style="display:flex;align-items:center;gap:20px;min-width:0;">
+    <div style="display:flex;align-items:center;gap:20px;min-width:0;flex:1;">
       <a class="paw-logo" href="index.html" style="display:flex;align-items:center;gap:10px;flex:0 0 auto;text-decoration:none;color:#111;">
         <span style="font-size:2rem">🐾</span>
         <strong style="letter-spacing:-.02em;font-size:1.5rem;font-weight:800;">Project.PAW</strong>
       </a>
-      <span class="paw-tagline desktop-only"
-            style="flex:0 1 420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      <span class="paw-tagline"
+            style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
                    color:#555;font-weight:600;font-size:1.05rem;">
         ⚡ 아직은 실험 중 — 카톡방에서 모금 활동 진행 중
       </span>
@@ -48,10 +48,11 @@
   }
   .paw-link:hover { background:#f8f8f8; }
 
-  @media (max-width:1024px) {
-    .paw-link { font-size:1.1rem; padding:14px 20px; }
-  }
+  /* 모바일 글자 크기 조정 */
   @media (max-width:768px) {
+    .paw-tagline {
+      font-size:0.85rem !important;
+    }
     .desktop-only { display:none !important; }
     .mobile-only { display:block !important; }
     #paw-mobile-menu .paw-link {
@@ -59,6 +60,9 @@
       padding:12px 16px;
       border-radius:8px;
     }
+  }
+  @media (max-width:1024px) {
+    .paw-link { font-size:1.1rem; padding:14px 20px; }
   }
   @media (min-width:769px) {
     .mobile-only { display:none !important; }
