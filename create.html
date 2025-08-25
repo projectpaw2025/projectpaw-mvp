@@ -135,11 +135,10 @@
       <!-- 소통 -->
       <div class="form-section">
         <h2>4. 소통 정보</h2>
-        <label>등록자 카카오톡 ID</label>
-        <input name="registrantKakaoId" placeholder="예: g123abcd" required/>
+        <label>연락처 (카카오톡 ID 또는 전화번호)</label>
+        <input name="privateContact" placeholder="예: g123abcd 또는 010-1234-5678" required/>
         <div class="note">
-          관리자가 연락하기 위한 용도로만 사용됩니다. 전체에 공개되지 않으며,
-          <b>전화번호 입력도 가능합니다.</b>
+          관리자가 연락하기 위한 용도로만 사용됩니다. 전체에 공개되지 않습니다.
         </div>
       </div>
 
@@ -234,7 +233,7 @@
           description:fd.get("description"),
           goalAmount:document.getElementById("goalAmount").dataset.value||0,
           rescuerContribution:document.getElementById("rescuerContribution").dataset.value||0,
-          registrantKakaoId:fd.get("registrantKakaoId"),
+          privateContact:fd.get("privateContact"),  // ✅ 분리 저장
           coverFile:document.getElementById('repImage').files[0]||null,
           galleryFiles:Array.from(document.getElementById('situationImages').files),
           receiptFiles:Array.from(document.getElementById('receiptImages').files)
