@@ -15,7 +15,11 @@ th{background:#f9fafb}
 button{padding:6px 10px;border-radius:8px;border:1px solid #ccc;cursor:pointer}
 button.approve{background:#16a34a;color:#fff;border:none}
 button.delete{background:#dc2626;color:#fff;border:none}
+button.edit{background:#2563eb;color:#fff;border:none}
 .error{color:#dc2626;font-size:.9rem;margin-top:10px;text-align:center}
+form.editor{margin-top:30px;display:grid;gap:12px;max-width:500px}
+form.editor label{font-weight:700}
+form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-radius:8px}
 </style>
 </head>
 <body>
@@ -30,14 +34,14 @@ button.delete{background:#dc2626;color:#fff;border:none}
     </form>
 
     <section id="adminSection" style="display:none">
-      <h2>프로젝트 승인 관리</h2>
+      <h2>프로젝트 승인 & 관리</h2>
       <table>
         <thead>
           <tr>
             <th>프로젝트명</th>
             <th>구조자</th>
             <th>요약</th>
-            <th>관리자 연락처<br/><small>(privateContact)</small></th>
+            <th>연락처</th>
             <th>상태</th>
             <th>액션</th>
           </tr>
@@ -46,12 +50,31 @@ button.delete{background:#dc2626;color:#fff;border:none}
           <tr><td colspan="6" class="muted">불러오는 중...</td></tr>
         </tbody>
       </table>
+
+      <!-- 프로젝트 편집 섹션 -->
+      <section id="editorSection" style="display:none">
+        <h2>프로젝트 수치/링크 업데이트</h2>
+        <form id="editorForm" class="editor">
+          <input type="hidden" id="edit-id"/>
+          <label>모금액 (currentAmount)</label>
+          <input type="number" id="edit-currentAmount"/>
+          <label>참여자 수 (supporterCount)</label>
+          <input type="number" id="edit-supporterCount"/>
+          <label>목표 금액 (goalAmount)</label>
+          <input type="number" id="edit-goalAmount"/>
+          <label>한줄 메시지 (keyMessage)</label>
+          <input type="text" id="edit-keyMessage"/>
+          <label>카카오톡 오픈채팅 링크</label>
+          <input type="url" id="edit-kakaoChatUrl" placeholder="https://open.kakao.com/..."/>
+          <button type="submit">저장하기</button>
+        </form>
+      </section>
     </section>
   </main>
 
   <script type="module">
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { app } from "./js/firebase.js";
     import { fetchAllProjects, approveProject, deleteProject } from "./js/api.js";
 
@@ -62,8 +85,9 @@ button.delete{background:#dc2626;color:#fff;border:none}
     const errorDiv = document.getElementById("error");
     const adminSection = document.getElementById("adminSection");
     const $body = document.getElementById("projects-body");
+    const editorSection = document.getElementById("editorSection");
+    const editorForm = document.getElementById("editorForm");
 
-    // ✅ Firestore 기반 관리자 체크
     async function isAdminUser(uid){
       const docRef = doc(db, "admins", uid);
       const snap = await getDoc(docRef);
@@ -79,15 +103,9 @@ button.delete{background:#dc2626;color:#fff;border:none}
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-        console.log("로그인 UID:", user.uid);
-
         const ok = await isAdminUser(user.uid);
-        if (!ok) {
-          errorDiv.textContent = "⚠️ 관리자 권한이 없는 계정입니다.";
-          return;
-        }
+        if (!ok) { errorDiv.textContent = "⚠️ 관리자 권한이 없는 계정입니다."; return; }
 
-        // ✅ 관리자 권한 있음 → 승인 섹션 보여주기
         form.style.display = "none";
         adminSection.style.display = "block";
         render();
@@ -116,6 +134,7 @@ button.delete{background:#dc2626;color:#fff;border:none}
             <td>${fmtStatus(p)}</td>
             <td class="actions">
               ${!p.adminApproved?`<button class="approve" data-id="${p.id}">승인</button>`:''}
+              <button class="edit" data-id="${p.id}">편집</button>
               <button class="delete" data-id="${p.id}">삭제</button>
             </td>
           </tr>`).join('');
@@ -139,6 +158,43 @@ button.delete{background:#dc2626;color:#fff;border:none}
           alert("삭제되었습니다.");
           render();
         }
+      }
+      if(e.target.matches('.edit')){
+        const id=e.target.dataset.id;
+        const all=await fetchAllProjects();
+        const p=all.find(x=>x.id===id);
+        if(!p)return;
+        document.getElementById("edit-id").value=id;
+        document.getElementById("edit-currentAmount").value=p.currentAmount||0;
+        document.getElementById("edit-supporterCount").value=p.supporterCount||0;
+        document.getElementById("edit-goalAmount").value=p.goalAmount||0;
+        document.getElementById("edit-keyMessage").value=p.keyMessage||"";
+        document.getElementById("edit-kakaoChatUrl").value=p.kakaoChatUrl||"";
+        editorSection.style.display="block";
+        editorForm.scrollIntoView({behavior:"smooth"});
+      }
+    });
+
+    editorForm.addEventListener("submit", async e=>{
+      e.preventDefault();
+      const id=document.getElementById("edit-id").value;
+      if(!id)return alert("잘못된 프로젝트 ID");
+
+      const data={
+        currentAmount: Number(document.getElementById("edit-currentAmount").value)||0,
+        supporterCount: Number(document.getElementById("edit-supporterCount").value)||0,
+        goalAmount: Number(document.getElementById("edit-goalAmount").value)||0,
+        keyMessage: document.getElementById("edit-keyMessage").value.trim(),
+        kakaoChatUrl: document.getElementById("edit-kakaoChatUrl").value.trim()
+      };
+
+      try{
+        await updateDoc(doc(db,"projects",id),data);
+        alert("프로젝트가 업데이트되었습니다.");
+        render();
+      }catch(err){
+        console.error(err);
+        alert("업데이트 실패: "+err.message);
       }
     });
   </script>
