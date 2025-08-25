@@ -73,7 +73,7 @@
   </main>
 
   <div class="cta-dock" id="ctaDock">
-    <a id="ctaBtn" target="_blank">카카오 단톡방 입장하기</a>
+    <a id="ctaBtn" target="_blank">❤️ 후원하러 가기 (단톡방)</a>
   </div>
 
   <div data-include="footer"></div>
@@ -172,7 +172,7 @@
               </div>
               ${p.kakaoChatUrl ? `
                 <a href="${p.kakaoChatUrl}" target="_blank" class="btn primary">
-                  🗨️ 카카오 단톡방 입장하기
+                  ❤️ 후원하러 가기 (단톡방)
                 </a>` : ''}
             </div>
           </section>
@@ -202,6 +202,7 @@
         if(p.kakaoChatUrl){
           $ctaDock.style.display='block';
           $ctaBtn.href=p.kakaoChatUrl;
+          $ctaBtn.textContent='❤️ 후원하러 가기 (단톡방)';
         }
 
         document.getElementById("shareCopy")?.addEventListener("click",()=>{
