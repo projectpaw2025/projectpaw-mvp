@@ -11,25 +11,16 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
 
   <style>
-    :root{
-      --ink:#111;
-      --sub:#555;
-      --accent:#E87722;
-      --line:#eaeaea;
-      --bg:#fafafa;
-    }
+    :root{--ink:#111;--sub:#555;--accent:#E87722;--line:#eaeaea;--bg:#fafafa}
     body{margin:0;background:var(--bg);color:var(--ink);
       font-family:'SUIT Variable','Pretendard','Inter',system-ui,sans-serif}
     .wrap{max-width:860px;margin:0 auto;padding:20px 16px}
 
-    /* Hero */
     .hero-card{background:#fff;border-radius:20px;overflow:hidden;
                box-shadow:0 6px 14px rgba(0,0,0,0.08);margin-bottom:24px}
-    .overlay{
-      position:absolute;bottom:0;left:0;right:0;
+    .overlay{position:absolute;bottom:0;left:0;right:0;
       background:linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,0));
-      color:#fff;padding:20px;
-    }
+      color:#fff;padding:20px}
     .overlay .badge{background:var(--accent);padding:6px 12px;border-radius:8px;font-weight:700}
     .overlay h1{margin:8px 0;font-size:1.6rem;font-weight:900}
     .overlay .summary{font-size:1rem;opacity:.9}
@@ -43,6 +34,12 @@
     .stats{display:flex;justify-content:space-between;font-size:.95rem;color:var(--sub);margin-top:8px}
     .stats span strong{font-size:1.05rem;font-weight:800;color:var(--ink);margin-left:4px}
 
+    /* 썸네일 strip */
+    .thumb-strip{display:flex;gap:8px;overflow-x:auto;padding:10px;background:#fafafa}
+    .thumb-strip img{height:70px;width:70px;object-fit:cover;border-radius:8px;cursor:pointer;
+      border:2px solid transparent;flex-shrink:0}
+    .thumb-strip img.active{border-color:var(--accent)}
+
     /* 버튼 그룹 */
     .action-buttons{display:flex;gap:10px;margin-top:18px}
     .btn-kakao{flex:1;background:#FEE500;color:#111;padding:14px 18px;
@@ -51,11 +48,9 @@
     .btn-share{flex:1;background:#6b7280;color:#fff;padding:14px 18px;
       border-radius:12px;font-weight:700;font-size:1.05rem;text-align:center;text-decoration:none}
     .btn-share:hover{background:#555}
-
-    /* ✅ 모바일에서 버튼 세로 배치 */
     @media(max-width:600px){
       .action-buttons{flex-direction:column}
-      .btn-kakao, .btn-share{width:100%}
+      .btn-kakao,.btn-share{width:100%}
     }
 
     .section-card{background:#fff;border-radius:16px;padding:28px;margin-top:22px;
@@ -68,11 +63,9 @@
 </head>
 <body>
   <div data-include="header"></div>
-
   <main class="wrap">
     <div id="project-detail"><div class="muted">불러오는 중...</div></div>
   </main>
-
   <div data-include="footer"></div>
 
   <!-- ✅ Bootstrap JS -->
@@ -122,7 +115,6 @@
     async function render(){
       const id=getId();
       if(!id){$detail.innerHTML='<div class="muted">잘못된 접근입니다.</div>';return;}
-
       try{
         const p=await getProjectById(id);
         if(!p){$detail.innerHTML='<div class="muted">존재하지 않는 프로젝트입니다.</div>';return;}
@@ -133,7 +125,7 @@
         const rate=goal?Math.floor(current/goal*100):0;
 
         $detail.innerHTML=`
-          <!-- Hero -->
+          <!-- 사진 -->
           <section class="hero-card">
             <div id="carouselProject" class="carousel slide" data-bs-ride="carousel">
               <div class="carousel-inner">
@@ -156,6 +148,13 @@
               </button>
             </div>
 
+            <!-- 썸네일 strip -->
+            <div class="thumb-strip">
+              ${imgs.map((url,i)=>`
+                <img src="${url}" data-index="${i}" class="${i===0?'active':''}"/>`).join('')}
+            </div>
+
+            <!-- Status -->
             <div class="hero-body">
               <div class="hearts">❤️ 연결된 마음 <strong>${p.supporterCount??0}</strong>명</div>
               <div class="progress"><div class="bar" style="width:${rate}%">${rate}%</div></div>
@@ -164,21 +163,23 @@
                 <span>현재 <strong>${fmt(current)}</strong>원</span>
                 <span>구조자 <strong>${p.rescuerName??'익명'}</strong></span>
               </div>
-
-              <div class="action-buttons">
-                ${p.kakaoChatUrl ? `
-                  <a href="${p.kakaoChatUrl}" target="_blank" class="btn-kakao">💬 후원하러 가기</a>
-                `:''}
-                <button class="btn-share" id="shareCopy">🔗 링크 복사</button>
-              </div>
             </div>
           </section>
 
+          <!-- 스토리 -->
           <section class="section-card">
             <h2>스토리</h2>
             <p>${(p.description||'').replace(/\n/g,'<br/>')}</p>
           </section>
 
+          <!-- 후원/공유 버튼 -->
+          <div class="action-buttons">
+            ${p.kakaoChatUrl ? `
+              <a href="${p.kakaoChatUrl}" target="_blank" class="btn-kakao">💬 후원하러 가기</a>`:''}
+            <button class="btn-share" id="shareCopy">🔗 링크 복사</button>
+          </div>
+
+          <!-- Beta 안내 -->
           <section class="section-card">
             <h2>Beta 안내</h2>
             <p style="line-height:1.6">
@@ -189,9 +190,22 @@
           </section>
         `;
 
+        // 🔗 링크복사
         document.getElementById("shareCopy")?.addEventListener("click",()=>{
           navigator.clipboard.writeText(window.location.href)
             .then(()=>alert("링크가 복사되었습니다."));
+        });
+
+        // ✅ 썸네일 클릭 시 캐러셀 이동
+        const carouselEl=document.querySelector('#carouselProject');
+        const carousel=new bootstrap.Carousel(carouselEl);
+        document.querySelectorAll('.thumb-strip img').forEach(img=>{
+          img.addEventListener('click',()=>{
+            const idx=parseInt(img.dataset.index,10);
+            carousel.to(idx);
+            document.querySelectorAll('.thumb-strip img').forEach(t=>t.classList.remove('active'));
+            img.classList.add('active');
+          });
         });
       }catch(e){
         console.error(e);
