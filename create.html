@@ -6,7 +6,7 @@
   <title>프로젝트 등록 - Project.PAW</title>
   <link rel="stylesheet" href="common.css"/>
   <link rel="stylesheet" href="app.min.css"/>
-  <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet"/>
   <style>
     :root{
       --ink:#111;
@@ -68,6 +68,14 @@
         <input type="file" id="images" name="images" multiple accept="image/*"/>
         <span class="muted">대표 사진 외에도 구조 상황 / 치료 과정 / 영수증 사진을 업로드해주세요.</span>
       </div>
+      <div class="form-group">
+        <label for="rescuerName">구조자 이름</label>
+        <input type="text" id="rescuerName" name="rescuerName" placeholder="실명 또는 닉네임"/>
+      </div>
+      <div class="form-group">
+        <label for="rescuerContact">연락처 (카카오톡 ID 등)</label>
+        <input type="text" id="rescuerContact" name="rescuerContact" placeholder="연락 가능한 카카오톡 ID"/>
+      </div>
       <div class="form-actions">
         <button type="submit">등록하기</button>
       </div>
@@ -87,14 +95,8 @@
     form.addEventListener('submit',async(e)=>{
       e.preventDefault();
       const fd=new FormData(form);
-      const project={
-        name:fd.get('name'),
-        summary:fd.get('summary'),
-        story:fd.get('story'),
-        goalAmount:Number(fd.get('goalAmount')),
-      };
       try{
-        await apiCreateProject(project,fd);
+        await apiCreateProject(fd); // 🔒 기존 로직 유지 (FormData 그대로 전달)
         alert('프로젝트가 등록되었습니다. 관리자 승인 후 공개됩니다.');
         location.href='index.html';
       }catch(err){
