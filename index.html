@@ -6,19 +6,21 @@
   <title>Project.PAW — 개인과 개인을 잇는 후원 플랫폼</title>
   <link rel="stylesheet" href="common.css"/>
   <link rel="stylesheet" href="app.min.css"/>
+  <!-- SUIT Variable 폰트 -->
+  <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet" />
   <style>
     :root{
-      --ink:#111;     /* Black: 기본 텍스트 */
-      --sub:#555;     /* Gray: 보조 텍스트 */
-      --mocha:#A47864;/* Mocha: 브랜드 포인트 */
-      --line:#eaeaea; /* 라인 구분 */
-      --bg:#fff;      /* 배경은 화이트 고정 */
+      --ink:#111;       /* 기본 텍스트 Black */
+      --sub:#555;       /* 보조 Gray */
+      --accent:#E87722; /* Pantone 16-1359 Accent (딥 오렌지) */
+      --line:#eaeaea;
+      --bg:#fff;
     }
     html,body{
       margin:0;
       background:var(--bg);
       color:var(--ink);
-      font-family:'Inter','SUIT','Pretendard',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
+      font-family:'SUIT Variable','Pretendard','Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
     }
     .container{max-width:1200px; margin:0 auto; padding:0 20px}
     section{padding:64px 0}
@@ -30,7 +32,7 @@
       font-size:3rem;
       font-weight:900;
       line-height:1.25;
-      color:var(--mocha);
+      color:var(--accent);
     }
 
     /* Story Cards */
@@ -38,17 +40,17 @@
     .card-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:32px}
     @media (max-width:768px){.card-grid{grid-template-columns:1fr}}
     .story-card{
-      background:#fff; border:2px solid var(--mocha); border-radius:20px;
+      background:#fff; border:2px solid var(--accent); border-radius:20px;
       padding:36px 28px; text-align:left; box-shadow:0 6px 14px rgba(0,0,0,.06);
       display:flex; flex-direction:column;
     }
     .card-top{
       display:flex; justify-content:space-between; align-items:center;
-      font-size:.95rem; font-weight:700; margin-bottom:14px; color:var(--mocha);
+      font-size:.95rem; font-weight:700; margin-bottom:14px; color:var(--accent);
       padding-bottom:10px; border-bottom:1px solid var(--line)
     }
     .story-card h2{
-      font-size:1.7rem; font-weight:800; margin:0 0 22px; line-height:1.4; color:var(--mocha)
+      font-size:1.7rem; font-weight:800; margin:0 0 22px; line-height:1.4; color:var(--accent)
     }
     .story-card p{
       font-size:1.05rem; line-height:1.7; margin:0 0 22px; color:var(--ink); font-weight:400
@@ -57,7 +59,7 @@
       list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:14px
     }
     .story-card li{
-      border:2px solid var(--mocha); border-radius:14px;
+      border:2px solid var(--accent); border-radius:14px;
       padding:12px 16px; font-size:1rem; font-weight:600; line-height:1.6;
       background:#fff; color:var(--ink)
     }
@@ -72,12 +74,12 @@
     .hashtags span {
       display: inline-block;
       margin-right: 10px;
-      color: var(--mocha);
+      color: var(--accent);
       font-weight: 700;
     }
 
     /* Projects */
-    .projects h2{margin:0; font-size:1.9rem; font-weight:900; color:var(--mocha)}
+    .projects h2{margin:0; font-size:1.9rem; font-weight:900; color:var(--accent)}
     .projects .header{display:flex; justify-content:space-between; align-items:center; margin-bottom:28px}
     .grid{
       display:grid;
@@ -95,7 +97,7 @@
     .project-card .thumb img{width:100%; height:190px; object-fit:cover}
     .project-card .badge{
       position:absolute; bottom:10px; left:10px;
-      background:rgba(0,0,0,0.65); color:#fff;
+      background:var(--accent); color:#fff;
       padding:5px 10px; border-radius:8px; font-size:.85rem; font-weight:600
     }
     .project-card .body{padding:22px}
@@ -105,7 +107,7 @@
       line-height:1.6; max-height:3.2em; overflow:hidden; font-weight:400
     }
     .progress{background:#eee; border-radius:6px; overflow:hidden; height:8px; margin-bottom:10px}
-    .progress .bar{background:var(--mocha); height:100%}
+    .progress .bar{background:var(--accent); height:100%}
     .stats{
       display:flex; justify-content:space-between;
       font-size:.9rem; color:var(--sub); margin-bottom:16px; font-weight:500
@@ -115,7 +117,7 @@
       font-size:.95rem; font-weight:700; color:var(--ink)
     }
     .rescuer .avatar{font-size:1rem}
-    .muted{color:var(--muted)}
+    .muted{color:#888}
     @media (max-width:768px){
       .grid{grid-template-columns:1fr; gap:24px}
       .project-card img{height:160px}
@@ -181,7 +183,7 @@
     <div class="container">
       <div class="header">
         <h2>진행 중인 프로젝트</h2>
-        <a href="project_list.html" class="btn primary">모두 보기 →</a>
+        <a href="project_list.html" class="btn primary" style="color:#fff; background:var(--accent); padding:10px 16px; border-radius:8px; font-weight:700; text-decoration:none;">모두 보기 →</a>
       </div>
       <div id="projects-grid" class="grid">
         <div class="muted">불러오는 중...</div>
