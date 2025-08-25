@@ -104,10 +104,16 @@ export async function apiCreateProject(data) {
 // 관리자용 함수
 // ------------------------------
 
-// 승인 처리
-export async function approveProject(id) {
+// 승인 처리 (카카오톡 오픈채팅 ID 함께 저장 가능)
+export async function approveProject(id, extra = {}) {
   const ref = doc(db, "projects", id);
-  await updateDoc(ref, { adminApproved: true });
+
+  const updateData = { adminApproved: true };
+  if (extra.registrantKakaoId) {
+    updateData.registrantKakaoId = extra.registrantKakaoId.trim();
+  }
+
+  await updateDoc(ref, updateData);
 }
 
 // 삭제 처리
@@ -116,9 +122,10 @@ export async function deleteProject(id) {
   await deleteDoc(ref);
 }
 
-
-// Compatibility alias for legacy code
-export async function apiListProjects(opts={}) {
+// ------------------------------
+// 호환용 alias
+// ------------------------------
+export async function apiListProjects(opts = {}) {
   const status = opts.status || 'approved';
   if (status === 'approved') {
     return await fetchApprovedProjects();
