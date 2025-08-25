@@ -40,24 +40,23 @@
       display:flex; flex-direction:column; gap:12px; z-index:100;
     }
     .floating-cta a, .floating-cta button {
-      padding:12px 16px; border-radius:12px;
-      font-size:.95rem; font-weight:700;
+      padding:10px 14px; border-radius:10px;
+      font-size:.9rem; font-weight:700;
       text-decoration:none; text-align:center;
       box-shadow:0 4px 10px rgba(0,0,0,0.15);
-      cursor:pointer; border:none;
+      cursor:pointer; border:none; min-width:140px;
     }
-    .btn-kakao {
-      background:#FEE500; color:#111;
-    }
+    .btn-kakao { background:#FEE500; color:#111; }
     .btn-kakao:hover { background:#e5d200; }
-    .btn-share {
-      background:#6b7280; color:#fff;
-    }
+    .btn-share { background:#6b7280; color:#fff; }
     .btn-share:hover { background:#555; }
+    .btn-insta { background:#E4405F; color:#fff; }
+    .btn-insta:hover { background:#c62d49; }
 
     @media(max-width:600px){
       section p { font-size:1.1rem; }
       h1.hero { font-size:2rem; }
+      .floating-cta a, .floating-cta button { font-size:.85rem; min-width:120px; }
     }
   </style>
 </head>
@@ -95,7 +94,9 @@
   <!-- Floating CTA -->
   <div class="floating-cta">
     <a href="index.html" class="btn-kakao">❤️ 후원하러 가기</a>
-    <button class="btn-share" id="shareCopy">🔗 Paw 링크 복사하기</button>
+    <button class="btn-share" id="shareCopy">🔗 Paw 링크 복사</button>
+    <a href="https://instagram.com" target="_blank" class="btn-insta">📸 PAW 인스타</a>
+    <a href="https://open.kakao.com/" target="_blank" class="btn-kakao">💬 대표 단톡방</a>
   </div>
 
   <!-- Footer -->
