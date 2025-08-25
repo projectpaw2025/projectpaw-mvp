@@ -10,9 +10,9 @@
   <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet" />
   <style>
     :root{
-      --ink:#111;       /* 기본 텍스트 Black */
-      --sub:#555;       /* 보조 Gray */
-      --accent:#E87722; /* Pantone 16-1359 Accent (딥 오렌지) */
+      --ink:#111;
+      --sub:#555;
+      --accent:#E87722; /* Pantone 16-1359 */
       --line:#eaeaea;
       --bg:#fff;
     }
@@ -26,13 +26,24 @@
     section{padding:64px 0}
 
     /* Hero */
-    .hero{text-align:center;padding:100px 20px 40px;background:var(--bg)}
+    .hero{text-align:center;padding:140px 20px 60px;background:var(--bg)}
     .hero h1{
       margin:0 0 24px;
-      font-size:3rem;
+      font-size:3.2rem;
       font-weight:900;
-      line-height:1.25;
-      color:var(--accent);
+      line-height:1.3;
+      color:var(--ink);
+      position:relative;
+      display:inline-block;
+    }
+    .hero h1::after{
+      content:"";
+      position:absolute;
+      left:0; bottom:-8px;
+      width:100%; height:14px;
+      background:var(--accent);
+      z-index:-1;
+      border-radius:4px;
     }
 
     /* Story Cards */
@@ -41,89 +52,71 @@
     @media (max-width:768px){.card-grid{grid-template-columns:1fr}}
     .story-card{
       background:#fff; border:2px solid var(--accent); border-radius:20px;
-      padding:36px 28px; text-align:left; box-shadow:0 6px 14px rgba(0,0,0,.06);
+      padding:40px 30px; text-align:left; box-shadow:0 6px 14px rgba(0,0,0,.06);
       display:flex; flex-direction:column;
     }
     .card-top{
       display:flex; justify-content:space-between; align-items:center;
-      font-size:.95rem; font-weight:700; margin-bottom:14px; color:var(--accent);
-      padding-bottom:10px; border-bottom:1px solid var(--line)
+      font-size:1rem; font-weight:700; margin-bottom:16px; color:var(--accent);
+      padding-bottom:12px; border-bottom:1px solid var(--line)
     }
-    .story-card h2{
-      font-size:1.7rem; font-weight:800; margin:0 0 22px; line-height:1.4; color:var(--accent)
-    }
-    .story-card p{
-      font-size:1.05rem; line-height:1.7; margin:0 0 22px; color:var(--ink); font-weight:400
-    }
-    .story-card ul{
-      list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:14px
-    }
+    .story-card h2{font-size:1.9rem; font-weight:800; margin:0 0 24px; line-height:1.4; color:var(--accent)}
+    .story-card p{font-size:1.15rem; line-height:1.8; margin:0 0 24px; color:var(--ink); font-weight:400}
+    .story-card ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:16px}
     .story-card li{
       border:2px solid var(--accent); border-radius:14px;
-      padding:12px 16px; font-size:1rem; font-weight:600; line-height:1.6;
+      padding:14px 18px; font-size:1.05rem; font-weight:600; line-height:1.6;
       background:#fff; color:var(--ink)
     }
     .story-card li:hover{background:#fafafa}
-    .hashtags {
-      margin-top: 14px;
-      font-size: .95rem;
-      color: var(--sub);
-      line-height: 1.6;
-      font-weight:500;
-    }
-    .hashtags span {
-      display: inline-block;
-      margin-right: 10px;
-      color: var(--accent);
-      font-weight: 700;
-    }
+    .hashtags {margin-top:16px;font-size:1rem;color:var(--sub);line-height:1.6;font-weight:500}
+    .hashtags span {display:inline-block;margin-right:10px;color:var(--accent);font-weight:700}
 
     /* Projects */
-    .projects h2{margin:0; font-size:1.9rem; font-weight:900; color:var(--accent)}
-    .projects .header{display:flex; justify-content:space-between; align-items:center; margin-bottom:28px}
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-      gap:28px;
-    }
+    .projects h2{margin:0;font-size:2rem;font-weight:900;color:var(--accent)}
+    .projects .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:32px}
     .project-card{
-      display:flex; flex-direction:column;
-      background:#fff; border:1px solid var(--line);
-      border-radius:16px; overflow:hidden;
-      transition:.2s; text-decoration:none; color:inherit;
+      display:flex;flex-direction:column;
+      background:#fff;border:1px solid var(--line);
+      border-radius:16px;overflow:hidden;
+      transition:.2s;text-decoration:none;color:inherit;
     }
-    .project-card:hover{transform:translateY(-3px); box-shadow:0 6px 16px rgba(0,0,0,.1)}
+    .project-card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.1)}
     .project-card .thumb{position:relative}
-    .project-card .thumb img{width:100%; height:190px; object-fit:cover}
+    .project-card .thumb img{width:100%;height:200px;object-fit:cover}
     .project-card .badge{
-      position:absolute; bottom:10px; left:10px;
-      background:var(--accent); color:#fff;
-      padding:5px 10px; border-radius:8px; font-size:.85rem; font-weight:600
+      position:absolute;bottom:12px;left:12px;
+      background:var(--accent);color:#fff;
+      padding:6px 12px;border-radius:8px;font-size:.9rem;font-weight:600
     }
-    .project-card .body{padding:22px}
-    .project-card h3{margin:0 0 12px; font-size:1.3rem; font-weight:800; color:var(--ink)}
+    .project-card .body{padding:24px}
+    .project-card h3{margin:0 0 14px;font-size:1.4rem;font-weight:800;color:var(--ink)}
     .project-card .summary{
-      margin:0 0 18px; font-size:1.05rem; color:var(--sub);
-      line-height:1.6; max-height:3.2em; overflow:hidden; font-weight:400
+      margin:0 0 20px;font-size:1.1rem;color:var(--sub);
+      line-height:1.6;max-height:3.4em;overflow:hidden;font-weight:400
     }
-    .progress{background:#eee; border-radius:6px; overflow:hidden; height:8px; margin-bottom:10px}
-    .progress .bar{background:var(--accent); height:100%}
+    .progress{background:#eee;border-radius:6px;overflow:hidden;height:10px;margin-bottom:12px}
+    .progress .bar{background:var(--accent);height:100%}
     .stats{
-      display:flex; justify-content:space-between;
-      font-size:.9rem; color:var(--sub); margin-bottom:16px; font-weight:500
+      display:flex;justify-content:space-between;
+      font-size:1rem;color:var(--sub);margin-bottom:18px;font-weight:500
     }
-    .rescuer{
-      display:flex; align-items:center; gap:8px;
-      font-size:.95rem; font-weight:700; color:var(--ink)
+    .stats span strong{
+      font-size:1.15rem;
+      font-weight:800;
+      color:var(--ink);
+      margin-left:4px;
     }
-    .rescuer .avatar{font-size:1rem}
+    .rescuer{display:flex;align-items:center;gap:8px;font-size:1rem;font-weight:700;color:var(--ink)}
+    .rescuer .avatar{font-size:1.1rem}
     .muted{color:#888}
     @media (max-width:768px){
-      .grid{grid-template-columns:1fr; gap:24px}
-      .project-card img{height:160px}
-      .project-card h3{font-size:1.25rem}
+      .grid{grid-template-columns:1fr;gap:24px}
+      .project-card img{height:170px}
+      .project-card h3{font-size:1.3rem}
       .project-card .summary{font-size:1rem}
-      .stats{font-size:.9rem}
+      .stats{font-size:.95rem}
     }
   </style>
 </head>
@@ -141,7 +134,6 @@
   <!-- Story Cards -->
   <section class="story-cards">
     <div class="container card-grid">
-      <!-- Card 1 -->
       <div class="story-card">
         <div class="card-top"><span>PROJECT PAW</span><span class="dots">● ● ●</span></div>
         <h2>우리가 시작한 이유</h2>
@@ -158,7 +150,6 @@
         </ul>
       </div>
 
-      <!-- Card 2 -->
       <div class="story-card">
         <div class="card-top"><span>PROJECT PAW</span><span class="dots">● ● ●</span></div>
         <h2>"선함엔 기준이 필요해"</h2>
@@ -183,7 +174,7 @@
     <div class="container">
       <div class="header">
         <h2>진행 중인 프로젝트</h2>
-        <a href="project_list.html" class="btn primary" style="color:#fff; background:var(--accent); padding:10px 16px; border-radius:8px; font-weight:700; text-decoration:none;">모두 보기 →</a>
+        <a href="project_list.html" class="btn primary" style="color:#fff;background:var(--accent);padding:10px 16px;border-radius:8px;font-weight:700;text-decoration:none;">모두 보기 →</a>
       </div>
       <div id="projects-grid" class="grid">
         <div class="muted">불러오는 중...</div>
@@ -228,9 +219,9 @@
                 <div class="bar" style="width:${Math.min(100, Math.round((p.currentAmount||0)/p.goalAmount*100))}%"></div>
               </div>
               <div class="stats">
-                <span>목표 ${fmt(p.goalAmount)}원</span>
-                <span>달성 ${fmt(p.currentAmount||0)}원</span>
-                <span>참여자 ${p.supporterCount ?? 0}명</span>
+                <span>목표<strong>${fmt(p.goalAmount)}</strong>원</span>
+                <span>달성<strong>${fmt(p.currentAmount||0)}</strong>원</span>
+                <span>참여자<strong>${p.supporterCount ?? 0}</strong>명</span>
               </div>
               <div class="rescuer">
                 <span class="avatar">🐾</span>
