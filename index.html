@@ -44,6 +44,19 @@
       z-index:-1;
       border-radius:4px;
     }
+    .hashtags{
+      margin-top:24px;
+      font-size:1.2rem;
+      color:var(--sub);
+      font-weight:600;
+      line-height:1.8;
+    }
+    .hashtags span{
+      display:inline-block;
+      margin-right:12px;
+      color:var(--accent);
+      font-weight:800;
+    }
 
     /* Story Cards */
     .story-cards{background:var(--bg); padding:60px 0}
@@ -60,8 +73,8 @@
     .story-card ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:16px}
     .story-card li{border:2px solid var(--accent); border-radius:14px; padding:14px 18px; font-size:1.05rem; font-weight:600; background:#fff; color:var(--ink)}
     .story-card li:hover{background:#fafafa}
-    .hashtags{margin-top:16px;font-size:1rem;color:var(--sub);line-height:1.6;font-weight:500}
-    .hashtags span{display:inline-block;margin-right:10px;color:var(--accent);font-weight:700}
+    .hashtags-card{margin-top:16px;font-size:1rem;color:var(--sub);line-height:1.6;font-weight:500}
+    .hashtags-card span{display:inline-block;margin-right:10px;color:var(--accent);font-weight:700}
 
     /* Projects */
     .projects h2{margin:0;font-size:2rem;font-weight:900;color:var(--ink)}
@@ -91,7 +104,12 @@
   <!-- Hero -->
   <section class="hero">
     <div class="container">
-      <h1>개인↔개인을 연결하는, 국내 첫 기부 플랫폼</h1>
+      <h1>개인과 개인을 연결하는, 직접 후원의 시작</h1>
+      <div class="hashtags">
+        <span>#유기동물구조</span>
+        <span>#직접후원</span>
+        <span>#투명모금</span>
+      </div>
     </div>
   </section>
 
@@ -117,24 +135,24 @@
 
       <!-- Card 2 -->
       <div class="story-card">
-  <div class="card-top"><span>PROJECT PAW</span><span class="dots">● ● ●</span></div>
-  <h2>"선함엔 기준이 필요해"</h2>
-  <ul>
-    <li>✓ 구조자가 30% 직접 부담 (책임 있는 구조 설계)</li>
-    <li>✓ 모금액은 전액 전달 (PG 연결 전까지 단톡방, 수수료는 PAW 부담)</li>
-    <li>✓ 치료 전·후 변화와 후기 공유</li>
-    <li>✓ 영수증 업로드 필수</li>
-  </ul>
-  <div class="hashtags" style="font-size:1.2rem;line-height:1.8;">
-    <span style="color:var(--accent);font-weight:800">#유기동물치료비</span>
-    <span>#중성화수술</span>
-    <span>#입양직후검진/예방</span>
-    <span style="color:var(--accent);font-weight:800">#투명한구조활동</span>
-    <span>#응급치료지원</span>
-    <span>#사지말고입양하세요</span>
-    <span style="color:var(--accent);font-weight:800">#길냥이TNR</span>
-  </div>
-</div>
+        <div class="card-top"><span>PROJECT PAW</span><span class="dots">● ● ●</span></div>
+        <h2>"선함엔 기준이 필요해"</h2>
+        <ul>
+          <li>✓ 구조자가 30% 직접 부담 (책임 있는 구조 설계)</li>
+          <li>✓ 모금액은 전액 전달 (PG 연결 전까지 단톡방, 수수료는 PAW 부담)</li>
+          <li>✓ 치료 전·후 변화와 후기 공유</li>
+          <li>✓ 영수증 업로드 필수</li>
+        </ul>
+        <div class="hashtags-card" style="font-size:1.2rem;line-height:1.8;">
+          <span style="color:var(--accent);font-weight:800">#유기동물치료비</span>
+          <span>#중성화수술</span>
+          <span>#입양직후검진/예방</span>
+          <span style="color:var(--accent);font-weight:800">#투명한구조활동</span>
+          <span>#응급치료지원</span>
+          <span>#사지말고입양하세요</span>
+          <span style="color:var(--accent);font-weight:800">#길냥이TNR</span>
+        </div>
+      </div>
 
     </div>
   </section>
