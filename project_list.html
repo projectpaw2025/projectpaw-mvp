@@ -1,55 +1,96 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>프로젝트 목록</title>
-<link rel="stylesheet" href="common.css"/>
-<link rel="stylesheet" href="app.min.css"/>
-<style>
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
-  .card{
-    display:flex;flex-direction:column;
-    border:1px solid #e5e7eb;border-radius:16px;
-    overflow:hidden;background:#fff;
-    text-decoration:none;color:inherit;transition:.2s;
-  }
-  .card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.1)}
-  .card .thumb{position:relative}
-  .card .thumb img{width:100%;height:180px;object-fit:cover}
-  .card .badge{
-    position:absolute;bottom:8px;left:8px;
-    background:rgba(0,0,0,0.6);color:#fff;
-    padding:4px 8px;border-radius:8px;font-size:.8rem
-  }
-  .card-body{padding:14px;display:flex;flex-direction:column}
-  .card-body h3{margin:0 0 6px;font-size:1.2rem;font-weight:700}
-  .card-body .summary{
-    margin:0 0 12px;font-size:.95rem;color:#444;
-    line-height:1.4;max-height:2.7em;overflow:hidden
-  }
-  .progress{background:#eee;border-radius:6px;overflow:hidden;height:8px;margin-bottom:8px}
-  .progress .bar{background:#A47864;height:100%}
-  .stats{display:flex;justify-content:space-between;font-size:.85rem;color:#777;margin-bottom:10px}
-  .rescuer{display:flex;align-items:center;gap:6px;font-size:.9rem;font-weight:600;color:#111}
-  .rescuer .avatar{font-size:1rem}
-  @media(max-width:760px){
-    .cards{grid-template-columns:1fr}
-    .card img{height:160px}
-    .card-body h3{font-size:1.25rem}
-    .card-body .summary{font-size:1rem}
-  }
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>프로젝트 목록 - Project.PAW</title>
+  <link rel="stylesheet" href="common.css"/>
+  <link rel="stylesheet" href="app.min.css"/>
+  <!-- SUIT Variable 폰트 -->
+  <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet"/>
+  <style>
+    :root{
+      --ink:#111;       /* 기본 텍스트 Black */
+      --sub:#555;       /* 보조 Gray */
+      --accent:#E87722; /* Pantone 16-1359 Accent */
+      --line:#eaeaea;
+      --bg:#fff;
+    }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font-family:'SUIT Variable','Pretendard','Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
+    }
+    .container{max-width:1200px;margin:0 auto;padding:0 20px}
+    section{padding:64px 0}
+
+    h1{
+      font-size:2.2rem;
+      font-weight:900;
+      margin-bottom:32px;
+      color:var(--ink)
+    }
+
+    /* 검색창 */
+    #q{
+      padding:12px 14px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      font-size:1rem;
+      width:100%;
+      max-width:360px;
+    }
+
+    /* 카드 그리드 */
+    .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:32px;margin-top:28px}
+    .card{
+      display:flex;flex-direction:column;
+      background:#fff;border:1px solid var(--line);
+      border-radius:16px;overflow:hidden;
+      text-decoration:none;color:inherit;transition:.2s;
+    }
+    .card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.1)}
+    .thumb{position:relative}
+    .thumb img{width:100%;height:200px;object-fit:cover}
+    .badge{position:absolute;bottom:12px;left:12px;
+      background:var(--accent);color:#fff;
+      padding:6px 12px;border-radius:8px;font-size:.9rem;font-weight:600}
+    .card-body{padding:20px}
+    .card-body h3{margin:0 0 14px;font-size:1.4rem;font-weight:800;color:var(--ink)}
+    .summary{margin:0 0 20px;font-size:1.05rem;color:var(--sub);line-height:1.6;max-height:3.4em;overflow:hidden}
+
+    .progress{background:#eee;border-radius:6px;overflow:hidden;height:10px;margin-bottom:12px}
+    .progress .bar{background:var(--accent);height:100%}
+
+    .stats{display:flex;justify-content:space-between;font-size:.95rem;color:var(--sub);margin-bottom:16px;font-weight:500}
+    .stats span strong{font-size:1.1rem;font-weight:800;color:var(--ink);margin-left:4px}
+
+    .rescuer{display:flex;align-items:center;gap:8px;font-size:1rem;font-weight:700;color:var(--ink)}
+    .rescuer .avatar{font-size:1.1rem}
+    .muted{color:#888}
+    @media(max-width:768px){
+      .cards{grid-template-columns:1fr;gap:24px}
+      .thumb img{height:170px}
+      .card-body h3{font-size:1.3rem}
+      .summary{font-size:1rem}
+      .stats{font-size:.9rem}
+    }
+  </style>
 </head>
 <body>
+  <!-- header include -->
   <div data-include="header"></div>
 
-  <main class="container" style="padding:24px 16px">
-    <h1 style="margin:0 0 10px">프로젝트</h1>
-    <input id="q" placeholder="검색" style="padding:10px;border:1px solid #e5e7eb;border-radius:10px;width:100%;max-width:360px"/>
-    <div id="list" class="cards" style="margin-top:14px"></div>
+  <main class="container">
+    <h1>프로젝트</h1>
+    <input id="q" placeholder="검색"/>
+    <div id="list" class="cards">
+      <div class="muted">불러오는 중...</div>
+    </div>
   </main>
 
+  <!-- footer include -->
   <div data-include="footer"></div>
 
   <script type="module">
@@ -60,93 +101,81 @@
 
     injectLayout({ active:'list' });
 
-    const $q = document.getElementById('q');
-    const $list = document.getElementById('list');
-    const fmt = n => Number(n||0).toLocaleString('ko-KR');
+    const $q=document.getElementById('q');
+    const $list=document.getElementById('list');
+    const fmt=n=>Number(n||0).toLocaleString('ko-KR');
 
     function candidatesOf(p){
-      const out = [];
-      const push = v => { if (typeof v === 'string' && v.trim()) out.push(v.trim()); };
-      ['representativeImageUrl','coverUrl','coverURL','cover','thumbnailUrl','thumbnail','image','mainImageUrl','mainImage','photo','photoUrl']
-        .forEach(k => push(p[k]));
-      ['galleryUrls','images','photos','pictures','media','attachments','files'].forEach(k => {
-        const arr = p[k]; if (Array.isArray(arr)) arr.forEach(it => {
-          if (typeof it === 'string') push(it);
-          else if (it && (it.url || it.downloadUrl || it.path)) push(it.url || it.downloadUrl || it.path);
+      const out=[]; const push=v=>{if(typeof v==='string'&&v.trim())out.push(v.trim());};
+      ['representativeImageUrl','coverUrl','thumbnailUrl','image'].forEach(k=>push(p[k]));
+      ['galleryUrls','images'].forEach(k=>{
+        const arr=p[k]; if(Array.isArray(arr)) arr.forEach(it=>{
+          if(typeof it==='string') push(it);
+          else if(it&&(it.url||it.downloadUrl||it.path)) push(it.url||it.downloadUrl||it.path);
         });
       });
       return out;
     }
 
     async function toHttpUrl(raw){
-      if (!raw) return null;
-      let v = String(raw).trim();
-      if (/^(https?:|data:|blob:)/i.test(v)) return v;
-      if (v.startsWith('/')) v = v.slice(1);
-      try {
-        return await getDownloadURL(ref(storage, v));
-      } catch (e) {
-        console.warn('getDownloadURL 실패:', v, e?.message || e);
-        return null;
-      }
+      if(!raw) return null;
+      let v=String(raw).trim();
+      if(/^(https?:|data:|blob:)/i.test(v)) return v;
+      if(v.startsWith('/')) v=v.slice(1);
+      try{return await getDownloadURL(ref(storage,v));}catch(e){return null;}
     }
 
     async function coverUrlOf(p){
-      for (const c of candidatesOf(p)) {
-        const u = await toHttpUrl(c);
-        if (u) return u;
+      for(const c of candidatesOf(p)){
+        const u=await toHttpUrl(c);
+        if(u) return u;
       }
       return 'img/placeholder.svg';
     }
 
-    function match(p, q){
+    function match(p,q){
       if(!q) return true;
-      const hay = [p.name,p.summary,p.description,p.rescuerName].map(x=>(x||'')+'').join(' ').toLowerCase();
+      const hay=[p.name,p.summary,p.description,p.rescuerName].map(x=>(x||'')+'').join(' ').toLowerCase();
       return hay.includes(q.toLowerCase());
     }
 
     async function render(){
       try{
-        const all = await apiListProjects({ status:'all' });
-        const q = $q ? $q.value.trim() : '';
-        const list = all.filter(p => match(p, q));
+        const all=await apiListProjects({ status:'all' });
+        const q=$q?$q.value.trim():'';
+        const list=all.filter(p=>match(p,q));
 
         if(!$list) return;
-        if(!list.length){ $list.innerHTML = '<div class="muted">결과 없음</div>'; return; }
+        if(!list.length){$list.innerHTML='<div class="muted">결과 없음</div>';return;}
 
-        const withCovers = await Promise.all(list.map(async p => ({ ...p, _cover: await coverUrlOf(p) })));
+        const withCovers=await Promise.all(list.map(async p=>({...p,_cover:await coverUrlOf(p)})));
 
-        $list.innerHTML = withCovers.map(p => `
+        $list.innerHTML=withCovers.map(p=>`
           <a class="card" href="project.html?id=${encodeURIComponent(p.id)}">
             <div class="thumb">
               <img src="${p._cover}" alt="cover"/>
-              <span class="badge">${p.adminApproved ? '진행중' : '대기중'}</span>
+              <span class="badge">${p.adminApproved?'진행중':'대기중'}</span>
             </div>
             <div class="card-body">
-              <h3>${p.name ?? '(이름 없음)'}</h3>
-              <p class="summary">${p.summary ?? ''}</p>
-              <div class="progress">
-                <div class="bar" style="width:${Math.min(100, Math.round((p.currentAmount||0)/p.goalAmount*100))}%"></div>
-              </div>
+              <h3>${p.name??'(이름 없음)'}</h3>
+              <p class="summary">${p.summary??''}</p>
+              <div class="progress"><div class="bar" style="width:${Math.min(100,Math.round((p.currentAmount||0)/p.goalAmount*100))}%"></div></div>
               <div class="stats">
-                <span>목표 ${fmt(p.goalAmount)}원</span>
-                <span>달성 ${fmt(p.currentAmount||0)}원</span>
-                <span>참여 ${p.supporterCount ?? 0}명</span>
+                <span>목표 <strong>${fmt(p.goalAmount)}</strong>원</span>
+                <span>달성 <strong>${fmt(p.currentAmount||0)}</strong>원</span>
+                <span>참여자 <strong>${p.supporterCount??0}</strong>명</span>
               </div>
-              <div class="rescuer">
-                <span class="avatar">🐾</span>
-                <span class="name">${p.rescuerName ?? '익명 구조자'}</span>
-              </div>
+              <div class="rescuer"><span class="avatar">🐾</span><span>${p.rescuerName??'익명 구조자'}</span></div>
             </div>
           </a>
         `).join('');
       }catch(e){
         console.error(e);
-        if($list) $list.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
+        if($list)$list.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
       }
     }
 
-    if ($q) $q.addEventListener('input', render);
+    if($q) $q.addEventListener('input',render);
     render();
   </script>
 </body>
