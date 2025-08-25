@@ -54,22 +54,53 @@
     import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
     injectLayout({ active:'list' });
 
-    const $q=document.getElementById('q'); const $list=document.getElementById('list');
+    const $q=document.getElementById('q'); 
+    const $list=document.getElementById('list');
     const fmt=n=>Number(n||0).toLocaleString('ko-KR');
 
-    function candidatesOf(p){const out=[];const push=v=>{if(typeof v==='string'&&v.trim())out.push(v.trim());};
+    function candidatesOf(p){
+      const out=[];const push=v=>{if(typeof v==='string'&&v.trim())out.push(v.trim());};
       ['representativeImageUrl','coverUrl','thumbnailUrl','image'].forEach(k=>push(p[k]));
-      ['galleryUrls','images'].forEach(k=>{const arr=p[k];if(Array.isArray(arr))arr.forEach(it=>{if(typeof it==='string')push(it);else if(it&&(it.url||it.downloadUrl||it.path))push(it.url||it.downloadUrl||it.path);});});
-      return out;}
-    async function toHttpUrl(raw){if(!raw)return null;let v=String(raw).trim();if(/^(https?:|data:|blob:)/i.test(v))return v;if(v.startsWith('/'))v=v.slice(1);try{return await getDownloadURL(ref(storage,v));}catch(e){return null;}}
-    async function coverUrlOf(p){for(const c of candidatesOf(p)){const u=await toHttpUrl(c);if(u)return u;}return 'img/placeholder.svg';}
-    function match(p,q){if(!q)return true;const hay=[p.name,p.summary,p.description,p.rescuerName,p.keyMessage].map(x=>(x||'')+'').join(' ').toLowerCase();return hay.includes(q.toLowerCase());}
+      ['galleryUrls','images'].forEach(k=>{
+        const arr=p[k];
+        if(Array.isArray(arr))arr.forEach(it=>{
+          if(typeof it==='string')push(it);
+          else if(it&&(it.url||it.downloadUrl||it.path))push(it.url||it.downloadUrl||it.path);
+        });
+      });
+      return out;
+    }
+    async function toHttpUrl(raw){
+      if(!raw)return null;
+      let v=String(raw).trim();
+      if(/^(https?:|data:|blob:)/i.test(v))return v;
+      if(v.startsWith('/'))v=v.slice(1);
+      try{return await getDownloadURL(ref(storage,v));}catch(e){return null;}
+    }
+    async function coverUrlOf(p){
+      for(const c of candidatesOf(p)){
+        const u=await toHttpUrl(c);
+        if(u)return u;
+      }
+      return 'img/placeholder.svg';
+    }
+    function match(p,q){
+      if(!q)return true;
+      const hay=[p.name,p.summary,p.description,p.rescuerName,p.keyMessage]
+        .map(x=>(x||'')+'').join(' ').toLowerCase();
+      return hay.includes(q.toLowerCase());
+    }
 
     async function render(){
       try{
         const all=await apiListProjects({status:'all'});
-        const q=$q?$q.value.trim():''; const list=all.filter(p=>match(p,q));
-        if(!$list)return;if(!list.length){$list.innerHTML='<div class="muted">결과 없음</div>';return;}
+        const q=$q?$q.value.trim():'';
+        const list=all.filter(p=>match(p,q));
+        if(!$list)return;
+        if(!list.length){
+          $list.innerHTML='<div class="muted">결과 없음</div>';
+          return;
+        }
         const withCovers=await Promise.all(list.map(async p=>({...p,_cover:await coverUrlOf(p)})));
         $list.innerHTML=withCovers.map(p=>`
           <a class="card" href="project.html?id=${encodeURIComponent(p.id)}">
@@ -77,7 +108,7 @@
               <img src="${p._cover}" alt="cover"/>
               <div class="overlay">
                 <span class="badge">${p.adminApproved?'진행중':'대기중'}</span>
-                <h3>${p.name??'(이름 없음)'}</h3>
+                <h3>${p.projectNumber ? `PAW #${p.projectNumber} - ` : ''}${p.name??'(이름 없음)'}</h3>
                 <p class="summary">${p.summary??''}</p>
                 <div class="hover-text">자세히 보기 →</div>
               </div>
@@ -92,7 +123,10 @@
               </div>
             </div>
           </a>`).join('');
-      }catch(e){console.error(e);if($list)$list.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';}
+      }catch(e){
+        console.error(e);
+        if($list)$list.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
+      }
     }
     if($q)$q.addEventListener('input',render);
     render();
