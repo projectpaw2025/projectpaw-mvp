@@ -71,7 +71,11 @@
     /* Projects */
     .projects h2{margin:0; font-size:1.7rem; font-weight:900; letter-spacing:-.01em}
     .projects .header{display:flex; justify-content:space-between; align-items:center; margin-bottom:24px}
-    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+      gap:28px; /* 기존 20px → 넉넉하게 */
+    }
     .project-card{
       display:flex; flex-direction:column;
       background:#fff; border:1px solid var(--line);
@@ -86,19 +90,21 @@
       background:rgba(0,0,0,0.6); color:#fff;
       padding:4px 8px; border-radius:8px; font-size:.8rem
     }
-    .project-card .body{padding:14px}
-    .project-card h3{margin:0 0 6px; font-size:1.2rem; font-weight:700}
+    .project-card .body{
+      padding:20px; /* 기존 14px → 넉넉하게 */
+    }
+    .project-card h3{margin:0 0 10px; font-size:1.2rem; font-weight:700}
     .project-card .summary{
-      margin:0 0 12px; font-size:.95rem; color:var(--sub);
+      margin:0 0 16px; font-size:.95rem; color:var(--sub);
       line-height:1.4; max-height:2.7em; overflow:hidden
     }
     .progress{background:#eee; border-radius:6px; overflow:hidden; height:8px; margin-bottom:8px}
     .progress .bar{background:var(--mocha); height:100%}
-    .stats{display:flex; justify-content:space-between; font-size:.85rem; color:var(--muted); margin-bottom:10px}
+    .stats{display:flex; justify-content:space-between; font-size:.85rem; color:var(--muted); margin-bottom:14px}
     .rescuer{display:flex; align-items:center; gap:6px; font-size:.9rem; font-weight:600; color:var(--ink)}
     .rescuer .avatar{font-size:1rem}
     @media (max-width:768px){
-      .grid{grid-template-columns:1fr; gap:20px}
+      .grid{grid-template-columns:1fr; gap:24px}
       .project-card img{height:160px}
       .project-card h3{font-size:1.25rem}
       .project-card .summary{font-size:1rem}
