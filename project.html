@@ -42,27 +42,22 @@
                    text-align:center;font-size:.8rem;font-weight:600}
     .stats{display:flex;justify-content:space-between;font-size:.95rem;color:var(--sub);margin-top:8px}
     .stats span strong{font-size:1.05rem;font-weight:800;color:var(--ink);margin-left:4px}
-    .hero-body .btn.primary{display:block;margin-top:18px;text-align:center;
-      padding:14px 18px;background:var(--accent);color:#fff;border-radius:12px;
-      font-weight:700;font-size:1.05rem;text-decoration:none}
-    .hero-body .btn.primary:hover{background:#d56612}
+
+    /* 버튼 그룹 */
+    .action-buttons{display:flex;gap:10px;margin-top:18px}
+    .btn-kakao{flex:1;background:#FEE500;color:#111;padding:14px 18px;
+      border-radius:12px;font-weight:700;font-size:1.05rem;text-align:center;text-decoration:none}
+    .btn-kakao:hover{background:#e5d200}
+    .btn-share{flex:1;background:#6b7280;color:#fff;padding:14px 18px;
+      border-radius:12px;font-weight:700;font-size:1.05rem;text-align:center;text-decoration:none}
+    .btn-share:hover{background:#555}
 
     .section-card{background:#fff;border-radius:16px;padding:28px;margin-top:22px;
                   box-shadow:0 4px 10px rgba(0,0,0,0.05)}
     .section-card h2{font-size:1.3rem;font-weight:800;margin-bottom:14px;color:var(--accent)}
     .section-card p{font-size:1.05rem;line-height:1.7;color:var(--ink)}
 
-    .share-buttons{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
-    .share-buttons button{flex:1;min-width:120px;display:flex;align-items:center;justify-content:center;
-      gap:8px;padding:12px 18px;border-radius:12px;font-weight:600;font-size:.95rem;
-      cursor:pointer;border:none;transition:.2s}
-    .share-buttons button:hover{transform:translateY(-2px)}
-    .share-copy{background:#6b7280;color:#fff}
-
-    .cta-dock{position:fixed;bottom:16px;right:16px;z-index:50;display:none;
-      filter:drop-shadow(0 6px 12px rgba(0,0,0,0.15))}
-    .cta-dock a{background:#FEE500;color:#111;padding:12px 18px;border-radius:14px;
-      font-weight:700;font-size:.95rem;text-align:center;text-decoration:none}
+    .cta-dock{display:none}
   </style>
 </head>
 <body>
@@ -71,10 +66,6 @@
   <main class="wrap">
     <div id="project-detail"><div class="muted">불러오는 중...</div></div>
   </main>
-
-  <div class="cta-dock" id="ctaDock">
-    <a id="ctaBtn" target="_blank">❤️ 후원하러 가기 (단톡방)</a>
-  </div>
 
   <div data-include="footer"></div>
 
@@ -90,9 +81,6 @@
     injectLayout({ active:'project' });
 
     const $detail=document.getElementById('project-detail');
-    const $ctaDock=document.getElementById('ctaDock');
-    const $ctaBtn=document.getElementById('ctaBtn');
-
     const fmt=n=>Number(n||0).toLocaleString('ko-KR');
 
     function candidatesOf(p){
@@ -148,7 +136,7 @@
                     <img src="${url}" class="d-block w-100" style="height:340px;object-fit:cover" alt="img${i}">
                     <div class="overlay">
                       <span class="badge">${p.adminApproved?'진행중':'대기중'}</span>
-                      <h1>${p.name??'(이름 없음)'}</h1>
+                      <h1>PAW #${p.projectNumber ?? '-'} ${p.name??'(이름 없음)'}</h1>
                       <p class="summary">${p.summary??''}</p>
                       ${p.keyMessage?`<p class="key-message">❝ ${p.keyMessage} ❞</p>`:''}
                     </div>
@@ -170,23 +158,19 @@
                 <span>현재 <strong>${fmt(current)}</strong>원</span>
                 <span>구조자 <strong>${p.rescuerName??'익명'}</strong></span>
               </div>
-              ${p.kakaoChatUrl ? `
-                <a href="${p.kakaoChatUrl}" target="_blank" class="btn primary">
-                  ❤️ 후원하러 가기 (단톡방)
-                </a>` : ''}
+
+              <div class="action-buttons">
+                ${p.kakaoChatUrl ? `
+                  <a href="${p.kakaoChatUrl}" target="_blank" class="btn-kakao">💬 후원하러 가기</a>
+                `:''}
+                <button class="btn-share" id="shareCopy">🔗 링크 복사</button>
+              </div>
             </div>
           </section>
 
           <section class="section-card">
             <h2>스토리</h2>
             <p>${(p.description||'').replace(/\n/g,'<br/>')}</p>
-          </section>
-
-          <section class="section-card">
-            <h2>공유하기</h2>
-            <div class="share-buttons">
-              <button class="share-copy" id="shareCopy">🔗 링크 복사</button>
-            </div>
           </section>
 
           <section class="section-card">
@@ -198,12 +182,6 @@
             </p>
           </section>
         `;
-
-        if(p.kakaoChatUrl){
-          $ctaDock.style.display='block';
-          $ctaBtn.href=p.kakaoChatUrl;
-          $ctaBtn.textContent='❤️ 후원하러 가기 (단톡방)';
-        }
 
         document.getElementById("shareCopy")?.addEventListener("click",()=>{
           navigator.clipboard.writeText(window.location.href)
