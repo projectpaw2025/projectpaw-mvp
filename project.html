@@ -3,12 +3,14 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>프로젝트 상세 - Project.PAW</title>
+<title>프로젝트 상세</title>
 <link rel="stylesheet" href="common.css"/>
 <link rel="stylesheet" href="app.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet"/>
+<!-- ✅ Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
 <style>
   :root{
     --ink:#111;
@@ -26,12 +28,11 @@
   .hero-body{padding:24px}
   .hero-body h1{font-size:1.9rem;font-weight:900;margin:0 0 8px;color:var(--ink)}
   .hero-body .muted{color:var(--sub);margin-bottom:12px;font-size:1rem}
-  .hearts{font-size:1.2rem;font-weight:700;color:var(--accent);margin:10px 0}
-  .progress{background:#e5e7eb;height:16px;border-radius:12px;overflow:hidden;margin:12px 0}
+  .progress{background:#e5e7eb;height:18px;border-radius:12px;overflow:hidden;margin:14px 0}
   .progress .bar{height:100%;background:var(--accent);color:#fff;
-                 text-align:center;font-size:.8rem;font-weight:600}
-  .stats{display:flex;flex-wrap:wrap;gap:14px;font-size:.95rem;color:var(--sub);margin-top:6px}
-  .stats span strong{font-size:1.05rem;font-weight:800;color:var(--ink);margin-left:4px}
+                 text-align:center;font-size:.85rem;font-weight:600}
+  .stats{display:flex;justify-content:space-between;font-size:1rem;color:var(--sub);margin-top:8px}
+  .stats span strong{font-size:1.1rem;font-weight:800;color:var(--ink);margin-left:4px}
   .hero-body .btn.primary{display:block;margin-top:18px;text-align:center;
     padding:14px 18px;background:var(--accent);color:#fff;border-radius:12px;
     font-weight:700;font-size:1.05rem;text-decoration:none}
@@ -40,9 +41,9 @@
   .section-card{background:#fff;border-radius:16px;padding:28px;margin-top:22px;
                 box-shadow:0 4px 10px rgba(0,0,0,0.05)}
   .section-card h2{font-size:1.3rem;font-weight:800;margin-bottom:14px;color:var(--accent)}
-  .section-card p{font-size:1.05rem;line-height:1.7;color:var(--ink);white-space:pre-line}
+  .section-card p{font-size:1.05rem;line-height:1.7;color:var(--ink)}
 
-  /* ✅ 강조문구 스타일 */
+  /* ✅ 핵심 한 줄 강조 */
   .highlight {
     font-size:1.2rem;
     font-weight:700;
@@ -50,6 +51,7 @@
     margin:0 0 20px;
     padding-left:16px;
     border-left:4px solid var(--accent);
+    line-height:1.6;
   }
 
   .info-card p{margin:6px 0;font-size:1rem;color:var(--sub)}
@@ -78,12 +80,14 @@
   </main>
 
   <div class="cta-dock" id="ctaDock" style="display:none">
-    <a id="ctaBtn" target="_blank">마음 보태기</a>
+    <a id="ctaBtn" target="_blank">참여하기</a>
   </div>
 
   <div data-include="footer"></div>
 
+  <!-- ✅ Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
   <script type="module">
     import { injectLayout } from './js/include.js';
     import { getProjectById } from './js/api.js';
@@ -95,6 +99,7 @@
     const $detail=document.getElementById('project-detail');
     const $ctaDock=document.getElementById('ctaDock');
     const $ctaBtn=document.getElementById('ctaBtn');
+
     const fmt=n=>Number(n||0).toLocaleString('ko-KR');
 
     function candidatesOf(p){
@@ -130,6 +135,7 @@
     async function render(){
       const id=getId();
       if(!id){$detail.innerHTML='<div class="muted">잘못된 접근입니다.</div>';return;}
+
       try{
         const p=await getProjectById(id);
         if(!p){$detail.innerHTML='<div class="muted">존재하지 않는 프로젝트입니다.</div>';return;}
@@ -149,49 +155,46 @@
                     <img src="${url}" class="d-block w-100" style="height:320px;object-fit:cover" alt="img${i}">
                   </div>`).join('')}
               </div>
-              ${imgs.length>1?`
               <button class="carousel-control-prev" type="button" data-bs-target="#carouselProject" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon"></span>
               </button>
               <button class="carousel-control-next" type="button" data-bs-target="#carouselProject" data-bs-slide="next">
                 <span class="carousel-control-next-icon"></span>
-              </button>`:''}
+              </button>
             </div>
 
             <div class="hero-body">
               <h1>${p.name??'(이름 없음)'}</h1>
               <div class="muted">구조자: ${p.rescuerName??'익명'}</div>
 
-              <div class="hearts">❤️ 연결된 마음 <strong>${fmt(p.supporterCount||0)}</strong>명</div>
+              <div class="hearts">❤️ 연결된 마음 <strong>${fmt(p.supportersCount||0)}</strong>명</div>
 
               <div class="progress"><div class="bar" style="width:${rate}%">${rate}%</div></div>
               <div class="stats">
                 <span>목표 <strong>${fmt(goal)}</strong>원</span>
                 <span>현재 <strong>${fmt(current)}</strong>원</span>
-                <span>구조자 부담 <strong>${fmt(p.rescuerContribution||0)}</strong>원</span>
+                <span>구조자 부담 <strong>${fmt(p.rescuerContribution)}</strong>원</span>
               </div>
 
-              ${p.registrantKakaoId?`<a href="https://open.kakao.com/o/${p.registrantKakaoId}" 
-                target="_blank" class="btn primary">마음 보태기</a>`:''}
+              ${p.registrantKakaoId?`<a href="https://open.kakao.com/o/${p.registrantKakaoId}" target="_blank" class="btn primary">마음 보태기</a>`:''}
             </div>
           </section>
 
           <section class="section-card">
             <h2>스토리</h2>
-            ${p.keyMessage ? `<blockquote class="highlight">❝ ${p.keyMessage} ❞</blockquote>` : ''}
-            <p>${p.description||''}</p>
+            ${p.keyMessage ? `<div class="highlight">❝ ${p.keyMessage} ❞</div>` : ''}
+            <p>${(p.description||'').replace(/\n/g,'<br/>')}</p>
           </section>
 
           <section class="section-card info-card">
             <h2>프로젝트 정보</h2>
-            <p><strong>구조자 부담금:</strong> ${fmt(p.rescuerContribution||0)}원</p>
-            <p><strong>참여자 수:</strong> ${fmt(p.supporterCount||0)}명</p>
+            <p><strong>구조자 부담금:</strong> ${fmt(p.rescuerContribution)}원</p>
+            <p><strong>지지자 수:</strong> ${fmt(p.supportersCount||0)}명</p>
             <p><strong>승인 상태:</strong> ${p.adminApproved?'승인됨':'대기중'}</p>
           </section>
 
           <section class="section-card">
             <h2>공유하기</h2>
-            <p class="muted">이 이야기를 더 많은 사람들과 나눠주세요.</p>
             <div class="share-buttons">
               <button class="share-kakao" id="shareKakao"><i class="fa-solid fa-comment"></i> 카카오톡</button>
               <button class="share-insta" id="shareInsta"><i class="fa-brands fa-instagram"></i> 인스타그램</button>
@@ -207,8 +210,8 @@
         }
 
         document.getElementById("shareCopy")?.addEventListener("click",()=>navigator.clipboard.writeText(window.location.href).then(()=>alert("링크 복사됨!")));
-        document.getElementById("shareKakao")?.addEventListener("click",()=>window.open("https://sharer.kakao.com","_blank"));
-        document.getElementById("shareInsta")?.addEventListener("click",()=>alert("인스타그램은 URL을 복사해 직접 공유해주세요."));
+        document.getElementById("shareKakao")?.addEventListener("click",()=>window.open("https://sharer.kakao.com/talk/friends/picker/link","_blank"));
+        document.getElementById("shareInsta")?.addEventListener("click",()=>alert("인스타그램은 직접 URL을 복사해 공유해주세요."));
       }catch(e){
         console.error(e);
         $detail.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
