@@ -1,239 +1,91 @@
-<!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Project.PAW — 개인과 개인을 잇는 후원 플랫폼</title>
-  <link rel="stylesheet" href="common.css"/>
-  <link rel="stylesheet" href="app.min.css"/>
-  <!-- SUIT Variable 폰트 -->
-  <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet" />
-  <style>
-    :root{
-      --ink:#111;       /* 기본 텍스트 Black */
-      --sub:#555;       /* 보조 Gray */
-      --accent:#E87722; /* Pantone 16-1359 Accent (포인트 전용) */
-      --line:#eaeaea;
-      --bg:#fff;
-    }
-    html,body{
-      margin:0;
-      background:var(--bg);
-      color:var(--ink);
-      font-family:'SUIT Variable','Pretendard','Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
-    }
-    .container{max-width:1200px; margin:0 auto; padding:0 20px}
-    section{padding:64px 0}
-
-    /* Hero */
-    .hero{text-align:center;padding:160px 20px 70px;background:var(--bg)}
-    .hero h1{
-      margin:0 0 24px;
-      font-size:3.2rem;
-      font-weight:900;
-      line-height:1.3;
-      color:var(--ink);
-      position:relative;
-      display:inline-block;
-    }
-    .hero h1::after{
-      content:"";
-      position:absolute;
-      left:0; bottom:-8px;
-      width:100%; height:14px;
-      background:var(--accent); /* 오렌지는 포인트 highlight */
-      z-index:-1;
-      border-radius:4px;
-    }
-
-    /* Story Cards */
-    .story-cards{background:var(--bg); padding:60px 0}
-    .card-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:32px}
-    @media (max-width:768px){.card-grid{grid-template-columns:1fr}}
-    .story-card{
-      background:#fff; border:2px solid var(--accent); border-radius:20px;
-      padding:40px 30px; text-align:left; box-shadow:0 6px 14px rgba(0,0,0,.06);
-      display:flex; flex-direction:column;
-    }
-    .card-top{
-      display:flex; justify-content:space-between; align-items:center;
-      font-size:1rem; font-weight:700; margin-bottom:16px; color:var(--accent);
-      padding-bottom:12px; border-bottom:1px solid var(--line)
-    }
-    .story-card h2{font-size:1.9rem; font-weight:800; margin:0 0 24px; line-height:1.4; color:var(--ink)}
-    .story-card p{font-size:1.15rem; line-height:1.8; margin:0 0 24px; color:var(--ink); font-weight:400}
-    .story-card ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:16px}
-    .story-card li{
-      border:2px solid var(--accent); border-radius:14px;
-      padding:14px 18px; font-size:1.05rem; font-weight:600; line-height:1.6;
-      background:#fff; color:var(--ink)
-    }
-    .story-card li:hover{background:#fafafa}
-    .hashtags {margin-top:16px;font-size:1rem;color:var(--sub);line-height:1.6;font-weight:500}
-    .hashtags span {display:inline-block;margin-right:10px;color:var(--accent);font-weight:700}
-
-    /* Projects */
-    .projects h2{
-      margin:0;
-      font-size:2rem;
-      font-weight:900;
-      color:var(--ink); /* 블랙으로 변경 */
-    }
-    .projects .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:32px}
-    .project-card{
-      display:flex;flex-direction:column;
-      background:#fff;border:1px solid var(--line);
-      border-radius:16px;overflow:hidden;
-      transition:.2s;text-decoration:none;color:inherit;
-    }
-    .project-card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.1)}
-    .project-card .thumb{position:relative}
-    .project-card .thumb img{width:100%;height:200px;object-fit:cover}
-    .project-card .badge{
-      position:absolute;bottom:12px;left:12px;
-      background:var(--accent);color:#fff;
-      padding:6px 12px;border-radius:8px;font-size:.9rem;font-weight:600
-    }
-    .project-card .body{padding:24px}
-    .project-card h3{margin:0 0 14px;font-size:1.4rem;font-weight:800;color:var(--ink)}
-    .project-card .summary{
-      margin:0 0 20px;font-size:1.1rem;color:var(--sub);
-      line-height:1.6;max-height:3.4em;overflow:hidden;font-weight:400
-    }
-    .progress{background:#eee;border-radius:6px;overflow:hidden;height:10px;margin-bottom:12px}
-    .progress .bar{background:var(--accent);height:100%}
-    .stats{display:flex;justify-content:space-between;font-size:1rem;color:var(--sub);margin-bottom:18px;font-weight:500}
-    .stats span strong{font-size:1.15rem;font-weight:800;color:var(--ink);margin-left:4px}
-    .rescuer{display:flex;align-items:center;gap:8px;font-size:1rem;font-weight:700;color:var(--ink)}
-    .rescuer .avatar{font-size:1.1rem}
-    .muted{color:#888}
-    @media (max-width:768px){
-      .grid{grid-template-columns:1fr;gap:24px}
-      .project-card img{height:170px}
-      .project-card h3{font-size:1.3rem}
-      .project-card .summary{font-size:1rem}
-      .stats{font-size:.95rem}
-    }
-  </style>
-</head>
-<body>
-  <!-- header include -->
-  <div data-include="header"></div>
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container">
-      <h1>개인↔개인을 연결하는, 국내 첫 기부 플랫폼</h1>
+<header class="paw-nav" style="position:sticky;top:0;z-index:50;backdrop-filter:blur(6px);background:rgba(255,255,255,.94);border-bottom:1px solid #e5e7eb;">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;padding:28px 0;font-family:'SUIT Variable','Pretendard',sans-serif;">
+    
+    <!-- 좌측: 로고 + 태그라인 -->
+    <div style="display:flex;align-items:center;gap:20px;min-width:0;">
+      <a class="paw-logo" href="index.html" style="display:flex;align-items:center;gap:10px;flex:0 0 auto;text-decoration:none;color:#111;">
+        <span style="font-size:2rem">🐾</span>
+        <strong style="letter-spacing:-.02em;font-size:1.5rem;font-weight:800;">Project.PAW</strong>
+      </a>
+      <span class="paw-tagline desktop-only"
+            style="flex:0 1 420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+                   color:#555;font-weight:600;font-size:1.05rem;">
+        Beta 서비스 · 지금은 카톡방 모금 운영 중
+      </span>
     </div>
-  </section>
 
-  <!-- Story Cards -->
-  <section class="story-cards">
-    <div class="container card-grid">
-      <div class="story-card">
-        <div class="card-top"><span>PROJECT PAW</span><span class="dots">● ● ●</span></div>
-        <h2>우리가 시작한 이유</h2>
-        <p>
-          우리는 돈을 모으지 않습니다.<br/>
-          우리는 마음을 이어 생명을 살립니다.<br/>
-          이 프로젝트는 혼자가 버겁던 그 순간들에서 시작됐습니다.<br/>
-          따뜻함은 모여야 힘이 되니까요.
-        </p>
-        <ul>
-          <li>✓ 돈보다 생명이 먼저였던 그 순간</li>
-          <li>✓ 함께한 마음이 만든 작은 기적</li>
-          <li>✓ 도움은 본능, 연결은 선택</li>
-        </ul>
-      </div>
+    <!-- 우측: 내비 -->
+    <nav class="paw-menu desktop-only" aria-label="Primary" style="display:flex;gap:20px;flex:0 0 auto;">
+      <a class="paw-link" data-match="index.html" href="index.html">홈</a>
+      <a class="paw-link" data-match="project_list.html" href="project_list.html">프로젝트</a>
+      <a class="paw-link" data-match="create.html" href="create.html">등록하기</a>
+      <a class="paw-link" data-match="about.html" href="about.html">소개</a>
+    </nav>
 
-      <div class="story-card">
-        <div class="card-top"><span>PROJECT PAW</span><span class="dots">● ● ●</span></div>
-        <h2>"선함엔 기준이 필요해"</h2>
-        <ul>
-          <li>✓ 구조자가 30% 직접 부담 (책임 있는 구조 설계)</li>
-          <li>✓ 모금액은 전액 전달 (PG 연결 전까지 단톡방, 수수료는 PAW 부담)</li>
-          <li>✓ 치료 전·후 변화와 후기 공유</li>
-          <li>✓ 영수증 업로드 필수</li>
-        </ul>
-        <div class="hashtags">
-          <span>#유기동물치료비</span>
-          <span>#중성화수술</span>
-          <span>#입양직후검진/예방</span>
-          <span>#투명한구조활동</span>
-        </div>
-      </div>
-    </div>
-  </section>
+    <!-- 모바일 햄버거 -->
+    <button id="paw-menu-toggle" class="mobile-only" style="background:none;border:none;font-size:1.8rem;cursor:pointer;">☰</button>
+  </div>
 
-  <!-- Projects -->
-  <section class="projects">
-    <div class="container">
-      <div class="header">
-        <h2>진행 중인 프로젝트</h2>
-        <a href="project_list.html" class="btn primary" style="color:#fff;background:var(--accent);padding:10px 16px;border-radius:8px;font-weight:700;text-decoration:none;">모두 보기 →</a>
-      </div>
-      <div id="projects-grid" class="grid">
-        <div class="muted">불러오는 중...</div>
-      </div>
-    </div>
-  </section>
+  <!-- 모바일 드롭다운 -->
+  <div id="paw-mobile-menu" class="mobile-only" style="display:none;flex-direction:column;gap:8px;padding:16px;background:#fff;border-top:1px solid #e5e7eb;">
+    <a class="paw-link" data-match="index.html" href="index.html">홈</a>
+    <a class="paw-link" data-match="project_list.html" href="project_list.html">프로젝트</a>
+    <a class="paw-link" data-match="create.html" href="create.html">등록하기</a>
+    <a class="paw-link" data-match="about.html" href="about.html">소개</a>
+  </div>
+</header>
 
-  <!-- footer include -->
-  <div data-include="footer"></div>
+<style>
+  .paw-link {
+    padding:16px 24px;
+    border-radius:12px;
+    border:1px solid transparent;
+    font-weight:700;
+    font-size:1.25rem; /* 20px */
+    color:#111;
+    text-decoration:none;
+    transition:.2s;
+  }
+  .paw-link:hover { background:#f8f8f8; }
 
-  <script type="module">
-    import { injectLayout } from './js/include.js';
-    import { apiListProjects } from './js/api.js';
+  @media (max-width:1024px) {
+    .paw-link { font-size:1.1rem; padding:14px 20px; }
+  }
+  @media (max-width:768px) {
+    .desktop-only { display:none !important; }
+    .mobile-only { display:block !important; }
+    #paw-mobile-menu .paw-link {
+      font-size:1.1rem;
+      padding:12px 16px;
+      border-radius:8px;
+    }
+  }
+  @media (min-width:769px) {
+    .mobile-only { display:none !important; }
+  }
+</style>
 
-    injectLayout({ active:'home' });
-
-    const $grid = document.getElementById('projects-grid');
-    const fmt = n => Number(n||0).toLocaleString('ko-KR');
-    const cover = (p) =>
-      p.representativeImageUrl || p.coverUrl ||
-      (Array.isArray(p.galleryUrls) && p.galleryUrls[0]) ||
-      (Array.isArray(p.images) && p.images[0]) ||
-      p.image || p.thumbnailUrl || 'img/placeholder.svg';
-
-    async function render(){
-      try {
-        const list = await apiListProjects({ status:'approved', limit:12 });
-        if(!list.length){
-          $grid.innerHTML = '<div class="muted">아직 승인된 프로젝트가 없습니다.</div>';
-          return;
-        }
-        $grid.innerHTML = list.map(p => `
-          <a class="project-card" href="project.html?id=${encodeURIComponent(p.id)}">
-            <div class="thumb">
-              <img src="${cover(p)}" alt=""/>
-              <span class="badge">${p.status === 'approved' ? '진행중' : '대기중'}</span>
-            </div>
-            <div class="body">
-              <h3>${p.name ?? '(이름 없음)'}</h3>
-              <p class="summary">${p.summary ?? ''}</p>
-              <div class="progress">
-                <div class="bar" style="width:${Math.min(100, Math.round((p.currentAmount||0)/p.goalAmount*100))}%"></div>
-              </div>
-              <div class="stats">
-                <span>목표<strong>${fmt(p.goalAmount)}</strong>원</span>
-                <span>달성<strong>${fmt(p.currentAmount||0)}</strong>원</span>
-                <span>참여자<strong>${p.supporterCount ?? 0}</strong>명</span>
-              </div>
-              <div class="rescuer">
-                <span class="avatar">🐾</span>
-                <span class="name">${p.rescuerName ?? '익명 구조자'}</span>
-              </div>
-            </div>
-          </a>
-        `).join('');
-      } catch (e) {
-        console.error(e);
-        $grid.innerHTML = '<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
+<script>
+(function(){
+  try{
+    const path=(location.pathname.split('/').pop()||'index.html');
+    document.querySelectorAll('.paw-link').forEach(a=>{
+      if(a.dataset.match===path){
+        a.style.background='#E87722'; // Accent
+        a.style.color='#fff';
+        a.style.borderColor='#E87722';
+        a.style.fontWeight='800';
       }
-    }
+    });
+  }catch(e){}
 
-    render();
-  </script>
-</body>
-</html>
+  // 모바일 메뉴 토글
+  const toggleBtn=document.getElementById('paw-menu-toggle');
+  const mobileMenu=document.getElementById('paw-mobile-menu');
+  if(toggleBtn){
+    toggleBtn.addEventListener('click',()=>{
+      mobileMenu.style.display=mobileMenu.style.display==='flex'?'none':'flex';
+    });
+  }
+})();
+</script>
