@@ -10,9 +10,9 @@
   <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet" />
   <style>
     :root{
-      --ink:#111;
-      --sub:#555;
-      --accent:#E87722; /* Pantone 16-1359 */
+      --ink:#111;       /* 기본 텍스트 Black */
+      --sub:#555;       /* 보조 Gray */
+      --accent:#E87722; /* Pantone 16-1359 Accent (포인트 전용) */
       --line:#eaeaea;
       --bg:#fff;
     }
@@ -26,7 +26,7 @@
     section{padding:64px 0}
 
     /* Hero */
-    .hero{text-align:center;padding:140px 20px 60px;background:var(--bg)}
+    .hero{text-align:center;padding:160px 20px 70px;background:var(--bg)}
     .hero h1{
       margin:0 0 24px;
       font-size:3.2rem;
@@ -41,7 +41,7 @@
       position:absolute;
       left:0; bottom:-8px;
       width:100%; height:14px;
-      background:var(--accent);
+      background:var(--accent); /* 오렌지는 포인트 highlight */
       z-index:-1;
       border-radius:4px;
     }
@@ -60,7 +60,7 @@
       font-size:1rem; font-weight:700; margin-bottom:16px; color:var(--accent);
       padding-bottom:12px; border-bottom:1px solid var(--line)
     }
-    .story-card h2{font-size:1.9rem; font-weight:800; margin:0 0 24px; line-height:1.4; color:var(--accent)}
+    .story-card h2{font-size:1.9rem; font-weight:800; margin:0 0 24px; line-height:1.4; color:var(--ink)}
     .story-card p{font-size:1.15rem; line-height:1.8; margin:0 0 24px; color:var(--ink); font-weight:400}
     .story-card ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:16px}
     .story-card li{
@@ -73,7 +73,12 @@
     .hashtags span {display:inline-block;margin-right:10px;color:var(--accent);font-weight:700}
 
     /* Projects */
-    .projects h2{margin:0;font-size:2rem;font-weight:900;color:var(--accent)}
+    .projects h2{
+      margin:0;
+      font-size:2rem;
+      font-weight:900;
+      color:var(--ink); /* 블랙으로 변경 */
+    }
     .projects .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:32px}
     .project-card{
@@ -98,16 +103,8 @@
     }
     .progress{background:#eee;border-radius:6px;overflow:hidden;height:10px;margin-bottom:12px}
     .progress .bar{background:var(--accent);height:100%}
-    .stats{
-      display:flex;justify-content:space-between;
-      font-size:1rem;color:var(--sub);margin-bottom:18px;font-weight:500
-    }
-    .stats span strong{
-      font-size:1.15rem;
-      font-weight:800;
-      color:var(--ink);
-      margin-left:4px;
-    }
+    .stats{display:flex;justify-content:space-between;font-size:1rem;color:var(--sub);margin-bottom:18px;font-weight:500}
+    .stats span strong{font-size:1.15rem;font-weight:800;color:var(--ink);margin-left:4px}
     .rescuer{display:flex;align-items:center;gap:8px;font-size:1rem;font-weight:700;color:var(--ink)}
     .rescuer .avatar{font-size:1.1rem}
     .muted{color:#888}
