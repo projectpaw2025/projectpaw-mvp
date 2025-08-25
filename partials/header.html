@@ -1,24 +1,25 @@
-<header class="paw-nav" style="position:sticky;top:0;z-index:50;backdrop-filter:blur(6px);background:rgba(255,255,255,.85);border-bottom:1px solid #eef2f7;">
-  <div class="container" style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;">
+<header class="paw-nav" style="position:sticky;top:0;z-index:50;backdrop-filter:blur(6px);background:rgba(255,255,255,.92);border-bottom:1px solid #eaeaea;">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;padding:22px 0;">
     
     <!-- 좌측: 로고 + 태그라인 -->
-    <div style="display:flex;align-items:center;gap:14px;min-width:0;">
-      <a class="paw-logo" href="index.html" style="display:flex;align-items:center;gap:10px;flex:0 0 auto;">
-        <span style="font-size:1.25rem">🐾</span><strong style="letter-spacing:-.02em">Project.PAW</strong>
+    <div style="display:flex;align-items:center;gap:18px;min-width:0;font-family:'SUIT Variable','Pretendard',sans-serif;">
+      <a class="paw-logo" href="index.html" style="display:flex;align-items:center;gap:10px;flex:0 0 auto;text-decoration:none;color:#111;">
+        <span style="font-size:1.6rem">🐾</span>
+        <strong style="letter-spacing:-.02em;font-size:1.25rem;font-weight:800;">Project.PAW</strong>
       </a>
       <!-- 로고 옆 태그라인 -->
       <span class="paw-tagline"
-            style="flex:0 1 420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#8b6452;font-weight:700;font-size:.95rem;">
+            style="flex:0 1 420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#555;font-weight:600;font-size:1rem;">
         Beta 서비스 · 지금은 카톡방 모금 운영 중
       </span>
     </div>
 
     <!-- 우측: 내비 -->
-    <nav class="paw-menu" aria-label="Primary" style="display:flex;gap:12px;flex:0 0 auto;">
-      <a class="paw-link" data-match="index.html" href="index.html" style="padding:10px 14px;border-radius:12px;border:1px solid transparent;font-weight:700;color:#374151">홈</a>
-      <a class="paw-link" data-match="project_list.html" href="project_list.html" style="padding:10px 14px;border-radius:12px;border:1px solid transparent;font-weight:700;color:#374151">프로젝트</a>
-      <a class="paw-link" data-match="create.html" href="create.html" style="padding:10px 14px;border-radius:12px;border:1px solid transparent;font-weight:700;color:#374151">등록하기</a>
-      <a class="paw-link" data-match="about.html" href="about.html" style="padding:10px 14px;border-radius:12px;border:1px solid transparent;font-weight:700;color:#374151">소개</a>
+    <nav class="paw-menu" aria-label="Primary" style="display:flex;gap:14px;flex:0 0 auto;font-family:'SUIT Variable','Pretendard',sans-serif;">
+      <a class="paw-link" data-match="index.html" href="index.html" style="padding:12px 18px;border-radius:12px;border:1px solid transparent;font-weight:600;font-size:1rem;color:#111;text-decoration:none;">홈</a>
+      <a class="paw-link" data-match="project_list.html" href="project_list.html" style="padding:12px 18px;border-radius:12px;border:1px solid transparent;font-weight:600;font-size:1rem;color:#111;text-decoration:none;">프로젝트</a>
+      <a class="paw-link" data-match="create.html" href="create.html" style="padding:12px 18px;border-radius:12px;border:1px solid transparent;font-weight:600;font-size:1rem;color:#111;text-decoration:none;">등록하기</a>
+      <a class="paw-link" data-match="about.html" href="about.html" style="padding:12px 18px;border-radius:12px;border:1px solid transparent;font-weight:600;font-size:1rem;color:#111;text-decoration:none;">소개</a>
     </nav>
   </div>
 </header>
@@ -28,9 +29,10 @@
     const path=(location.pathname.split('/').pop()||'index.html');
     document.querySelectorAll('.paw-link').forEach(a=>{
       if(a.dataset.match===path){
-        a.style.background='#A47864'; // Mocha Mousse
+        a.style.background='#E87722'; // Accent (Pantone 16-1359)
         a.style.color='#fff';
-        a.style.borderColor='#A47864';
+        a.style.borderColor='#E87722';
+        a.style.fontWeight='700';
       }
     });
   }catch(e){}
