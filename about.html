@@ -4,60 +4,73 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>소개 - Project.PAW</title>
-  <link rel="stylesheet" href="css/app.css"/>
+  <link rel="stylesheet" href="common.css"/>
+  <link rel="stylesheet" href="app.min.css"/>
   <style>
+    :root {
+      --ink:#111;
+      --sub:#555;
+      --accent:#E87722;
+      --bg:#fff;
+    }
     body {
+      margin:0;
       font-family:'SUIT Variable','Pretendard',sans-serif;
-      background:#fff; color:#111; margin:0;
+      background:#fafafa;
+      color:var(--ink);
+      line-height:1.9;
     }
     main.container {
-      max-width:860px; margin:0 auto; padding:80px 20px;
+      max-width:820px;
+      margin:0 auto;
+      padding:80px 20px;
     }
-    h1.hero {
-      font-size:2.4rem; font-weight:900; text-align:center;
-      margin-bottom:60px; line-height:1.4;
+    h1 {
+      font-size:2.4rem;
+      font-weight:900;
+      margin-bottom:36px;
+      text-align:center;
     }
-    h1.hero span { color:#E87722; }
-    section { margin-bottom:70px; }
-    section h2 {
-      font-size:1.6rem; font-weight:800; margin-bottom:20px; color:#111;
+    h2 {
+      font-size:1.6rem;
+      font-weight:800;
+      margin:48px 0 20px;
+      color:var(--ink);
     }
-    section p {
-      font-size:1.3rem; line-height:1.9; margin:0 0 22px;
+    p {
+      font-size:1.15rem;
+      color:var(--sub);
+      margin:0 0 20px;
+    }
+    p strong { font-weight:800; color:var(--ink); }
+    p .highlight { color:var(--accent); font-weight:800; }
+
+    /* CTA 버튼 (오른쪽 하단, mini 스타일) */
+    .cta-dock {
+      position:fixed;
+      bottom:20px;
+      right:20px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      z-index:50;
+    }
+    .cta-dock a {
+      padding:10px 14px;
+      border-radius:12px;
+      font-size:.9rem;
       font-weight:700;
+      text-decoration:none;
+      text-align:center;
+      box-shadow:0 3px 8px rgba(0,0,0,0.12);
+      transition:.2s;
     }
-    section p strong, section span.highlight {
-      color:#E87722; font-weight:900;
-    }
-    .signature {
-      font-size:1.1rem; color:#555; margin-top:40px;
-      text-align:left; font-weight:600;
-    }
+    .cta-dock a:hover { transform:translateY(-2px); }
 
-    /* Floating CTA Buttons */
-    .floating-cta {
-      position:fixed; right:20px; bottom:20px;
-      display:flex; flex-direction:column; gap:12px; z-index:100;
-    }
-    .floating-cta a, .floating-cta button {
-      padding:10px 14px; border-radius:10px;
-      font-size:.9rem; font-weight:700;
-      text-decoration:none; text-align:center;
-      box-shadow:0 4px 10px rgba(0,0,0,0.15);
-      cursor:pointer; border:none; min-width:140px;
-    }
     .btn-kakao { background:#FEE500; color:#111; }
-    .btn-kakao:hover { background:#e5d200; }
     .btn-share { background:#6b7280; color:#fff; }
-    .btn-share:hover { background:#555; }
-    .btn-insta { background:#E4405F; color:#fff; }
-    .btn-insta:hover { background:#c62d49; }
-
-    @media(max-width:600px){
-      section p { font-size:1.1rem; }
-      h1.hero { font-size:2rem; }
-      .floating-cta a, .floating-cta button { font-size:.85rem; min-width:120px; }
-    }
+    .btn-insta { background:#E1306C; color:#fff; }
+    .btn-chat { background:#3b82f6; color:#fff; }
   </style>
 </head>
 <body>
@@ -66,48 +79,43 @@
 
   <main class="container">
     <!-- Hero -->
-    <h1 class="hero">
-      ⚡ 아직은 작은 실험이지만 <span>깊고 따뜻하게</span> 나아가겠습니다.
-    </h1>
+    <h1>⚡ 아직은 작은 실험이지만 <br/>깊고 <span class="highlight">따뜻하게</span> 나아가겠습니다</h1>
 
     <!-- 시작 -->
     <section>
       <h2>시작</h2>
-      <p>단톡방과 SNS에는 매일 <strong>구조 이야기</strong>가 올라왔습니다.  
-      <strong>용기</strong> 있는 구조 뒤에는 늘 <strong>병원비라는 벽</strong>이 있었습니다.</p>
-      <p>누구는 <strong>책임</strong>을 짊어지고,  
-      누구는 <strong>도와주고 싶다</strong>고 말했습니다.</p>
-      <p>저는 지금도 그 마음들을 <span class="highlight">이어주고 싶습니다.</span></p>
+      <p>단톡방과 SNS에는 매일 <strong>구조 이야기</strong>가 올라왔습니다. 용기 있는 구조 뒤에는 늘 <strong>병원비라는 현실</strong>이 있었습니다.</p>
+      <p>누구는 <strong>책임</strong>을 짊어지고, 누구는 <strong>도와주고 싶다</strong>고 말했습니다.</p>
+      <p>Project.PAW는 그 <strong>마음들을 이어주고 싶습니다.</strong></p>
     </section>
 
     <!-- 본질 -->
     <section>
       <h2>본질</h2>
-      <p>Project.PAW에서 <span class="highlight">따뜻한 마음이 흩어지지 않고 이어지길</span> 실험합니다.</p>
-      <p>사람의 마음이 머뭇거릴 때,  
-      그 <span class="highlight">망설임에 용기</span>를 덧붙여주는 일.</p>
-      <p>그게 Project.PAW가 존재하는 <span class="highlight">본질적 이유</span>입니다.</p>
-      <p class="signature">– Project.PAW 시작한 사람 드림 –</p>
+      <p>Project.PAW에서 <strong>따뜻한 마음이 흩어지지 않고 이어지길</strong> 실험합니다.</p>
+      <p>사람의 마음이 머뭇거릴 때, 그 망설임에 <span class="highlight">용기</span>를 덧붙여주는 일.</p>
+      <p>그게 Project.PAW가 존재하는 <strong>본질적 이유</strong>입니다.</p>
+      <p style="margin-top:40px;font-size:1rem;color:#888;">– Project.PAW 시작한 사람 드림 –</p>
     </section>
   </main>
 
-  <!-- Floating CTA -->
-  <div class="floating-cta">
-    <a href="index.html" class="btn-kakao">❤️ 후원하러 가기</a>
-    <button class="btn-share" id="shareCopy">🔗 Paw 링크 복사</button>
-    <a href="https://instagram.com" target="_blank" class="btn-insta">📸 PAW 인스타</a>
-    <a href="https://open.kakao.com/" target="_blank" class="btn-kakao">💬 대표 단톡방</a>
+  <!-- CTA 버튼 -->
+  <div class="cta-dock">
+    <a href="#" class="btn-kakao">💬 후원하러 가기</a>
+    <a href="#" class="btn-share">🔗 Paw 링크 복사</a>
+    <a href="#" class="btn-insta">📸 PAW 인스타</a>
+    <a href="#" class="btn-chat">👥 대표 단톡방</a>
   </div>
 
   <!-- Footer -->
   <div data-include="footer"></div>
 
-  <script type="module" src="js/include.js"></script>
   <script type="module">
     import { injectLayout } from "./js/include.js";
     injectLayout();
 
-    document.getElementById("shareCopy")?.addEventListener("click",()=>{
+    // 공유 버튼 기능
+    document.querySelector(".btn-share")?.addEventListener("click",()=>{
       navigator.clipboard.writeText(window.location.href)
         .then(()=>alert("링크가 복사되었습니다."));
     });
