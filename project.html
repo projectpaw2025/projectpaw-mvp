@@ -42,6 +42,16 @@
   .section-card h2{font-size:1.3rem;font-weight:800;margin-bottom:14px;color:var(--accent)}
   .section-card p{font-size:1.05rem;line-height:1.7;color:var(--ink);white-space:pre-line}
 
+  /* ✅ 강조문구 스타일 */
+  .highlight {
+    font-size:1.2rem;
+    font-weight:700;
+    color:var(--accent);
+    margin:0 0 20px;
+    padding-left:16px;
+    border-left:4px solid var(--accent);
+  }
+
   .info-card p{margin:6px 0;font-size:1rem;color:var(--sub)}
 
   .share-buttons{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
@@ -168,6 +178,7 @@
 
           <section class="section-card">
             <h2>스토리</h2>
+            ${p.keyMessage ? `<blockquote class="highlight">❝ ${p.keyMessage} ❞</blockquote>` : ''}
             <p>${p.description||''}</p>
           </section>
 
