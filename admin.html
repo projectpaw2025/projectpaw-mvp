@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>관리자 페이지</title>
+<title>관리자 페이지 - Project.PAW</title>
 <link rel="stylesheet" href="common.css"/>
 <link rel="stylesheet" href="app.min.css"/>
 <style>
@@ -11,8 +11,8 @@
 table{width:100%;border-collapse:collapse;margin-top:20px}
 th,td{border:1px solid #e5e7eb;padding:10px;font-size:.9rem;text-align:left;vertical-align:top}
 th{background:#f9fafb}
-.actions{display:flex;gap:6px}
-button{padding:6px 10px;border-radius:8px;border:1px solid #ccc;cursor:pointer}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+button{padding:6px 10px;border-radius:8px;border:1px solid #ccc;cursor:pointer;font-size:.85rem}
 button.approve{background:#16a34a;color:#fff;border:none}
 button.delete{background:#dc2626;color:#fff;border:none}
 button.edit{background:#2563eb;color:#fff;border:none}
@@ -20,6 +20,11 @@ button.edit{background:#2563eb;color:#fff;border:none}
 form.editor{margin-top:30px;display:grid;gap:12px;max-width:500px}
 form.editor label{font-weight:700}
 form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-radius:8px}
+@media(max-width:600px){
+  table{font-size:.8rem}
+  .actions{flex-direction:column}
+  button{width:100%}
+}
 </style>
 </head>
 <body>
@@ -38,6 +43,7 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
       <table>
         <thead>
           <tr>
+            <th>번호</th>
             <th>프로젝트명</th>
             <th>구조자</th>
             <th>요약</th>
@@ -47,7 +53,7 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
           </tr>
         </thead>
         <tbody id="projects-body">
-          <tr><td colspan="6" class="muted">불러오는 중...</td></tr>
+          <tr><td colspan="7" class="muted">불러오는 중...</td></tr>
         </tbody>
       </table>
 
@@ -122,12 +128,13 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
       try{
         const list=await fetchAllProjects();
         if(!list.length){
-          $body.innerHTML='<tr><td colspan="6" class="muted">아직 등록된 프로젝트가 없습니다.</td></tr>';
+          $body.innerHTML='<tr><td colspan="7" class="muted">아직 등록된 프로젝트가 없습니다.</td></tr>';
           return;
         }
         $body.innerHTML=list.map(p=>`
           <tr>
-            <td>PAW #${p.projectNumber ?? '-'} ${p.name??'(이름 없음)'}</td>
+            <td>${p.projectNumber ? `PAW #${p.projectNumber}` : '-'}</td>
+            <td>${p.name??'(이름 없음)'}</td>
             <td>${p.rescuerName??'-'}</td>
             <td>${p.summary??''}</td>
             <td>${p.privateContact??''}</td>
@@ -140,7 +147,7 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
           </tr>`).join('');
       }catch(e){
         console.error(e);
-        $body.innerHTML='<tr><td colspan="6" class="muted">프로젝트를 불러오지 못했습니다.</td></tr>';
+        $body.innerHTML='<tr><td colspan="7" class="muted">프로젝트를 불러오지 못했습니다.</td></tr>';
       }
     }
 
