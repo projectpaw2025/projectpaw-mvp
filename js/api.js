@@ -88,7 +88,8 @@ export async function apiCreateProject(data) {
     description: data.description || "",
     goalAmount: toInt(data.goalAmount),
     rescuerContribution: toInt(data.rescuerContribution),
-    registrantKakaoId: data.registrantKakaoId || "",
+    privateContact: data.privateContact || "",   // ✅ 관리자용 연락처 (공개 안됨)
+    registrantKakaoId: data.registrantKakaoId || "", // 필요 시 승인 단계에서 추가 가능
     coverUrl,
     galleryUrls,
     receiptUrls,
