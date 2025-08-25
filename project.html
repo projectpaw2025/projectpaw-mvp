@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="app.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet"/>
-<!-- ✅ Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
 
 <style>
@@ -43,7 +42,6 @@
   .section-card h2{font-size:1.3rem;font-weight:800;margin-bottom:14px;color:var(--accent)}
   .section-card p{font-size:1.05rem;line-height:1.7;color:var(--ink)}
 
-  /* ✅ 핵심 한 줄 강조 */
   .highlight {
     font-size:1.2rem;
     font-weight:700;
@@ -70,6 +68,12 @@
   .cta-dock a{background:var(--accent);color:#fff;padding:12px 18px;border-radius:14px;
     font-weight:700;font-size:.95rem;text-align:center;text-decoration:none}
   .cta-dock a:hover{background:#d56612}
+
+  /* ✅ 후기 스타일 */
+  .review-list{display:flex;flex-direction:column;gap:14px}
+  .review-card{background:#fafafa;border:1px solid #eee;border-radius:10px;padding:14px 16px}
+  .review-card .author{font-weight:700;margin-bottom:6px;color:var(--ink)}
+  .review-card .text{font-size:.95rem;line-height:1.5;color:var(--sub)}
 </style>
 </head>
 <body>
@@ -85,7 +89,6 @@
 
   <div data-include="footer"></div>
 
-  <!-- ✅ Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script type="module">
@@ -131,6 +134,36 @@
     }
 
     function getId(){return new URLSearchParams(location.search).get("id");}
+
+    // ✅ 후기 API (localStorage 기반)
+    const reviewsKey=id=>`paw_reviews_${id}`;
+    function loadReviews(id){return JSON.parse(localStorage.getItem(reviewsKey(id))||"[]");}
+    function saveReviews(id,list){localStorage.setItem(reviewsKey(id),JSON.stringify(list));}
+    function renderReviews(id){
+      const list=loadReviews(id);
+      const $list=document.getElementById("reviewList");
+      if(!list.length){$list.innerHTML='<div class="muted">아직 후기가 없습니다.</div>';return;}
+      $list.innerHTML=list.map(r=>`
+        <div class="review-card">
+          <div class="author">🐾 ${r.reviewer}</div>
+          <div class="text">${r.text.replace(/\\n/g,"<br/>")}</div>
+        </div>
+      `).join('');
+    }
+    function setupReviewForm(id){
+      const form=document.getElementById("reviewForm");
+      form.addEventListener("submit",e=>{
+        e.preventDefault();
+        const reviewer=document.getElementById("reviewer").value.trim();
+        const text=document.getElementById("reviewText").value.trim();
+        if(!reviewer||!text) return;
+        const list=loadReviews(id);
+        list.unshift({reviewer,text,date:Date.now()});
+        saveReviews(id,list);
+        form.reset();
+        renderReviews(id);
+      });
+    }
 
     async function render(){
       const id=getId();
@@ -183,7 +216,7 @@
           <section class="section-card">
             <h2>스토리</h2>
             ${p.keyMessage ? `<div class="highlight">❝ ${p.keyMessage} ❞</div>` : ''}
-            <p>${(p.description||'').replace(/\n/g,'<br/>')}</p>
+            <p>${(p.description||'').replace(/\\n/g,'<br/>')}</p>
           </section>
 
           <section class="section-card info-card">
@@ -191,6 +224,20 @@
             <p><strong>구조자 부담금:</strong> ${fmt(p.rescuerContribution)}원</p>
             <p><strong>지지자 수:</strong> ${fmt(p.supportersCount||0)}명</p>
             <p><strong>승인 상태:</strong> ${p.adminApproved?'승인됨':'대기중'}</p>
+          </section>
+
+          <!-- ✅ 후기 섹션 -->
+          <section class="section-card" id="reviews">
+            <h2>후기</h2>
+            <form id="reviewForm" style="margin-bottom:20px">
+              <input type="text" id="reviewer" placeholder="이름 또는 닉네임" 
+                     style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin-bottom:10px" required/>
+              <textarea id="reviewText" placeholder="후기를 남겨주세요" 
+                        style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;min-height:80px" required></textarea>
+              <button type="submit" class="btn primary" 
+                      style="margin-top:10px;padding:10px 16px;border:none;border-radius:8px;font-weight:700">등록</button>
+            </form>
+            <div id="reviewList" class="review-list muted">아직 후기가 없습니다.</div>
           </section>
 
           <section class="section-card">
@@ -208,6 +255,10 @@
           $ctaBtn.href=`https://open.kakao.com/o/${p.registrantKakaoId}`;
           $ctaBtn.textContent='마음 보태기';
         }
+
+        // 후기 초기화
+        renderReviews(id);
+        setupReviewForm(id);
 
         document.getElementById("shareCopy")?.addEventListener("click",()=>navigator.clipboard.writeText(window.location.href).then(()=>alert("링크 복사됨!")));
         document.getElementById("shareKakao")?.addEventListener("click",()=>window.open("https://sharer.kakao.com/talk/friends/picker/link","_blank"));
