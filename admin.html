@@ -78,7 +78,6 @@ button.delete{background:#dc2626;color:#fff;border:none}
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-        console.log("로그인 UID:", user.uid);
 
         const ok = await isAdminUser(user.uid);
         if (!ok) {
@@ -125,8 +124,12 @@ button.delete{background:#dc2626;color:#fff;border:none}
 
     $body.addEventListener('click', async e=>{
       if(e.target.matches('.approve')){
+        const projectId = e.target.dataset.id;
+        const kakaoId = prompt("승인 시 연결할 카카오톡 오픈채팅 ID를 입력하세요 (예: g123abcd)");
+        if(!kakaoId){ alert("카카오톡 ID를 입력해야 승인됩니다."); return; }
+
         if(confirm("승인하시겠습니까?")){
-          await approveProject(e.target.dataset.id);
+          await approveProject(projectId, { registrantKakaoId:kakaoId });
           alert("승인되었습니다.");
           render();
         }
