@@ -1,6 +1,6 @@
 import {
   getFirestore, collection, getDocs, query, where, doc, getDoc,
-  addDoc, updateDoc, deleteDoc, serverTimestamp
+  addDoc, updateDoc, deleteDoc, runTransaction, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import {
   getStorage, ref, uploadBytes, getDownloadURL
@@ -53,7 +53,7 @@ export async function getProjectById(id) {
 }
 
 // ------------------------------
-// 등록 함수
+// 등록 함수 (🔥 넘버링 추가됨)
 // ------------------------------
 export async function apiCreateProject(data) {
   const user = auth.currentUser;
@@ -80,21 +80,39 @@ export async function apiCreateProject(data) {
     }
   }
 
+  // 🔑 프로젝트 넘버링 발급 (transaction)
+  const counterRef = doc(db, "counters", "projects");
+  let newNumber = 0;
+
+  await runTransaction(db, async (transaction) => {
+    const counterSnap = await transaction.get(counterRef);
+    if (!counterSnap.exists()) {
+      transaction.set(counterRef, { lastNumber: 0 });
+      newNumber = 1;
+    } else {
+      const last = counterSnap.data().lastNumber || 0;
+      newNumber = last + 1;
+      transaction.update(counterRef, { lastNumber: newNumber });
+    }
+  });
+
   const ref = await addDoc(collection(db, "projects"), {
     ownerUid: user.uid,
+    projectNumber: newNumber,        // ✅ 시퀀스 번호 부여
     name: data.name,
     rescuerName: data.rescuerName || "",
     summary: data.summary || "",
     description: data.description || "",
     goalAmount: toInt(data.goalAmount),
     rescuerContribution: toInt(data.rescuerContribution),
-    privateContact: data.privateContact || "",   // ✅ 관리자용 연락처 (공개 안됨)
-    registrantKakaoId: data.registrantKakaoId || "", // 필요 시 승인 단계에서 추가 가능
+    privateContact: data.privateContact || "",   // 관리자용 연락처
+    registrantKakaoId: data.registrantKakaoId || "",
     coverUrl,
     galleryUrls,
     receiptUrls,
     adminApproved: false,
-    supportersCount: 0,
+    supporterCount: 0,
+    currentAmount: 0,
     createdAt: serverTimestamp()
   });
 
