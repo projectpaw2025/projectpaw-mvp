@@ -1,7 +1,7 @@
 // js/api.js
 import { db, storage, auth } from "./firebase.js";
 import {
-  collection, addDoc, serverTimestamp, getDocs, query, orderBy, limit, where, doc, getDoc
+  collection, addDoc, serverTimestamp, getDocs, query, orderBy, limit, where, doc, getDoc, updateDoc, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import {
   ref, uploadBytes, getDownloadURL
@@ -69,4 +69,22 @@ export async function apiGetProject(id) {
   const snap = await getDoc(refDoc);
   if (!snap.exists()) return null;
   return { id: snap.id, ...snap.data() };
+}
+
+// ----------------- 관리자용: 프로젝트 승인 -----------------
+export async function approveProject(id) {
+  const refDoc = doc(db, "projects", id);
+  await updateDoc(refDoc, { adminApproved: true, status: "approved" });
+}
+
+// ----------------- 관리자용: 프로젝트 삭제 -----------------
+export async function deleteProject(id) {
+  const refDoc = doc(db, "projects", id);
+  await deleteDoc(refDoc);
+}
+
+// ----------------- 관리자용: 전체 프로젝트 불러오기 -----------------
+export async function fetchAllProjects() {
+  const snap = await getDocs(query(collection(db, "projects"), orderBy("createdAt", "desc")));
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
