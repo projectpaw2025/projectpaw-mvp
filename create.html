@@ -93,6 +93,7 @@
             <input type="text" id="rescuerContribution" placeholder="예: 100,000원" required/>
           </div>
         </div>
+        <div class="note">👉 구조자가 일부 부담해야 등록 가능 (책임성 원칙)</div>
       </div>
 
       <!-- 소통 -->
@@ -100,6 +101,7 @@
         <h2>4. 소통 정보</h2>
         <label>연락처 (카카오톡 ID 또는 전화번호)</label>
         <input name="privateContact" required/>
+        <div class="note">👉 관리자에게만 보이며, 전체 공개되지 않습니다.</div>
       </div>
 
       <!-- 이미지 -->
@@ -114,6 +116,7 @@
         <label>영수증 사진</label>
         <input type="file" id="receiptImages" accept="image/*" multiple class="upload-box"/>
         <div class="preview" id="previewReceipt"></div>
+        <div class="note">👉 진료비·치료비 증빙용 영수증 (투명성 확보)</div>
       </div>
 
       <div class="actions">
@@ -143,12 +146,6 @@
       e.preventDefault();
       await authReady;
 
-      // 기본 안내문 그대로 제출 방지
-      if(desc.value.trim().startsWith("🐾 언제, 어디서 발견했나요?")) {
-        alert("스토리를 작성해주세요.");
-        return;
-      }
-
       submitBtn.classList.add('disabled');
       submitBtn.textContent='업로드 중...';
 
@@ -176,6 +173,40 @@
         submitBtn.textContent='등록하기';
       }
     });
+
+    // 금액 입력 천단위 콤마 자동화
+    function setupCurrencyInput(id){
+      const el=document.getElementById(id);
+      el.addEventListener('input',()=>{
+        let v=el.value.replace(/[^0-9]/g,'');
+        if(v===''){delete el.dataset.value;el.value='';return;}
+        el.dataset.value=v;
+        el.value=Number(v).toLocaleString('ko-KR')+'원';
+      });
+    }
+    setupCurrencyInput("goalAmount");
+    setupCurrencyInput("rescuerContribution");
+
+    // 이미지 미리보기
+    function setupPreview(inputId,previewId){
+      const input=document.getElementById(inputId);
+      const preview=document.getElementById(previewId);
+      input.addEventListener('change',()=>{
+        preview.innerHTML='';
+        Array.from(input.files).forEach(file=>{
+          const reader=new FileReader();
+          reader.onload=e=>{
+            const img=document.createElement('img');
+            img.src=e.target.result;
+            preview.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+    }
+    setupPreview("repImage","previewRep");
+    setupPreview("situationImages","previewSituation");
+    setupPreview("receiptImages","previewReceipt");
   </script>
 </body>
 </html>
