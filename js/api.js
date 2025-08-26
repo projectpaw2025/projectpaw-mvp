@@ -1,153 +1,72 @@
+// js/api.js
+import { db, storage, auth } from "./firebase.js";
 import {
-  getFirestore, collection, getDocs, query, where, doc, getDoc,
-  addDoc, updateDoc, deleteDoc, runTransaction, serverTimestamp
+  collection, addDoc, serverTimestamp, getDocs, query, orderBy, limit, where, doc, getDoc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import {
-  getStorage, ref, uploadBytes, getDownloadURL
+  ref, uploadBytes, getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-import { app } from "./firebase.js";
-
-const db = getFirestore(app);
-const storage = getStorage(app);
-const auth = getAuth(app);
-
-// ------------------------------
-// 헬퍼 함수
-// ------------------------------
-async function uploadAndGetURL(path, file) {
-  const storageRef = ref(storage, path);
-  await uploadBytes(storageRef, file);
-  return await getDownloadURL(storageRef);
-}
-
-function toInt(v) {
-  if (!v) return 0;
-  return parseInt(v, 10) || 0;
-}
-
-// ------------------------------
-// 조회 함수
-// ------------------------------
-
-// 모든 프로젝트 불러오기 (관리자용)
-export async function fetchAllProjects() {
-  const snapshot = await getDocs(collection(db, "projects"));
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-}
-
-// 승인된 프로젝트만 불러오기
-export async function fetchApprovedProjects() {
-  const q = query(collection(db, "projects"), where("adminApproved", "==", true));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-}
-
-// 특정 프로젝트 상세 가져오기
-export async function getProjectById(id) {
-  const ref = doc(db, "projects", id);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) return null;
-  return { id: snap.id, ...snap.data() };
-}
-
-// ------------------------------
-// 등록 함수 (🔥 넘버링 추가됨)
-// ------------------------------
+// ----------------- 프로젝트 생성 -----------------
 export async function apiCreateProject(data) {
-  const user = auth.currentUser;
-  if (!user) throw new Error("로그인이 필요합니다.");
+  // ✅ 로그인 체크 완화 (베타 모드)
+  const user = auth.currentUser || { uid: "guest" };
 
-  let coverUrl = null;
-  if (data.coverFile) {
-    coverUrl = await uploadAndGetURL(`covers/${user.uid}_${Date.now()}`, data.coverFile);
+  // 파일 업로드 helper
+  async function uploadAndGetURL(path, file) {
+    if (!file) return null;
+    const storageRef = ref(storage, path);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
   }
 
-  let galleryUrls = [];
-  if (data.galleryFiles && data.galleryFiles.length) {
-    for (let f of data.galleryFiles) {
-      const url = await uploadAndGetURL(`gallery/${user.uid}_${Date.now()}_${f.name}`, f);
-      galleryUrls.push(url);
+  const coverUrl = await uploadAndGetURL(`covers/${user.uid}_${Date.now()}`, data.coverFile);
+  const galleryUrls = [];
+  if (data.galleryFiles) {
+    for (const f of data.galleryFiles) {
+      const u = await uploadAndGetURL(`gallery/${user.uid}_${Date.now()}_${f.name}`, f);
+      if (u) galleryUrls.push(u);
+    }
+  }
+  const receiptUrls = [];
+  if (data.receiptFiles) {
+    for (const f of data.receiptFiles) {
+      const u = await uploadAndGetURL(`receipts/${user.uid}_${Date.now()}_${f.name}`, f);
+      if (u) receiptUrls.push(u);
     }
   }
 
-  let receiptUrls = [];
-  if (data.receiptFiles && data.receiptFiles.length) {
-    for (let f of data.receiptFiles) {
-      const url = await uploadAndGetURL(`receipts/${user.uid}_${Date.now()}_${f.name}`, f);
-      receiptUrls.push(url);
-    }
-  }
-
-  // 🔑 프로젝트 넘버링 발급 (transaction)
-  const counterRef = doc(db, "counters", "projects");
-  let newNumber = 0;
-
-  await runTransaction(db, async (transaction) => {
-    const counterSnap = await transaction.get(counterRef);
-    if (!counterSnap.exists()) {
-      transaction.set(counterRef, { lastNumber: 0 });
-      newNumber = 1;
-    } else {
-      const last = counterSnap.data().lastNumber || 0;
-      newNumber = last + 1;
-      transaction.update(counterRef, { lastNumber: newNumber });
-    }
-  });
-
-  const ref = await addDoc(collection(db, "projects"), {
-    ownerUid: user.uid,
-    projectNumber: newNumber,        // ✅ 시퀀스 번호 부여
+  const docRef = await addDoc(collection(db, "projects"), {
     name: data.name,
-    rescuerName: data.rescuerName || "",
-    summary: data.summary || "",
-    description: data.description || "",
-    goalAmount: toInt(data.goalAmount),
-    rescuerContribution: toInt(data.rescuerContribution),
-    privateContact: data.privateContact || "",   // 관리자용 연락처
-    registrantKakaoId: data.registrantKakaoId || "",
+    summary: data.summary,
+    keyMessage: data.keyMessage || "",
+    goalAmount: Number(data.goalAmount || 0),
+    currentAmount: 0,
+    supporterCount: 0,
     coverUrl,
     galleryUrls,
     receiptUrls,
+    status: "pending",
+    createdAt: serverTimestamp(),
+    ownerUid: user.uid,
     adminApproved: false,
-    supporterCount: 0,
-    currentAmount: 0,
-    createdAt: serverTimestamp()
   });
 
-  return ref.id;
+  return docRef.id;
 }
 
-// ------------------------------
-// 관리자용 함수
-// ------------------------------
-
-// 승인 처리 (카카오톡 오픈채팅 ID 함께 저장 가능)
-export async function approveProject(id, extra = {}) {
-  const ref = doc(db, "projects", id);
-
-  const updateData = { adminApproved: true };
-  if (extra.registrantKakaoId) {
-    updateData.registrantKakaoId = extra.registrantKakaoId.trim();
-  }
-
-  await updateDoc(ref, updateData);
+// ----------------- 프로젝트 목록 -----------------
+export async function apiListProjects({ status = null, limit: lim = 20 } = {}) {
+  let q = query(collection(db, "projects"), orderBy("createdAt", "desc"), limit(lim));
+  if (status) q = query(collection(db, "projects"), where("status", "==", status), orderBy("createdAt", "desc"), limit(lim));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
-// 삭제 처리
-export async function deleteProject(id) {
-  const ref = doc(db, "projects", id);
-  await deleteDoc(ref);
-}
-
-// ------------------------------
-// 호환용 alias
-// ------------------------------
-export async function apiListProjects(opts = {}) {
-  const status = opts.status || 'approved';
-  if (status === 'approved') {
-    return await fetchApprovedProjects();
-  }
-  return await fetchAllProjects();
+// ----------------- 프로젝트 상세 -----------------
+export async function apiGetProject(id) {
+  const refDoc = doc(db, "projects", id);
+  const snap = await getDoc(refDoc);
+  if (!snap.exists()) return null;
+  return { id: snap.id, ...snap.data() };
 }
