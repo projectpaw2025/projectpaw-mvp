@@ -95,8 +95,10 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
     const editorForm = document.getElementById("editorForm");
 
     async function isAdminUser(uid){
+      console.log("🔍 관리자 체크 UID:", uid); // ✅ 디버그 로그
       const docRef = doc(db, "admins", uid);
       const snap = await getDoc(docRef);
+      console.log("📄 admins 문서 존재 여부:", snap.exists()); // ✅ 디버그 로그
       return snap.exists();
     }
 
@@ -109,6 +111,7 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
+        console.log("✅ 로그인 성공:", user.email, "UID:", user.uid); // ✅ 디버그 로그
         const ok = await isAdminUser(user.uid);
         if (!ok) { errorDiv.textContent = "⚠️ 관리자 권한이 없는 계정입니다."; return; }
 
