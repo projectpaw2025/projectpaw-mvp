@@ -10,5 +10,32 @@
     <p style="font-size:.8rem;color:#9ca3af;margin-top:4px">
       ⚡ 아직은 <strong>실험 중</strong> — 곧 연결이 시작됩니다
     </p>
+
+    <!-- 로그인 / 로그아웃 버튼 -->
+    <div style="margin-top:12px;">
+      <a href="login.html"
+         style="margin:0 8px;font-size:.9rem;color:#2563eb;font-weight:600;text-decoration:none;">
+         로그인
+      </a>
+      <a href="#" onclick="logout()"
+         style="margin:0 8px;font-size:.9rem;color:#ef4444;font-weight:600;text-decoration:none;">
+         로그아웃
+      </a>
+    </div>
   </div>
 </footer>
+
+<script type="module">
+  import { auth, signOut } from "./js/firebase.js";
+
+  // 로그아웃 함수 (로그인 상태 확인 안 하고 그냥 실행)
+  window.logout = async () => {
+    try {
+      await signOut(auth);
+      alert("로그아웃 완료!");
+      location.href = "index.html";
+    } catch (e) {
+      console.error("로그아웃 실패:", e);
+    }
+  };
+</script>
