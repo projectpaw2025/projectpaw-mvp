@@ -22,15 +22,11 @@
   input,textarea{width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:10px;
     font-size:1rem;line-height:1.4}
   input:focus,textarea:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 2px rgba(232,119,34,0.2)}
-  textarea{min-height:120px;resize:vertical}
+  textarea{min-height:200px;resize:vertical}
   .grid2{display:grid;gap:16px;grid-template-columns:1fr 1fr}
   @media(max-width:760px){.grid2{grid-template-columns:1fr}}
 
   .note{color:#666;font-size:.85rem;margin-top:4px}
-  .guide-box{background:#fdfbf9;border:1px dashed #f2c8a2;border-radius:12px;
-    padding:16px;font-size:.9rem;line-height:1.6;margin-top:12px}
-  .guide-box strong{color:var(--accent)}
-
   .upload-box{border:2px dashed #ddd;border-radius:12px;padding:20px;text-align:center;
     color:#666;cursor:pointer;transition:.2s}
   .upload-box:hover{border-color:var(--accent);background:#fff7f2;color:var(--accent)}
@@ -58,12 +54,10 @@
           <div>
             <label>동물 이름</label>
             <input name="name" placeholder="예: 초코" required/>
-            <div class="note">구조한 동물의 이름이나 별칭</div>
           </div>
           <div>
             <label>구조자 이름</label>
             <input name="rescuerName" placeholder="예: 김철수" required/>
-            <div class="note">본인의 이름이나 닉네임</div>
           </div>
         </div>
       </div>
@@ -71,30 +65,21 @@
       <!-- 프로젝트 소개 -->
       <div class="form-section">
         <h2>2. 프로젝트 소개</h2>
-
-        <!-- 요약 -->
         <label>상황 요약</label>
-        <input name="summary" placeholder="예: 교통사고로 다친 고양이 치료비 모금" required/>
-        <div class="note">👉 한 줄 요약: <b>목록 카드 / 상세 상단</b>에 짧게 노출됩니다. (50자 이내 권장)</div>
+        <input name="summary" placeholder="예: 교통사고로 다친 강아지 치료비 모금" required/>
+        <div class="note">👉 한 줄 요약은 카드/상단에만 표시됩니다.</div>
 
-        <!-- 핵심 문구 -->
         <label>핵심 한 줄 (선택)</label>
         <input name="keyMessage" placeholder="예: 돈보다 생명이 먼저였습니다."/>
-        <div class="note">상세페이지 상단에 강조되어 표시됩니다. (선택 입력)</div>
 
-        <!-- 상세 스토리 -->
-        <div class="guide-box">
-          ✍️ <strong>스토리 작성 가이드</strong><br/>
-          • 🐾 언제, 어디서 구조했나요?<br/>
-          • 💔 현재 어떤 상황인가요? (치료/임시보호 등)<br/>
-          • 🎯 후원금은 어떻게 사용될 예정인가요?<br/>
-          • 🙏 후원자에게 전하고 싶은 말은?<br/>
-          <br/>
-          ⚠️ 이 글은 <b>상세페이지 "스토리" 박스</b>에 그대로 노출됩니다.
-        </div>
-        <label>상세 스토리</label>
-        <textarea name="description" id="desc" maxlength="500" placeholder="구조 경위와 현재 상황, 목표, 후원자에게 전할 메시지를 자세히 적어주세요." required></textarea>
-        <div class="note"><span id="descCount">0</span> / 500자 (권장: 200자 이상)</div>
+        <label>상세 설명</label>
+        <textarea name="description" id="desc" maxlength="1000" required>🐾 언제, 어디서 구조했나요?
+💔 현재 어떤 상황인가요? (치료/임시보호 등)
+🎯 목표는 무엇인가요? (후원금 사용 계획)
+🙏 후원자에게 전하고 싶은 말은?
+📸 인스타그램/블로그 등 참고할 수 있는 링크가 있다면 함께 적어주세요
+        </textarea>
+        <div class="note"><span id="descCount">0</span> / 1000자</div>
       </div>
 
       <!-- 금액 -->
@@ -116,28 +101,22 @@
       <div class="form-section">
         <h2>4. 소통 정보</h2>
         <label>연락처 (카카오톡 ID 또는 전화번호)</label>
-        <input name="privateContact" placeholder="예: g123abcd 또는 010-1234-5678" required/>
-        <div class="note">관리자에게만 보이며, 전체 공개되지 않습니다.</div>
+        <input name="privateContact" required/>
       </div>
 
       <!-- 이미지 -->
       <div class="form-section">
         <h2>5. 사진 업로드</h2>
-        <label>대표 사진 (1장)</label>
+        <label>대표 사진</label>
         <input type="file" id="repImage" accept="image/*" required class="upload-box"/>
         <div class="preview" id="previewRep"></div>
-
-        <label>구조 상황 사진 (여러 장)</label>
+        <label>구조 상황 사진</label>
         <input type="file" id="situationImages" accept="image/*" multiple class="upload-box"/>
         <div class="preview" id="previewSituation"></div>
-
-        <label>영수증 사진 (여러 장)</label>
+        <label>영수증 사진</label>
         <input type="file" id="receiptImages" accept="image/*" multiple class="upload-box"/>
         <div class="preview" id="previewReceipt"></div>
-        <div class="note">진료비·치료비 증빙용 영수증을 첨부해주세요.</div>
       </div>
-
-      <p class="note">* 병원명/계좌/카카오톡 링크는 관리자 전용 화면에서 등록됩니다.</p>
 
       <div class="actions">
         <a class="btn ghost" href="index.html">취소</a>
@@ -162,41 +141,14 @@
     const descCount=document.getElementById('descCount');
     desc.addEventListener('input',()=>{descCount.textContent=desc.value.length;});
 
-    function setupCurrencyInput(el){
-      el.addEventListener("input",()=>{
-        const raw=el.value.replace(/[^0-9]/g,"");
-        if(raw){
-          el.value=Number(raw).toLocaleString("ko-KR")+"원";
-          el.dataset.value=raw;
-        }else{el.value="";el.dataset.value="";}
-      });
-    }
-    setupCurrencyInput(document.getElementById("goalAmount"));
-    setupCurrencyInput(document.getElementById("rescuerContribution"));
-
-    function setupPreview(inputId,previewId){
-      const input=document.getElementById(inputId);
-      const preview=document.getElementById(previewId);
-      input.addEventListener('change',()=>{
-        preview.innerHTML='';
-        [...input.files].forEach((file)=>{
-          const reader=new FileReader();
-          reader.onload=e=>{
-            const div=document.createElement('div');
-            div.innerHTML=`<img src="${e.target.result}" alt="preview"/>`;
-            preview.appendChild(div);
-          };
-          reader.readAsDataURL(file);
-        });
-      });
-    }
-    setupPreview('repImage','previewRep');
-    setupPreview('situationImages','previewSituation');
-    setupPreview('receiptImages','previewReceipt');
-
     form.addEventListener('submit',async(e)=>{
       e.preventDefault();
       await authReady;
+
+      if(desc.value.startsWith("🐾 언제, 어디서")) {
+        alert("스토리를 작성해주세요 (기본 안내문만 남겨둘 수 없습니다).");
+        return;
+      }
 
       submitBtn.classList.add('disabled');
       submitBtn.textContent='업로드 중...';
