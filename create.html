@@ -8,13 +8,7 @@
 <link rel="stylesheet" href="app.min.css"/>
 <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet"/>
 <style>
-  :root{
-    --ink:#111;
-    --sub:#555;
-    --accent:#E87722;
-    --line:#eaeaea;
-    --bg:#fff;
-  }
+  :root{--ink:#111;--sub:#555;--accent:#E87722;--line:#eaeaea;--bg:#fff;}
   body{background:#fafafa;font-family:'SUIT Variable','Pretendard',system-ui,sans-serif;color:var(--ink);margin:0}
   .wrap{max-width:880px;margin:0 auto;padding:30px 16px}
   h1{font-size:2rem;font-weight:900;margin-bottom:24px;color:var(--ink);text-align:center}
@@ -77,26 +71,30 @@
       <!-- 프로젝트 소개 -->
       <div class="form-section">
         <h2>2. 프로젝트 소개</h2>
-        <label>상황 요약</label>
-        <input name="summary" placeholder="예: 교통사고로 다친 강아지 치료비 모금" required/>
-        <div class="note">한 줄 요약은 목록에 표시됩니다.</div>
 
-        <!-- ✅ 핵심 한 줄 -->
+        <!-- 요약 -->
+        <label>상황 요약</label>
+        <input name="summary" placeholder="예: 교통사고로 다친 고양이 치료비 모금" required/>
+        <div class="note">👉 한 줄 요약: <b>목록 카드 / 상세 상단</b>에 짧게 노출됩니다. (50자 이내 권장)</div>
+
+        <!-- 핵심 문구 -->
         <label>핵심 한 줄 (선택)</label>
         <input name="keyMessage" placeholder="예: 돈보다 생명이 먼저였습니다."/>
-        <div class="note">스토리 상단에 강조되어 표시됩니다. 선택 입력입니다.</div>
+        <div class="note">상세페이지 상단에 강조되어 표시됩니다. (선택 입력)</div>
 
+        <!-- 상세 스토리 -->
         <div class="guide-box">
-          ✍️ <strong>작성 가이드</strong><br/>
-          • 🐾 구조 동물 소개 (언제, 어디서 발견되었나요?)<br/>
-          • 💔 현재 상황 (치료/임시보호 현황)<br/>
-          • 🎯 목표 (후원금 사용 계획)<br/>
-          • 🙏 부탁의 말 (후원자에게 하고 싶은 메시지)
+          ✍️ <strong>스토리 작성 가이드</strong><br/>
+          • 🐾 언제, 어디서 구조했나요?<br/>
+          • 💔 현재 어떤 상황인가요? (치료/임시보호 등)<br/>
+          • 🎯 후원금은 어떻게 사용될 예정인가요?<br/>
+          • 🙏 후원자에게 전하고 싶은 말은?<br/>
+          <br/>
+          ⚠️ 이 글은 <b>상세페이지 "스토리" 박스</b>에 그대로 노출됩니다.
         </div>
-
-        <label>상세 설명</label>
-        <textarea name="description" id="desc" maxlength="500" required></textarea>
-        <div class="note"><span id="descCount">0</span> / 500자</div>
+        <label>상세 스토리</label>
+        <textarea name="description" id="desc" maxlength="500" placeholder="구조 경위와 현재 상황, 목표, 후원자에게 전할 메시지를 자세히 적어주세요." required></textarea>
+        <div class="note"><span id="descCount">0</span> / 500자 (권장: 200자 이상)</div>
       </div>
 
       <!-- 금액 -->
@@ -209,7 +207,7 @@
           name:fd.get("name"),
           rescuerName:fd.get("rescuerName"),
           summary:fd.get("summary"),
-          keyMessage:fd.get("keyMessage"),   // ✅ 핵심 한 줄 추가
+          keyMessage:fd.get("keyMessage"),
           description:fd.get("description"),
           goalAmount:document.getElementById("goalAmount").dataset.value||0,
           rescuerContribution:document.getElementById("rescuerContribution").dataset.value||0,
