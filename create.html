@@ -22,7 +22,7 @@
   input,textarea{width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:10px;
     font-size:1rem;line-height:1.4}
   input:focus,textarea:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 2px rgba(232,119,34,0.2)}
-  textarea{min-height:200px;resize:vertical}
+  textarea{min-height:350px;resize:vertical}
   .grid2{display:grid;gap:16px;grid-template-columns:1fr 1fr}
   @media(max-width:760px){.grid2{grid-template-columns:1fr}}
 
@@ -73,11 +73,9 @@
         <input name="keyMessage" placeholder="예: 돈보다 생명이 먼저였습니다."/>
 
         <label>상세 설명</label>
-        <textarea name="description" id="desc" maxlength="1000" required>🐾 언제, 어디서 구조했나요?
-💔 현재 어떤 상황인가요? (치료/임시보호 등)
-🎯 목표는 무엇인가요? (후원금 사용 계획)
-🙏 후원자에게 전하고 싶은 말은?
-📸 인스타그램/블로그 등 참고할 수 있는 링크가 있다면 함께 적어주세요
+        <textarea name="description" id="desc" maxlength="1000" required>🐾 언제, 어디서 발견했나요?  
+🎯 현재 어떤 상태인가요?  (구조해주셔서 감사합니다)  
+📸 참고할 수 있는 인스타/블로그 링크가 있다면 함께 적어주세요.
         </textarea>
         <div class="note"><span id="descCount">0</span> / 1000자</div>
       </div>
@@ -145,8 +143,9 @@
       e.preventDefault();
       await authReady;
 
-      if(desc.value.startsWith("🐾 언제, 어디서")) {
-        alert("스토리를 작성해주세요 (기본 안내문만 남겨둘 수 없습니다).");
+      // 기본 안내문 그대로 제출 방지
+      if(desc.value.trim().startsWith("🐾 언제, 어디서 발견했나요?")) {
+        alert("스토리를 작성해주세요.");
         return;
       }
 
