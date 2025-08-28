@@ -70,6 +70,8 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
           <input type="number" id="edit-goalAmount"/>
           <label>한줄 메시지 (keyMessage)</label>
           <input type="text" id="edit-keyMessage"/>
+          <label>관리자의 한마디</label>
+          <input type="text" id="edit-adminMessage" placeholder="예: 책임감을 갖고 응원합니다."/>
           <label>카카오톡 오픈채팅 링크</label>
           <input type="url" id="edit-kakaoChatUrl" placeholder="https://open.kakao.com/..."/>
           <button type="submit">저장하기</button>
@@ -95,10 +97,8 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
     const editorForm = document.getElementById("editorForm");
 
     async function isAdminUser(uid){
-      console.log("🔍 관리자 체크 UID:", uid); // ✅ 디버그 로그
       const docRef = doc(db, "admins", uid);
       const snap = await getDoc(docRef);
-      console.log("📄 admins 문서 존재 여부:", snap.exists()); // ✅ 디버그 로그
       return snap.exists();
     }
 
@@ -111,7 +111,6 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-        console.log("✅ 로그인 성공:", user.email, "UID:", user.uid); // ✅ 디버그 로그
         const ok = await isAdminUser(user.uid);
         if (!ok) { errorDiv.textContent = "⚠️ 관리자 권한이 없는 계정입니다."; return; }
 
@@ -120,7 +119,6 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         render();
 
       } catch (err) {
-        console.error("로그인 실패:", err);
         errorDiv.textContent = "로그인 실패: " + (err.message || "");
       }
     });
@@ -149,7 +147,6 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
             </td>
           </tr>`).join('');
       }catch(e){
-        console.error(e);
         $body.innerHTML='<tr><td colspan="7" class="muted">프로젝트를 불러오지 못했습니다.</td></tr>';
       }
     }
@@ -179,6 +176,7 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         document.getElementById("edit-supporterCount").value=p.supporterCount||0;
         document.getElementById("edit-goalAmount").value=p.goalAmount||0;
         document.getElementById("edit-keyMessage").value=p.keyMessage||"";
+        document.getElementById("edit-adminMessage").value=p.adminMessage||"";
         document.getElementById("edit-kakaoChatUrl").value=p.kakaoChatUrl||"";
         editorSection.style.display="block";
         editorForm.scrollIntoView({behavior:"smooth"});
@@ -195,6 +193,7 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         supporterCount: Number(document.getElementById("edit-supporterCount").value)||0,
         goalAmount: Number(document.getElementById("edit-goalAmount").value)||0,
         keyMessage: document.getElementById("edit-keyMessage").value.trim(),
+        adminMessage: document.getElementById("edit-adminMessage").value.trim(),
         kakaoChatUrl: document.getElementById("edit-kakaoChatUrl").value.trim()
       };
 
@@ -203,7 +202,6 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         alert("프로젝트가 업데이트되었습니다.");
         render();
       }catch(err){
-        console.error(err);
         alert("업데이트 실패: "+err.message);
       }
     });
