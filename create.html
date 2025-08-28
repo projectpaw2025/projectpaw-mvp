@@ -132,19 +132,27 @@
     import { injectLayout } from './js/include.js';
     import { apiCreateProject } from './js/api.js';
     import { authReady } from './js/firebase.js';
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     injectLayout({ active:'create' });
 
     const form=document.getElementById('form');
     const submitBtn=document.getElementById('submitBtn');
-
     const desc=document.getElementById('desc');
     const descCount=document.getElementById('descCount');
+    const auth=getAuth();
+
     desc.addEventListener('input',()=>{descCount.textContent=desc.value.length;});
 
     form.addEventListener('submit',async(e)=>{
       e.preventDefault();
       await authReady;
+
+      // ✅ 로그인 체크 추가
+      if (!auth.currentUser) {
+        alert("⚠️ 프로젝트 등록은 로그인 후 가능합니다.");
+        return;
+      }
 
       submitBtn.classList.add('disabled');
       submitBtn.textContent='업로드 중...';
