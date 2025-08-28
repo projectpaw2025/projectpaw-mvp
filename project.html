@@ -7,15 +7,12 @@
   <link rel="stylesheet" href="common.css"/>
   <link rel="stylesheet" href="app.min.css"/>
   <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet"/>
-  <!-- ✅ Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-
   <style>
     :root{--ink:#111;--sub:#555;--accent:#E87722;--line:#eaeaea;--bg:#fafafa}
     body{margin:0;background:var(--bg);color:var(--ink);
       font-family:'SUIT Variable','Pretendard','Inter',system-ui,sans-serif}
     .wrap{max-width:860px;margin:0 auto;padding:20px 16px}
-
     .hero-card{background:#fff;border-radius:20px;overflow:hidden;
                box-shadow:0 6px 14px rgba(0,0,0,0.08);margin-bottom:24px}
     .overlay{position:absolute;bottom:0;left:0;right:0;
@@ -25,7 +22,6 @@
     .overlay h1{margin:8px 0;font-size:1.6rem;font-weight:900}
     .overlay .summary{font-size:1rem;opacity:.9}
     .key-message{margin-top:6px;color:#FFD166;font-weight:700}
-
     .hero-body{padding:24px}
     .hearts{font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:12px}
     .progress{background:#e5e7eb;height:16px;border-radius:12px;overflow:hidden;margin:14px 0}
@@ -33,14 +29,10 @@
                    text-align:center;font-size:.8rem;font-weight:600}
     .stats{display:flex;justify-content:space-between;font-size:.95rem;color:var(--sub);margin-top:8px}
     .stats span strong{font-size:1.05rem;font-weight:800;color:var(--ink);margin-left:4px}
-
-    /* 썸네일 strip */
     .thumb-strip{display:flex;gap:8px;overflow-x:auto;padding:10px;background:#fafafa}
     .thumb-strip img{height:70px;width:70px;object-fit:cover;border-radius:8px;cursor:pointer;
       border:2px solid transparent;flex-shrink:0}
     .thumb-strip img.active{border-color:var(--accent)}
-
-    /* 버튼 그룹 */
     .action-buttons{display:flex;gap:10px;margin-top:18px}
     .btn-kakao{flex:1;background:#FEE500;color:#111;padding:14px 18px;
       border-radius:12px;font-weight:700;font-size:1.05rem;text-align:center;text-decoration:none}
@@ -52,12 +44,10 @@
       .action-buttons{flex-direction:column}
       .btn-kakao,.btn-share{width:100%}
     }
-
     .section-card{background:#fff;border-radius:16px;padding:28px;margin-top:22px;
                   box-shadow:0 4px 10px rgba(0,0,0,0.05)}
     .section-card h2{font-size:1.3rem;font-weight:800;margin-bottom:14px;color:var(--accent)}
     .section-card p{font-size:1.05rem;line-height:1.7;color:var(--ink)}
-
     .cta-dock{display:none}
   </style>
 </head>
@@ -67,10 +57,7 @@
     <div id="project-detail"><div class="muted">불러오는 중...</div></div>
   </main>
   <div data-include="footer"></div>
-
-  <!-- ✅ Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
   <script type="module">
     import { injectLayout } from './js/include.js';
     import { getProjectById } from './js/api.js';
@@ -78,7 +65,6 @@
     import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     injectLayout({ active:'project' });
-
     const $detail=document.getElementById('project-detail');
     const fmt=n=>Number(n||0).toLocaleString('ko-KR');
 
@@ -93,7 +79,6 @@
       });
       return out;
     }
-
     async function toHttpUrl(raw){
       if(!raw) return null;
       let v=String(raw).trim();
@@ -101,7 +86,6 @@
       if(v.startsWith('/')) v=v.slice(1);
       try{return await getDownloadURL(ref(storage,v));}catch{return null;}
     }
-
     async function galleryHttpUrls(p){
       const cands=candidatesOf(p);
       const urls=await Promise.all(cands.map(toHttpUrl));
@@ -109,14 +93,8 @@
       for(const u of urls){if(u&&!seen.has(u)){seen.add(u);uniq.push(u);} }
       return uniq.length?uniq:['img/placeholder.svg'];
     }
-
     function getId(){return new URLSearchParams(location.search).get("id");}
-
-    // ✅ description 안전 처리
-    function formatDescription(text){
-      if(!text) return '';
-      return text.replace(/\n/g,'<br/>');
-    }
+    function formatDescription(text){if(!text) return '';return text.replace(/\n/g,'<br/>');}
 
     async function render(){
       const id=getId();
@@ -124,14 +102,12 @@
       try{
         const p=await getProjectById(id);
         if(!p){$detail.innerHTML='<div class="muted">존재하지 않는 프로젝트입니다.</div>';return;}
-
         const imgs=await galleryHttpUrls(p);
         const goal=Number(p.goalAmount||0);
         const current=Number(p.currentAmount||0);
         const rate=goal?Math.floor(current/goal*100):0;
 
         $detail.innerHTML=`
-          <!-- 사진 -->
           <section class="hero-card">
             <div id="carouselProject" class="carousel slide" data-bs-ride="carousel">
               <div class="carousel-inner">
@@ -153,14 +129,10 @@
                 <span class="carousel-control-next-icon"></span>
               </button>
             </div>
-
-            <!-- 썸네일 strip -->
             <div class="thumb-strip">
               ${imgs.map((url,i)=>`
                 <img src="${url}" data-index="${i}" class="${i===0?'active':''}"/>`).join('')}
             </div>
-
-            <!-- Status -->
             <div class="hero-body">
               <div class="hearts">❤️ 연결된 마음 <strong>${p.supporterCount??0}</strong>명</div>
               <div class="progress"><div class="bar" style="width:${rate}%">${rate}%</div></div>
@@ -169,23 +141,22 @@
                 <span>현재 <strong>${fmt(current)}</strong>원</span>
                 <span>구조자 <strong>${p.rescuerName??'익명'}</strong></span>
               </div>
+              ${p.adminMessage?`
+                <div style="margin-top:18px;padding:14px;border-radius:12px;background:#fff8f2;
+                            border:1px solid #f4d0b5;font-weight:800;color:#d35400;
+                            font-size:1.1rem;text-align:center">
+                  📌 관리자 한마디: ${p.adminMessage}
+                </div>`:''}
             </div>
           </section>
-
-          <!-- 스토리 -->
           <section class="section-card">
             <h2>스토리</h2>
             <p>${formatDescription(p.description)}</p>
           </section>
-
-          <!-- 후원/공유 버튼 -->
           <div class="action-buttons">
-            ${p.kakaoChatUrl ? `
-              <a href="${p.kakaoChatUrl}" target="_blank" class="btn-kakao">💬 후원하러 가기</a>`:''}
+            ${p.kakaoChatUrl ? `<a href="${p.kakaoChatUrl}" target="_blank" class="btn-kakao">💬 후원하러 가기</a>`:''}
             <button class="btn-share" id="shareCopy">🔗 링크 복사</button>
           </div>
-
-          <!-- Beta 안내 -->
           <section class="section-card">
             <h2>Beta 안내</h2>
             <p style="line-height:1.6">
@@ -193,16 +164,10 @@
               후원은 카카오톡 단톡방을 통해 이루어지며, 관리자가 매일 수동으로 모금액/참여자 수를 업데이트합니다.<br/>
               정식 서비스에서는 PG 결제를 통한 자동화된 투명 시스템이 제공될 예정입니다.
             </p>
-          </section>
-        `;
-
-        // 🔗 링크복사
+          </section>`;
         document.getElementById("shareCopy")?.addEventListener("click",()=>{
-          navigator.clipboard.writeText(window.location.href)
-            .then(()=>alert("링크가 복사되었습니다."));
+          navigator.clipboard.writeText(window.location.href).then(()=>alert("링크가 복사되었습니다."));
         });
-
-        // ✅ 썸네일 클릭 시 캐러셀 이동
         const carouselEl=document.querySelector('#carouselProject');
         const carousel=new bootstrap.Carousel(carouselEl);
         document.querySelectorAll('.thumb-strip img').forEach(img=>{
@@ -214,7 +179,6 @@
           });
         });
       }catch(e){
-        console.error(e);
         $detail.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
       }
     }
