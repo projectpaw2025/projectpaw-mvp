@@ -1,249 +1,107 @@
+
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>관리자 페이지 - Project.PAW</title>
-<link rel="stylesheet" href="common.css"/>
-<link rel="stylesheet" href="app.min.css"/>
-<style>
-.wrap{max-width:960px;margin:0 auto;padding:20px 16px}
-table{width:100%;border-collapse:collapse;margin-top:20px}
-th,td{border:1px solid #e5e7eb;padding:10px;font-size:.9rem;text-align:left;vertical-align:top}
-th{background:#f9fafb}
-.actions{display:flex;gap:6px;flex-wrap:wrap}
-button{padding:6px 10px;border-radius:8px;border:1px solid #ccc;cursor:pointer;font-size:.85rem}
-button.approve{background:#16a34a;color:#fff;border:none}
-button.delete{background:#dc2626;color:#fff;border:none}
-button.edit{background:#2563eb;color:#fff;border:none}
-.error{color:#dc2626;font-size:.9rem;margin-top:10px;text-align:center}
-form.editor{margin-top:30px;display:grid;gap:12px;max-width:500px}
-form.editor label{font-weight:700}
-form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-radius:8px}
-@media(max-width:600px){
-  table{font-size:.8rem}
-  .actions{flex-direction:column}
-  button{width:100%}
-}
-/* 조회수 대시보드 */
-.stats{margin-top:30px;padding:16px;border:1px solid #eee;border-radius:8px;background:#fafafa}
-.stats h2{font-size:1.2rem;margin-bottom:12px}
-.stats p{margin:6px 0;font-size:.95rem}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>소개 - Project.PAW</title>
+  <link rel="stylesheet" href="css/app.css"/>
+  <style>
+    body {
+      font-family:'SUIT Variable','Pretendard',sans-serif;
+      margin:0;background:#fafafa;color:#111;
+    }
+    main {
+      max-width:820px;
+      margin:0 auto;
+      padding:80px 20px;
+      line-height:1.9;
+    }
+    h1 {
+      font-size:2.6rem;
+      font-weight:900;
+      text-align:center;
+      margin-bottom:60px;
+    }
+    h2 {
+      font-size:1.5rem;
+      font-weight:800;
+      margin:70px 0 24px;
+      color:#111;
+    }
+    p {
+      font-size:1.15rem;
+      font-weight:600; /* 기본 bold */
+      margin:0 0 22px;
+    }
+    /* ✅ 본문 안 strong만 오렌지 강조 */
+    main strong {
+      color:#E87722;
+    }
+    .signature {
+      margin-top:50px;
+      font-size:1rem;
+      font-weight:600;
+      color:#555;
+      text-align:left;
+    }
+    /* CTA 버튼 */
+    .cta-dock {
+      position:fixed;
+      right:20px;
+      bottom:20px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      z-index:50;
+    }
+    .cta-dock a {
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:700;
+      font-size:.9rem;
+      text-decoration:none;
+      box-shadow:0 3px 8px rgba(0,0,0,0.12);
+    }
+    .btn-kakao {background:#FEE500;color:#111;}
+    .btn-share {background:#6b7280;color:#fff;}
+  </style>
 </head>
 <body>
-  <main class="wrap">
-    <h1>관리자 로그인</h1>
-    <p>이메일과 비밀번호로 로그인하세요.</p>
-    <form id="loginForm" style="margin-bottom:30px;display:grid;gap:12px;max-width:400px">
-      <input type="email" id="email" placeholder="이메일" required/>
-      <input type="password" id="password" placeholder="비밀번호" required/>
-      <button type="submit">로그인</button>
-      <div id="error" class="error"></div>
-    </form>
+  <div data-include="header"></div>
 
-    <section id="adminSection" style="display:none">
-      <h2>프로젝트 승인 & 관리</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>번호</th>
-            <th>프로젝트명</th>
-            <th>구조자</th>
-            <th>요약</th>
-            <th>연락처</th>
-            <th>상태</th>
-            <th>액션</th>
-          </tr>
-        </thead>
-        <tbody id="projects-body">
-          <tr><td colspan="7" class="muted">불러오는 중...</td></tr>
-        </tbody>
-      </table>
+  <main>
+    <h1>⚡ 아직은 작은 실험이지만 깊고 따뜻하게 나아가겠습니다.</h1>
 
-      <!-- ✅ 조회수 대시보드 -->
-      <section class="stats">
-        <h2>조회수 대시보드</h2>
-        <p>총 방문수: <span id="totalViews">0</span></p>
-        <p>오늘 방문수: <span id="todayViews">0</span></p>
-      </section>
+    <h2>시작한 이유</h2>
+    <p>단톡방과 SNS에는 매일 구조 이야기가 올라왔습니다.</p>
+    <p>용기 있는 구조 뒤에는 늘 병원비라는 <strong>현실</strong>이 있었습니다.</p>
+    <p>누구는 책임을 짊어지고, 누구는 도와주고 싶다고 말했습니다.</p>
+    <p>Project.PAW는 지금도 그 마음들을 <strong>이어주고 싶습니다.</strong></p>
 
-      <!-- 프로젝트 편집 섹션 -->
-      <section id="editorSection" style="display:none">
-        <h2>프로젝트 수치/링크 업데이트</h2>
-        <form id="editorForm" class="editor">
-          <input type="hidden" id="edit-id"/>
-          <label>모금액 (currentAmount)</label>
-          <input type="number" id="edit-currentAmount"/>
-          <label>참여자 수 (supporterCount)</label>
-          <input type="number" id="edit-supporterCount"/>
-          <label>목표 금액 (goalAmount)</label>
-          <input type="number" id="edit-goalAmount"/>
-          <label>한줄 메시지 (keyMessage)</label>
-          <input type="text" id="edit-keyMessage"/>
-          <label>카카오톡 오픈채팅 링크</label>
-          <input type="url" id="edit-kakaoChatUrl" placeholder="https://open.kakao.com/..."/>
-          <button type="submit">저장하기</button>
-        </form>
-      </section>
-    </section>
+    <h2>추구하는 본질</h2>
+    <p>Project.PAW에서 <strong>따뜻한 마음이 흩어지지 않고 이어지길</strong> 실험합니다.</p>
+    <p>사람의 마음이 머뭇거릴 때, 그 망설임에 <strong>용기</strong>를 덧붙여주는 일.</p>
+    <p>그게 Project.PAW가 존재하는 <strong>본질적 이유</strong>입니다.</p>
+
+    <p class="signature">– PROJECT.PAW 드림 –</p>
   </main>
 
+  <div class="cta-dock">
+    <a href="https://open.kakao.com/o/go3sJ0Kh" class="btn-kakao" target="_blank">💬 단톡방 참여하기</a>
+    <a href="#" class="btn-share">🔗 Paw 링크 복사</a>
+  </div>
+
+  <div data-include="footer"></div>
+
   <script type="module">
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { app } from "./js/firebase.js";
-    import { fetchAllProjects, approveProject, deleteProject } from "./js/api.js";
+    import { injectLayout } from "./js/include.js";
+    injectLayout();
 
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    const form = document.getElementById("loginForm");
-    const errorDiv = document.getElementById("error");
-    const adminSection = document.getElementById("adminSection");
-    const $body = document.getElementById("projects-body");
-    const editorSection = document.getElementById("editorSection");
-    const editorForm = document.getElementById("editorForm");
-
-    // ✅ 조회수 로직 (localStorage 기반)
-    function recordView(){
-      const today = new Date().toISOString().slice(0,10); // yyyy-mm-dd
-      let stats = JSON.parse(localStorage.getItem("pawStats")||"{}");
-
-      // 총 방문수
-      stats.total = (stats.total||0) + 1;
-
-      // 오늘 방문수
-      if(stats.todayDate !== today){
-        stats.todayDate = today;
-        stats.today = 1;
-      }else{
-        stats.today = (stats.today||0) + 1;
-      }
-
-      localStorage.setItem("pawStats", JSON.stringify(stats));
-      return stats;
-    }
-
-    function showStats(){
-      const stats = JSON.parse(localStorage.getItem("pawStats")||"{}");
-      document.getElementById("totalViews").textContent = stats.total||0;
-      document.getElementById("todayViews").textContent = stats.today||0;
-    }
-
-    // 로그인 로직
-    async function isAdminUser(uid){
-      const docRef = doc(db, "admins", uid);
-      const snap = await getDoc(docRef);
-      return snap.exists();
-    }
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      errorDiv.textContent = "";
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        const ok = await isAdminUser(user.uid);
-        if (!ok) { errorDiv.textContent = "⚠️ 관리자 권한이 없는 계정입니다."; return; }
-
-        form.style.display = "none";
-        adminSection.style.display = "block";
-
-        render();
-        const stats = recordView(); // ✅ 방문 기록
-        showStats();
-
-      } catch (err) {
-        console.error("로그인 실패:", err);
-        errorDiv.textContent = "로그인 실패: " + (err.message || "");
-      }
-    });
-
-    function fmtStatus(p){return p.adminApproved?"승인됨 ✅":"대기중 ⏳"}
-
-    async function render(){
-      try{
-        const list=await fetchAllProjects();
-        if(!list.length){
-          $body.innerHTML='<tr><td colspan="7" class="muted">아직 등록된 프로젝트가 없습니다.</td></tr>';
-          return;
-        }
-        $body.innerHTML=list.map(p=>`
-          <tr>
-            <td>${p.projectNumber ? `PAW #${p.projectNumber}` : '-'}</td>
-            <td>${p.name??'(이름 없음)'}</td>
-            <td>${p.rescuerName??'-'}</td>
-            <td>${p.summary??''}</td>
-            <td>${p.privateContact??''}</td>
-            <td>${fmtStatus(p)}</td>
-            <td class="actions">
-              ${!p.adminApproved?`<button class="approve" data-id="${p.id}">승인</button>`:''}
-              <button class="edit" data-id="${p.id}">편집</button>
-              <button class="delete" data-id="${p.id}">삭제</button>
-            </td>
-          </tr>`).join('');
-      }catch(e){
-        console.error(e);
-        $body.innerHTML='<tr><td colspan="7" class="muted">프로젝트를 불러오지 못했습니다.</td></tr>';
-      }
-    }
-
-    $body.addEventListener('click', async e=>{
-      if(e.target.matches('.approve')){
-        if(confirm("승인하시겠습니까?")){
-          await approveProject(e.target.dataset.id);
-          alert("승인되었습니다.");
-          render();
-        }
-      }
-      if(e.target.matches('.delete')){
-        if(confirm("삭제하시겠습니까?")){
-          await deleteProject(e.target.dataset.id);
-          alert("삭제되었습니다.");
-          render();
-        }
-      }
-      if(e.target.matches('.edit')){
-        const id=e.target.dataset.id;
-        const all=await fetchAllProjects();
-        const p=all.find(x=>x.id===id);
-        if(!p)return;
-        document.getElementById("edit-id").value=id;
-        document.getElementById("edit-currentAmount").value=p.currentAmount||0;
-        document.getElementById("edit-supporterCount").value=p.supporterCount||0;
-        document.getElementById("edit-goalAmount").value=p.goalAmount||0;
-        document.getElementById("edit-keyMessage").value=p.keyMessage||"";
-        document.getElementById("edit-kakaoChatUrl").value=p.kakaoChatUrl||"";
-        editorSection.style.display="block";
-        editorForm.scrollIntoView({behavior:"smooth"});
-      }
-    });
-
-    editorForm.addEventListener("submit", async e=>{
-      e.preventDefault();
-      const id=document.getElementById("edit-id").value;
-      if(!id)return alert("잘못된 프로젝트 ID");
-
-      const data={
-        currentAmount: Number(document.getElementById("edit-currentAmount").value)||0,
-        supporterCount: Number(document.getElementById("edit-supporterCount").value)||0,
-        goalAmount: Number(document.getElementById("edit-goalAmount").value)||0,
-        keyMessage: document.getElementById("edit-keyMessage").value.trim(),
-        kakaoChatUrl: document.getElementById("edit-kakaoChatUrl").value.trim()
-      };
-
-      try{
-        await updateDoc(doc(db,"projects",id),data);
-        alert("프로젝트가 업데이트되었습니다.");
-        render();
-      }catch(err){
-        console.error(err);
-        alert("업데이트 실패: "+err.message);
-      }
+    document.querySelector(".btn-share")?.addEventListener("click",()=>{
+      navigator.clipboard.writeText(window.location.href)
+        .then(()=>alert("링크가 복사되었습니다."));
     });
   </script>
 </body>
