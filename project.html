@@ -14,35 +14,40 @@
       font-family:'SUIT Variable','Pretendard','Inter',system-ui,sans-serif}
     .wrap{max-width:1100px;margin:0 auto;padding:20px 16px}
 
+    /* 메인 레이아웃 */
     .paw-grid{display:grid;gap:20px}
-    @media(min-width:992px){.paw-grid{grid-template-columns:1.1fr .9fr}}
+    @media(min-width:992px){.paw-grid{grid-template-columns:1.2fr 0.8fr}}
 
-    .paw-head{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
-    .paw-head .big-title{font-size:2.2rem;font-weight:900;color:var(--ink);margin:0}
-    .paw-head .subline{margin-top:8px;color:var(--sub)}
+    /* 헤드라인 */
+    .paw-head{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:20px}
+    .paw-head .big-title{font-size:2.1rem;font-weight:900;color:var(--ink);margin:0}
+    @media(max-width:600px){.paw-head .big-title{font-size:1.7rem}}
 
-    .hero-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 6px 14px rgba(0,0,0,0.08);margin-bottom:24px}
-    .overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,0));color:#fff;padding:20px}
-    .overlay .badge{background:var(--accent);padding:6px 12px;border-radius:8px;font-weight:700}
-    .overlay .key-message{margin-top:6px;color:#FFD166;font-weight:700}
-    .thumb-strip{display:flex;gap:8px;overflow-x:auto;padding:10px;background:#fafafa}
-    .thumb-strip img{height:70px;width:70px;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid transparent;flex-shrink:0}
-    .thumb-strip img.active{border-color:var(--accent)}
+    /* 메인 이미지 */
+    .paw-media img{display:block;width:100%;height:380px;object-fit:cover;border-radius:14px}
 
+    /* 현황 패널 */
     .paw-panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
-    .paw-panel .hearts{font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:12px}
-    .paw-panel .progress{background:#e5e7eb;height:16px;border-radius:12px;overflow:hidden;margin:14px 0}
-    .paw-panel .progress .bar{height:100%;background:var(--accent);color:#fff;text-align:center;font-size:.8rem;font-weight:600}
-    .paw-panel .stats{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.95rem;color:var(--sub);margin-top:8px}
-    .paw-panel .stats span strong{font-size:1.05rem;font-weight:800;color:var(--ink);margin-left:4px}
-    .paw-panel .admin-box{margin-top:16px;padding:14px;border-radius:12px;background:#f9f9ff;border:1px solid #d0d7ff;font-weight:700;color:#1E40AF;font-size:1rem}
-    .action-buttons{display:flex;gap:10px;margin-top:18px}
-    .btn-kakao{flex:1;background:#FEE500;color:#111;padding:14px 18px;border-radius:12px;font-weight:700;font-size:1.05rem;text-align:center;text-decoration:none}
-    .btn-share{flex:1;background:#6b7280;color:#fff;padding:14px 18px;border-radius:12px;font-weight:700;font-size:1.05rem;text-align:center;text-decoration:none}
+    @media(min-width:992px){.paw-panel{position:sticky;top:20px}}
+    .paw-panel h2{font-size:1.1rem;font-weight:900;color:var(--accent);margin-bottom:14px}
+    .paw-kv{border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:12px;text-align:center}
+    .paw-kv .k{font-size:.9rem;color:var(--sub)}
+    .paw-kv .v{margin-top:4px;font-weight:900}
+    .paw-kv .v.big{font-size:1.4rem;color:var(--ink)}
 
-    .section-card{background:#fff;border-radius:16px;padding:20px;margin-top:20px;box-shadow:0 4px 10px rgba(0,0,0,0.05)}
-    .section-card h2{font-size:1.2rem;font-weight:800;margin-bottom:14px;color:var(--accent)}
-    .receipt-links a{display:block;margin:6px 0;color:var(--accent);font-weight:700;text-decoration:none}
+    /* 버튼 */
+    .btn-kakao{display:block;width:100%;background:#FEE500;color:#111;padding:14px 18px;
+      border-radius:12px;font-weight:700;font-size:1.05rem;text-align:center;text-decoration:none;margin-top:10px}
+    .btn-kakao:hover{background:#e5d200}
+    .btn-share{display:block;width:100%;background:#6b7280;color:#fff;padding:14px 18px;
+      border-radius:12px;font-weight:700;font-size:1.05rem;text-align:center;text-decoration:none;margin-top:10px}
+    .btn-share:hover{background:#555}
+
+    /* 스토리/베타 안내 */
+    .section-card{background:#fff;border-radius:16px;padding:28px;margin-top:22px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.05)}
+    .section-card h2{font-size:1.3rem;font-weight:800;margin-bottom:14px;color:var(--accent)}
+    .section-card p{font-size:1.05rem;line-height:1.7;color:var(--ink)}
   </style>
 </head>
 <body>
@@ -51,12 +56,6 @@
     <div id="project-detail"><div class="muted">불러오는 중...</div></div>
   </main>
   <div data-include="footer"></div>
-
-  <!-- CTA Dock -->
-  <div class="cta-dock">
-    <a href="https://open.kakao.com/o/go3sJ0Kh" class="btn-kakao" target="_blank">💬 단톡방</a>
-    <a href="https://www.instagram.com/projectpaw.kr/" class="btn-share" target="_blank">📷 인스타그램</a>
-  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script type="module">
@@ -69,24 +68,16 @@
     const $detail=document.getElementById('project-detail');
     const fmt=n=>Number(n||0).toLocaleString('ko-KR');
 
-    function candidatesOf(p){
-      const out=[];const push=v=>{if(typeof v==='string'&&v.trim())out.push(v.trim());};
+    function candidatesOf(p){const out=[];const push=v=>{if(typeof v==='string'&&v.trim())out.push(v.trim());};
       ['representativeImageUrl','coverUrl','mainImageUrl','thumbnailUrl','image'].forEach(k=>push(p[k]));
-      ['galleryUrls','images','photos'].forEach(k=>{
+      ['galleryUrls','images','photos','files','receiptUrls'].forEach(k=>{
         const arr=p[k];if(Array.isArray(arr))arr.forEach(it=>{if(typeof it==='string') push(it);else if(it&&(it.url||it.path)) push(it.url||it.path);});
-      });return out;
-    }
+      });return out;}
     async function toHttpUrl(raw){if(!raw) return null;let v=String(raw).trim();if(/^(https?:|data:|blob:)/i.test(v)) return v;
       if(v.startsWith('/')) v=v.slice(1);try{return await getDownloadURL(ref(storage,v));}catch{return null;}}
-    async function galleryHttpUrls(p){
-      const cands=candidatesOf(p);const urls=await Promise.all(cands.map(toHttpUrl));
+    async function galleryHttpUrls(p){const cands=candidatesOf(p);const urls=await Promise.all(cands.map(toHttpUrl));
       const uniq=[],seen=new Set();for(const u of urls){if(u&&!seen.has(u)){seen.add(u);uniq.push(u);} }
-      return uniq.length?uniq:['img/placeholder.svg'];
-    }
-    async function receiptHttpUrls(p){
-      const arr=p.receiptUrls||[];if(!Array.isArray(arr))return[];
-      const urls=await Promise.all(arr.map(toHttpUrl));return urls.filter(Boolean);
-    }
+      return uniq.length?uniq:['img/placeholder.svg'];}
     function getId(){return new URLSearchParams(location.search).get("id");}
     function formatDescription(text){if(!text) return '';return text.replace(/\n/g,'<br/>');}
 
@@ -95,86 +86,65 @@
       try{
         const p=await getProjectById(id); if(!p){$detail.innerHTML='<div class="muted">존재하지 않는 프로젝트입니다.</div>';return;}
         const imgs=await galleryHttpUrls(p);
-        const receipts=await receiptHttpUrls(p);
         const goal=Number(p.goalAmount||0);
         const current=Number(p.currentAmount||0);
         const rate=goal?Math.floor(current/goal*100):0;
 
         $detail.innerHTML=`
           <section class="paw-head">
-            <h1 class="big-title">PAW #${p.projectNumber ?? '-'} ${p.name??'(이름 없음)'}</h1>
-            ${p.summary?`<div class="subline">${p.summary}</div>`:''}
+            <h1 class="big-title">${p.name??'(이름 없음)'}</h1>
           </section>
-
-          <section class="paw-grid">
-            <!-- 좌측 -->
+          <div class="paw-grid">
             <div>
-              <div class="hero-card">
-                <div id="carouselProject" class="carousel slide" data-bs-ride="carousel">
-                  <div class="carousel-inner">
-                    ${imgs.map((url,i)=>`
-                      <div class="carousel-item ${i===0?'active':''}">
-                        <img src="${url}" class="d-block w-100" style="height:260px;object-fit:cover" alt="img${i}">
-                        <div class="overlay">
-                          <span class="badge">${p.adminApproved?'진행중':'대기중'}</span>
-                          ${p.keyMessage?`<p class="key-message">❝ ${p.keyMessage} ❞</p>`:''}
-                        </div>
-                      </div>`).join('')}
-                  </div>
-                </div>
-                <div class="thumb-strip">
-                  ${imgs.map((url,i)=>`<img src="${url}" data-index="${i}" class="${i===0?'active':''}"/>`).join('')}
-                </div>
+              <div class="paw-media">
+                <img src="${imgs[0]}" alt="대표 이미지">
               </div>
-
               <section class="section-card">
                 <h2>스토리</h2>
+                ${p.summary?`<p style="color:#555">${p.summary}</p>`:''}
+                ${p.keyMessage?`<p style="font-weight:700;color:#E87722">❝ ${p.keyMessage} ❞</p>`:''}
                 <p>${formatDescription(p.description)}</p>
+                ${p.adminMessage?`<div style="margin-top:18px;padding:14px;border-radius:12px;background:#fff8f2;
+                          border:1px solid #f4d0b5;font-weight:800;color:#d35400;font-size:1.05rem;">
+                  📌 관리자 한마디: ${p.adminMessage}
+                </div>`:''}
               </section>
-
-              ${receipts.length?`
               <section class="section-card">
-                <h2>영수증</h2>
-                <div class="receipt-links">
-                  ${receipts.map((url,i)=>`<a href="${url}" target="_blank">📑 영수증 ${i+1} 보기</a>`).join('')}
-                </div>
-              </section>`:''}
+                <h2>Beta 안내</h2>
+                <p style="line-height:1.6">
+                  ⚠️ 현재 Project.PAW는 <b>실험 단계</b>입니다.<br/>
+                  후원은 카카오톡 단톡방을 통해 이루어지며, 관리자가 매일 수동으로 모금액과 참여자 수를 업데이트합니다.<br/>
+                  정식 서비스에서는 PG 결제를 통한 자동화된 투명 시스템이 제공될 예정입니다.
+                </p>
+                <p style="margin-top:12px;color:#444;font-style:italic">
+                  🐾 Project.PAW에 등록되는 프로젝트는 <b>실제 구조와 영수증으로 증빙 가능한 케이스</b>만 포함됩니다.<br/>
+                  구조자의 용기에 후원자들의 마음이 더해질 때, 그 따뜻한 연결은 또 다른 용기를 낳습니다.<br/>
+                  우리는 이렇게 작은 용기들이 파도를 만들고, 사회 전체의 연결된 마음의 파이를 키워가는 과정을 추구합니다.
+                </p>
+              </section>
             </div>
-
-            <!-- 우측 -->
             <div>
               <div class="paw-panel">
-                <div class="hearts">❤️ 연결된 마음 <strong>${p.supporterCount??0}</strong>명</div>
-                <div class="progress"><div class="bar" style="width:${rate}%">${rate}%</div></div>
-                <div class="stats">
-                  <span>목표 <strong>${fmt(goal)}</strong>원</span>
-                  <span>현재 <strong>${fmt(current)}</strong>원</span>
-                  <span>구조자 <strong>${p.rescuerName??'익명'}</strong></span>
+                <h2>진행 현황</h2>
+                <div class="paw-kv">
+                  <div class="k">❤️ 연결된 마음</div>
+                  <div class="v big">${p.supporterCount??0}명</div>
                 </div>
-                ${p.adminMessage?`<div class="admin-box">📌 ${p.adminMessage}</div>`:''}
-                <div class="action-buttons">
-                  ${p.kakaoChatUrl ? `<a href="${p.kakaoChatUrl}" target="_blank" class="btn-kakao">💬 후원 참여(단톡방)</a>`:''}
-                  <button class="btn-share" id="shareCopy">🔗 공유하기</button>
+                <div class="paw-kv">
+                  <div class="k">현재 모금액</div>
+                  <div class="v">${fmt(current)}원</div>
                 </div>
-                <div class="section-card" style="margin-top:18px">
-                  <h2>Beta 안내</h2>
-                  <p style="line-height:1.6">
-                    ⚠️ 현재 Project.PAW는 <b>실험 단계</b>입니다.<br/>
-                    후원은 카카오톡 단톡방을 통해 이루어지며, 관리자가 매일 수동으로 모금액/참여자 수를 업데이트합니다.<br/>
-                    정식 서비스에서는 PG 결제를 통한 자동화된 투명 시스템이 제공될 예정입니다.
-                  </p>
+                <div class="paw-kv">
+                  <div class="k">목표 금액</div>
+                  <div class="v">${fmt(goal)}원</div>
                 </div>
+                ${p.kakaoChatUrl ? `<a href="${p.kakaoChatUrl}" target="_blank" class="btn-kakao">💬 후원하러 가기</a>`:''}
+                <button class="btn-share" id="shareCopy">🔗 공유하기</button>
               </div>
             </div>
-          </section>`;
-
+          </div>
+        `;
         document.getElementById("shareCopy")?.addEventListener("click",()=>{navigator.clipboard.writeText(window.location.href).then(()=>alert("링크가 복사되었습니다."));});
-        const carouselEl=document.querySelector('#carouselProject');
-        const carousel=new bootstrap.Carousel(carouselEl);
-        document.querySelectorAll('.thumb-strip img').forEach(img=>{
-          img.addEventListener('click',()=>{const idx=parseInt(img.dataset.index,10);carousel.to(idx);
-            document.querySelectorAll('.thumb-strip img').forEach(t=>t.classList.remove('active'));img.classList.add('active');});
-        });
       }catch(e){$detail.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';}
     }
     render();
