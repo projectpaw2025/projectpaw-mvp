@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ko">
 <head>
@@ -25,18 +26,6 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
   .actions{flex-direction:column}
   button{width:100%}
 }
-
-/* 모달 */
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;
-  background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:9999;}
-.modal .box{background:#fff;border-radius:10px;max-width:700px;width:95%;
-  max-height:90vh;overflow:auto;padding:20px;}
-.modal h2{margin-top:0}
-.modal form{display:grid;gap:12px}
-.modal label{font-weight:700}
-.modal input,.modal textarea{padding:8px;border:1px solid #ddd;border-radius:8px}
-.modal textarea{min-height:100px;resize:vertical}
-.modal .btns{display:flex;gap:10px;justify-content:flex-end;margin-top:10px}
 </style>
 </head>
 <body>
@@ -60,17 +49,16 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
             <th>구조자</th>
             <th>요약</th>
             <th>연락처</th>
-            <th>관리자 한마디</th>
             <th>상태</th>
             <th>액션</th>
           </tr>
         </thead>
         <tbody id="projects-body">
-          <tr><td colspan="8" class="muted">불러오는 중...</td></tr>
+          <tr><td colspan="7" class="muted">불러오는 중...</td></tr>
         </tbody>
       </table>
 
-      <!-- 원본 editorSection 그대로 -->
+      <!-- 프로젝트 편집 섹션 -->
       <section id="editorSection" style="display:none">
         <h2>프로젝트 수치/링크 업데이트</h2>
         <form id="editorForm" class="editor">
@@ -89,7 +77,7 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
           <input type="date" id="edit-approvedAt"/>
 
           <label>구조자 계좌번호 (rescuerAccount)</label>
-          <input type="text" id="edit-rescuerAccount"/>
+          <input type="text" id="edit-rescuerAccount" placeholder="예: 국민은행 123-45-67890"/>
 
           <label>모금액 (currentAmount)</label>
           <input type="number" id="edit-currentAmount"/>
@@ -104,52 +92,13 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
           <input type="text" id="edit-keyMessage"/>
 
           <label>카카오톡 오픈채팅 링크</label>
-          <input type="url" id="edit-kakaoChatUrl"/>
+          <input type="url" id="edit-kakaoChatUrl" placeholder="https://open.kakao.com/..."/>
 
           <button type="submit">저장하기</button>
         </form>
       </section>
     </section>
   </main>
-
-  <!-- 추가: 전체 문구 편집 모달 -->
-  <div class="modal" id="editModal">
-    <div class="box">
-      <h2>프로젝트 전체 문구 편집</h2>
-      <form id="fullEditForm">
-        <input type="hidden" id="pid"/>
-
-        <label>프로젝트명</label>
-        <input type="text" id="edit-name"/>
-
-        <label>구조자 이름</label>
-        <input type="text" id="edit-rescuerName"/>
-
-        <label>요약</label>
-        <input type="text" id="edit-summary"/>
-
-        <label>스토리 설명</label>
-        <textarea id="edit-description"></textarea>
-
-        <label>대표 이미지 URL</label>
-        <input type="url" id="edit-representativeImageUrl"/>
-
-        <label>추가 이미지(,로 구분)</label>
-        <textarea id="edit-galleryUrls"></textarea>
-
-        <label>영수증 이미지(,로 구분)</label>
-        <textarea id="edit-receiptUrls"></textarea>
-
-        <label>관리자 한마디</label>
-        <textarea id="edit-adminMessage"></textarea>
-
-        <div class="btns">
-          <button type="button" id="closeModal">닫기</button>
-          <button type="submit" style="background:#2563eb;color:#fff;">저장하기</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
   <script type="module">
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -166,11 +115,6 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
     const $body = document.getElementById("projects-body");
     const editorSection = document.getElementById("editorSection");
     const editorForm = document.getElementById("editorForm");
-
-    // 모달
-    const modal=document.getElementById("editModal");
-    const closeModalBtn=document.getElementById("closeModal");
-    const fullEditForm=document.getElementById("fullEditForm");
 
     async function isAdminUser(uid){
       const docRef = doc(db, "admins", uid);
@@ -205,7 +149,7 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
       try{
         const list=await fetchAllProjects();
         if(!list.length){
-          $body.innerHTML='<tr><td colspan="8" class="muted">아직 등록된 프로젝트가 없습니다.</td></tr>';
+          $body.innerHTML='<tr><td colspan="7" class="muted">아직 등록된 프로젝트가 없습니다.</td></tr>';
           return;
         }
         $body.innerHTML=list.map(p=>`
@@ -215,17 +159,15 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
             <td>${p.rescuerName??'-'}</td>
             <td>${p.summary??''}</td>
             <td>${p.privateContact??''}</td>
-            <td>${p.adminMessage??''}</td>
             <td>${fmtStatus(p)}</td>
             <td class="actions">
               ${!p.adminApproved?`<button class="approve" data-id="${p.id}">승인</button>`:''}
-              <button class="edit" data-id="${p.id}">수치편집</button>
-              <button class="full-edit" data-id="${p.id}">문구편집</button>
+              <button class="edit" data-id="${p.id}">편집</button>
               <button class="delete" data-id="${p.id}">삭제</button>
             </td>
           </tr>`).join('');
       }catch(e){
-        $body.innerHTML='<tr><td colspan="8" class="muted">프로젝트를 불러오지 못했습니다.</td></tr>';
+        $body.innerHTML='<tr><td colspan="7" class="muted">프로젝트를 불러오지 못했습니다.</td></tr>';
       }
     }
 
@@ -245,7 +187,6 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         }
       }
       if(e.target.matches('.edit')){
-        // 원본 수치/링크 편집 로직 그대로
         const id=e.target.dataset.id;
         const all=await fetchAllProjects();
         const p=all.find(x=>x.id===id);
@@ -264,28 +205,7 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         editorSection.style.display="block";
         editorForm.scrollIntoView({behavior:"smooth"});
       }
-      if(e.target.matches('.full-edit')){
-        // 새 모달 전체 문구 편집
-        const id=e.target.dataset.id;
-        const all=await fetchAllProjects();
-        const p=all.find(x=>x.id===id);
-        if(!p)return;
-
-        document.getElementById("pid").value=id;
-        document.getElementById("edit-name").value=p.name||"";
-        document.getElementById("edit-rescuerName").value=p.rescuerName||"";
-        document.getElementById("edit-summary").value=p.summary||"";
-        document.getElementById("edit-description").value=p.description||"";
-        document.getElementById("edit-representativeImageUrl").value=p.representativeImageUrl||"";
-        document.getElementById("edit-galleryUrls").value=(p.galleryUrls||[]).join(",");
-        document.getElementById("edit-receiptUrls").value=(p.receiptUrls||[]).join(",");
-        document.getElementById("edit-adminMessage").value=p.adminMessage||"";
-
-        modal.style.display="flex";
-      }
     });
-
-    closeModalBtn.addEventListener("click",()=>{modal.style.display="none";});
 
     editorForm.addEventListener("submit", async e=>{
       e.preventDefault();
@@ -308,32 +228,6 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
       try{
         await updateDoc(doc(db,"projects",id),data);
         alert("프로젝트가 업데이트되었습니다.");
-        render();
-      }catch(err){
-        alert("업데이트 실패: "+err.message);
-      }
-    });
-
-    fullEditForm.addEventListener("submit",async e=>{
-      e.preventDefault();
-      const id=document.getElementById("pid").value;
-      if(!id)return alert("잘못된 프로젝트 ID");
-
-      const data={
-        name: document.getElementById("edit-name").value.trim(),
-        rescuerName: document.getElementById("edit-rescuerName").value.trim(),
-        summary: document.getElementById("edit-summary").value.trim(),
-        description: document.getElementById("edit-description").value.trim(),
-        representativeImageUrl: document.getElementById("edit-representativeImageUrl").value.trim(),
-        galleryUrls: document.getElementById("edit-galleryUrls").value.split(",").map(s=>s.trim()).filter(Boolean),
-        receiptUrls: document.getElementById("edit-receiptUrls").value.split(",").map(s=>s.trim()).filter(Boolean),
-        adminMessage: document.getElementById("edit-adminMessage").value.trim()
-      };
-
-      try{
-        await updateDoc(doc(db,"projects",id),data);
-        alert("프로젝트 전체 문구가 업데이트되었습니다.");
-        modal.style.display="none";
         render();
       }catch(err){
         alert("업데이트 실패: "+err.message);
