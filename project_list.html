@@ -37,6 +37,29 @@
     .stats{display:flex;justify-content:space-between;font-size:1rem;color:var(--sub);margin-top:8px}
     .stats span strong{font-weight:800;color:var(--ink);margin-left:4px}
     .muted{color:#888}
+
+    /* ✅ CTA Dock */
+    .cta-dock{
+      position:fixed;
+      right:20px;
+      bottom:20px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      z-index:50;
+    }
+    .cta-dock a{
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:700;
+      font-size:.9rem;
+      text-decoration:none;
+      box-shadow:0 3px 8px rgba(0,0,0,0.12);
+    }
+    .btn-kakao{background:#FEE500;color:#111;}
+    .btn-insta{background:#E4405F;color:#fff;}
+    .btn-share{background:#6b7280;color:#fff;}
   </style>
 </head>
 <body>
@@ -47,6 +70,13 @@
     <div id="list" class="cards"><div class="muted">불러오는 중...</div></div>
   </main>
   <div data-include="footer"></div>
+
+  <!-- ✅ CTA Dock -->
+  <div class="cta-dock">
+    <a href="https://open.kakao.com/o/go3sJ0Kh" class="btn-kakao" target="_blank">💬 단톡방</a>
+    <a href="https://www.instagram.com/projectpaw.kr/" class="btn-insta" target="_blank">📷 인스타그램</a>
+    <a href="#" class="btn-share">🔗 링크 복사</a>
+  </div>
 
   <script type="module">
     import { injectLayout } from './js/include.js';
@@ -131,6 +161,12 @@
     }
     if($q)$q.addEventListener('input',render);
     render();
+
+    // ✅ 링크 복사 기능
+    document.querySelector(".btn-share")?.addEventListener("click",()=>{
+      navigator.clipboard.writeText(window.location.href)
+        .then(()=>alert("링크가 복사되었습니다."));
+    });
   </script>
 </body>
 </html>
