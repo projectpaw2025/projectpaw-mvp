@@ -23,6 +23,18 @@
     .paw-grid{display:grid;gap:20px}
     @media(min-width:992px){.paw-grid{grid-template-columns:1.2fr 0.8fr}}
 
+    /* 모바일 블록 순서 */
+    .block{order:unset;}
+    @media(max-width:768px){
+      .paw-grid{display:flex;flex-direction:column;}
+      .block.photo{order:1;}
+      .block.headline{order:2;}
+      .block.status{order:3;}
+      .block.story{order:4;}
+      .block.beta{order:5;}
+      .block.value{order:6;}
+    }
+
     /* 캐러셀 */
     .carousel-inner img{height:380px;object-fit:cover}
     .thumb-strip{display:flex;gap:8px;overflow-x:auto;padding:10px;background:#fafafa;margin-top:6px}
@@ -95,12 +107,9 @@
         const rate=goal?Math.floor(current/goal*100):0;
 
         $detail.innerHTML=`
-          <section class="paw-head">
-            <h1 class="big-title">${p.name??'(이름 없음)'}</h1>
-          </section>
           <div class="paw-grid">
-            <div>
-              <!-- 캐러셀 -->
+            <!-- 사진 -->
+            <div class="block photo">
               <div id="carouselProject" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                   ${imgs.map((url,i)=>`
@@ -118,46 +127,17 @@
               <div class="thumb-strip">
                 ${imgs.map((url,i)=>`<img src="${url}" data-index="${i}" class="${i===0?'active':''}"/>`).join('')}
               </div>
+            </div>
 
-              <!-- 스토리 -->
-              <section class="section-card">
-                <h2>스토리</h2>
-                ${p.summary?`<p style="color:#555">${p.summary}</p>`:''}
-                ${p.keyMessage?`<p style="font-weight:700;color:#E87722">❝ ${p.keyMessage} ❞</p>`:''}
-                <p>${formatDescription(p.description)}</p>
-              </section>
-
-              <!-- Beta 안내 -->
-              <section class="section-card">
-                <h2>Beta 안내</h2>
-                <p>
-                  ⚠️ 현재 Project.PAW는 <b>실험 단계</b>입니다.<br/>
-                  후원은 카카오톡 단톡방을 통해 이루어지며,<br/>
-                  관리자가 매일 수동으로 모금액과 참여자 수를 업데이트합니다.<br/>
-                  정식 서비스에서는 PG 결제를 통한<br/>
-                  자동화된 투명 시스템이 제공될 예정입니다.
-                </p>
-              </section>
-
-              <!-- 우리가 추구하는 가치 -->
-              <section class="section-card">
-                <h2>우리가 추구하는 가치</h2>
-                <p>
-                  🐾 Project.PAW에 등록되는 프로젝트는<br/>
-                  <b>실제 구조와 영수증으로 증빙 가능한 케이스</b>만 포함됩니다.
-                </p>
-                <p>
-                  구조자의 용기에 후원자들의 마음이 더해질 때,<br/>
-                  그 따뜻한 연결은 또 다른 용기를 낳습니다.
-                </p>
-                <p>
-                  작은 용기들이 모여 파도를 만들고,<br/>
-                  사회 전체의 <b>연결된 마음의 파이</b>를 키워가는 것,<br/>
-                  그것이 Project.PAW가 추구하는 가치입니다.
-                </p>
+            <!-- 헤드문구 -->
+            <div class="block headline">
+              <section class="paw-head">
+                <h1 class="big-title">${p.name??'(이름 없음)'}</h1>
               </section>
             </div>
-            <div>
+
+            <!-- 진행현황 -->
+            <div class="block status">
               <div class="paw-panel">
                 <h2>진행 현황</h2>
                 <div class="paw-kv">
@@ -180,6 +160,50 @@
                     📌 관리자 한마디: ${p.adminMessage}
                   </div>`:''}
               </div>
+            </div>
+
+            <!-- 스토리 -->
+            <div class="block story">
+              <section class="section-card">
+                <h2>스토리</h2>
+                ${p.summary?`<p style="color:#555">${p.summary}</p>`:''}
+                ${p.keyMessage?`<p style="font-weight:700;color:#E87722">❝ ${p.keyMessage} ❞</p>`:''}
+                <p>${formatDescription(p.description)}</p>
+              </section>
+            </div>
+
+            <!-- Beta 안내 -->
+            <div class="block beta">
+              <section class="section-card">
+                <h2>Beta 안내</h2>
+                <p>
+                  ⚠️ 현재 Project.PAW는 <b>실험 단계</b>입니다.<br/>
+                  후원은 카카오톡 단톡방을 통해 이루어지며,<br/>
+                  관리자가 매일 수동으로 모금액과 참여자 수를 업데이트합니다.<br/>
+                  정식 서비스에서는 PG 결제를 통한<br/>
+                  자동화된 투명 시스템이 제공될 예정입니다.
+                </p>
+              </section>
+            </div>
+
+            <!-- 우리가 추구하는 가치 -->
+            <div class="block value">
+              <section class="section-card">
+                <h2>우리가 추구하는 가치</h2>
+                <p>
+                  🐾 Project.PAW에 등록되는 프로젝트는<br/>
+                  <b>실제 구조와 영수증으로 증빙 가능한 케이스</b>만 포함됩니다.
+                </p>
+                <p>
+                  구조자의 용기에 후원자들의 마음이 더해질 때,<br/>
+                  그 따뜻한 연결은 또 다른 용기를 낳습니다.
+                </p>
+                <p>
+                  작은 용기들이 모여 파도를 만들고,<br/>
+                  사회 전체의 <b>연결된 마음의 파이</b>를 키워가는 것,<br/>
+                  그것이 Project.PAW가 추구하는 가치입니다.
+                </p>
+              </section>
             </div>
           </div>
         `;
