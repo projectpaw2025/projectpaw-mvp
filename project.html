@@ -98,4 +98,112 @@
           <section class="paw-head">
             <h1 class="big-title">${p.name??'(이름 없음)'}</h1>
           </section>
-          <div class="paw-gr
+          <div class="paw-grid">
+            <div>
+              <!-- 캐러셀 -->
+              <div id="carouselProject" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                  ${imgs.map((url,i)=>`
+                    <div class="carousel-item ${i===0?'active':''}">
+                      <img src="${url}" class="d-block w-100" alt="img${i}">
+                    </div>`).join('')}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselProject" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselProject" data-bs-slide="next">
+                  <span class="carousel-control-next-icon"></span>
+                </button>
+              </div>
+              <div class="thumb-strip">
+                ${imgs.map((url,i)=>`<img src="${url}" data-index="${i}" class="${i===0?'active':''}"/>`).join('')}
+              </div>
+
+              <!-- 스토리 -->
+              <section class="section-card">
+                <h2>스토리</h2>
+                ${p.summary?`<p style="color:#555">${p.summary}</p>`:''}
+                ${p.keyMessage?`<p style="font-weight:700;color:#E87722">❝ ${p.keyMessage} ❞</p>`:''}
+                <p>${formatDescription(p.description)}</p>
+              </section>
+
+              <!-- Beta 안내 -->
+              <section class="section-card">
+                <h2>Beta 안내</h2>
+                <p>
+                  ⚠️ 현재 Project.PAW는 <b>실험 단계</b>입니다.<br/>
+                  후원은 카카오톡 단톡방을 통해 이루어지며,<br/>
+                  관리자가 매일 수동으로 모금액과 참여자 수를 업데이트합니다.<br/>
+                  정식 서비스에서는 PG 결제를 통한<br/>
+                  자동화된 투명 시스템이 제공될 예정입니다.
+                </p>
+              </section>
+
+              <!-- 우리가 추구하는 가치 -->
+              <section class="section-card">
+                <h2>우리가 추구하는 가치</h2>
+                <p>
+                  🐾 Project.PAW에 등록되는 프로젝트는<br/>
+                  <b>실제 구조와 영수증으로 증빙 가능한 케이스</b>만 포함됩니다.
+                </p>
+                <p>
+                  구조자의 용기에 후원자들의 마음이 더해질 때,<br/>
+                  그 따뜻한 연결은 또 다른 용기를 낳습니다.
+                </p>
+                <p>
+                  작은 용기들이 모여 파도를 만들고,<br/>
+                  사회 전체의 <b>연결된 마음의 파이</b>를 키워가는 것,<br/>
+                  그것이 Project.PAW가 추구하는 가치입니다.
+                </p>
+              </section>
+            </div>
+            <div>
+              <div class="paw-panel">
+                <h2>진행 현황</h2>
+                <div class="paw-kv">
+                  <div class="k">❤️ 연결된 마음</div>
+                  <div class="v big">${p.supporterCount??0}명</div>
+                </div>
+                <div class="paw-kv">
+                  <div class="k">현재 모금액</div>
+                  <div class="v">${fmt(current)}원</div>
+                </div>
+                <div class="paw-kv">
+                  <div class="k">목표 금액</div>
+                  <div class="v">${fmt(goal)}원</div>
+                </div>
+                ${p.kakaoChatUrl ? `<a href="${p.kakaoChatUrl}" target="_blank" class="btn-kakao">💬 후원하러 가기</a>`:''}
+                <button class="btn-share" id="shareCopy">🔗 공유하기</button>
+                ${p.adminMessage?`
+                  <div style="margin-top:18px;padding:14px;border-radius:12px;background:#fff8f2;
+                              border:1px solid #f4d0b5;font-weight:800;color:#d35400;font-size:1.05rem;">
+                    📌 관리자 한마디: ${p.adminMessage}
+                  </div>`:''}
+              </div>
+            </div>
+          </div>
+        `;
+        // 공유 복사
+        document.getElementById("shareCopy")?.addEventListener("click",()=>{
+          navigator.clipboard.writeText(window.location.href).then(()=>alert("링크가 복사되었습니다."));
+        });
+        // 캐러셀 썸네일 클릭
+        const carouselEl=document.querySelector('#carouselProject');
+        const carousel=new bootstrap.Carousel(carouselEl);
+        document.querySelectorAll('.thumb-strip img').forEach(img=>{
+          img.addEventListener('click',()=>{
+            const idx=parseInt(img.dataset.index,10);
+            carousel.to(idx);
+            document.querySelectorAll('.thumb-strip img').forEach(t=>t.classList.remove('active'));
+            img.classList.add('active');
+          });
+        });
+      }catch(e){
+        console.error(e);
+        $detail.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
+      }
+    }
+    render();
+  </script>
+</body>
+</html>
