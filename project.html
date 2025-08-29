@@ -14,19 +14,23 @@
       font-family:'SUIT Variable','Pretendard','Inter',system-ui,sans-serif}
     .wrap{max-width:1100px;margin:0 auto;padding:20px 16px}
 
-    /* 메인 레이아웃 */
+    /* 헤드라인 */
+    .paw-head{background:#fff;border:1px solid var(--line);border-radius:14px;
+      padding:40px 20px;margin:40px 0;text-align:center}
+    .paw-head .big-title{font-size:2.4rem;font-weight:900;color:var(--ink)}
+
+    /* 레이아웃 */
     .paw-grid{display:grid;gap:20px}
     @media(min-width:992px){.paw-grid{grid-template-columns:1.2fr 0.8fr}}
 
-    /* 헤드라인 */
-    .paw-head{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:20px}
-    .paw-head .big-title{font-size:2.1rem;font-weight:900;color:var(--ink);margin:0}
-    @media(max-width:600px){.paw-head .big-title{font-size:1.7rem}}
+    /* 캐러셀 */
+    .carousel-inner img{height:380px;object-fit:cover}
+    .thumb-strip{display:flex;gap:8px;overflow-x:auto;padding:10px;background:#fafafa;margin-top:6px}
+    .thumb-strip img{height:70px;width:70px;object-fit:cover;border-radius:8px;cursor:pointer;
+      border:2px solid transparent;flex-shrink:0}
+    .thumb-strip img.active{border-color:var(--accent)}
 
-    /* 메인 이미지 */
-    .paw-media img{display:block;width:100%;height:380px;object-fit:cover;border-radius:14px}
-
-    /* 현황 패널 */
+    /* 우측 현황 */
     .paw-panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
     @media(min-width:992px){.paw-panel{position:sticky;top:20px}}
     .paw-panel h2{font-size:1.1rem;font-weight:900;color:var(--accent);margin-bottom:14px}
@@ -43,7 +47,7 @@
       border-radius:12px;font-weight:700;font-size:1.05rem;text-align:center;text-decoration:none;margin-top:10px}
     .btn-share:hover{background:#555}
 
-    /* 스토리/베타 안내 */
+    /* 본문 카드 */
     .section-card{background:#fff;border-radius:16px;padding:28px;margin-top:22px;
       box-shadow:0 4px 10px rgba(0,0,0,0.05)}
     .section-card h2{font-size:1.3rem;font-weight:800;margin-bottom:14px;color:var(--accent)}
@@ -96,27 +100,39 @@
           </section>
           <div class="paw-grid">
             <div>
-              <div class="paw-media">
-                <img src="${imgs[0]}" alt="대표 이미지">
+              <div id="carouselProject" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                  ${imgs.map((url,i)=>`
+                    <div class="carousel-item ${i===0?'active':''}">
+                      <img src="${url}" class="d-block w-100" alt="img${i}">
+                    </div>`).join('')}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselProject" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselProject" data-bs-slide="next">
+                  <span class="carousel-control-next-icon"></span>
+                </button>
               </div>
+              <div class="thumb-strip">
+                ${imgs.map((url,i)=>`<img src="${url}" data-index="${i}" class="${i===0?'active':''}"/>`).join('')}
+              </div>
+
               <section class="section-card">
                 <h2>스토리</h2>
                 ${p.summary?`<p style="color:#555">${p.summary}</p>`:''}
                 ${p.keyMessage?`<p style="font-weight:700;color:#E87722">❝ ${p.keyMessage} ❞</p>`:''}
                 <p>${formatDescription(p.description)}</p>
-                ${p.adminMessage?`<div style="margin-top:18px;padding:14px;border-radius:12px;background:#fff8f2;
-                          border:1px solid #f4d0b5;font-weight:800;color:#d35400;font-size:1.05rem;">
-                  📌 관리자 한마디: ${p.adminMessage}
-                </div>`:''}
               </section>
+
               <section class="section-card">
                 <h2>Beta 안내</h2>
-                <p style="line-height:1.6">
+                <p>
                   ⚠️ 현재 Project.PAW는 <b>실험 단계</b>입니다.<br/>
                   후원은 카카오톡 단톡방을 통해 이루어지며, 관리자가 매일 수동으로 모금액과 참여자 수를 업데이트합니다.<br/>
                   정식 서비스에서는 PG 결제를 통한 자동화된 투명 시스템이 제공될 예정입니다.
                 </p>
-                <p style="margin-top:12px;color:#444;font-style:italic">
+                <p>
                   🐾 Project.PAW에 등록되는 프로젝트는 <b>실제 구조와 영수증으로 증빙 가능한 케이스</b>만 포함됩니다.<br/>
                   구조자의 용기에 후원자들의 마음이 더해질 때, 그 따뜻한 연결은 또 다른 용기를 낳습니다.<br/>
                   우리는 이렇게 작은 용기들이 파도를 만들고, 사회 전체의 연결된 마음의 파이를 키워가는 과정을 추구합니다.
@@ -140,11 +156,30 @@
                 </div>
                 ${p.kakaoChatUrl ? `<a href="${p.kakaoChatUrl}" target="_blank" class="btn-kakao">💬 후원하러 가기</a>`:''}
                 <button class="btn-share" id="shareCopy">🔗 공유하기</button>
+                ${p.adminMessage?`
+                  <div style="margin-top:18px;padding:14px;border-radius:12px;background:#fff8f2;
+                              border:1px solid #f4d0b5;font-weight:800;color:#d35400;font-size:1.05rem;">
+                    📌 관리자 한마디: ${p.adminMessage}
+                  </div>`:''}
               </div>
             </div>
           </div>
         `;
-        document.getElementById("shareCopy")?.addEventListener("click",()=>{navigator.clipboard.writeText(window.location.href).then(()=>alert("링크가 복사되었습니다."));});
+        // 공유 복사
+        document.getElementById("shareCopy")?.addEventListener("click",()=>{
+          navigator.clipboard.writeText(window.location.href).then(()=>alert("링크가 복사되었습니다."));
+        });
+        // 캐러셀 썸네일 클릭
+        const carouselEl=document.querySelector('#carouselProject');
+        const carousel=new bootstrap.Carousel(carouselEl);
+        document.querySelectorAll('.thumb-strip img').forEach(img=>{
+          img.addEventListener('click',()=>{
+            const idx=parseInt(img.dataset.index,10);
+            carousel.to(idx);
+            document.querySelectorAll('.thumb-strip img').forEach(t=>t.classList.remove('active'));
+            img.classList.add('active');
+          });
+        });
       }catch(e){$detail.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';}
     }
     render();
