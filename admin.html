@@ -64,10 +64,10 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
           <input type="hidden" id="edit-id"/>
 
           <label>프로젝트 번호 (projectNumber)</label>
-          <input type="number" id="edit-projectNumber" placeholder="예: 101"/>
+          <input type="number" id="edit-projectNumber"/>
 
           <label>조회수 (views)</label>
-          <input type="number" id="edit-views" placeholder="0"/>
+          <input type="number" id="edit-views"/>
 
           <label>등록일자 (createdAt)</label>
           <input type="date" id="edit-createdAt"/>
@@ -89,9 +89,6 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
 
           <label>한줄 메시지 (keyMessage)</label>
           <input type="text" id="edit-keyMessage"/>
-
-          <label>관리자의 한마디</label>
-          <input type="text" id="edit-adminMessage" placeholder="예: 책임감을 갖고 응원합니다."/>
 
           <label>카카오톡 오픈채팅 링크</label>
           <input type="url" id="edit-kakaoChatUrl" placeholder="https://open.kakao.com/..."/>
@@ -194,16 +191,15 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         const p=all.find(x=>x.id===id);
         if(!p)return;
         document.getElementById("edit-id").value=id;
-        document.getElementById("edit-projectNumber").value=p.projectNumber||"";
-        document.getElementById("edit-views").value=p.views||0;
-        document.getElementById("edit-createdAt").value=p.createdAt? p.createdAt.split("T")[0]:"";
-        document.getElementById("edit-approvedAt").value=p.approvedAt? p.approvedAt.split("T")[0]:"";
-        document.getElementById("edit-rescuerAccount").value=p.rescuerAccount||"";
+        document.getElementById("edit-projectNumber").value=p.projectNumber ?? "";
+        document.getElementById("edit-views").value=p.views ?? 0;
+        document.getElementById("edit-createdAt").value=p.createdAt ? String(p.createdAt).split("T")[0] : "";
+        document.getElementById("edit-approvedAt").value=p.approvedAt ? String(p.approvedAt).split("T")[0] : "";
+        document.getElementById("edit-rescuerAccount").value=p.rescuerAccount ?? "";
         document.getElementById("edit-currentAmount").value=p.currentAmount||0;
         document.getElementById("edit-supporterCount").value=p.supporterCount||0;
         document.getElementById("edit-goalAmount").value=p.goalAmount||0;
         document.getElementById("edit-keyMessage").value=p.keyMessage||"";
-        document.getElementById("edit-adminMessage").value=p.adminMessage||"";
         document.getElementById("edit-kakaoChatUrl").value=p.kakaoChatUrl||"";
         editorSection.style.display="block";
         editorForm.scrollIntoView({behavior:"smooth"});
@@ -225,7 +221,6 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         supporterCount: Number(document.getElementById("edit-supporterCount").value)||0,
         goalAmount: Number(document.getElementById("edit-goalAmount").value)||0,
         keyMessage: document.getElementById("edit-keyMessage").value.trim(),
-        adminMessage: document.getElementById("edit-adminMessage").value.trim(),
         kakaoChatUrl: document.getElementById("edit-kakaoChatUrl").value.trim()
       };
 
