@@ -137,7 +137,78 @@
         const current=Number(p.currentAmount||0);
         const rate=goal?Math.floor(current/goal*100):0;
 
-        $detail.innerHTML=`...`; // (생략, 기존 상세 렌더링 동일)
+        $detail.innerHTML=`
+          <section class="hero-card">
+            <div id="carouselProject" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-inner">
+                ${imgs.map((url,i)=>`
+                  <div class="carousel-item ${i===0?'active':''}">
+                    <img src="${url}" class="d-block w-100" style="height:340px;object-fit:cover" alt="img${i}">
+                    <div class="overlay">
+                      <span class="badge">${p.adminApproved?'진행중':'대기중'}</span>
+                      <h1>PAW #${p.projectNumber ?? '-'} ${p.name??'(이름 없음)'}</h1>
+                      <p class="summary">${p.summary??''}</p>
+                      ${p.keyMessage?`<p class="key-message">❝ ${p.keyMessage} ❞</p>`:''}
+                    </div>
+                  </div>`).join('')}
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselProject" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselProject" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+              </button>
+            </div>
+            <div class="thumb-strip">
+              ${imgs.map((url,i)=>`
+                <img src="${url}" data-index="${i}" class="${i===0?'active':''}"/>`).join('')}
+            </div>
+            <div class="hero-body">
+              <div class="hearts">❤️ 연결된 마음 <strong>${p.supporterCount??0}</strong>명</div>
+              <div class="progress"><div class="bar" style="width:${rate}%">${rate}%</div></div>
+              <div class="stats">
+                <span>목표 <strong>${fmt(goal)}</strong>원</span>
+                <span>현재 <strong>${fmt(current)}</strong>원</span>
+                <span>구조자 <strong>${p.rescuerName??'익명'}</strong></span>
+              </div>
+              ${p.adminMessage?`
+                <div style="margin-top:18px;padding:14px;border-radius:12px;background:#fff8f2;
+                            border:1px solid #f4d0b5;font-weight:800;color:#d35400;
+                            font-size:1.1rem;text-align:center">
+                  📌 관리자 한마디: ${p.adminMessage}
+                </div>`:''}
+            </div>
+          </section>
+          <section class="section-card">
+            <h2>스토리</h2>
+            <p>${formatDescription(p.description)}</p>
+          </section>
+          <div class="action-buttons">
+            ${p.kakaoChatUrl ? `<a href="${p.kakaoChatUrl}" target="_blank" class="btn-kakao">💬 후원하러 가기</a>`:''}
+            <button class="btn-share" id="shareCopy">🔗 링크 복사</button>
+          </div>
+          <section class="section-card">
+            <h2>Beta 안내</h2>
+            <p style="line-height:1.6">
+              ⚠️ 현재 Project.PAW는 <b>실험 단계</b>입니다.<br/>
+              후원은 카카오톡 단톡방을 통해 이루어지며, 관리자가 매일 수동으로 모금액/참여자 수를 업데이트합니다.<br/>
+              정식 서비스에서는 PG 결제를 통한 자동화된 투명 시스템이 제공될 예정입니다.
+            </p>
+          </section>`;
+
+        document.getElementById("shareCopy")?.addEventListener("click",()=>{
+          navigator.clipboard.writeText(window.location.href).then(()=>alert("링크가 복사되었습니다."));
+        });
+        const carouselEl=document.querySelector('#carouselProject');
+        const carousel=new bootstrap.Carousel(carouselEl);
+        document.querySelectorAll('.thumb-strip img').forEach(img=>{
+          img.addEventListener('click',()=>{
+            const idx=parseInt(img.dataset.index,10);
+            carousel.to(idx);
+            document.querySelectorAll('.thumb-strip img').forEach(t=>t.classList.remove('active'));
+            img.classList.add('active');
+          });
+        });
       }catch(e){
         $detail.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
       }
