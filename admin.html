@@ -62,18 +62,39 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         <h2>프로젝트 수치/링크 업데이트</h2>
         <form id="editorForm" class="editor">
           <input type="hidden" id="edit-id"/>
+          <label>프로젝트 번호 (projectNumber)</label>
+          <input type="number" id="edit-projectNumber" placeholder="예: 101"/>
+
+          <label>조회수 (views)</label>
+          <input type="number" id="edit-views" placeholder="0"/>
+
+          <label>등록일자 (createdAt)</label>
+          <input type="date" id="edit-createdAt"/>
+
+          <label>승인일자 (approvedAt)</label>
+          <input type="date" id="edit-approvedAt"/>
+
+          <label>구조자 계좌번호 (rescuerAccount)</label>
+          <input type="text" id="edit-rescuerAccount" placeholder="예: 국민은행 123-45-67890"/>
+
           <label>모금액 (currentAmount)</label>
           <input type="number" id="edit-currentAmount"/>
+
           <label>참여자 수 (supporterCount)</label>
           <input type="number" id="edit-supporterCount"/>
+
           <label>목표 금액 (goalAmount)</label>
           <input type="number" id="edit-goalAmount"/>
+
           <label>한줄 메시지 (keyMessage)</label>
           <input type="text" id="edit-keyMessage"/>
+
           <label>관리자의 한마디</label>
           <input type="text" id="edit-adminMessage" placeholder="예: 책임감을 갖고 응원합니다."/>
+
           <label>카카오톡 오픈채팅 링크</label>
           <input type="url" id="edit-kakaoChatUrl" placeholder="https://open.kakao.com/..."/>
+
           <button type="submit">저장하기</button>
         </form>
       </section>
@@ -155,6 +176,10 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
       if(e.target.matches('.approve')){
         if(confirm("승인하시겠습니까?")){
           await approveProject(e.target.dataset.id);
+          // 승인 시 자동 승인일자 기록
+          await updateDoc(doc(db,"projects",e.target.dataset.id),{
+            approvedAt:new Date().toISOString()
+          });
           alert("승인되었습니다.");
           render();
         }
@@ -172,6 +197,11 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         const p=all.find(x=>x.id===id);
         if(!p)return;
         document.getElementById("edit-id").value=id;
+        document.getElementById("edit-projectNumber").value=p.projectNumber||"";
+        document.getElementById("edit-views").value=p.views||0;
+        document.getElementById("edit-createdAt").value=p.createdAt? p.createdAt.split("T")[0]:"";
+        document.getElementById("edit-approvedAt").value=p.approvedAt? p.approvedAt.split("T")[0]:"";
+        document.getElementById("edit-rescuerAccount").value=p.rescuerAccount||"";
         document.getElementById("edit-currentAmount").value=p.currentAmount||0;
         document.getElementById("edit-supporterCount").value=p.supporterCount||0;
         document.getElementById("edit-goalAmount").value=p.goalAmount||0;
@@ -189,6 +219,11 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
       if(!id)return alert("잘못된 프로젝트 ID");
 
       const data={
+        projectNumber: Number(document.getElementById("edit-projectNumber").value)||null,
+        views: Number(document.getElementById("edit-views").value)||0,
+        createdAt: document.getElementById("edit-createdAt").value||null,
+        approvedAt: document.getElementById("edit-approvedAt").value||null,
+        rescuerAccount: document.getElementById("edit-rescuerAccount").value.trim(),
         currentAmount: Number(document.getElementById("edit-currentAmount").value)||0,
         supporterCount: Number(document.getElementById("edit-supporterCount").value)||0,
         goalAmount: Number(document.getElementById("edit-goalAmount").value)||0,
