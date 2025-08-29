@@ -12,79 +12,137 @@
     :root{--ink:#111;--sub:#555;--accent:#E87722;--line:#eaeaea;--bg:#fafafa}
     body{margin:0;background:var(--bg);color:var(--ink);
       font-family:'SUIT Variable','Pretendard','Inter',system-ui,sans-serif}
-    .wrap{max-width:860px;margin:0 auto;padding:20px 16px}
+    .wrap{max-width:1100px;margin:0 auto;padding:20px 16px}
+
+    /* === 기존 카드 스타일 보존 === */
     .hero-card{background:#fff;border-radius:20px;overflow:hidden;
-               box-shadow:0 6px 14px rgba(0,0,0,0.08);margin-bottom:24px}
+               box-shadow:0 6px 14px rgba(0,0,0,0.08);margin-bottom:12px}
     .overlay{position:absolute;bottom:0;left:0;right:0;
-      background:linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,0));
+      background:linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,0) 60%);
       color:#fff;padding:20px}
     .overlay .badge{background:var(--accent);padding:6px 12px;border-radius:8px;font-weight:700}
-    .overlay h1{margin:8px 0;font-size:1.6rem;font-weight:900}
-    .overlay .summary{font-size:1rem;opacity:.9}
+    .overlay h1{margin:8px 0;font-size:1.6rem;font-weight:900;letter-spacing:.2px}
+    .overlay .summary{font-size:1rem;opacity:.95}
     .key-message{margin-top:6px;color:#FFD166;font-weight:700}
-    .hero-body{padding:24px}
-    .hearts{font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:12px}
-    .progress{background:#e5e7eb;height:16px;border-radius:12px;overflow:hidden;margin:14px 0}
-    .progress .bar{height:100%;background:var(--accent);color:#fff;
-                   text-align:center;font-size:.8rem;font-weight:600}
-    .stats{display:flex;justify-content:space-between;font-size:.95rem;color:var(--sub);margin-top:8px}
-    .stats span strong{font-size:1.05rem;font-weight:800;color:var(--ink);margin-left:4px}
     .thumb-strip{display:flex;gap:8px;overflow-x:auto;padding:10px;background:#fafafa}
     .thumb-strip img{height:70px;width:70px;object-fit:cover;border-radius:8px;cursor:pointer;
       border:2px solid transparent;flex-shrink:0}
     .thumb-strip img.active{border-color:var(--accent)}
+
+    .section-card{background:#fff;border-radius:16px;padding:22px;margin-top:16px;
+                  box-shadow:0 4px 10px rgba(0,0,0,0.05)}
+    .section-card h2{font-size:1.2rem;font-weight:900;margin-bottom:10px;color:var(--accent)}
+    .section-card p{font-size:1.02rem;line-height:1.7;color:var(--ink)}
+
+    .hearts{font-size:1.05rem;font-weight:800;color:var(--accent);margin:8px 0 6px}
+    .progress{background:#e5e7eb;height:16px;border-radius:12px;overflow:hidden;margin:10px 0}
+    .progress .bar{height:100%;background:var(--accent);color:#fff;
+                   text-align:center;font-size:.8rem;font-weight:800}
+    .stats{display:flex;gap:14px;flex-wrap:wrap;font-size:.95rem;color:var(--sub);margin-top:8px}
+    .stats span strong{font-size:1.05rem;font-weight:900;color:var(--ink);margin-left:4px}
+
     .action-buttons{display:flex;gap:10px;margin-top:18px}
     .btn-kakao{flex:1;background:#FEE500;color:#111;padding:14px 18px;
-      border-radius:12px;font-weight:700;font-size:1.05rem;text-align:center;text-decoration:none}
+      border-radius:12px;font-weight:900;font-size:1.05rem;text-align:center;text-decoration:none}
     .btn-kakao:hover{background:#e5d200}
     .btn-share{flex:1;background:#6b7280;color:#fff;padding:14px 18px;
-      border-radius:12px;font-weight:700;font-size:1.05rem;text-align:center;text-decoration:none}
+      border-radius:12px;font-weight:900;font-size:1.05rem;text-align:center;text-decoration:none}
     .btn-share:hover{background:#555}
     @media(max-width:600px){
       .action-buttons{flex-direction:column}
       .btn-kakao,.btn-share{width:100%}
     }
-    .section-card{background:#fff;border-radius:16px;padding:28px;margin-top:22px;
-                  box-shadow:0 4px 10px rgba(0,0,0,0.05)}
-    .section-card h2{font-size:1.3rem;font-weight:800;margin-bottom:14px;color:var(--accent)}
-    .section-card p{font-size:1.05rem;line-height:1.7;color:var(--ink)}
 
-    /* ✅ CTA Dock */
+    /* === CTA Dock === */
     .cta-dock{
-      position:fixed;
-      right:20px;
-      bottom:20px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      z-index:50;
+      position:fixed;right:20px;bottom:20px;display:flex;flex-direction:column;gap:10px;z-index:60;
     }
-    .cta-dock a{
-      display:inline-block;
-      padding:10px 14px;
-      border-radius:10px;
-      font-weight:700;
-      font-size:.9rem;
-      text-decoration:none;
-      box-shadow:0 3px 8px rgba(0,0,0,0.12);
-    }
+    .cta-dock a{display:inline-block;padding:10px 14px;border-radius:10px;font-weight:800;font-size:.9rem;
+      text-decoration:none;box-shadow:0 3px 8px rgba(0,0,0,0.12)}
     .btn-kakao-dock{background:#FEE500;color:#111;}
     .btn-insta{background:#E4405F;color:#fff;}
     .btn-share-dock{background:#6b7280;color:#fff;}
+
+    /* === Split Layout === */
+    .project-split{display:grid;gap:18px}
+    @media(min-width:992px){
+      .project-split{grid-template-columns:1.1fr .9fr}
+      .split-right{position:sticky;top:72px;align-self:start;transition:transform .3s ease}
+      .split-right.scrolled{transform:translateY(6px)}
+    }
+    .split-left .hero-card{margin:0}
+    .meta-line{margin-top:6px;font-size:.95rem;color:var(--sub)}
+    .state-brief{margin:12px 0 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    .state-brief ul{margin:8px 0 0 18px;padding:0}
+    .state-brief li{margin:4px 0}
+    .badges{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+    .badge-chip{background:#fff;border:1px solid var(--line);border-radius:8px;padding:4px 8px;font-weight:800;font-size:.85rem}
+
+    /* === Receipts Section === */
+    .section-receipts .receipts-grid{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}
+    .section-receipts .receipts-grid a{display:block;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+    .section-receipts .receipts-grid img{width:120px;height:120px;object-fit:cover;display:block;transition:transform .15s ease}
+    .section-receipts .receipts-grid img:hover{transform:scale(1.05)}
+    .section-receipts .note{margin-top:8px;font-size:.85rem;color:var(--sub)}
+
+    /* === Dramatic Motion (prefers-reduced-motion 존중) === */
+    @media (prefers-reduced-motion:no-preference){
+      .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease, transform .6s ease}
+      .reveal.in{opacity:1;transform:none}
+      .hero-enter{opacity:0;transform:scale(1.02)}
+      .hero-enter.in{opacity:1;transform:scale(1);transition:opacity .9s cubic-bezier(.2,.6,.2,1), transform 1.2s cubic-bezier(.2,.6,.2,1)}
+      .badge-pulse{position:relative;overflow:hidden}
+      .badge-pulse::after{
+        content:"";position:absolute;inset:0;background:linear-gradient(120deg, transparent, rgba(255,255,255,.35), transparent);
+        transform:translateX(-120%);animation:shine 1.8s ease-in-out infinite;pointer-events:none
+      }
+      @keyframes shine{to{transform:translateX(120%)}}
+      .bar-anim{transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
+    }
+
+    /* Hero 이미지 시네마틱 */
+    .carousel-inner img{
+      height:56vh;min-height:320px;max-height:720px;object-fit:cover
+    }
+
+    /* 긴 스토리 클립 */
+    .story-clip{max-height:220px;overflow:hidden;position:relative}
+    .story-clip::after{
+      content:"";position:absolute;left:0;right:0;bottom:0;height:64px;
+      background:linear-gradient(to top,#fff 20%, rgba(255,255,255,0))
+    }
+    .story-toggle{margin-top:10px;font-weight:900;color:var(--accent);cursor:pointer}
+
+    /* 모바일 하단 고정 CTA */
+    .mobile-cta{
+      position:fixed;left:0;right:0;bottom:0;z-index:70;display:none;gap:10px;
+      padding:12px 16px;background:rgba(255,255,255,.96);border-top:1px solid var(--line);
+      backdrop-filter:saturate(140%) blur(6px)
+    }
+    .mobile-cta .btn-kakao,.mobile-cta .btn-share{margin:0}
+    @media(max-width:600px){.mobile-cta{display:flex}}
   </style>
 </head>
 <body>
   <div data-include="header"></div>
+
   <main class="wrap">
     <div id="project-detail"><div class="muted">불러오는 중...</div></div>
   </main>
+
   <div data-include="footer"></div>
 
-  <!-- ✅ CTA Dock -->
+  <!-- ✅ CTA Dock (데스크톱 보조) -->
   <div class="cta-dock">
     <a href="https://open.kakao.com/o/go3sJ0Kh" class="btn-kakao-dock" target="_blank">💬 단톡방</a>
     <a href="https://www.instagram.com/projectpaw.kr/" class="btn-insta" target="_blank">📷 인스타그램</a>
     <a href="#" class="btn-share-dock">🔗 링크 복사</a>
+  </div>
+
+  <!-- ✅ 모바일 하단 고정 CTA -->
+  <div class="mobile-cta" id="mobileCta" style="display:none">
+    <a href="#" class="btn-kakao" id="mobileKakao">💬 남은 과제 돕기</a>
+    <a href="#" class="btn-share" id="mobileShare">🔗 공유</a>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -98,11 +156,23 @@
     const $detail=document.getElementById('project-detail');
     const fmt=n=>Number(n||0).toLocaleString('ko-KR');
 
+    /* ===== 이미지 후보 수집/URL 변환 ===== */
     function candidatesOf(p){
       const out=[];const push=v=>{if(typeof v==='string'&&v.trim())out.push(v.trim());};
       ['representativeImageUrl','coverUrl','mainImageUrl','thumbnailUrl','image'].forEach(k=>push(p[k]));
-      ['galleryUrls','images','photos','files','receiptUrls'].forEach(k=>{
+      ['galleryUrls','images','photos','files'].forEach(k=>{
         const arr=p[k];if(Array.isArray(arr))arr.forEach(it=>{
+          if(typeof it==='string') push(it);
+          else if(it&&(it.url||it.path)) push(it.url||it.path);
+        });
+      });
+      return out;
+    }
+    function receiptCandidatesOf(p){
+      const out=[]; const push=v=>{if(typeof v==='string'&&v.trim())out.push(v.trim());};
+      ['receiptUrls','receipts'].forEach(k=>{
+        const v=p[k];
+        if(Array.isArray(v)) v.forEach(it=>{
           if(typeof it==='string') push(it);
           else if(it&&(it.url||it.path)) push(it.url||it.path);
         });
@@ -117,88 +187,223 @@
       try{return await getDownloadURL(ref(storage,v));}catch{return null;}
     }
     async function galleryHttpUrls(p){
-      const cands=candidatesOf(p);
-      const urls=await Promise.all(cands.map(toHttpUrl));
-      const uniq=[],seen=new Set();
-      for(const u of urls){if(u&&!seen.has(u)){seen.add(u);uniq.push(u);} }
+      const urls=await Promise.all(candidatesOf(p).map(toHttpUrl));
+      const uniq=[],seen=new Set(); for(const u of urls){if(u&&!seen.has(u)){seen.add(u);uniq.push(u);}}
       return uniq.length?uniq:['img/placeholder.svg'];
+    }
+    async function receiptHttpUrls(p){
+      const urls=await Promise.all(receiptCandidatesOf(p).map(toHttpUrl));
+      const uniq=[],seen=new Set(); for(const u of urls){if(u&&!seen.has(u)){seen.add(u);uniq.push(u);}}
+      return uniq;
     }
     function getId(){return new URLSearchParams(location.search).get("id");}
     function formatDescription(text){if(!text) return '';return text.replace(/\n/g,'<br/>');}
 
+    /* ===== 카피 블록 ===== */
+    function buildWhyBlock(){
+      return `
+      <section class="section-card section-why reveal">
+        <h2>왜 Project.PAW인가?</h2>
+        <ul>
+          <li><b>이미 구조자가 먼저 책임</b>진 사례만 공개합니다.</li>
+          <li><b>영수증 증빙</b> 가능한 케이스만 등록합니다(도덕적 해이 방지).</li>
+          <li><b>개인↔개인 직접 연결</b> 실험입니다. 돈보다 연결을 중시합니다.</li>
+          <li>구조자에 대한 <b>감사의 마음</b>이 더 큰 구조의 파이를 키웁니다.</li>
+        </ul>
+      </section>`;
+    }
+    function buildPhilosophyBlock(){
+      return `
+      <section class="section-card section-philosophy reveal" style="background:#fafafa">
+        <h2>철학</h2>
+        <blockquote class="philo">
+          <b>책임의 끝과 공감의 시작이 만나는 곳</b> — Project.PAW<br/>
+          영수증으로 증명되는 투명한 구조, <b>감사의 마음으로 이어지는 후원</b>.<br/>
+          하나의 마음이 다른 마음을 불러 더 큰 변화를 만듭니다.
+        </blockquote>
+      </section>`;
+    }
+
+    /* ===== 드라마틱 보조 함수 ===== */
+    function countUp($el, end, duration=900){
+      const start = parseInt(($el.textContent||'0').replace(/[^0-9]/g,'')) || 0;
+      const startTime = performance.now();
+      function tick(now){
+        const p = Math.min((now - startTime)/duration, 1);
+        const eased = 1 - Math.pow(1-p, 3);
+        const val = Math.floor(start + (end-start)*eased);
+        $el.textContent = Number(val).toLocaleString('ko-KR');
+        if(p<1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+    function mountReveal(){
+      if(!('IntersectionObserver' in window)) return;
+      const io = new IntersectionObserver(entries=>{
+        entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+      }, {threshold:.08});
+      document.querySelectorAll('.reveal, .hero-enter').forEach(el=>io.observe(el));
+    }
+    function mountStickyLift(){
+      if(window.matchMedia('(min-width: 992px)').matches){
+        const right = document.querySelector('.split-right');
+        if(!right) return;
+        window.addEventListener('scroll', ()=>{
+          right.classList.toggle('scrolled', window.scrollY>20);
+        }, {passive:true});
+      }
+    }
+
+    /* ===== 메인 렌더 ===== */
     async function render(){
       const id=getId();
       if(!id){$detail.innerHTML='<div class="muted">잘못된 접근입니다.</div>';return;}
       try{
         const p=await getProjectById(id);
         if(!p){$detail.innerHTML='<div class="muted">존재하지 않는 프로젝트입니다.</div>';return;}
+
         const imgs=await galleryHttpUrls(p);
+        const receiptImgs=await receiptHttpUrls(p);
+
         const goal=Number(p.goalAmount||0);
         const current=Number(p.currentAmount||0);
+        const remaining=Math.max(goal-current,0);
         const rate=goal?Math.floor(current/goal*100):0;
 
-        $detail.innerHTML=`
-          <section class="hero-card">
-            <div id="carouselProject" class="carousel slide" data-bs-ride="carousel">
-              <div class="carousel-inner">
-                ${imgs.map((url,i)=>`
-                  <div class="carousel-item ${i===0?'active':''}">
-                    <img src="${url}" class="d-block w-100" style="height:340px;object-fit:cover" alt="img${i}">
-                    <div class="overlay">
-                      <span class="badge">${p.adminApproved?'진행중':'대기중'}</span>
-                      <h1>PAW #${p.projectNumber ?? '-'} ${p.name??'(이름 없음)'}</h1>
-                      <p class="summary">${p.summary??''}</p>
-                      ${p.keyMessage?`<p class="key-message">❝ ${p.keyMessage} ❞</p>`:''}
-                    </div>
-                  </div>`).join('')}
-              </div>
-              <button class="carousel-control-prev" type="button" data-bs-target="#carouselProject" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-              </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#carouselProject" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-              </button>
-            </div>
-            <div class="thumb-strip">
-              ${imgs.map((url,i)=>`
-                <img src="${url}" data-index="${i}" class="${i===0?'active':''}"/>`).join('')}
-            </div>
-            <div class="hero-body">
-              <div class="hearts">❤️ 연결된 마음 <strong>${p.supporterCount??0}</strong>명</div>
-              <div class="progress"><div class="bar" style="width:${rate}%">${rate}%</div></div>
-              <div class="stats">
-                <span>목표 <strong>${fmt(goal)}</strong>원</span>
-                <span>현재 <strong>${fmt(current)}</strong>원</span>
-                <span>구조자 <strong>${p.rescuerName??'익명'}</strong></span>
-              </div>
-              ${p.adminMessage?`
-                <div style="margin-top:18px;padding:14px;border-radius:12px;background:#fff8f2;
-                            border:1px solid #f4d0b5;font-weight:800;color:#d35400;
-                            font-size:1.1rem;text-align:center">
-                  📌 관리자 한마디: ${p.adminMessage}
-                </div>`:''}
-            </div>
-          </section>
-          <section class="section-card">
-            <h2>스토리</h2>
-            <p>${formatDescription(p.description)}</p>
-          </section>
-          <div class="action-buttons">
-            ${p.kakaoChatUrl ? `<a href="${p.kakaoChatUrl}" target="_blank" class="btn-kakao">💬 후원하러 가기</a>`:''}
-            <button class="btn-share" id="shareCopy">🔗 링크 복사</button>
-          </div>
-          <section class="section-card">
-            <h2>Beta 안내</h2>
-            <p style="line-height:1.6">
-              ⚠️ 현재 Project.PAW는 <b>실험 단계</b>입니다.<br/>
-              후원은 카카오톡 단톡방을 통해 이루어지며, 관리자가 매일 수동으로 모금액/참여자 수를 업데이트합니다.<br/>
-              정식 서비스에서는 PG 결제를 통한 자동화된 투명 시스템이 제공될 예정입니다.
-            </p>
-          </section>`;
+        const caseType = p.caseType || (p.adminApproved?'ongoing':'upcoming'); // 하위호환
+        const stateBadge = caseType==='completed'?'완료·인증' : (caseType==='upcoming'?'사전예고' : (p.adminApproved?'진행중':'대기중'));
 
-        document.getElementById("shareCopy")?.addEventListener("click",()=>{
-          navigator.clipboard.writeText(window.location.href).then(()=>alert("링크가 복사되었습니다."));
-        });
+        $detail.innerHTML=`
+          <div class="project-split">
+            <!-- LEFT: 이미지/캐러셀 -->
+            <div class="split-left">
+              <section class="hero-card hero-enter">
+                <div id="carouselProject" class="carousel slide" data-bs-ride="carousel">
+                  <div class="carousel-inner">
+                    ${imgs.map((url,i)=>`
+                      <div class="carousel-item ${i===0?'active':''}">
+                        <img src="${url}" class="d-block w-100" alt="project image ${i}">
+                        <div class="overlay">
+                          <span class="badge badge-pulse">${p.problemType ? p.problemType : (p.adminApproved?'진행':'대기')}</span>
+                          <h1>PAW #${p.projectNumber ?? '-'} ${p.name??'(이름 없음)'}</h1>
+                          <p class="summary">${p.summary??''}</p>
+                          ${p.keyMessage?`<p class="key-message">❝ ${p.keyMessage} ❞</p>`:''}
+                        </div>
+                      </div>`).join('')}
+                  </div>
+                  <button class="carousel-control-prev" type="button" data-bs-target="#carouselProject" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#carouselProject" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                  </button>
+                </div>
+
+                <div class="thumb-strip">
+                  ${imgs.map((url,i)=>`<img src="${url}" data-index="${i}" class="${i===0?'active':''}"/>`).join('')}
+                </div>
+              </section>
+            </div>
+
+            <!-- RIGHT: 정보/지표/CTA -->
+            <div class="split-right">
+              <section class="section-card reveal" style="margin-top:0">
+                <h2 style="margin:0 0 6px">${p.name??'(이름 없음)'} <small style="color:var(--sub)">#${p.projectNumber ?? '-'}</small></h2>
+                <div class="badges">
+                  ${p.problemType?`<span class="badge-chip">${p.problemType}</span>`:''}
+                  <span class="badge-chip">${stateBadge}</span>
+                </div>
+
+                <div class="hearts">❤️ 연결된 마음 <strong id="heartCount">${p.supporterCount??0}</strong>명</div>
+                <div class="progress"><div class="bar bar-anim" id="barPct" style="width:${rate}%">${rate}%</div></div>
+                <p class="meta-line" id="metaLine">
+                  ${caseType==='completed'
+                    ? `연결된 마음 ${fmt(p.supporterCount??0)}명 · 다음 케이스는 단톡에서 먼저 알려드립니다.`
+                    : `연결된 마음 ${fmt(p.supporterCount??0)}명 · 남은 금액 <b>₩${fmt(remaining)}</b>`}
+                </p>
+
+                <div class="stats">
+                  ${goal?`<span>목표 <strong>${fmt(goal)}</strong>원</span>`:''}
+                  <span>현재 <strong id="currentAmt">${fmt(current)}</strong>원</span>
+                  <span>구조자 <strong>${p.rescuerName??'익명'}</strong></span>
+                </div>
+
+                <div class="state-brief">
+                  <div><b>✅ 완료(책임)</b> ${Array.isArray(p.actionsCompleted)&&p.actionsCompleted.length?p.actionsCompleted.slice(0,2).join(', '):'—'} ${p.spentSoFar?`/ <b>지출</b> ₩${fmt(p.spentSoFar)}`:''}</div>
+                  <div style="margin-top:6px">
+                    <b>🔜 다음(부족)</b> ${Array.isArray(p.nextActions)&&p.nextActions.length?p.nextActions.slice(0,2).join(', '): (caseType==='completed'?'—':'남은 과제가 있습니다.')}
+                    ${caseType==='completed'?'':(goal?`/ <b>남음</b> ₩${fmt(remaining)}`:'')}
+                    ${p.deadline?` / D-${Math.max(Math.ceil((new Date(p.deadline)-new Date())/86400000),0)}`:''}
+                  </div>
+                  ${Array.isArray(receiptImgs)&&receiptImgs.length?`
+                    <div style="margin-top:8px"><b>📎 인증</b> ${receiptImgs.slice(0,2).map((u,i)=>`<a href="${u}" target="_blank">영수증${i+1}</a>`).join(' · ')}</div>
+                  `:''}
+                </div>
+              </section>
+
+              ${buildWhyBlock()}
+
+              <!-- 스토리 + 영수증 분리 -->
+              <section class="section-card section-story reveal">
+                <h2>스토리</h2>
+                ${p.keyMessage?`<p style="margin:6px 0"><b>❝ ${p.keyMessage} ❞</b></p>`:''}
+                ${p.description?`
+                  <div id="storyClip" class="story-clip">${formatDescription(p.description)}</div>
+                  <div class="story-toggle" id="storyToggle">자세히 보기</div>
+                `:''}
+                <h3 class="k" style="margin-top:14px">책임</h3>
+                <p>이미 ${Array.isArray(p.actionsCompleted)&&p.actionsCompleted.length?p.actionsCompleted.slice(0,2).join(', '):'일부 조치'}를 완료했습니다. ${p.spentSoFar?`지금까지 <b>₩${fmt(p.spentSoFar)}</b>는 구조자가 부담했습니다.`:''}</p>
+                <h3 class="k" style="margin-top:10px">부족</h3>
+                <p>${Array.isArray(p.nextActions)&&p.nextActions.length?p.nextActions.join(', '):'남은 과제가 있습니다.'} ${goal?`남은 금액은 <b>₩${fmt(remaining)}</b>입니다.`:''} ${p.urgencyReason?`(${p.urgencyReason})`:''}</p>
+                <h3 class="k" style="margin-top:10px">감사(구조자)</h3>
+                <p>${p.rescuerThanks || '여기까지 책임을 짊어진 구조자에게 먼저 감사드립니다. 이런 분이 있기에 우리가 이어갈 이유가 생깁니다.'}</p>
+                <h3 class="k" style="margin-top:10px">이어주기</h3>
+                <p>이제 우리 차례입니다. 함께 이어주실 분을 기다립니다.</p>
+              </section>
+
+              ${Array.isArray(receiptImgs)&&receiptImgs.length?`
+                <section class="section-card section-receipts reveal">
+                  <h2>📎 영수증·진료내역</h2>
+                  <div class="receipts-grid">
+                    ${receiptImgs.map(u=>`<a href="${u}" target="_blank" rel="noopener"><img src="${u}" alt="receipt"/></a>`).join('')}
+                  </div>
+                  <p class="note">※ 구조자가 직접 결제한 내역을 증빙으로 공개합니다.</p>
+                </section>
+              `:''}
+
+              ${buildPhilosophyBlock()}
+
+              <div class="action-buttons reveal">
+                ${caseType==='completed'
+                  ? `
+                    <a href="${p.kakaoChatUrl||'#'}" target="_blank" class="btn-kakao">🔔 다음 케이스 알림(단톡)</a>
+                    <button class="btn-share" id="shareCopy">🔗 링크 복사</button>
+                  `
+                  : `
+                    ${p.kakaoChatUrl ? `<a href="${p.kakaoChatUrl}" target="_blank" class="btn-kakao" id="mainKakao">💬 남은 과제 돕기</a>`:''}
+                    <button class="btn-share" id="shareCopy">🔗 링크 복사</button>
+                  `}
+              </div>
+
+              <section class="section-card section-beta reveal">
+                <h2>Beta 안내</h2>
+                <p style="line-height:1.6">
+                  ⚠️ 현재 Project.PAW는 <b>실험 단계</b>입니다.<br/>
+                  후원은 카카오톡 단톡방을 통해 이루어지며, 관리자가 매일 수동으로 모금액/참여자 수를 업데이트합니다.<br/>
+                  정식 서비스에서는 PG 결제를 통한 자동화된 투명 시스템이 제공될 예정입니다.
+                </p>
+              </section>
+            </div>
+          </div>
+        `;
+
+        /* ===== 인터랙션 바인딩 ===== */
+        // 공유
+        const share = ()=> navigator.clipboard.writeText(window.location.href).then(()=>alert("링크가 복사되었습니다."));
+        document.getElementById("shareCopy")?.addEventListener("click",share);
+        document.querySelector(".btn-share-dock")?.addEventListener("click",share);
+
+        // 캐러셀 썸네일
         const carouselEl=document.querySelector('#carouselProject');
         const carousel=new bootstrap.Carousel(carouselEl);
         document.querySelectorAll('.thumb-strip img').forEach(img=>{
@@ -209,17 +414,56 @@
             img.classList.add('active');
           });
         });
+
+        // 스토리 자세히 보기
+        const clip=document.getElementById('storyClip');
+        const toggle=document.getElementById('storyToggle');
+        if(clip && toggle){
+          toggle.addEventListener('click',()=>{
+            const open=clip.classList.toggle('open');
+            if(open){clip.style.maxHeight='none';clip.style.overflow='visible';clip.style.setProperty('--mask','none');}
+            toggle.textContent=open?'간단히 보기':'자세히 보기';
+            if(!open){clip.style.maxHeight='220px';clip.style.overflow='hidden';}
+          });
+        }
+
+        // 모바일 하단 고정 CTA
+        const mob=document.getElementById('mobileCta');
+        const mobK=document.getElementById('mobileKakao');
+        const mobS=document.getElementById('mobileShare');
+        const mainK=document.getElementById('mainKakao');
+        if(window.matchMedia('(max-width: 600px)').matches){
+          mob.style.display='flex';
+          if(p.kakaoChatUrl){ mobK.href=p.kakaoChatUrl; }
+          else { mobK.style.display='none'; }
+          mobS.addEventListener('click',e=>{e.preventDefault();share();});
+        }
+
+        // 드라마틱: 숫자 카운트업 & 프로그레스
+        const heartEl=document.getElementById('heartCount');
+        const barEl=document.getElementById('barPct');
+        countUp(heartEl, Number(p.supporterCount||0), 900);
+        if(goal){ // 퍼센트 숫자만 카운트업
+          let pct=0; const target=rate; const step=()=>{pct+=Math.max(1, Math.floor((target-pct)/6)); barEl.textContent=pct+'%'; if(pct<target) requestAnimationFrame(step);};
+          requestAnimationFrame(step);
+        }
+
+        // 리빌/스티키 모션
+        mountReveal();
+        mountStickyLift();
+
+        // 모바일 CTA 상태별 라벨
+        if(caseType==='completed'){
+          document.getElementById('mobileKakao')?.classList.add('btn-kakao');
+          document.getElementById('mobileKakao').textContent='🔔 다음 케이스 알림(단톡)';
+        }
+
       }catch(e){
+        console.error(e);
         $detail.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
       }
     }
     render();
-
-    // ✅ CTA Dock: 링크복사
-    document.querySelector(".btn-share-dock")?.addEventListener("click",()=>{
-      navigator.clipboard.writeText(window.location.href)
-        .then(()=>alert("링크가 복사되었습니다."));
-    });
   </script>
 </body>
 </html>
