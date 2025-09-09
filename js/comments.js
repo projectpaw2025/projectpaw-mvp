@@ -1,6 +1,6 @@
 // js/comments.js
-// Firestore 실시간 댓글 모듈 (api.js는 손대지 않음)
-import "./firebase.js"; // 기본 앱 초기화 보장
+// Firestore 실시간 댓글 모듈 (api.js는 건드리지 않음)
+import "./firebase.js"; // 앱 초기화 보장
 
 import {
   getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp
@@ -13,12 +13,11 @@ import {
 const db = getFirestore();
 const auth = getAuth();
 
-// 익명 로그인 또는 기존 세션 대기
 let _authReady;
 function _ensureAuthPromise() {
   if (_authReady) return _authReady;
   _authReady = new Promise((resolve, reject) => {
-    let unsub = onAuthStateChanged(auth, async (user) => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
       try {
         if (user) {
           unsub && unsub();
