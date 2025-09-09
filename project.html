@@ -33,8 +33,7 @@
       .block.headline{order:2;}
       .block.story{order:3;}
       .block.status{order:4;}
-      .block.beta{order:5;} /* BETA 섹션은 사용 안 함 */
-      .block.value{order:6;}
+      .block.value{order:5;}
     }
 
     /* 캐러셀 */
@@ -110,7 +109,7 @@
     import { getProjectById } from './js/api.js';
     import { storage } from './js/firebase.js';
     import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-    import { addComment, listenComments, ensureAuth } from "./js/comments.js"; /* ← 신규 모듈 */
+    import { addComment, listenComments, ensureAuth } from "./js/comments.js"; /* 신규 모듈 */
 
     injectLayout({ active:'project' });
     const $detail=document.getElementById('project-detail');
@@ -127,7 +126,7 @@
       const uniq=[],seen=new Set();for(const u of urls){if(u&&!seen.has(u)){seen.add(u);uniq.push(u);} }
       return uniq.length?uniq:['img/placeholder.svg'];}
     function getId(){return new URLSearchParams(location.search).get("id");}
-    function formatDescription(text){if(!text) return '';return text.replace(/\n/g,'<br/>');}
+    function formatDescription(text){if(!text) return '';return String(text).replace(/\n/g,'<br/>');}
     const escapeHtml = (s)=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
     async function render(){
@@ -138,21 +137,40 @@
         const goal=Number(p.goalAmount||0);
         const current=Number(p.currentAmount||0);
 
-        $detail.innerHTML=`
+        // === 백틱 중첩 없는 안전 렌더 ===
+        const nameSafe = p.name ?? '(이름 없음)';
+
+        const carouselItems = imgs.map((url,i)=>
+          '<div class="carousel-item '+(i===0?'active':'')+'">'+
+            '<img src="'+url+'" class="d-block w-100" alt="img'+i+'">'+
+          '</div>'
+        ).join('');
+
+        const thumbs = imgs.map((url,i)=>
+          '<img src="'+url+'" data-index="'+i+'" class="'+(i===0?'active':'')+'"/>'
+        ).join('');
+
+        const summaryHtml = p.summary ? '<p style="color:#555">'+escapeHtml(p.summary)+'</p>' : '';
+        const keyMsgHtml = p.keyMessage ? '<p style="font-weight:700;color:#E87722">❝ '+escapeHtml(p.keyMessage)+' ❞</p>' : '';
+        const adminMsgHtml = p.adminMessage
+          ? '<div style="margin-top:18px;padding:14px;border-radius:12px;background:#fff8f2;border:1px solid #f4d0b5;font-weight:800;color:#d35400;font-size:1.05rem;">'
+            + '📌 관리자 한마디: '+escapeHtml(p.adminMessage)
+            + '</div>'
+          : '';
+        const donateBtnHtml = p.kakaoChatUrl
+          ? '<a href="'+p.kakaoChatUrl+'" target="_blank" class="btn-kakao">💬 후원하러 가기</a>'
+          : '';
+
+        $detail.innerHTML = `
           <section class="paw-head block headline">
-            <h1 class="big-title">${p.name??'(이름 없음)'}</h1>
+            <h1 class="big-title">${nameSafe}</h1>
           </section>
           <div class="paw-grid">
             <!-- 좌측 -->
             <div class="block photo">
               <!-- 캐러셀 -->
               <div id="carouselProject" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                  ${imgs.map((url,i)=>`
-                    <div class="carousel-item ${i===0?'active':''}">
-                      <img src="${url}" class="d-block w-100" alt="img${i}">
-                    </div>`).join('')}
-                </div>
+                <div class="carousel-inner">${carouselItems}</div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselProject" data-bs-slide="prev">
                   <span class="carousel-control-prev-icon"></span>
                 </button>
@@ -160,15 +178,13 @@
                   <span class="carousel-control-next-icon"></span>
                 </button>
               </div>
-              <div class="thumb-strip">
-                ${imgs.map((url,i)=>`<img src="${url}" data-index="${i}" class="${i===0?'active':''}"/>`).join('')}
-              </div>
+              <div class="thumb-strip">${thumbs}</div>
 
               <!-- 스토리 -->
               <section class="section-card block story">
                 <h2>스토리</h2>
-                ${p.summary?`<p style="color:#555">${escapeHtml(p.summary)}</p>`:''}
-                ${p.keyMessage?`<p style="font-weight:700;color:#E87722">❝ ${escapeHtml(p.keyMessage)} ❞</p>`:''}
+                ${summaryHtml}
+                ${keyMsgHtml}
                 <p>${formatDescription(p.description)}</p>
               </section>
 
@@ -182,7 +198,7 @@
                 </button>
               </section>
 
-              <!-- 우리가 추구하는 가치 (문구 교체) -->
+              <!-- 우리가 추구하는 가치 -->
               <section class="section-card block value">
                 <h2>우리가 추구하는 가치</h2>
                 <p>Project.PAW는 개인 구조자와 후원자가 직접 연결되는 작은 실험입니다.</p>
@@ -190,6 +206,7 @@
                 <p><strong>2025.09월</strong>을 시작으로 작은 용기들이 모여 큰 변화가 될 거라 믿습니다. 🐾</p>
               </section>
             </div>
+
             <!-- 우측 -->
             <div class="block status">
               <div class="paw-panel">
@@ -206,13 +223,9 @@
                   <div class="k">목표 금액</div>
                   <div class="v">${fmt(goal)}원</div>
                 </div>
-                ${p.kakaoChatUrl ? `<a href="${p.kakaoChatUrl}" target="_blank" class="btn-kakao">💬 후원하러 가기</a>`:''}
+                ${donateBtnHtml}
                 <button class="btn-share" id="shareCopy">🔗 공유하기</button>
-                ${p.adminMessage?`
-                  <div style="margin-top:18px;padding:14px;border-radius:12px;background:#fff8f2;
-                              border:1px solid #f4d0b5;font-weight:800;color:#d35400;font-size:1.05rem;">
-                    📌 관리자 한마디: ${escapeHtml(p.adminMessage)}
-                  </div>`:''}
+                ${adminMsgHtml}
               </div>
             </div>
           </div>
@@ -241,49 +254,31 @@
         const accEl=modal.querySelector('.paw-acc-num');
         const copyBtn=modal.querySelector('.paw-copy');
         const toast=document.getElementById('pawToast');
-
-        function openModal(e){ if(e) e.preventDefault();
-          accEl.textContent=ACCOUNT_TEXT;
-          modal.hidden=false; document.body.style.overflow='hidden';
-        }
+        function openModal(e){ if(e) e.preventDefault(); accEl.textContent=ACCOUNT_TEXT; modal.hidden=false; document.body.style.overflow='hidden'; }
         function closeModal(){ modal.hidden=true; document.body.style.overflow=''; }
-        modal.addEventListener('click',(e)=>{
-          if(e.target.classList.contains('paw-modal') || e.target.classList.contains('paw-close')) closeModal();
-        });
-        copyBtn.addEventListener('click', async ()=>{
-          try{ await navigator.clipboard.writeText(ACCOUNT_TEXT); }
-          catch{
-            const ta=document.createElement('textarea'); ta.value=ACCOUNT_TEXT;
-            document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
-          }
-          toast.hidden=false; setTimeout(()=>toast.hidden=true,1200);
-        });
-        const donateBtn=document.querySelector('.btn-kakao');
-        donateBtn?.addEventListener('click', (e)=>{ e.preventDefault(); openModal(e); }, {passive:false});
+        modal.addEventListener('click',(e)=>{ if(e.target.classList.contains('paw-modal')||e.target.classList.contains('paw-close')) closeModal();});
+        copyBtn.addEventListener('click', async ()=>{ try{ await navigator.clipboard.writeText(ACCOUNT_TEXT);}catch{
+          const ta=document.createElement('textarea'); ta.value=ACCOUNT_TEXT; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+        } toast.hidden=false; setTimeout(()=>toast.hidden=true,1200); });
+        document.querySelector('.btn-kakao')?.addEventListener('click',(e)=>{ e.preventDefault(); openModal(e); }, {passive:false});
 
-        /* ===== Firestore 응원댓글 연결 ===== */
-        const id = getId();
-        await ensureAuth(); // 익명 로그인 보장
-
+        /* ===== Firestore 응원댓글 ===== */
+        await ensureAuth();
         const commentList = document.getElementById("comment-list");
         const commentInput = document.getElementById("comment-input");
         const commentBtn = document.getElementById("comment-btn");
 
         function renderComments(items){
-          if(!items.length){
-            commentList.innerHTML = `<div style="color:#777">첫 응원을 남겨주세요 🙌</div>`;
-            return;
-          }
+          if(!items.length){ commentList.innerHTML = '<div style="color:#777">첫 응원을 남겨주세요 🙌</div>'; return; }
           commentList.innerHTML = items.map(c=>{
             const when = c.createdAt && c.createdAt.toDate ? c.createdAt.toDate() : null;
             const ts = when ? when.toLocaleString('ko-KR') : '';
-            return `
-              <div style="padding:8px 0;border-bottom:1px solid #eee;">
-                <div style="font-weight:700">${escapeHtml(c.uid||"익명")}</div>
-                <div>${escapeHtml(c.text||"")}</div>
-                <div style="color:#888;font-size:12px">${ts}</div>
-              </div>`;
-          }).join("");
+            return '<div style="padding:8px 0;border-bottom:1px solid #eee;">'
+                 +   '<div style="font-weight:700">'+escapeHtml(c.uid||'익명')+'</div>'
+                 +   '<div>'+escapeHtml(c.text||'')+'</div>'
+                 +   '<div style="color:#888;font-size:12px">'+ts+'</div>'
+                 + '</div>';
+          }).join('');
         }
 
         commentBtn?.addEventListener("click", async ()=>{
@@ -301,6 +296,7 @@
         $detail.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
       }
     }
+
     render();
   </script>
 </body>
