@@ -1,9 +1,9 @@
 // js/comments.js
-// Firestore 실시간 댓글 모듈 (api.js는 건드리지 않음)
-import "./firebase.js"; // 앱 초기화 보장
+// Firestore 댓글: 익명 인증, 작성/삭제, 페이지네이션(5개 단위)
+import "./firebase.js";
 
 import {
-  getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp
+  getFirestore, collection, addDoc, query, orderBy, limit, startAfter, getDocs, serverTimestamp, doc, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 import {
@@ -35,16 +35,10 @@ function _ensureAuthPromise() {
   return _authReady;
 }
 
-export async function ensureAuth(){
-  return _ensureAuthPromise();
-}
+export async function ensureAuth(){ return _ensureAuthPromise(); }
+export function getUid(){ return auth?.currentUser?.uid || null; }
 
-/**
- * 댓글 쓰기
- * @param {string} projectId
- * @param {string} text
- * @param {string|null} name  // 선택 입력 (없으면 익명)
- */
+/** 댓글 작성 */
 export async function addComment(projectId, text, name=null){
   text = String(text||"").trim();
   if (!projectId || !text) return;
@@ -59,11 +53,23 @@ export async function addComment(projectId, text, name=null){
   });
 }
 
-export function listenComments(projectId, callback){
+/** 댓글 삭제(본인 또는 관리자 → 규칙 필요) */
+export async function deleteComment(projectId, commentId){
+  await ensureAuth();
+  const dref = doc(db, "projects", projectId, "comments", commentId);
+  await deleteDoc(dref);
+}
+
+/** 페이지네이션: 5개 단위 */
+export async function listCommentsPage(projectId, pageSize=5, cursorDoc=null){
   const commentsRef = collection(db, "projects", projectId, "comments");
-  const q = query(commentsRef, orderBy("createdAt", "desc"));
-  return onSnapshot(q, (snap)=>{
-    const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    callback(data);
-  });
+  const qBase = query(commentsRef, orderBy("createdAt", "desc"), limit(pageSize+1));
+  const q = cursorDoc ? query(commentsRef, orderBy("createdAt","desc"), startAfter(cursorDoc), limit(pageSize+1)) : qBase;
+  const snap = await getDocs(q);
+  const docs = snap.docs;
+  const hasMore = docs.length > pageSize;
+  const pageDocs = hasMore ? docs.slice(0, pageSize) : docs;
+  const items = pageDocs.map(d => ({ id: d.id, ...d.data() }));
+  const lastDoc = pageDocs.length ? pageDocs[pageDocs.length-1] : null;
+  return { items, lastDoc, hasMore };
 }
