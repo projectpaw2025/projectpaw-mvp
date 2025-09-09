@@ -39,7 +39,13 @@ export async function ensureAuth(){
   return _ensureAuthPromise();
 }
 
-export async function addComment(projectId, text){
+/**
+ * 댓글 쓰기
+ * @param {string} projectId
+ * @param {string} text
+ * @param {string|null} name  // 선택 입력 (없으면 익명)
+ */
+export async function addComment(projectId, text, name=null){
   text = String(text||"").trim();
   if (!projectId || !text) return;
   if (text.length > 500) text = text.slice(0, 500);
@@ -47,6 +53,7 @@ export async function addComment(projectId, text){
   const commentsRef = collection(db, "projects", projectId, "comments");
   await addDoc(commentsRef, {
     text,
+    name: name ? String(name).slice(0,30) : null,
     uid: user?.uid || "anon",
     createdAt: serverTimestamp()
   });
