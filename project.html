@@ -84,6 +84,7 @@
     .paw-copy{border:0;border-radius:10px;padding:8px 12px;cursor:pointer}
     .paw-close{border:0;background:transparent;font-size:28px;line-height:1;cursor:pointer;position:absolute;top:8px;right:12px}
     .paw-donor-msg{margin:12px 2px 0;font-size:14px;color:#333}
+    .paw-hint{margin:4px 2px 0;font-size:12px;color:#666}
     .paw-toast{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:#111;color:#fff;border-radius:999px;padding:6px 12px;font-size:12px}
     .paw-toast[hidden]{display:none}
 
@@ -109,12 +110,13 @@
       <button class="paw-close" aria-label="닫기">&times;</button>
       <h3 id="pawAccTitle">후원 계좌</h3>
       <div class="paw-acc">
-        <!-- ① “계좌번호 : ” 제거된 표시 텍스트 -->
+        <!-- “계좌번호 : ” 제거된 표시 텍스트 -->
         <code class="paw-acc-num">KB국민 831801-04-173073 프로젝트파우</code>
         <button type="button" class="paw-copy">복사</button>
       </div>
-      <!-- ③ 문구 합치기: 이 한 줄만 표기 -->
       <p class="paw-donor-msg">보내주신 마음 100% 후원자에게 Direct로 전달됩니다</p>
+      <!-- 프로젝트 번호 안내(승인된 프로젝트만 노출) -->
+      <p class="paw-hint" id="pawAccGuide"></p>
       <div class="paw-toast" id="pawToast" hidden>복사되었습니다</div>
     </div>
   </div>
@@ -195,7 +197,7 @@
 
         $detail.innerHTML = `
           <section class="paw-head block headline">
-            <h1 class="big-title">${nameSafe}</h1>
+            <h1 class="big-title">${nameSafe}${p.projectNumber ? ` (#${p.projectNumber})` : ''}</h1>
             ${createdStr?`<div class="meta-date">등록일: ${createdStr}</div>`:''}
           </section>
           <div class="paw-grid">
@@ -294,7 +296,6 @@
         });
 
         /* ===== 계좌 팝업 (후원하러 가기 클릭 시) ===== */
-        // ①/②/③ 반영: 텍스트 변경 + 숫자만 복사
         const ACCOUNT_TEXT='KB국민 831801-04-173073 프로젝트파우';
         const modal=document.getElementById('pawAccModal');
         const accEl=modal.querySelector('.paw-acc-num');
@@ -304,7 +305,7 @@
         function closeModal(){ modal.hidden=true; document.body.style.overflow=''; }
         modal.addEventListener('click',(e)=>{ if(e.target.classList.contains('paw-modal')||e.target.classList.contains('paw-close')) closeModal();});
         copyBtn.addEventListener('click', async ()=>{
-          const digits = ACCOUNT_TEXT.replace(/\D/g,''); // 숫자만
+          const digits = ACCOUNT_TEXT.replace(/\D/g,''); // 숫자만 복사
           try{ await navigator.clipboard.writeText(digits); }
           catch{
             const ta=document.createElement('textarea'); ta.value=digits;
@@ -314,6 +315,16 @@
           toast.hidden=false; setTimeout(()=>{toast.hidden=true; toast.textContent='복사되었습니다';},1200);
         });
         document.querySelector('.btn-kakao')?.addEventListener('click',(e)=>{ e.preventDefault(); openModal(e); }, {passive:false});
+
+        // 프로젝트 번호가 있으면 팝업 안내 채우기
+        const guide = document.getElementById('pawAccGuide');
+        if (guide) {
+          if (p.projectNumber) {
+            guide.innerHTML = `송금 시 입금자명 뒤에 반드시 "<b>#${p.projectNumber}</b>"를 붙여주세요.<br>예: 홍길동#${p.projectNumber}`;
+          } else {
+            guide.hidden = true;
+          }
+        }
 
         /* ===== Firestore 댓글: 페이지네이션 + 본인삭제 ===== */
         await ensureAuth();
