@@ -33,7 +33,7 @@
       .block.headline{order:2;}
       .block.story{order:3;}
       .block.status{order:4;}
-      .block.beta{order:5;}
+      .block.beta{order:5;} /* BETA 섹션은 사용 안 함 */
       .block.value{order:6;}
     }
 
@@ -99,7 +99,7 @@
         <button type="button" class="paw-copy">복사</button>
       </div>
       <p class="paw-donor-msg">보내주신 마음 100% 후원자에게 Direct로 전달됩니다</p>
-      <p class="paw-hint"> "매일 오전 11시 후원내역 취합 후 업데이트 됩니다"</p>
+      <p class="paw-hint">입금 후 단톡방에 간단히 인증해주시면 ‘연결된 마음 수’에 반영됩니다.</p>
       <div class="paw-toast" id="pawToast" hidden>복사되었습니다</div>
     </div>
   </div>
@@ -110,6 +110,7 @@
     import { getProjectById } from './js/api.js';
     import { storage } from './js/firebase.js';
     import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+    import { addComment, listenComments, ensureAuth } from "./js/comments.js"; /* ← 신규 모듈 */
 
     injectLayout({ active:'project' });
     const $detail=document.getElementById('project-detail');
@@ -127,6 +128,7 @@
       return uniq.length?uniq:['img/placeholder.svg'];}
     function getId(){return new URLSearchParams(location.search).get("id");}
     function formatDescription(text){if(!text) return '';return text.replace(/\n/g,'<br/>');}
+    const escapeHtml = (s)=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
     async function render(){
       const id=getId(); if(!id){$detail.innerHTML='<div class="muted">잘못된 접근입니다.</div>';return;}
@@ -135,7 +137,6 @@
         const imgs=await galleryHttpUrls(p);
         const goal=Number(p.goalAmount||0);
         const current=Number(p.currentAmount||0);
-        const rate=goal?Math.floor(current/goal*100):0;
 
         $detail.innerHTML=`
           <section class="paw-head block headline">
@@ -166,9 +167,19 @@
               <!-- 스토리 -->
               <section class="section-card block story">
                 <h2>스토리</h2>
-                ${p.summary?`<p style="color:#555">${p.summary}</p>`:''}
-                ${p.keyMessage?`<p style="font-weight:700;color:#E87722">❝ ${p.keyMessage} ❞</p>`:''}
+                ${p.summary?`<p style="color:#555">${escapeHtml(p.summary)}</p>`:''}
+                ${p.keyMessage?`<p style="font-weight:700;color:#E87722">❝ ${escapeHtml(p.keyMessage)} ❞</p>`:''}
                 <p>${formatDescription(p.description)}</p>
+              </section>
+
+              <!-- 응원 댓글 (Firestore 실시간) -->
+              <section class="section-card block comments">
+                <h2>응원하기 💬</h2>
+                <div id="comment-list" style="margin-bottom:15px;"></div>
+                <textarea id="comment-input" rows="3" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;" placeholder="응원의 한마디를 남겨주세요 (최대 500자)"></textarea>
+                <button id="comment-btn" style="margin-top:10px;width:100%;padding:10px;border:none;border-radius:8px;background:#E87722;color:#fff;font-weight:700;">
+                  응원 남기기
+                </button>
               </section>
 
               <!-- 우리가 추구하는 가치 (문구 교체) -->
@@ -200,7 +211,7 @@
                 ${p.adminMessage?`
                   <div style="margin-top:18px;padding:14px;border-radius:12px;background:#fff8f2;
                               border:1px solid #f4d0b5;font-weight:800;color:#d35400;font-size:1.05rem;">
-                    📌 관리자 한마디: ${p.adminMessage}
+                    📌 관리자 한마디: ${escapeHtml(p.adminMessage)}
                   </div>`:''}
               </div>
             </div>
@@ -226,7 +237,6 @@
 
         /* ===== 계좌 팝업 (후원하러 가기 클릭 시) ===== */
         const ACCOUNT_TEXT='계좌번호 : KB국민 831801-04-173073 프로젝트파우';
-
         const modal=document.getElementById('pawAccModal');
         const accEl=modal.querySelector('.paw-acc-num');
         const copyBtn=modal.querySelector('.paw-copy');
@@ -237,11 +247,9 @@
           modal.hidden=false; document.body.style.overflow='hidden';
         }
         function closeModal(){ modal.hidden=true; document.body.style.overflow=''; }
-
         modal.addEventListener('click',(e)=>{
           if(e.target.classList.contains('paw-modal') || e.target.classList.contains('paw-close')) closeModal();
         });
-
         copyBtn.addEventListener('click', async ()=>{
           try{ await navigator.clipboard.writeText(ACCOUNT_TEXT); }
           catch{
@@ -250,9 +258,43 @@
           }
           toast.hidden=false; setTimeout(()=>toast.hidden=true,1200);
         });
-
         const donateBtn=document.querySelector('.btn-kakao');
         donateBtn?.addEventListener('click', (e)=>{ e.preventDefault(); openModal(e); }, {passive:false});
+
+        /* ===== Firestore 응원댓글 연결 ===== */
+        const id = getId();
+        await ensureAuth(); // 익명 로그인 보장
+
+        const commentList = document.getElementById("comment-list");
+        const commentInput = document.getElementById("comment-input");
+        const commentBtn = document.getElementById("comment-btn");
+
+        function renderComments(items){
+          if(!items.length){
+            commentList.innerHTML = `<div style="color:#777">첫 응원을 남겨주세요 🙌</div>`;
+            return;
+          }
+          commentList.innerHTML = items.map(c=>{
+            const when = c.createdAt && c.createdAt.toDate ? c.createdAt.toDate() : null;
+            const ts = when ? when.toLocaleString('ko-KR') : '';
+            return `
+              <div style="padding:8px 0;border-bottom:1px solid #eee;">
+                <div style="font-weight:700">${escapeHtml(c.uid||"익명")}</div>
+                <div>${escapeHtml(c.text||"")}</div>
+                <div style="color:#888;font-size:12px">${ts}</div>
+              </div>`;
+          }).join("");
+        }
+
+        commentBtn?.addEventListener("click", async ()=>{
+          const text = (commentInput?.value||"").trim();
+          if(!text) return;
+          if(text.length>500){ alert("500자 이내로 입력해주세요."); return; }
+          await addComment(id, text);
+          commentInput.value = "";
+        });
+
+        listenComments(id, renderComments);
 
       }catch(e){
         console.error(e);
