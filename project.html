@@ -16,9 +16,13 @@
 
     /* 헤드라인 */
     .paw-head{background:#fff;border:1px solid var(--line);border-radius:14px;
-      padding:28px 20px;margin:40px 0;text-align:center}
+      padding:28px 20px;margin:40px 0;text-align:center;position:relative}
     .paw-head .big-title{font-size:2.2rem;font-weight:900;color:var(--ink)}
-    .paw-head .meta-date{margin-top:6px;font-size:.9rem;color:#777}
+    /* 등록일자: 우하단 고정 */
+    .paw-head .meta-date{
+      position:absolute; right:16px; bottom:12px; margin:0;
+      font-size:.9rem;color:#777; text-align:right
+    }
 
     /* 레이아웃 */
     .paw-grid{display:grid;gap:20px}
@@ -75,11 +79,11 @@
       font-family:'SUIT Variable','Pretendard',system-ui,sans-serif}
     .paw-dialog h3{margin:0 0 12px;font-size:20px;font-weight:800;color:var(--accent)}
     .paw-acc{display:flex;gap:8px;align-items:center;justify-content:space-between;background:#f5f5f5;border-radius:12px;padding:12px}
-    .paw-acc code{font-size:16px;font-weight:800;word-break:keep-all;color:var(--accent)}
+    /* 계좌 텍스트: 검은색으로 통일 */
+    .paw-acc code{font-size:16px;font-weight:800;word-break:keep-all;color:var(--ink)}
     .paw-copy{border:0;border-radius:10px;padding:8px 12px;cursor:pointer}
     .paw-close{border:0;background:transparent;font-size:28px;line-height:1;cursor:pointer;position:absolute;top:8px;right:12px}
     .paw-donor-msg{margin:12px 2px 0;font-size:14px;color:#333}
-    .paw-hint{margin:4px 2px 0;font-size:12px;color:#666}
     .paw-toast{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:#111;color:#fff;border-radius:999px;padding:6px 12px;font-size:12px}
     .paw-toast[hidden]{display:none}
 
@@ -105,12 +109,12 @@
       <button class="paw-close" aria-label="닫기">&times;</button>
       <h3 id="pawAccTitle">후원 계좌</h3>
       <div class="paw-acc">
-        <code class="paw-acc-num">계좌번호 : KB국민 831801-04-173073 프로젝트파우</code>
+        <!-- ① “계좌번호 : ” 제거된 표시 텍스트 -->
+        <code class="paw-acc-num">KB국민 831801-04-173073 프로젝트파우</code>
         <button type="button" class="paw-copy">복사</button>
       </div>
+      <!-- ③ 문구 합치기: 이 한 줄만 표기 -->
       <p class="paw-donor-msg">보내주신 마음 100% 후원자에게 Direct로 전달됩니다</p>
-      <!-- 문구 교체 -->
-      <p class="paw-hint">보내주신 마음 따뜻한 후기로 보답하겠습니다</p>
       <div class="paw-toast" id="pawToast" hidden>복사되었습니다</div>
     </div>
   </div>
@@ -290,7 +294,8 @@
         });
 
         /* ===== 계좌 팝업 (후원하러 가기 클릭 시) ===== */
-        const ACCOUNT_TEXT='계좌번호 : KB국민 831801-04-173073 프로젝트파우';
+        // ①/②/③ 반영: 텍스트 변경 + 숫자만 복사
+        const ACCOUNT_TEXT='KB국민 831801-04-173073 프로젝트파우';
         const modal=document.getElementById('pawAccModal');
         const accEl=modal.querySelector('.paw-acc-num');
         const copyBtn=modal.querySelector('.paw-copy');
@@ -299,8 +304,7 @@
         function closeModal(){ modal.hidden=true; document.body.style.overflow=''; }
         modal.addEventListener('click',(e)=>{ if(e.target.classList.contains('paw-modal')||e.target.classList.contains('paw-close')) closeModal();});
         copyBtn.addEventListener('click', async ()=>{
-          // 숫자만 복사
-          const digits = ACCOUNT_TEXT.replace(/\D/g,'');
+          const digits = ACCOUNT_TEXT.replace(/\D/g,''); // 숫자만
           try{ await navigator.clipboard.writeText(digits); }
           catch{
             const ta=document.createElement('textarea'); ta.value=digits;
@@ -366,7 +370,6 @@
 
         nextBtn.addEventListener('click', async ()=>{
           if(nextBtn.disabled) return;
-          // 다음 페이지 시작 커서를 스택에 저장
           if(lastVisible) cursors[pageIndex+1] = lastVisible;
           await loadPage(pageIndex+1);
         });
@@ -384,7 +387,6 @@
           if(!cid) return;
           if(!confirm('이 인사를 삭제할까요?')) return;
           await deleteComment(id, cid);
-          // 현재 페이지 재로딩 (비면 이전 페이지로)
           const { items } = await listCommentsPage(id, PAGE_SIZE, cursors[pageIndex]||null);
           if(items.length===0 && pageIndex>0){
             await loadPage(pageIndex-1);
@@ -401,7 +403,6 @@
           await addComment(id, text, nm || null);
           if(nm){ try { localStorage.setItem(NAME_KEY, nm); } catch {} }
           commentInput.value = "";
-          // 새로 작성하면 첫 페이지로 이동
           cursors.splice(1); // 이후 커서 초기화
           await loadPage(0);
         });
