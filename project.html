@@ -83,7 +83,7 @@
     .paw-toast{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:#111;color:#fff;border-radius:999px;padding:6px 12px;font-size:12px}
     .paw-toast[hidden]{display:none}
 
-    /* 댓글 내 버튼 */
+    /* 댓글 내 버튼/페이지네이션 */
     .c-actions{display:flex;gap:8px;margin-top:6px}
     .c-del{border:none;border-radius:8px;padding:6px 10px;background:#eee;cursor:pointer;font-size:12px}
     .c-del:hover{background:#e2e2e2}
@@ -109,7 +109,8 @@
         <button type="button" class="paw-copy">복사</button>
       </div>
       <p class="paw-donor-msg">보내주신 마음 100% 후원자에게 Direct로 전달됩니다</p>
-      <p class="paw-hint">입금 후 단톡방에 간단히 인증해주시면 ‘연결된 마음 수’에 반영됩니다.</p>
+      <!-- 문구 교체 -->
+      <p class="paw-hint">보내주신 마음 따뜻한 후기로 보답하겠습니다</p>
       <div class="paw-toast" id="pawToast" hidden>복사되었습니다</div>
     </div>
   </div>
@@ -120,7 +121,7 @@
     import { getProjectById } from './js/api.js';
     import { storage } from './js/firebase.js';
     import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-    import { addComment, deleteComment, listCommentsPage, ensureAuth, getUid } from "./js/comments.js"; /* 댓글 모듈 */
+    import { addComment, deleteComment, listCommentsPage, ensureAuth, getUid } from "./js/comments.js";
 
     injectLayout({ active:'project' });
     const $detail=document.getElementById('project-detail');
@@ -224,9 +225,9 @@
                 <p><strong>2025.09월</strong>을 시작으로 작은 용기들이 모여 큰 변화가 될 거라 믿습니다. 🐾</p>
               </section>
 
-              <!-- 구조자에게 감사인사 전하기 (맨 아래, 페이지네이션/본인삭제) -->
+              <!-- 감사인사 전하기 (맨 아래, 페이지네이션/본인삭제) -->
               <section class="section-card block comments">
-                <h2>구조자에게 감사인사 전하기 💬</h2>
+                <h2>감사인사 전하기 💬</h2>
                 <div id="comment-list" style="margin-bottom:10px;"></div>
                 <div class="pager">
                   <button id="prev-page" disabled>이전 5개</button>
@@ -236,11 +237,12 @@
                 <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;">
                   <input id="comment-name" type="text" maxlength="30"
                          placeholder="작성자명 (선택)" style="width:180px;padding:8px;border:1px solid #ddd;border-radius:8px;font-size:14px;">
+                  <!-- 두 버튼 동일 스타일/사이즈/색 -->
                   <button id="comment-saveName" style="padding:8px 10px;border:none;border-radius:8px;background:#6b7280;color:#fff;font-weight:700;font-size:14px;">
                     이름 저장
                   </button>
-                  <button id="comment-btn" style="margin-left:auto;padding:10px 14px;border:none;border-radius:8px;background:#E87722;color:#fff;font-weight:700;">
-                    감사 인사 남기기
+                  <button id="comment-btn" style="padding:8px 10px;border:none;border-radius:8px;background:#6b7280;color:#fff;font-weight:700;font-size:14px;">
+                    등록하기
                   </button>
                 </div>
               </section>
