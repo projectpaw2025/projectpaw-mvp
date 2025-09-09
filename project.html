@@ -34,6 +34,7 @@
       .block.story{order:3;}
       .block.status{order:4;}
       .block.value{order:5;}
+      .block.comments{order:6;}
     }
 
     /* 캐러셀 */
@@ -137,7 +138,7 @@
         const goal=Number(p.goalAmount||0);
         const current=Number(p.currentAmount||0);
 
-        // === 백틱 중첩 없는 안전 렌더 ===
+        /* === 백틱 중첩 없는 안전 렌더 === */
         const nameSafe = p.name ?? '(이름 없음)';
 
         const carouselItems = imgs.map((url,i)=>
@@ -188,22 +189,29 @@
                 <p>${formatDescription(p.description)}</p>
               </section>
 
-              <!-- 응원 댓글 (Firestore 실시간) -->
+              <!-- PAW가 추구하는 가치 -->
+              <section class="section-card block value">
+                <h2>PAW가 추구하는 가치</h2>
+                <p>Project.PAW는 개인 구조자와 후원자가 직접 연결되는 작은 실험입니다.</p>
+                <p>숫자보다 중요한 건 ‘연결된 마음’이고,<br/>그 마음이 행동으로 이어질 수 있도록 돕고 싶습니다.</p>
+                <p><strong>2025.09월</strong>을 시작으로 작은 용기들이 모여 큰 변화가 될 거라 믿습니다. 🐾</p>
+              </section>
+
+              <!-- 응원 댓글 (맨 아래) -->
               <section class="section-card block comments">
                 <h2>응원하기 💬</h2>
+                <div style="display:flex; gap:8px; margin-bottom:10px;">
+                  <input id="comment-name" type="text" maxlength="30"
+                         placeholder="작성자명 (선택)" style="flex:0 0 200px;padding:10px;border:1px solid #ddd;border-radius:8px;">
+                  <button id="comment-saveName" style="padding:10px 12px;border:none;border-radius:8px;background:#6b7280;color:#fff;font-weight:700;">
+                    이름 저장
+                  </button>
+                </div>
                 <div id="comment-list" style="margin-bottom:15px;"></div>
                 <textarea id="comment-input" rows="3" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;" placeholder="응원의 한마디를 남겨주세요 (최대 500자)"></textarea>
                 <button id="comment-btn" style="margin-top:10px;width:100%;padding:10px;border:none;border-radius:8px;background:#E87722;color:#fff;font-weight:700;">
                   응원 남기기
                 </button>
-              </section>
-
-              <!-- 우리가 추구하는 가치 -->
-              <section class="section-card block value">
-                <h2>우리가 추구하는 가치</h2>
-                <p>Project.PAW는 개인 구조자와 후원자가 직접 연결되는 작은 실험입니다.</p>
-                <p>숫자보다 중요한 건 ‘연결된 마음’이고,<br/>그 마음이 행동으로 이어질 수 있도록 돕고 싶습니다.</p>
-                <p><strong>2025.09월</strong>을 시작으로 작은 용기들이 모여 큰 변화가 될 거라 믿습니다. 🐾</p>
               </section>
             </div>
 
@@ -264,6 +272,20 @@
 
         /* ===== Firestore 응원댓글 ===== */
         await ensureAuth();
+
+        const NAME_KEY = 'pawDisplayName';
+        const nameInput = document.getElementById("comment-name");
+        const saveNameBtn = document.getElementById("comment-saveName");
+
+        // 저장된 이름 복원
+        try { const saved = localStorage.getItem(NAME_KEY); if(saved) nameInput.value = saved; } catch {}
+
+        saveNameBtn?.addEventListener("click", ()=>{
+          const nm = (nameInput?.value||"").trim().slice(0,30);
+          try { localStorage.setItem(NAME_KEY, nm); } catch {}
+          alert("이름이 저장되었습니다.");
+        });
+
         const commentList = document.getElementById("comment-list");
         const commentInput = document.getElementById("comment-input");
         const commentBtn = document.getElementById("comment-btn");
@@ -273,8 +295,9 @@
           commentList.innerHTML = items.map(c=>{
             const when = c.createdAt && c.createdAt.toDate ? c.createdAt.toDate() : null;
             const ts = when ? when.toLocaleString('ko-KR') : '';
+            const who = c.name ? escapeHtml(c.name) : '익명';
             return '<div style="padding:8px 0;border-bottom:1px solid #eee;">'
-                 +   '<div style="font-weight:700">'+escapeHtml(c.uid||'익명')+'</div>'
+                 +   '<div style="font-weight:700">'+who+'</div>'
                  +   '<div>'+escapeHtml(c.text||'')+'</div>'
                  +   '<div style="color:#888;font-size:12px">'+ts+'</div>'
                  + '</div>';
@@ -285,7 +308,9 @@
           const text = (commentInput?.value||"").trim();
           if(!text) return;
           if(text.length>500){ alert("500자 이내로 입력해주세요."); return; }
-          await addComment(id, text);
+          const nm = (nameInput?.value||"").trim().slice(0,30);
+          await addComment(id, text, nm || null);
+          if(nm){ try { localStorage.setItem(NAME_KEY, nm); } catch {} }
           commentInput.value = "";
         });
 
