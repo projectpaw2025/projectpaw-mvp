@@ -158,3 +158,58 @@ export async function apiListProjects(opts = {}) {
   }
   return await fetchAllProjects();
 }
+
+// ------------------------------
+// (추가) create.html이 기대하는 API: apiCreateProject
+// - 문서 생성 → 파일 업로드(대표/갤러리/영수증) → 문서 업데이트 → id 반환
+// ------------------------------
+export async function apiCreateProject(data = {}) {
+  const { coverFile = null, galleryFiles = [], receiptFiles = [], ...fields } = data;
+
+  // 1) 기본 문서 생성
+  const created = await createProject(fields);
+  const id = created.id;
+
+  // 2) 업로드 헬퍼: fullPath 저장 (project.html에서 Storage path→URL 변환 지원)
+  async function uploadAndReturnPath(file, path) {
+    if (!file) return null;
+    const storageRef = ref(storage, path);
+    const snap = await uploadBytes(storageRef, file);
+    return snap.metadata.fullPath; // 'uploads/...' 형태. 또는 getDownloadURL(snap.ref)로 바로 URL 저장해도 OK
+  }
+
+  // 3) 파일 업로드
+  const ts = Date.now();
+  const updates = {};
+
+  if (coverFile) {
+    const p = `uploads/projects/${id}/cover_${ts}_${coverFile.name}`;
+    updates.representativeImageUrl = await uploadAndReturnPath(coverFile, p);
+  }
+
+  const galleryPaths = [];
+  for (let i = 0; i < galleryFiles.length; i++) {
+    const f = galleryFiles[i];
+    const p = `uploads/projects/${id}/gallery_${ts}_${i}_${f.name}`;
+    const up = await uploadAndReturnPath(f, p);
+    if (up) galleryPaths.push(up);
+  }
+  if (galleryPaths.length) updates.images = galleryPaths;
+
+  const receiptPaths = [];
+  for (let i = 0; i < receiptFiles.length; i++) {
+    const f = receiptFiles[i];
+    const p = `uploads/projects/${id}/receipt_${ts}_${i}_${f.name}`;
+    const up = await uploadAndReturnPath(f, p);
+    if (up) receiptPaths.push(up);
+  }
+  if (receiptPaths.length) updates.receiptUrls = receiptPaths;
+
+  // 4) 문서 업데이트
+  if (Object.keys(updates).length) {
+    await updateDoc(doc(db, "projects", id), updates);
+  }
+
+  // 5) id 반환 (create.html에서 redirect 등에 사용)
+  return id;
+}
