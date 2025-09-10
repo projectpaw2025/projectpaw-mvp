@@ -22,6 +22,11 @@ function toInt(v) {
   if (!v) return 0;
   return parseInt(v, 10) || 0;
 }
+function safeName(name) {
+  if (!name || typeof name !== "string") return "file";
+  // 경로 구분자 제거 + 공백/한글/특수문자 최소화
+  return name.split("/").pop().replace(/\s+/g, "_");
+}
 
 // (선택) 파일 업로드 유틸 - 필요 시 사용
 export async function uploadFile(path, fileOrBlob) {
@@ -162,6 +167,8 @@ export async function apiListProjects(opts = {}) {
 // ------------------------------
 // (추가) create.html이 기대하는 API: apiCreateProject
 // - 문서 생성 → 파일 업로드(대표/갤러리/영수증) → 문서 업데이트 → id 반환
+// - 업로드 경로는 Storage 규칙에 맞춰 단일 단계 경로 사용
+//   covers/*, gallery/*, receipts/*
 // ------------------------------
 export async function apiCreateProject(data = {}) {
   const { coverFile = null, galleryFiles = [], receiptFiles = [], ...fields } = data;
@@ -175,22 +182,22 @@ export async function apiCreateProject(data = {}) {
     if (!file) return null;
     const storageRef = ref(storage, path);
     const snap = await uploadBytes(storageRef, file);
-    return snap.metadata.fullPath; // 'uploads/...' 형태. 또는 getDownloadURL(snap.ref)로 바로 URL 저장해도 OK
+    return snap.metadata.fullPath; // 'covers/..' 'gallery/..' 'receipts/..'
   }
 
-  // 3) 파일 업로드
+  // 3) 파일 업로드 (단일 단계 경로: 폴더/파일명)
   const ts = Date.now();
   const updates = {};
 
   if (coverFile) {
-    const p = `uploads/projects/${id}/cover_${ts}_${coverFile.name}`;
-    updates.representativeImageUrl = await uploadAndReturnPath(coverFile, p);
+    const coverPath = `covers/cover_${id}_${ts}_${safeName(coverFile.name)}`;
+    updates.representativeImageUrl = await uploadAndReturnPath(coverFile, coverPath);
   }
 
   const galleryPaths = [];
   for (let i = 0; i < galleryFiles.length; i++) {
     const f = galleryFiles[i];
-    const p = `uploads/projects/${id}/gallery_${ts}_${i}_${f.name}`;
+    const p = `gallery/gallery_${id}_${ts}_${i}_${safeName(f.name)}`;
     const up = await uploadAndReturnPath(f, p);
     if (up) galleryPaths.push(up);
   }
@@ -199,7 +206,7 @@ export async function apiCreateProject(data = {}) {
   const receiptPaths = [];
   for (let i = 0; i < receiptFiles.length; i++) {
     const f = receiptFiles[i];
-    const p = `uploads/projects/${id}/receipt_${ts}_${i}_${f.name}`;
+    const p = `receipts/receipt_${id}_${ts}_${i}_${safeName(f.name)}`;
     const up = await uploadAndReturnPath(f, p);
     if (up) receiptPaths.push(up);
   }
