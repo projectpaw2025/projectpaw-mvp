@@ -191,9 +191,13 @@
             + '📌 관리자 한마디: '+escapeHtml(p.adminMessage)
             + '</div>'
           : '';
-        const donateBtnHtml = p.kakaoChatUrl
-          ? '<a href="'+p.kakaoChatUrl+'" target="_blank" class="btn-kakao">💬 후원하러 가기</a>'
-          : '';
+
+        /* ✅ 항상 “후원하러 가기” 버튼 노출 (팝업) + kakaoChatUrl 보조 링크 */
+        const donateBtnHtml =
+          '<a href="#" class="btn-kakao" id="openDonate">💬 후원하러 가기</a>' +
+          (p.kakaoChatUrl
+            ? '<a href="'+p.kakaoChatUrl+'" target="_blank" class="btn-share" style="margin-top:8px">오픈채팅 가기</a>'
+            : '');
 
         $detail.innerHTML = `
           <section class="paw-head block headline">
