@@ -63,21 +63,21 @@ function AIBox({ block, payload }) {
   }, [block, JSON.stringify(payload || {})]);
 
   return (
-    <div style={styles.aiBox}>
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: 4 }}>
-        <div style={{ fontWeight: 800 }}>AI 현황분석</div>
-        <button onClick={() => setOpen(o=>!o)} style={styles.btnGray}>{open ? "접기" : "AI 요약"}</button>
+    <div className="ai-block">
+      <div className="card-head">
+        <div className="bold">AI 현황분석</div>
+        <button onClick={() => setOpen(o=>!o)} className="btn">{open ? "접기" : "AI 요약"}</button>
       </div>
       {open ? (
-        <div style={{ fontSize:12, color:"#6b7280", marginBottom:6 }}>
+        <div className="muted">
           <span suppressHydrationWarning>GEMINI 2.5 사용중{ts ? ` · ${new Date(ts).toLocaleString("ko-KR", { timeZone: "Asia/Seoul" })}` : ""}</span>
         </div>
       ) : null}
       {open && (
         <>
-          {loading && <div style={{ color: "#6b7280" }}>분석 중…</div>}
-          {err && <div style={{ color: "#b91c1c" }}>오류: {err}</div>}
-          {!loading && !err && <div style={{ whiteSpace: "pre-wrap" }}>{redactForbidden(text) || "분석 결과가 없습니다."}</div>}
+          {loading && <div className="muted">분석 중…</div>}
+          {err && <div className="text-danger">오류: {err}</div>}
+          {!loading && !err && <div className="prewrap">{redactForbidden(text) || "분석 결과가 없습니다."}</div>}
         </>
       )}
     </div>
@@ -91,12 +91,12 @@ function AIBox({ block, payload }) {
 ========================= */
 function HeaderBar() {
   return (
-    <header style={styles.headerWrap}>
-      <div style={styles.headerInner}>
-        <div style={styles.brand}>
+    <header className="header-wrap">
+      <div className="header-inner">
+        <div className="brand">
           <span>Hansoll Market Trend</span>
         </div>
-        <nav style={styles.nav}></nav>
+        <nav className="nav"></nav>
       </div>
     </header>
   );
@@ -178,48 +178,48 @@ function ProcurementTopBlock() {
   };
 
   const Card = ({ title, value, sub }) => (
-    <div style={styles.card}>
-      <div style={styles.cardTitle}>{title}</div>
-      <div style={styles.cardValue}>{value}</div>
-      {sub ? <div style={styles.cardSub}>{sub}</div> : null}
+    <div className="card">
+      <div className="card-title">{title}</div>
+      <div className="value">{value}</div>
+      {sub ? <div className="subtle">{sub}</div> : null}
     </div>
   );
 
   return (
-    <section style={styles.blockWrap}>
-      <div style={styles.headerRow}>
+    <section className="card">
+      <div className="header-row">
         <div>
-          <h2 style={styles.h2}>부자재구매현황 DASHBOARD (sample data입니다)</h2>
-          <div style={styles.meta}>
+          <h2 className="h2">부자재구매현황 DASHBOARD (sample data입니다)</h2>
+          <div className="muted">
             기간: <b>{data.periodLabel || "—"}</b> / 방식: <b>{data.period}</b> / 통화: <b>{data.currency}</b>
           </div>
           <div>
-            <button onClick={() => setOpenEdit(o=>!o)} style={styles.btnTiny}>{openEdit ? "입력 닫기" : "수기 입력"}</button>
+            <button onClick={() => setOpenEdit(o=>!o)} className="btn btn-tiny">{openEdit ? "입력 닫기" : "수기 입력"}</button>
 </div>
         </div>
 </div>
 
       <div >
-      <div style={styles.grid5}>
+      <div className="grid5">
         <Card title="총 매출액" value={fmtCurrency(data.revenue, data.currency)} />
         <Card title="총 부자재매입액" value={fmtCurrency(data.materialSpend, data.currency)} />
-        <div style={styles.card}>
-          <div style={styles.cardTitle}>매출 대비 부자재 매입비중</div>
-          <div style={styles.cardValue}>{fmtSignPct(ratio, 1)}</div>
-          <div style={styles.progressWrap}><div style={{ ...styles.progressBar, width: `${ratio}%` }} /></div>
+        <div className="card">
+          <div className="card-title">매출 대비 부자재 매입비중</div>
+          <div className="value">{fmtSignPct(ratio, 1)}</div>
+          <div className="progress"><div className="bar" style={{ width: `${ratio}%` }} /></div>
         </div>
         <Card title="총 Cost Save" value={fmtCurrency(data.costSave || 0, data.currency)} />
         <Card title="총 발행 PO수" value={fmtNum(data.poCount, 0)} />
       </div>
 
-      <div style={styles.innerBlock}>
-        <div style={styles.blockTitle}>공급현황 (국내 / 3국 / 현지)</div>
-        <div style={styles.stackBar}>
-          <div style={{ ...styles.seg, background: "#111827", width: `${supply.domestic}%` }} title={`국내 ${fmtNum(supply.domestic, 1)}%`} />
-          <div style={{ ...styles.seg, background: "#4B5563", width: `${supply.thirdCountry}%` }} title={`3국 ${fmtNum(supply.thirdCountry, 1)}%`} />
-          <div style={{ ...styles.seg, background: "#9CA3AF", width: `${supply.local}%` }} title={`현지 ${fmtNum(supply.local, 1)}%`} />
+      <div className="card">
+        <div className="card-title">공급현황 (국내 / 3국 / 현지)</div>
+        <div className="stack-bar">
+          <div className="seg" style={{ background: "#111827", width: `${supply.domestic}%` }} title={`국내 ${fmtNum(supply.domestic, 1)}%`} />
+          <div className="seg" style={{ background: "#4B5563", width: `${supply.thirdCountry}%` }} title={`3국 ${fmtNum(supply.thirdCountry, 1)}%`} />
+          <div className="seg" style={{ background: "#9CA3AF", width: `${supply.local}%` }} title={`현지 ${fmtNum(supply.local, 1)}%`} />
         </div>
-        <div style={styles.legend}>
+        <div className="muted">
           <span>국내 {fmtNum(supply.domestic, 1)}%</span>
           <span>3국 {fmtNum(supply.thirdCountry, 1)}%</span>
           <span>현지 {fmtNum(supply.local, 1)}%</span>
@@ -232,45 +232,45 @@ function ProcurementTopBlock() {
 
       {openEdit && (
         <div style={styles.editBox}>
-          <div style={styles.row}>
+          <div className="row">
             <label>기간 표시</label>
             <input value={data.periodLabel || ""} onChange={(e) => setData(d => ({ ...d, periodLabel: e.target.value }))} placeholder="예: 2025-09" />
           </div>
-          <div style={styles.row}>
+          <div className="row">
             <label>방식</label>
             <input value={data.period || ""} onChange={(e) => setData(d => ({ ...d, period: e.target.value }))} placeholder="월간 / 주간 / 일간 등" />
           </div>
-          <div style={styles.row}>
+          <div className="row">
             <label>통화</label>
             <select value={data.currency} onChange={(e) => setData(d => ({ ...d, currency: e.target.value }))}>
               <option value="USD">USD</option><option value="KRW">KRW</option>
             </select>
           </div>
-          <div style={styles.grid2}>
-            <div style={styles.row}><label>총 매출액</label><input type="number" value={data.revenue} onChange={(e) => setData(d => ({ ...d, revenue: Number(e.target.value) }))} /></div>
-            <div style={styles.row}><label>총 부자재매입액</label><input type="number" value={data.materialSpend} onChange={(e) => setData(d => ({ ...d, materialSpend: Number(e.target.value) }))} /></div>
-          <div style={styles.row}><label>총 Cost Save</label><input type="number" value={data.costSave}
+          <div className="grid2">
+            <div className="row"><label>총 매출액</label><input type="number" value={data.revenue} onChange={(e) => setData(d => ({ ...d, revenue: Number(e.target.value) }))} /></div>
+            <div className="row"><label>총 부자재매입액</label><input type="number" value={data.materialSpend} onChange={(e) => setData(d => ({ ...d, materialSpend: Number(e.target.value) }))} /></div>
+          <div className="row"><label>총 Cost Save</label><input type="number" value={data.costSave}
             onChange={(e) => setData(d => ({ ...d, costSave: Number(e.target.value) }))} /></div>
           </div>
-          <div style={styles.grid2}>
-            <div style={styles.row}><label>총 오더수(스타일)</label><input type="number" value={data.styles} onChange={(e) => setData(d => ({ ...d, styles: Number(e.target.value) }))} /></div>
-            <div style={styles.row}><label>총 발행 PO수</label><input type="number" value={data.poCount} onChange={(e) => setData(d => ({ ...d, poCount: Number(e.target.value) }))} /></div>
+          <div className="grid2">
+            <div className="row"><label>총 오더수(스타일)</label><input type="number" value={data.styles} onChange={(e) => setData(d => ({ ...d, styles: Number(e.target.value) }))} /></div>
+            <div className="row"><label>총 발행 PO수</label><input type="number" value={data.poCount} onChange={(e) => setData(d => ({ ...d, poCount: Number(e.target.value) }))} /></div>
           </div>
           <div style={{ marginTop: 8, borderTop: "1px solid #e5e7eb", paddingTop: 8 }}>
-            <div style={styles.blockTitle}>공급현황(%) — 합계 100 기준</div>
-            <div style={styles.grid3}>
-              <div style={styles.row}><label>국내(%)</label><input type="number" value={data.supplyBreakdown.domestic}
+            <div className="card-title">공급현황(%) — 합계 100 기준</div>
+            <div className="grid3">
+              <div className="row"><label>국내(%)</label><input type="number" value={data.supplyBreakdown.domestic}
                 onChange={(e) => setData(d => ({ ...d, supplyBreakdown: { ...d.supplyBreakdown, domestic: Number(e.target.value) } }))} /></div>
-              <div style={styles.row}><label>3국(%)</label><input type="number" value={data.supplyBreakdown.thirdCountry}
+              <div className="row"><label>3국(%)</label><input type="number" value={data.supplyBreakdown.thirdCountry}
                 onChange={(e) => setData(d => ({ ...d, supplyBreakdown: { ...d.supplyBreakdown, thirdCountry: Number(e.target.value) } }))} /></div>
-              <div style={styles.row}><label>현지(%)</label><input type="number" value={data.supplyBreakdown.local}
+              <div className="row"><label>현지(%)</label><input type="number" value={data.supplyBreakdown.local}
                 onChange={(e) => setData(d => ({ ...d, supplyBreakdown: { ...d.supplyBreakdown, local: Number(e.target.value) } }))} /></div>
             </div>
           </div>
           <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-            <button onClick={save} style={styles.btnBlue}>저장</button>
-            <button  style={styles.btnGray}>닫기</button>
-            <button onClick={reset} style={styles.btnDanger}>초기화</button>
+            <button onClick={save} className="btn btn-primary">저장</button>
+            <button  className="btn">닫기</button>
+            <button onClick={reset} className="btn">초기화</button>
           </div>
         </div>
       )}
@@ -294,7 +294,7 @@ function Sparkline({ series = [], width = 110, height = 32 }) {
   }).join(" ");
   const up = series[series.length - 1] >= series[0];
   return (
-    <svg width={width} height={height} style={{ display: "block", marginTop: 6 }}>
+    <svg width={width} height={height}>
       <polyline fill="none" stroke={up ? "#065f46" : "#991b1b"} strokeWidth="2" points={pts} />
     </svg>
   );
@@ -354,19 +354,19 @@ function IndicatorsSection() {
   }, [state.data, lastUpdated]);
 
   return (
-    <section style={{ marginTop: 24 }}>
-      <h3 style={styles.h3}>주요 지표</h3>
+    <section className="mt-24px">
+      <h3 className="h3">주요 지표</h3>
       {lastUpdated && (
-        <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 8 }}>
+        <div className="muted">
           전체 업데이트: {new Date(lastUpdated).toLocaleString("ko-KR")}
         </div>
       )}
       {state.loading && <div>불러오는 중...</div>}
-      {state.error && <div style={styles.err}>에러: {state.error}</div>}
+      {state.error && <div className="text-danger">에러: {state.error}</div>}
 
       {!state.loading && !state.error && (
         <>
-          <div style={styles.grid4}>
+          <div className="grid4">
             {curated.map((c) => {
               const node = state.data?.[c.key] || null;
               const v = node?.value ?? null;
@@ -380,8 +380,8 @@ function IndicatorsSection() {
 
               return (
                 <a key={c.key} href={href} target="_blank" rel="noreferrer" style={{ ...styles.card, ...styles.cardLink }} title="원본 데이터 열기">
-                  <div style={styles.cardTitle}>{c.title}</div>
-                  <div style={styles.cardValue}>{v != null ? fmtNum(v) : "-"}</div>
+                  <div className="card-title">{c.title}</div>
+                  <div className="value">{v != null ? fmtNum(v) : "-"}</div>
                   <div style={{ ...styles.cardSub, fontWeight: 800, color: deltaPct == null ? "#6b7280" : (up ? "#065f46" : "#991b1b") }}>
                     {deltaPct == null ? "vs prev: -" : `vs prev: ${fmtSignPct(deltaPct)}`}
                   </div>
@@ -452,7 +452,7 @@ function StocksSection() {
       if (!ln) { flushList(); continue; }
       if (/^[-•]\s+/.test(ln)) { inList = true; list.push(ln.replace(/^[-•]\s+/, "")); continue; }
       if (inList) { flushList(); inList = false; }
-      items.push(<p key={"p"+items.length} style={{ margin: "6px 0", lineHeight: 1.6 }}>{ln}</p>);
+      items.push(<p key={"p"+items.length} className="para">{ln}</p>);
     }
     flushList();
     const titleMap = {
@@ -461,7 +461,7 @@ function StocksSection() {
     const title = titleMap[sec.title] || sec.title;
     return (
       <section key={idx} style={{ marginTop: idx===0?0:10 }}>
-        {title ? <h3 style={{ fontSize: 14, fontWeight: 700, margin: "8px 0 4px 0" }}>{title}</h3> : null}
+        {title ? <h3 className="subhead bold">>{title}</h3> : null}
         {items}
       </section>
     );
@@ -484,7 +484,7 @@ function StocksSection() {
         {sections.map(renderSection)}
         {collapsed && <div style={{ position: "absolute", left:0, right:0, bottom:0, height: 48,
           background: "linear-gradient(180deg, rgba(248,250,252,0) 0%, rgba(248,250,252,1) 60%)"}} />}
-        <div style={{ display:"flex", justifyContent:"flex-end", marginTop: 6 }}>
+        <div className="end-row">
           <button onClick={() => setSumState(s => ({ ...s, [sym]: { ...(s[sym]||{}), expanded: !s[sym]?.expanded } }))}
                   style={{ fontSize: 12, textDecoration:"underline", color:"#334155" }}>
             {collapsed ? "더보기" : "접기"}
@@ -547,22 +547,22 @@ useEffect(() => {
   const aiPayload = useMemo(() => ({ rows: sorted.filter(r => Math.abs(r.pct) >= 4) }), [JSON.stringify(sorted)]);
 
   return (
-    <section style={{ marginTop: 24 }}>
-      <h3 style={styles.h3}>일일 리테일러 주가 등락률 (전일 종가 대비)</h3>
+    <section className="mt-24px">
+      <h3 className="h3">일일 리테일러 주가 등락률 (전일 종가 대비)</h3>
       {loading && <div>불러오는 중...</div>}
-      {err && <div style={styles.err}>에러: {err}</div>}
+      {err && <div className="text-danger">에러: {err}</div>}
       {!loading && !err && (
         <>
-          <div style={styles.grid4}>
+          <div className="grid4">
             {sorted.map((r) => {
               const link = `https://finance.yahoo.com/quote/${encodeURIComponent(r.symbol)}`;
               return (
                 
                 <div key={r.symbol} style={{ ...styles.card }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                  <div className="card-head">
                     <div>
                       <div style={{ ...styles.cardTitle }}>
-                        {r.name} <span style={{ color: "#6b7280" }}>({r.symbol})</span>
+                        {r.name} <span className="muted">({r.symbol})</span>
                       </div>
                       <div style={{ ...styles.cardValue }}>{r.price != null ? fmtNum(r.price, 2) : "-"}</div>
                       <div style={{ ...styles.cardSub, fontWeight: 900, color: r.pct >= 0 ? "#065f46" : "#991b1b" }}>
@@ -570,17 +570,17 @@ useEffect(() => {
                       </div>
                       <div style={{ ...styles.cardSub, color: "#6b7280", marginTop: 4 }}>변동률은 전일 종가 대비</div>
                     </div>
-                    <div style={{ display:"flex", gap:8 }}>
+                    <div className="btn-row">
                       <a href={`https://finance.yahoo.com/quote/${encodeURIComponent(r.symbol)}`}
                          target="_blank" rel="noreferrer"
-                         style={{ ...styles.btnTab }} title="Yahoo Finance 열기">
+                         className="btn btn-ghost" title="Yahoo Finance 열기">
                         Yahoo
                       </a>
-                      <a href={`/company/${encodeURIComponent(r.symbol)}`} style={{ ...styles.btnTab }} title="AI 요약 화면으로 이동">AI뉴스요약</a>
+                      <a href={`/company/${encodeURIComponent(r.symbol)}`} className="btn btn-ghost" title="AI 요약 화면으로 이동">AI뉴스요약</a>
                     </div>
                   </div>
 
-                  {sumState[r.symbol]?.open && (<div style={{ marginTop: 8 }}>{renderSummaryBox(r.symbol)}</div>)}
+                  {sumState[r.symbol]?.open && (<div className="mt-8px">{renderSummaryBox(r.symbol)}</div>)}
                 </div>
 
               );
@@ -667,39 +667,39 @@ async function load(tab = activeTab) {
   const rendered = (collapsed ? newsItems.slice(0,5) : newsItems);
 
   return (
-    <section style={{ marginTop: 24 }}>
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:12, flexWrap:"wrap" }}>
-        <div style={{ display:"flex", gap:8 }}>
-          <button onClick={() => { setActiveTab('overseas'); load('overseas'); }} style={{ ...styles.btnTab, ...(activeTab==='overseas'?styles.btnTabActive:{}) }}>해외뉴스</button>
-          <button onClick={() => { setActiveTab('korea'); load('korea'); }} style={{ ...styles.btnTab, ...(activeTab==='korea'?styles.btnTabActive:{}) }}>국내뉴스</button>
-          <button onClick={async () => { await loadAISummary(); const sec = document.getElementById("aiNewsSection"); if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" }); }} style={{ ...styles.btnTab }}>AI 요약</button>
+    <section className="mt-24px">
+      <div className="toolbar">
+        <div className="btn-row">
+          <button onClick={() => { setActiveTab('overseas'); load('overseas'); }} className={`btn btn-ghost ${activeTab==='overseas' ? 'btn-subtle' : ''}`}>해외뉴스</button>
+          <button onClick={() => { setActiveTab('korea'); load('korea'); }} className={`btn btn-ghost ${activeTab==='korea' ? 'btn-subtle' : ''}`}>국내뉴스</button>
+          <button onClick={async () => { await loadAISummary(); const sec = document.getElementById("aiNewsSection"); if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" }); }} className="btn btn-ghost">AI 요약</button>
         </div>
         <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap" }}>
-          <span style={{ fontSize:12, color:"#6b7280" }}>뉴스출처: {FOREIGN_DOMAINS}, 한국섬유신문</span>
+          <span className="muted">뉴스출처: {FOREIGN_DOMAINS}, 한국섬유신문</span>
 </div>
       </div>
 
-      <div style={{ marginTop: 12, border:"1px solid #e5e7eb", borderRadius:12, background:"#fff" }}>
+      <div className="card">
         {newsLoading && <div style={{ padding:12, color:"#6b7280" }}>불러오는 중…</div>}
-        {newsErr && <div style={{ padding:12, color:"#b91c1c" }}>에러: {newsErr}</div>}
+        {newsErr && <div className="pad-12 text-danger">에러: {newsErr}</div>}
         {!newsLoading && !newsErr && (
-          <div style={{ padding:12 }}>
+          <div className="pad-12">
             {rendered.length === 0 ? (
-              <div style={{ color:"#6b7280" }}>관련 기사가 아직 없어요.</div>
+              <div className="muted">관련 기사가 아직 없어요.</div>
             ) : (
-              <ol style={{ margin:0, paddingLeft:18 }}>
+              <ol className="ol-compact">
                 {rendered.map((it, i) => (
-                  <li key={i} style={{ margin:"8px 0" }}>
-                    <a href={it.url} target="_blank" rel="noreferrer" style={{ color:"#1d4ed8" }}>{it.title}</a>
-                    {it.publishedAt ? <div style={{ fontSize:12, color:"#6b7280" }}>{it.publishedAt}</div> : null}
-                    <div style={{ fontSize:11, color:"#94a3b8" }}>{it.source}</div>
+                  <li key={i} className="li-8y">
+                    <a href={it.url} target="_blank" rel="noreferrer">{it.title}</a>
+                    {it.publishedAt ? <div className="muted">{it.publishedAt}</div> : null}
+                    <div className="small-muted">{it.source}</div>
                   </li>
                 ))}
               </ol>
             )}
             {newsItems.length > 5 && (
-              <div style={{ marginTop: 8 }}>
-                <button onClick={() => setCollapsed(v => !v)} style={{ ...styles.btnGhost }}>
+              <div className="mt-8px">
+                <button onClick={() => setCollapsed(v => !v)} className="btn btn-ghost">
                   {collapsed ? "더보기" : "접기"}
                 </button>
               </div>
@@ -756,38 +756,38 @@ function NewsAISummaryPanel({ title, endpoint }) {
   const sections = React.useMemo(() => splitSections(data?.summary||""), [data?.summary]);
 
   return (
-    <div style={{ border:"1px solid #e5e7eb", borderRadius:12, padding:14, background:"#fff" }}>
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
-        <h3 style={{ margin:0, fontSize:16, fontWeight:800 }}>{title}</h3>
-        <div style={{ display:"flex", gap:8, alignItems:"center" }}>
-          <div style={{ fontSize:12, color:"#6b7280" }}>{data?.generatedAt ? `GEMINI 2.5 사용중 · ${new Date(data.generatedAt).toLocaleString("ko-KR", { timeZone: "Asia/Seoul" })}` : "GEMINI 2.5 사용중"}</div>
-          <button onClick={load} disabled={loading} style={{ ...styles.btnTab }}>{loading ? "요약 중..." : "다시 요약"}</button>
+    <div className="card">
+      <div className="card-head">
+        <h3 className="subhead bold">>{title}</h3>
+        <div className="row">
+          <div className="muted">{data?.generatedAt ? `GEMINI 2.5 사용중 · ${new Date(data.generatedAt).toLocaleString("ko-KR", { timeZone: "Asia/Seoul" })}` : "GEMINI 2.5 사용중"}</div>
+          <button onClick={load} disabled={loading} className="btn btn-ghost">{loading ? "요약 중..." : "다시 요약"}</button>
         </div>
       </div>
 
-      {err && <div style={{ color:"crimson" }}>에러: {err}</div>}
+      {err && <div className="text-danger">에러: {err}</div>}
       {!data && !loading && <div>요약을 불러오는 중…</div>}
       {data && (
-        <div style={{ display:"grid", gridTemplateColumns:"1.6fr 1fr", gap:12 }}>
-          <div style={{ background:"#f8fafc", border:"1px solid #e5e7eb", borderRadius:10, padding:12 }}>
+        <div className="grid-summary">
+          <div className="panel">
             {sections.map((sec, idx) => (
               <section key={idx} style={{ marginTop: idx===0?0:12 }}>
-                {sec.title ? <h4 style={{ margin:"4px 0", fontSize:14, fontWeight:800 }}>{sec.title === "Implications for Hansoll" ? "한솔섬유 전략에 미치는 시사점" : sec.title}</h4> : null}
+                {sec.title ? <h4 className="subhead small bold">>{sec.title === "Implications for Hansoll" ? "한솔섬유 전략에 미치는 시사점" : sec.title}</h4> : null}
                 <div
-                  style={{ fontSize: 14, lineHeight:1.7 }}
+                  className="text-body"
                   dangerouslySetInnerHTML={{ __html: LinkifyCitations(sec.body).replace(/^-\s+/gm, "• ").replace(/\n/g, "<br/>") }}
                 />
               </section>
             ))}
           </div>
-          <aside style={{ border:"1px solid #e5e7eb", borderRadius:10, padding:12 }}>
-            <h4 style={{ margin:"0 0 6px 0", fontSize:14, fontWeight:800 }}>참조 뉴스</h4>
-            <ol style={{ paddingLeft:18, margin:0 }}>
+          <aside className="panel">
+            <h4 className="subhead small bold mb-6px">>참조 뉴스</h4>
+            <ol className="ol-compact">
               {(data.items || []).slice(0, 20).map((it, i) => (
-                <li id={`ref-${i+1}`} key={i} style={{ margin:"6px 0" }}>
-                  <a href={it.link} target="_blank" rel="noreferrer" style={{ color:"#1d4ed8" }}>{it.title}</a>
-                  {it.pubDate ? <div style={{ fontSize:12, color:"#6b7280" }}>{it.pubDate}</div> : null}
-                  <div style={{ fontSize:11, color:"#94a3b8" }}>{it.source || ""}</div>
+                <li id={`ref-${i+1}`} key={i} className="li-compact">
+                  <a href={it.link} target="_blank" rel="noreferrer">{it.title}</a>
+                  {it.pubDate ? <div className="muted">{it.pubDate}</div> : null}
+                  <div className="small-muted">{it.source || ""}</div>
                 </li>
               ))}
             </ol>
@@ -800,9 +800,9 @@ function NewsAISummaryPanel({ title, endpoint }) {
 
 function NewsAISummarySection() {
   return (
-    <div id="aiNewsSection" style={{ marginTop: 24 }}>
-      <div style={{ ...styles.blockTitle }}>뉴스 AI 분석</div>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+    <div id="aiNewsSection" className="mt-24px">
+      <div className="card-title">뉴스 AI 분석</div>
+      <div className="grid2">
         <NewsAISummaryPanel title="해외뉴스분석(AI)" endpoint="/api/ai-news-foreign" />
         <NewsAISummaryPanel title="국내뉴스분석(AI)" endpoint="/api/ai-news-korea" />
       </div>
@@ -849,7 +849,7 @@ export default function Home() {
 
       <HeaderBar />
 
-      <main style={{ maxWidth: 1200, margin: "0 auto", padding: 16 }}>
+      <main className="container">
         <ProcurementTopBlock />
         <IndicatorsSection />
         <StocksSection />
@@ -857,8 +857,8 @@ export default function Home() {
         
     </main>
 
-      <footer style={styles.footer}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "12px 16px", color: "#6b7280", fontSize: 12 }}>
+      <footer className="footer">
+        <div className="footer-inner">
           © Market Trend — internal pilot
         </div>
       </footer>
