@@ -2,7 +2,7 @@
 import {
   getFirestore, collection, getDocs, query, where, doc, getDoc,
   addDoc, updateDoc, deleteDoc, serverTimestamp,
-  runTransaction, setDoc
+  runTransaction, setDoc, orderBy, limit
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import {
   getStorage, ref, uploadBytes, getDownloadURL
@@ -24,7 +24,6 @@ function toInt(v) {
 }
 function safeName(name) {
   if (!name || typeof name !== "string") return "file";
-  // 경로 구분자 제거 + 공백/한글/특수문자 최소화
   return name.split("/").pop().replace(/\s+/g, "_");
 }
 
@@ -103,18 +102,26 @@ export async function deleteProject(id) {
 }
 
 // ------------------------------
-// 관리자 승인 시 자동 넘버링
+// 관리자 승인 시 자동 넘버링 (보정 포함)
 // ------------------------------
-/**
- * 관리자 승인
- * - counters/projects 문서에 lastProjectNumber를 저장/증가
- * - projects/{id} 문서에 adminApproved=true, projectNumber=n 배정
- * - approvedAt 최초 승인 시각 기록
- * - extra.registrantKakaoId 전달 시 반영
- */
 export async function approveProject(id, extra = {}) {
   const projectRef = doc(db, "projects", id);
   const counterRef = doc(db, "counters", "projects"); // lastProjectNumber 저장소
+
+  // Fallback: 현재 프로젝트 중 projectNumber 최대값 조회 (인덱스 없이 동작)
+  let fallbackLast = 0;
+  try {
+    const qTop = query(
+      collection(db, "projects"),
+      orderBy("projectNumber", "desc"),
+      limit(1)
+    );
+    const top = await getDocs(qTop);
+    if (!top.empty) {
+      const val = top.docs[0].data().projectNumber;
+      fallbackLast = (typeof val === "number") ? val : 0;
+    }
+  } catch (_) { /* ignore */ }
 
   await runTransaction(db, async (tx) => {
     const projSnap = await tx.get(projectRef);
@@ -123,14 +130,17 @@ export async function approveProject(id, extra = {}) {
     const p = projSnap.data();
     let nextNumber = p.projectNumber || null;
 
-    // 이미 승인/번호가 있으면 재할당하지 않음 (중복 방지)
+    // 최초 승인 또는 번호가 없는 경우에만 배정
     if (!p.adminApproved || !p.projectNumber) {
       const counterSnap = await tx.get(counterRef);
-      const last =
-        counterSnap.exists() && typeof counterSnap.data().lastProjectNumber === "number"
+      let last =
+        (counterSnap.exists() && typeof counterSnap.data().lastProjectNumber === "number")
           ? counterSnap.data().lastProjectNumber
-          : 0;
-      nextNumber = last + 1;
+          : null;
+
+      if (last == null) last = fallbackLast;  // 보정치 사용
+
+      nextNumber = (last || 0) + 1;
 
       if (counterSnap.exists()) {
         tx.update(counterRef, { lastProjectNumber: nextNumber });
