@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="ko">
 <head>
@@ -8,6 +7,10 @@
 <link rel="stylesheet" href="common.css"/>
 <link rel="stylesheet" href="app.min.css"/>
 <link href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet"/>
+
+<!-- ✅ Quill CSS 추가 -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
 <style>
   :root{--ink:#111;--sub:#555;--accent:#E87722;--line:#eaeaea;--bg:#fff;}
   body{background:#fafafa;font-family:'SUIT Variable','Pretendard',system-ui,sans-serif;color:var(--ink);margin:0}
@@ -39,6 +42,9 @@
   .btn.primary{background:var(--accent);color:#fff}
   .btn.primary:hover{background:#c85e12}
   .btn.ghost{background:#f5f5f5;color:#444}
+
+  /* ✅ Quill 에디터 높이 */
+  #editor {height:300px;}
 </style>
 </head>
 <body>
@@ -74,10 +80,10 @@
         <input name="keyMessage" placeholder="예: 돈보다 생명이 먼저였습니다."/>
 
         <label>상세 설명</label>
-        <textarea name="description" id="desc" maxlength="1000" required>🐾 언제, 어디서 발견했나요?  
-🎯 현재 어떤 상태인가요?  (구조해주셔서 감사합니다)  
-📸 참고할 수 있는 인스타/블로그 링크가 있다면 함께 적어주세요.
-        </textarea>
+        <!-- ✅ Quill 에디터 영역 -->
+        <div id="editor"></div>
+        <!-- Quill 내용 저장용 hidden input -->
+        <input type="hidden" name="description" id="desc"/>
         <div class="note"><span id="descCount">0</span> / 1000자</div>
       </div>
 
@@ -129,6 +135,9 @@
 
   <div data-include="footer"></div>
 
+  <!-- ✅ Quill JS 추가 -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
   <script type="module">
     import { injectLayout } from './js/include.js';
     import { apiCreateProject } from './js/api.js';
@@ -143,13 +152,29 @@
     const descCount=document.getElementById('descCount');
     const auth=getAuth();
 
-    desc.addEventListener('input',()=>{descCount.textContent=desc.value.length;});
+    // ✅ Quill 초기화
+    const quill = new Quill('#editor', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold','italic','underline'],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          ['link']
+        ]
+      }
+    });
+
+    // ✅ 글자 수 카운트
+    quill.on('text-change', ()=>{
+      const plain = quill.getText().trim();
+      descCount.textContent = plain.length;
+      desc.value = quill.root.innerHTML; // hidden input에 HTML 저장
+    });
 
     form.addEventListener('submit',async(e)=>{
       e.preventDefault();
       await authReady;
 
-      // ✅ 로그인 체크 추가
       if (!auth.currentUser) {
         alert("⚠️ 프로젝트 등록은 로그인 후 가능합니다.");
         return;
@@ -165,7 +190,7 @@
           rescuerName:fd.get("rescuerName"),
           summary:fd.get("summary"),
           keyMessage:fd.get("keyMessage"),
-          description:fd.get("description"),
+          description:fd.get("description"), // ✅ Quill 값
           goalAmount:document.getElementById("goalAmount").dataset.value||0,
           rescuerContribution:document.getElementById("rescuerContribution").dataset.value||0,
           privateContact:fd.get("privateContact"),
