@@ -17,6 +17,12 @@ button.approve{background:#16a34a;color:#fff;border:none}
 button.delete{background:#dc2626;color:#fff;border:none}
 button.edit{background:#2563eb;color:#fff;border:none}
 button.full-edit{background:#9333ea;color:#fff;border:none}
+/* 추가: 완료/재오픈 버튼 */
+button.complete{background:#374151;color:#fff;border:none}
+button.reopen{background:#f59e0b;color:#111;border:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.75rem;border:1px solid #e5e7eb;background:#fff}
+.badge.completed{background:#e5e7eb;border-color:#e5e7eb;color:#374151}
+.badge.inprogress{background:#eef2ff;border-color:#c7d2fe;color:#1f2937}
 .error{color:#dc2626;font-size:.9rem;margin-top:10px;text-align:center}
 form.editor{margin-top:30px;display:grid;gap:12px;max-width:500px}
 form.editor label{font-weight:700}
@@ -200,7 +206,15 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
       }
     });
 
-    function fmtStatus(p){return p.adminApproved?"승인됨 ✅":"대기중 ⏳"}
+    // 상태 라벨
+    function fmtStatus(p){
+      const s = (p.status || 'in_progress');
+      const approved = p.adminApproved ? "승인됨 ✅" : "대기중 ⏳";
+      const badge = s === 'completed'
+        ? '<span class="badge completed">완료</span>'
+        : '<span class="badge inprogress">진행중</span>';
+      return approved + ' · ' + badge;
+    }
 
     async function render(){
       try{
@@ -222,12 +236,23 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
               ${!p.adminApproved?`<button class="approve" data-id="${p.id}">승인</button>`:''}
               <button class="edit" data-id="${p.id}">수치편집</button>
               <button class="full-edit" data-id="${p.id}">문구편집</button>
+              ${p.status==='completed'
+                ? `<button class="reopen" data-id="${p.id}">재오픈</button>`
+                : `<button class="complete" data-id="${p.id}">완료</button>`}
               <button class="delete" data-id="${p.id}">삭제</button>
             </td>
           </tr>`).join('');
       }catch(e){
         $body.innerHTML='<tr><td colspan="8" class="muted">프로젝트를 불러오지 못했습니다.</td></tr>';
       }
+    }
+
+    // 오늘(YYYY-MM-DD)
+    function todayStr(){
+      const d = new Date();
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      return `${d.getFullYear()}-${mm}-${dd}`;
     }
 
     $body.addEventListener('click', async e=>{
@@ -283,6 +308,52 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         document.getElementById("edit-adminMessage").value=p.adminMessage||"";
 
         modal.style.display="flex";
+      }
+
+      // --- 완료 처리 ---
+      if(e.target.matches('.complete')){
+        const id=e.target.dataset.id;
+        if(!id) return;
+
+        // 링크/메모 입력(선택)
+        const reviewUrl = prompt("후기 URL을 입력하세요(선택, Enter로 건너뛰기):","") || "";
+        const thanksCardUrl = prompt("감사카드 URL을 입력하세요(선택, Enter로 건너뛰기):","") || "";
+
+        if(confirm("이 프로젝트를 '완료' 상태로 전환할까요? 이후 기부 버튼은 숨겨지고 카드에 '완료' 배지가 표시됩니다.")){
+          try{
+            // 현 시점 데이터 스냅샷을 위해 한 번 더 조회
+            const all=await fetchAllProjects();
+            const p=all.find(x=>x.id===id) || {};
+            const payload = {
+              status: 'completed',
+              completedAt: todayStr(),
+              finalRaised: Number(p.currentAmount||0),
+              finalSupporters: Number(p.supporterCount||0),
+              reviewUrl: reviewUrl.trim() || (p.reviewUrl||""),
+              thanksCardUrl: thanksCardUrl.trim() || (p.thanksCardUrl||"")
+            };
+            await updateDoc(doc(db,"projects",id), payload);
+            alert("완료 처리되었습니다.");
+            render();
+          }catch(err){
+            alert("완료 처리 실패: "+(err.message||""));
+          }
+        }
+      }
+
+      // --- 재오픈 처리 ---
+      if(e.target.matches('.reopen')){
+        const id=e.target.dataset.id;
+        if(!id) return;
+        if(confirm("이 프로젝트를 다시 '진행중'으로 전환할까요?")){
+          try{
+            await updateDoc(doc(db,"projects",id), { status: 'in_progress' });
+            alert("재오픈되었습니다.");
+            render();
+          }catch(err){
+            alert("재오픈 실패: "+(err.message||""));
+          }
+        }
       }
     });
 
