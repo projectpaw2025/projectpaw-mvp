@@ -63,6 +63,9 @@
     .overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
       background:linear-gradient(to top,rgba(0,0,0,0.55),rgba(0,0,0,0));color:#fff;padding:18px}
     .overlay .badge{align-self:flex-start;background:var(--accent);color:#fff;padding:6px 12px;border-radius:8px;font-size:.9rem;font-weight:700;margin-bottom:auto}
+    /* ✅ 상태별 배지 색상 */
+    .overlay .badge.completed{background:#9ca3af;color:#111} /* 회색박스 */
+    .overlay .badge.wait{background:#6b7280} /* 대기중(짙은 회색) */
     .overlay h3{font-size:1.4rem;font-weight:800;margin:0;line-height:1.4}
     .overlay .summary{margin:6px 0 0;font-size:1rem;opacity:.9}
     .overlay .hover-text{display:none;text-align:center;font-size:.95rem;font-weight:600}
@@ -174,6 +177,13 @@
     async function toHttpUrl(raw){if(!raw)return null;let v=String(raw).trim();if(/^(https?:|data:|blob:)/i.test(v))return v;if(v.startsWith('/'))v=v.slice(1);try{return await getDownloadURL(ref(storage,v));}catch(e){return null;}}
     async function coverUrlOf(p){for(const c of candidatesOf(p)){const u=await toHttpUrl(c);if(u)return u;}return 'img/placeholder.svg';}
 
+    function badgeHtml(p){
+      // ✅ 상태값 우선: completed → '완료(회색)'
+      if(p.status === 'completed') return '<span class="badge completed">완료</span>';
+      // 승인됨이면 진행중, 아니면 대기중
+      return p.adminApproved ? '<span class="badge">진행중</span>' : '<span class="badge wait">대기중</span>';
+    }
+
     async function render(){
       try{
         const list=await apiListProjects({status:'approved',limit:8});
@@ -184,7 +194,7 @@
             <div class="thumb">
               <img src="${p._cover}" alt="cover"/>
               <div class="overlay">
-                <span class="badge">${p.adminApproved?'진행중':'대기중'}</span>
+                ${badgeHtml(p)}
                 <h3>PAW #${p.projectNumber ?? '-'} ${p.name??'(이름 없음)'}</h3>
                 <p class="summary">${p.summary??''}</p>
                 <div class="hover-text">자세히 보기 →</div>
