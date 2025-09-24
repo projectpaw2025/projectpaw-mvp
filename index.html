@@ -32,25 +32,14 @@
     .story-card h2{font-size:2.1rem;font-weight:900;margin:0 0 28px;line-height:1.45;color:var(--ink)}
     .story-card p{margin:10px 0;font-size:1.2rem;font-weight:800;line-height:1.85;color:#111}
     .story-card .paw-words p{
-      font-size:1.7rem;
-      font-weight:900;
-      line-height:1.8;
-      margin:6px 0;
+      font-size:1.7rem;font-weight:900;line-height:1.8;margin:6px 0;
       font-family:'SUIT Variable','Pretendard','Inter',sans-serif;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: geometricPrecision;
+      -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision;
     }
     .highlight{color:var(--accent)}
 
     /* Subnote */
-    .subnote {
-      font-size: 0.75rem;
-      color: #aaa;
-      margin-top: 10px;
-      font-weight: 400;
-      line-height: 1.4;
-      font-style: italic;
-    }
+    .subnote {font-size: 0.75rem; color: #aaa; margin-top: 10px; font-weight: 400; line-height: 1.4; font-style: italic;}
 
     /* Projects */
     .projects h2{margin:0;font-size:2rem;font-weight:900;color:var(--ink)}
@@ -63,9 +52,9 @@
     .overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
       background:linear-gradient(to top,rgba(0,0,0,0.55),rgba(0,0,0,0));color:#fff;padding:18px}
     .overlay .badge{align-self:flex-start;background:var(--accent);color:#fff;padding:6px 12px;border-radius:8px;font-size:.9rem;font-weight:700;margin-bottom:auto}
-    /* ✅ 상태별 배지 색상 */
+    /* 상태별 배지 색상 */
     .overlay .badge.completed{background:#9ca3af;color:#111} /* 회색박스 */
-    .overlay .badge.wait{background:#6b7280} /* 대기중(짙은 회색) */
+    .overlay .badge.wait{background:#6b7280} /* 대기중 */
     .overlay h3{font-size:1.4rem;font-weight:800;margin:0;line-height:1.4}
     .overlay .summary{margin:6px 0 0;font-size:1rem;opacity:.9}
     .overlay .hover-text{display:none;text-align:center;font-size:.95rem;font-weight:600}
@@ -79,25 +68,25 @@
     .stats span strong{font-weight:800;color:var(--ink);margin-left:4px}
     .muted{color:#888}
 
-    /* === CTA Dock (copied from project_list.html) === */
-    .cta-dock{
-      position:fixed;
-      right:20px;
-      bottom:20px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      z-index:50;
+    /* 🔗 오버레이 빠른 링크 */
+    .overlay .quick-links{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
+    .overlay .quick-links a{
+      display:inline-block; padding:4px 8px; border-radius:8px;
+      background: rgba(255,255,255,.9); color:#111; font-weight:800; font-size:.82rem; text-decoration:none;
     }
-    .cta-dock a{
-      display:inline-block;
-      padding:10px 14px;
-      border-radius:10px;
-      font-weight:700;
-      font-size:.9rem;
-      text-decoration:none;
-      box-shadow:0 3px 8px rgba(0,0,0,0.12);
+    .overlay .quick-links a:hover{ background:#fff; }
+
+    /* 📎 카드 본문 보조 버튼 */
+    .body-links{display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 6px;}
+    .body-links a{
+      display:inline-block; padding:8px 10px; border-radius:10px;
+      background:#f3f4f6; color:#111; font-weight:800; font-size:.86rem; text-decoration:none;
     }
+    .body-links a.primary{ background:#E87722; color:#fff; }
+
+    /* CTA Dock */
+    .cta-dock{position:fixed;right:20px;bottom:20px;display:flex;flex-direction:column;gap:10px;z-index:50}
+    .cta-dock a{display:inline-block;padding:10px 14px;border-radius:10px;font-weight:700;font-size:.9rem;text-decoration:none;box-shadow:0 3px 8px rgba(0,0,0,0.12)}
     .btn-kakao{background:#FEE500;color:#111;}
     .btn-insta{background:#E4405F;color:#fff;}
     .btn-share{background:#6b7280;color:#fff;}
@@ -136,7 +125,7 @@
         <p>Project.PAW는 개인 구조자와 후원자가 직접 연결되는 작은 실험입니다.</p>
         <p>숫자보다 중요한 건 <span class="highlight">‘연결된 마음’</span>이고,</p>
         <p>그 마음이 행동으로 이어질 수 있도록 돕고 싶습니다.</p>
-        </div>
+      </div>
     </div>
   </section>
 
@@ -153,7 +142,7 @@
 
   <div data-include="footer"></div>
 
-  <!-- === CTA Dock (same as project_list.html) === -->
+  <!-- CTA Dock -->
   <div class="cta-dock">
     <a href="https://open.kakao.com/o/go3sJ0Kh" class="btn-kakao" target="_blank" rel="noopener noreferrer">💬 단톡방</a>
     <a href="https://www.instagram.com/projectpaw.kr/" class="btn-insta" target="_blank" rel="noopener noreferrer">📷 인스타그램</a>
@@ -178,10 +167,25 @@
     async function coverUrlOf(p){for(const c of candidatesOf(p)){const u=await toHttpUrl(c);if(u)return u;}return 'img/placeholder.svg';}
 
     function badgeHtml(p){
-      // ✅ 상태값 우선: completed → '완료(회색)'
       if(p.status === 'completed') return '<span class="badge completed">완료</span>';
-      // 승인됨이면 진행중, 아니면 대기중
       return p.adminApproved ? '<span class="badge">진행중</span>' : '<span class="badge wait">대기중</span>';
+    }
+    function quickLinksHtml(p){
+      if(p.status!=='completed') return '';
+      const links=[];
+      if(p.thanksCardUrl)   links.push(`<a href="${p.thanksCardUrl}" target="_blank" rel="noopener">감사카드</a>`);
+      if(p.transparencyUrl) links.push(`<a href="${p.transparencyUrl}" target="_blank" rel="noopener">투명공개</a>`);
+      if(p.reviewUrl)       links.push(`<a href="${p.reviewUrl}" target="_blank" rel="noopener">후기</a>`);
+      if(!links.length) return '';
+      return `<div class="quick-links">${links.join('')}</div>`;
+    }
+    function bodyLinksHtml(p){
+      if(p.status!=='completed') return '';
+      const out=[];
+      if(p.thanksCardUrl)   out.push(`<a class="primary" href="${p.thanksCardUrl}" target="_blank" rel="noopener">감사카드</a>`);
+      if(p.transparencyUrl) out.push(`<a href="${p.transparencyUrl}" target="_blank" rel="noopener">투명공개</a>`);
+      // if(p.reviewUrl) out.push(`<a href="${p.reviewUrl}" target="_blank" rel="noopener">후기</a>`);
+      return out.length ? `<div class="body-links">${out.join('')}</div>` : '';
     }
 
     async function render(){
@@ -189,12 +193,15 @@
         const list=await apiListProjects({status:'approved',limit:8});
         if(!list.length){$grid.innerHTML='<div class="muted">아직 승인된 프로젝트가 없습니다.</div>';return;}
         const withCovers=await Promise.all(list.map(async p=>({...p,_cover:await coverUrlOf(p)})));
-        $grid.innerHTML=withCovers.map(p=>`
+        $grid.innerHTML=withCovers.map(p=>{
+          const percent = p.goalAmount ? Math.min(100, Math.round((p.currentAmount||0)/p.goalAmount*100)) : 0;
+          return `
           <a class="card" href="project.html?id=${encodeURIComponent(p.id)}">
             <div class="thumb">
               <img src="${p._cover}" alt="cover"/>
               <div class="overlay">
                 ${badgeHtml(p)}
+                ${quickLinksHtml(p)}
                 <h3>PAW #${p.projectNumber ?? '-'} ${p.name??'(이름 없음)'}</h3>
                 <p class="summary">${p.summary??''}</p>
                 <div class="hover-text">자세히 보기 →</div>
@@ -203,13 +210,15 @@
             <div class="card-body">
               <div class="hearts">❤️ 연결된 마음 <strong>${p.supporterCount??0}</strong>명</div>
               ${p.keyMessage?`<p class="key-message">❝ ${p.keyMessage} ❞</p>`:''}
-              <div class="progress"><div class="bar" style="width:${Math.min(100,Math.round((p.currentAmount||0)/p.goalAmount*100))}%"></div></div>
+              ${bodyLinksHtml(p)}
+              <div class="progress"><div class="bar" style="width:${percent}%"></div></div>
               <div class="stats">
                 <span>목표<strong>${fmt(p.goalAmount)}</strong>원</span>
                 <span>달성<strong>${fmt(p.currentAmount||0)}</strong>원</span>
               </div>
             </div>
-          </a>`).join('');
+          </a>`;
+        }).join('');
       }catch(e){console.error(e);$grid.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';}
     }
     render();
