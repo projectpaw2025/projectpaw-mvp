@@ -24,7 +24,7 @@
     .overlay{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;justify-content:flex-end;
       background:linear-gradient(to top,rgba(0,0,0,0.55),rgba(0,0,0,0));color:#fff;padding:18px}
     .overlay .badge{align-self:flex-start;background:var(--accent);color:#fff;padding:6px 12px;border-radius:8px;font-size:.9rem;font-weight:700;margin-bottom:auto}
-    /* ✅ 상태별 배지 색상 */
+    /* 상태별 배지 색상 */
     .overlay .badge.completed{background:#9ca3af;color:#111} /* 회색박스 */
     .overlay .badge.wait{background:#6b7280}
     .overlay h3{font-size:1.5rem;font-weight:800;margin:0;line-height:1.4}
@@ -34,32 +34,32 @@
 
     .card-body{padding:22px;background:#fff}
     .hearts{color:var(--accent);font-weight:700;margin-bottom:8px}
-    .key-message{color:var(--ink);font-weight:600;margin:10px 0} /* 핵심문구 검정색 */
+    .key-message{color:var(--ink);font-weight:600;margin:10px 0}
     .progress{background:#eee;border-radius:8px;overflow:hidden;height:12px;margin:12px 0}
     .progress .bar{background:var(--accent);height:100%}
     .stats{display:flex;justify-content:space-between;font-size:1rem;color:var(--sub);margin-top:8px}
     .stats span strong{font-weight:800;color:var(--ink);margin-left:4px}
     .muted{color:#888}
 
-    /* ✅ CTA Dock */
-    .cta-dock{
-      position:fixed;
-      right:20px;
-      bottom:20px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      z-index:50;
+    /* 🔗 오버레이 빠른 링크 */
+    .overlay .quick-links{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
+    .overlay .quick-links a{
+      display:inline-block; padding:4px 8px; border-radius:8px;
+      background: rgba(255,255,255,.9); color:#111; font-weight:800; font-size:.82rem; text-decoration:none;
     }
-    .cta-dock a{
-      display:inline-block;
-      padding:10px 14px;
-      border-radius:10px;
-      font-weight:700;
-      font-size:.9rem;
-      text-decoration:none;
-      box-shadow:0 3px 8px rgba(0,0,0,0.12);
+    .overlay .quick-links a:hover{ background:#fff; }
+
+    /* 📎 카드 본문 보조 버튼 */
+    .body-links{display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 6px;}
+    .body-links a{
+      display:inline-block; padding:8px 10px; border-radius:10px;
+      background:#f3f4f6; color:#111; font-weight:800; font-size:.86rem; text-decoration:none;
     }
+    .body-links a.primary{ background:#E87722; color:#fff; }
+
+    /* CTA Dock */
+    .cta-dock{position:fixed;right:20px;bottom:20px;display:flex;flex-direction:column;gap:10px;z-index:50}
+    .cta-dock a{display:inline-block;padding:10px 14px;border-radius:10px;font-weight:700;font-size:.9rem;text-decoration:none;box-shadow:0 3px 8px rgba(0,0,0,0.12)}
     .btn-kakao{background:#FEE500;color:#111;}
     .btn-insta{background:#E4405F;color:#fff;}
     .btn-share{background:#6b7280;color:#fff;}
@@ -74,7 +74,7 @@
   </main>
   <div data-include="footer"></div>
 
-  <!-- ✅ CTA Dock -->
+  <!-- CTA Dock -->
   <div class="cta-dock">
     <a href="https://open.kakao.com/o/go3sJ0Kh" class="btn-kakao" target="_blank">💬 단톡방</a>
     <a href="https://www.instagram.com/projectpaw.kr/" class="btn-insta" target="_blank">📷 인스타그램</a>
@@ -129,6 +129,23 @@
       if(p.status === 'completed') return '<span class="badge completed">완료</span>';
       return p.adminApproved ? '<span class="badge">진행중</span>' : '<span class="badge wait">대기중</span>';
     }
+    function quickLinksHtml(p){
+      if(p.status!=='completed') return '';
+      const links=[];
+      if(p.thanksCardUrl)   links.push(`<a href="${p.thanksCardUrl}" target="_blank" rel="noopener">감사카드</a>`);
+      if(p.transparencyUrl) links.push(`<a href="${p.transparencyUrl}" target="_blank" rel="noopener">투명공개</a>`);
+      if(p.reviewUrl)       links.push(`<a href="${p.reviewUrl}" target="_blank" rel="noopener">후기</a>`);
+      if(!links.length) return '';
+      return `<div class="quick-links">${links.join('')}</div>`;
+    }
+    function bodyLinksHtml(p){
+      if(p.status!=='completed') return '';
+      const out=[];
+      if(p.thanksCardUrl)   out.push(`<a class="primary" href="${p.thanksCardUrl}" target="_blank" rel="noopener">감사카드</a>`);
+      if(p.transparencyUrl) out.push(`<a href="${p.transparencyUrl}" target="_blank" rel="noopener">투명공개</a>`);
+      // if(p.reviewUrl) out.push(`<a href="${p.reviewUrl}" target="_blank" rel="noopener">후기</a>`);
+      return out.length ? `<div class="body-links">${out.join('')}</div>` : '';
+    }
 
     async function render(){
       try{
@@ -141,12 +158,15 @@
           return;
         }
         const withCovers=await Promise.all(list.map(async p=>({...p,_cover:await coverUrlOf(p)})));
-        $list.innerHTML=withCovers.map(p=>`
+        $list.innerHTML=withCovers.map(p=>{
+          const percent = p.goalAmount ? Math.min(100, Math.round((p.currentAmount||0)/p.goalAmount*100)) : 0;
+          return `
           <a class="card" href="project.html?id=${encodeURIComponent(p.id)}">
             <div class="thumb">
               <img src="${p._cover}" alt="cover"/>
               <div class="overlay">
                 ${badgeHtml(p)}
+                ${quickLinksHtml(p)}
                 <h3>${p.projectNumber ? `PAW #${p.projectNumber} - ` : ''}${p.name??'(이름 없음)'}</h3>
                 <p class="summary">${p.summary??''}</p>
                 <div class="hover-text">자세히 보기 →</div>
@@ -155,13 +175,15 @@
             <div class="card-body">
               <div class="hearts">❤️ 연결된 마음 <strong>${p.supporterCount??0}</strong>명</div>
               ${p.keyMessage?`<p class="key-message">❝ ${p.keyMessage} ❞</p>`:''}
-              <div class="progress"><div class="bar" style="width:${Math.min(100,Math.round((p.currentAmount||0)/p.goalAmount*100))}%"></div></div>
+              ${bodyLinksHtml(p)}
+              <div class="progress"><div class="bar" style="width:${percent}%"></div></div>
               <div class="stats">
                 <span>목표<strong>${fmt(p.goalAmount)}</strong>원</span>
                 <span>달성<strong>${fmt(p.currentAmount||0)}</strong>원</span>
               </div>
             </div>
-          </a>`).join('');
+          </a>`;
+        }).join('');
       }catch(e){
         console.error(e);
         if($list)$list.innerHTML='<div class="muted">프로젝트를 불러오지 못했습니다.</div>';
@@ -169,8 +191,10 @@
     }
     if($q)$q.addEventListener('input',render);
     render();
+  </script>
 
-    // ✅ 링크 복사 기능
+  <!-- 링크 복사 기능 -->
+  <script>
     document.querySelector(".btn-share")?.addEventListener("click",()=>{
       navigator.clipboard.writeText(window.location.href)
         .then(()=>alert("링크가 복사되었습니다."));
