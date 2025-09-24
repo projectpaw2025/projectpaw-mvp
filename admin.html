@@ -17,7 +17,6 @@ button.approve{background:#16a34a;color:#fff;border:none}
 button.delete{background:#dc2626;color:#fff;border:none}
 button.edit{background:#2563eb;color:#fff;border:none}
 button.full-edit{background:#9333ea;color:#fff;border:none}
-/* 추가: 완료/재오픈 버튼 */
 button.complete{background:#374151;color:#fff;border:none}
 button.reopen{background:#f59e0b;color:#111;border:none}
 .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.75rem;border:1px solid #e5e7eb;background:#fff}
@@ -119,7 +118,7 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
     </section>
   </main>
 
-  <!-- 추가: 전체 문구 편집 모달 -->
+  <!-- 전체 문구 편집 모달 (필드 추가) -->
   <div class="modal" id="editModal">
     <div class="box">
       <h2>프로젝트 전체 문구 편집</h2>
@@ -150,6 +149,19 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         <label>관리자 한마디</label>
         <textarea id="edit-adminMessage"></textarea>
 
+        <!-- ✅ 완료 안내/링크들 -->
+        <label>완료 안내 문구 (completionMessage)</label>
+        <input type="text" id="edit-completionMessage" placeholder="예) 1주일간 16명의 따뜻한 마음이 모이고 전달되었습니다."/>
+
+        <label>감사카드 URL (thanksCardUrl)</label>
+        <input type="url" id="edit-thanksCardUrl" placeholder="PNG/페이지 URL"/>
+
+        <label>투명 공개 URL (transparencyUrl, 인스타/포스트)</label>
+        <input type="url" id="edit-transparencyUrl" placeholder="인스타/노션 등"/>
+
+        <label>후기 URL (reviewUrl)</label>
+        <input type="url" id="edit-reviewUrl" placeholder="후기 모음 페이지"/>
+
         <div class="btns">
           <button type="button" id="closeModal">닫기</button>
           <button type="submit" style="background:#2563eb;color:#fff;">저장하기</button>
@@ -174,7 +186,6 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
     const editorSection = document.getElementById("editorSection");
     const editorForm = document.getElementById("editorForm");
 
-    // 모달 요소 (조건부 바인딩)
     const modal=document.getElementById("editModal");
     const closeModalBtn=document.getElementById("closeModal");
     const fullEditForm=document.getElementById("fullEditForm");
@@ -200,13 +211,11 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         form.style.display = "none";
         adminSection.style.display = "block";
         render();
-
       } catch (err) {
         errorDiv.textContent = "로그인 실패: " + (err.message || "");
       }
     });
 
-    // 상태 라벨
     function fmtStatus(p){
       const s = (p.status || 'in_progress');
       const approved = p.adminApproved ? "승인됨 ✅" : "대기중 ⏳";
@@ -247,7 +256,6 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
       }
     }
 
-    // 오늘(YYYY-MM-DD)
     function todayStr(){
       const d = new Date();
       const mm = String(d.getMonth()+1).padStart(2,'0');
@@ -271,7 +279,6 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         }
       }
       if(e.target.matches('.edit')){
-        // 원본 editorSection 로직 그대로
         const id=e.target.dataset.id;
         const all=await fetchAllProjects();
         const p=all.find(x=>x.id===id);
@@ -291,7 +298,6 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         editorForm.scrollIntoView({behavior:"smooth"});
       }
       if(e.target.matches('.full-edit') && modal){
-        // 모달 편집
         const id=e.target.dataset.id;
         const all=await fetchAllProjects();
         const p=all.find(x=>x.id===id);
@@ -307,21 +313,27 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         document.getElementById("edit-receiptUrls").value=(p.receiptUrls||[]).join(",");
         document.getElementById("edit-adminMessage").value=p.adminMessage||"";
 
+        // 신규 필드
+        document.getElementById("edit-completionMessage").value=p.completionMessage||"";
+        document.getElementById("edit-thanksCardUrl").value=p.thanksCardUrl||"";
+        document.getElementById("edit-transparencyUrl").value=p.transparencyUrl||"";
+        document.getElementById("edit-reviewUrl").value=p.reviewUrl||"";
+
         modal.style.display="flex";
       }
 
-      // --- 완료 처리 ---
+      // 완료 처리: 프롬프트로 간편 입력 + 스냅샷
       if(e.target.matches('.complete')){
         const id=e.target.dataset.id;
         if(!id) return;
 
-        // 링크/메모 입력(선택)
-        const reviewUrl = prompt("후기 URL을 입력하세요(선택, Enter로 건너뛰기):","") || "";
-        const thanksCardUrl = prompt("감사카드 URL을 입력하세요(선택, Enter로 건너뛰기):","") || "";
+        const completionMessage = prompt("완료 안내 문구를 입력하세요(예: 1주일간 16명의 따뜻한 마음이 모이고 전달되었습니다)", "") || "";
+        const thanksCardUrl = prompt("감사카드 URL을 입력하세요(선택)", "") || "";
+        const transparencyUrl = prompt("투명 공개(URL, 인스타/노션 등) 입력(선택)", "") || "";
+        const reviewUrl = prompt("후기 URL을 입력하세요(선택)", "") || "";
 
-        if(confirm("이 프로젝트를 '완료' 상태로 전환할까요? 이후 기부 버튼은 숨겨지고 카드에 '완료' 배지가 표시됩니다.")){
+        if(confirm("이 프로젝트를 '완료'로 전환할까요?")) {
           try{
-            // 현 시점 데이터 스냅샷을 위해 한 번 더 조회
             const all=await fetchAllProjects();
             const p=all.find(x=>x.id===id) || {};
             const payload = {
@@ -329,8 +341,10 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
               completedAt: todayStr(),
               finalRaised: Number(p.currentAmount||0),
               finalSupporters: Number(p.supporterCount||0),
-              reviewUrl: reviewUrl.trim() || (p.reviewUrl||""),
-              thanksCardUrl: thanksCardUrl.trim() || (p.thanksCardUrl||"")
+              completionMessage: completionMessage.trim() || (p.completionMessage||""),
+              thanksCardUrl: thanksCardUrl.trim() || (p.thanksCardUrl||""),
+              transparencyUrl: transparencyUrl.trim() || (p.transparencyUrl||""),
+              reviewUrl: reviewUrl.trim() || (p.reviewUrl||"")
             };
             await updateDoc(doc(db,"projects",id), payload);
             alert("완료 처리되었습니다.");
@@ -341,7 +355,7 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
         }
       }
 
-      // --- 재오픈 처리 ---
+      // 재오픈
       if(e.target.matches('.reopen')){
         const id=e.target.dataset.id;
         if(!id) return;
@@ -402,7 +416,12 @@ form.editor input,form.editor textarea{padding:8px;border:1px solid #ddd;border-
           representativeImageUrl: document.getElementById("edit-representativeImageUrl").value.trim(),
           galleryUrls: document.getElementById("edit-galleryUrls").value.split(",").map(s=>s.trim()).filter(Boolean),
           receiptUrls: document.getElementById("edit-receiptUrls").value.split(",").map(s=>s.trim()).filter(Boolean),
-          adminMessage: document.getElementById("edit-adminMessage").value.trim()
+          adminMessage: document.getElementById("edit-adminMessage").value.trim(),
+          // 신규
+          completionMessage: document.getElementById("edit-completionMessage").value.trim(),
+          thanksCardUrl: document.getElementById("edit-thanksCardUrl").value.trim(),
+          transparencyUrl: document.getElementById("edit-transparencyUrl").value.trim(),
+          reviewUrl: document.getElementById("edit-reviewUrl").value.trim()
         };
 
         try{
