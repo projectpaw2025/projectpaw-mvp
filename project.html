@@ -56,22 +56,60 @@
     .section-card h2{font-size:1.2rem;font-weight:800;margin-bottom:14px;color:var(--accent)}
     .section-card p{font-size:1.02rem;line-height:1.7;color:var(--ink)}
 
-    /* 완료 배너 */
-    .done-banner{background:#f6f6f7;border:1px solid #e5e7eb;border-radius:14px;padding:18px;margin-top:0}
-    .done-banner h3{margin:0 0 8px;font-size:1.1rem;font-weight:900;color:#111}
-    .done-banner p{margin:0 0 10px;color:#333}
-    .done-actions{display:flex;flex-wrap:wrap;gap:8px}
-    .done-actions a{display:inline-block;padding:10px 12px;border-radius:10px;font-weight:700;text-decoration:none}
-    .btn-primary{background:var(--accent);color:#fff}
-    .btn-gray{background:#6b7280;color:#fff}
+    /* ✅ 완료 배너 (더 크게, 색상 분리 버튼) */
+    .done-banner{
+      background:#f8fafc;
+      border:1px solid #e5e7eb;
+      border-radius:16px;
+      padding:22px;
+      margin-top:0;
+    }
+    .done-banner h3{
+      margin:0 0 10px;
+      font-size:1.2rem;
+      font-weight:900;
+      color:#0f172a;
+    }
+    .done-banner p{
+      margin:0 0 14px;
+      color:#1f2937;
+      font-size:1.02rem;
+      line-height:1.7;
+    }
+    .done-actions{display:flex; flex-wrap:wrap; gap:10px;}
+    .done-actions a{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:12px 14px;
+      border-radius:12px;
+      font-weight:800;
+      text-decoration:none;
+      font-size:.95rem;
+      transition:transform .05s ease, filter .15s ease;
+    }
+    .done-actions a:active{ transform:translateY(1px); }
 
-    /* 모달들 */
+    /* 버튼 색상 */
+    .btn-review{ background:#6366f1; color:#fff; }       /* 📖 후기: 인디고 */
+    .btn-review:hover{ filter:brightness(0.95); }
+
+    .btn-thanks{ background:#E87722; color:#fff; }       /* 💌 감사카드: 브랜드 오렌지 */
+    .btn-thanks:hover{ filter:brightness(0.95); }
+
+    .btn-transparency{ background:#10b981; color:#fff; } /* 📑 후원내역: 에메랄드 */
+    .btn-transparency:hover{ filter:brightness(0.95); }
+
+    .btn-comments{ background:#6b7280; color:#fff; }     /* 💬 댓글: 그레이 */
+    .btn-comments:hover{ filter:brightness(0.95); }
+
+    /* 모달 */
     .paw-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:9999}
     .paw-modal[hidden]{display:none}
     .paw-dialog{position:relative;background:#fff;border-radius:16px;max-width:560px;width:92%;padding:22px 20px;box-shadow:0 10px 40px rgba(0,0,0,.2)}
     .paw-dialog h3{margin:0 0 10px;font-size:20px;font-weight:900;color:#111}
     .paw-dialog p{margin:6px 0 12px;color:#333}
     .paw-close{border:0;background:transparent;font-size:28px;line-height:1;cursor:pointer;position:absolute;top:8px;right:12px}
+    /* 모달 내부 버튼도 동일 스타일 적용 */
+    #completedModal .done-actions a{ padding:12px 14px; border-radius:12px; font-size:.95rem; font-weight:800; }
 
     /* 댓글 */
     .c-actions{display:flex;gap:8px;margin-top:6px}
@@ -118,7 +156,7 @@
     </div>
   </div>
 
-  <!-- ✅ 완료 팝업 모달 -->
+  <!-- 완료 팝업 모달 -->
   <div class="paw-modal" id="completedModal" hidden>
     <div class="paw-dialog" role="dialog" aria-modal="true" aria-labelledby="completedTitle">
       <button class="paw-close" aria-label="닫기">&times;</button>
@@ -166,17 +204,11 @@
         const imgs=await galleryHttpUrls(p);
         const goal=Number(p.goalAmount||0);
         const current=Number(p.currentAmount||0);
-        const created = (()=>{
-          const k=['createdAt','created_at','createdDate','created','regDate','registeredAt'];
-          for(const key of k){ if(p[key]){ const d=parseAnyDate(p[key]); if(d) return d; } }
-          return parseAnyDate(p?.createdAt);
-        })();
+        const created = (()=>{const k=['createdAt','created_at','createdDate','created','regDate','registeredAt'];for(const key of k){ if(p[key]){ const d=parseAnyDate(p[key]); if(d) return d; } }return parseAnyDate(p?.createdAt);})();
         const createdStr=fmtDate(created);
 
         const nameSafe = p.name ?? '(이름 없음)';
-        const carouselItems = imgs.map((url,i)=>`<div class="carousel-item ${i===0?'active':''}">
-            <img src="${url}" class="d-block w-100" alt="img${i}">
-          </div>`).join('');
+        const carouselItems = imgs.map((url,i)=>`<div class="carousel-item ${i===0?'active':''}"><img src="${url}" class="d-block w-100" alt="img${i}"></div>`).join('');
         const thumbs = imgs.map((url,i)=>`<img src="${url}" data-index="${i}" class="${i===0?'active':''}"/>`).join('');
         const summaryHtml = p.summary ? `<p style="color:#555">${escapeHtml(p.summary)}</p>` : '';
         const keyMsgHtml = p.keyMessage ? `<p style="font-weight:700;color:#E87722">❝ ${escapeHtml(p.keyMessage)} ❞</p>` : '';
@@ -190,16 +222,16 @@
           ? escapeHtml(p.completionMessage.trim())
           : '이 프로젝트는 완료되었습니다. 후기·감사카드·댓글을 통해 마지막까지 함께해 주세요.';
 
-        // 완료 배너 (본문)
+        /* ✅ 완료 배너 (본문) - 버튼 이모지/색상 */
         const doneBanner = isCompleted ? `
           <div class="done-banner">
             <h3>✅ 프로젝트 완료</h3>
             <p>${completionMessage}</p>
             <div class="done-actions">
-              ${p.reviewUrl?`<a class="btn-gray" href="${p.reviewUrl}" target="_blank" rel="noopener">후기 보러가기</a>`:''}
-              ${p.thanksCardUrl?`<a class="btn-primary" href="${p.thanksCardUrl}" target="_blank" rel="noopener">감사카드 보기</a>`:''}
-              ${p.transparencyUrl?`<a class="btn-gray" href="${p.transparencyUrl}" target="_blank" rel="noopener">후원내역 보러가기</a>`:''}
-              <a class="btn-gray" href="#comment-list">댓글 보러가기</a>
+              ${p.reviewUrl ? `<a class="btn-review" href="${p.reviewUrl}" target="_blank" rel="noopener">📖 후기 보러가기</a>` : ''}
+              ${p.thanksCardUrl ? `<a class="btn-thanks" href="${p.thanksCardUrl}" target="_blank" rel="noopener">💌 감사카드 보기</a>` : ''}
+              ${p.transparencyUrl ? `<a class="btn-transparency" href="${p.transparencyUrl}" target="_blank" rel="noopener">📑 후원내역 보러가기</a>` : ''}
+              <a class="btn-comments" href="#comment-list">💬 댓글 보러가기</a>
             </div>
           </div>
         ` : '';
@@ -312,10 +344,10 @@
           const act=document.getElementById('completedActions');
           msg.textContent = p.completionMessage?.trim() || '이 프로젝트는 무사히 완료되었습니다.';
           act.innerHTML = `
-            ${p.thanksCardUrl?`<a class="btn-primary" href="${p.thanksCardUrl}" target="_blank" rel="noopener">감사카드 보기</a>`:''}
-            ${p.transparencyUrl?`<a class="btn-gray" href="${p.transparencyUrl}" target="_blank" rel="noopener">투명 공개 보기</a>`:''}
-            ${p.reviewUrl?`<a class="btn-gray" href="${p.reviewUrl}" target="_blank" rel="noopener">후기 보러가기</a>`:''}
-            <a class="btn-gray" href="#comment-list">댓글 보러가기</a>
+            ${p.thanksCardUrl ? `<a class="btn-thanks" href="${p.thanksCardUrl}" target="_blank" rel="noopener">💌 감사카드 보기</a>` : ''}
+            ${p.transparencyUrl ? `<a class="btn-transparency" href="${p.transparencyUrl}" target="_blank" rel="noopener">📑 후원내역 보러가기</a>` : ''}
+            ${p.reviewUrl ? `<a class="btn-review" href="${p.reviewUrl}" target="_blank" rel="noopener">📖 후기 보러가기</a>` : ''}
+            <a class="btn-comments" href="#comment-list">💬 댓글 보러가기</a>
           `;
           const key = `paw:completedModalShown:${id}`;
           if(!sessionStorage.getItem(key)){
