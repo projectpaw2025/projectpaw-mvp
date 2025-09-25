@@ -180,7 +180,7 @@
       const out=[];
       const t=safeUrl(p.thanksCardUrl), z=safeUrl(p.transparencyUrl), r=safeUrl(p.reviewUrl);
       if(t) out.push(`<button class="primary bl" data-url="${t}" type="button">감사카드</button>`);
-      if(z) out.push(`<button class="bl" data-url="${z}" type="button">투명공개</button>`);
+      if(z) out.push(`<button class="bl" data-url="${z}" type="button">후원내역</button>`);
       // if(r) out.push(`<button class="bl" data-url="${r}" type="button">후기</button>`);
       return out.length ? `<div class="body-links">${out.join('')}</div>` : '';
     }
