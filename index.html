@@ -170,7 +170,7 @@
       const items=[];
       const t=safeUrl(p.thanksCardUrl), z=safeUrl(p.transparencyUrl), r=safeUrl(p.reviewUrl);
       if(t) items.push(`<button class="ql" data-url="${t}" type="button">감사카드</button>`);
-      if(z) items.push(`<button class="ql" data-url="${z}" type="button">투명공개</button>`);
+      if(z) items.push(`<button class="ql" data-url="${z}" type="button">후원내역</button>`);
       if(r) items.push(`<button class="ql" data-url="${r}" type="button">후기</button>`);
       if(!items.length) return '';
       return `<div class="quick-links">${items.join('')}</div>`;
