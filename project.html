@@ -238,7 +238,7 @@
 
         // 패널의 버튼: 완료면 후원버튼 숨김
         const donateBtnHtml = !isCompleted
-          ? `<a href="#" class="btn-kakao" id="openDonate">💬 후원하러 가기</a>${p.kakaoChatUrl?`<a href="${p.kakaoChatUrl}" target="_blank" class="btn-share" style="margin-top:8px">오픈채팅 가기</a>`:''}`
+          ? `<a href="#" class="btn-kakao" id="openDonate">💬 후원하러 가기${p.projectNumber ? ` (#${p.projectNumber})` : ''}</a>${p.kakaoChatUrl?`<a href="${p.kakaoChatUrl}" target="_blank" class="btn-share" style="margin-top:8px">오픈채팅 가기</a>`:''}`
           : '';
 
         $detail.innerHTML = `
@@ -325,7 +325,26 @@
         const accEl=accModal.querySelector('.paw-acc-num');
         const copyBtn=accModal.querySelector('.paw-copy');
         const toast=document.getElementById('pawToast');
-        function openAcc(e){ if(e) e.preventDefault(); accEl.textContent=ACCOUNT_TEXT; accModal.hidden=false; document.body.style.overflow='hidden'; }
+
+        // ➕ 안내문 동적 세팅 (프로젝트 번호/예시)
+        const guideEl = accModal.querySelector('#pawAccGuide');
+        function formatGuide() {
+          const num = p?.projectNumber;
+          const nm  = (p?.name || '').toString().trim() || '후원자명';
+          if (num) {
+            guideEl.textContent = `입금자명에 프로젝트번호 #${num} (예: ${nm}#${num})를 붙여주세요`;
+          } else {
+            guideEl.textContent = `입금자명에 프로젝트명 (${nm})을(를) 함께 적어주세요`;
+          }
+        }
+
+        function openAcc(e){
+          if(e) e.preventDefault();
+          accEl.textContent = ACCOUNT_TEXT;
+          formatGuide(); // ← 프로젝트번호/예시 문구 주입
+          accModal.hidden=false;
+          document.body.style.overflow='hidden';
+        }
         function closeAcc(){ accModal.hidden=true; document.body.style.overflow=''; }
         accModal.addEventListener('click',(e)=>{ if(e.target.classList.contains('paw-modal')||e.target.classList.contains('paw-close')) closeAcc();});
         copyBtn.addEventListener('click', async ()=>{
