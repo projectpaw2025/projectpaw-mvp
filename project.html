@@ -56,50 +56,28 @@
     .section-card h2{font-size:1.2rem;font-weight:800;margin-bottom:14px;color:var(--accent)}
     .section-card p{font-size:1.02rem;line-height:1.7;color:var(--ink)}
 
-    /* ✅ 완료 배너 (더 크게, 색상 분리 버튼) */
+    /* ✅ 완료 배너 */
     .done-banner{
-      background:#f8fafc;
-      border:1px solid #e5e7eb;
-      border-radius:16px;
-      padding:22px;
-      margin-top:0;
+      background:#f8fafc;border:1px solid #e5e7eb;border-radius:16px;
+      padding:22px;margin-top:0;
     }
-    .done-banner h3{
-      margin:0 0 10px;
-      font-size:1.2rem;
-      font-weight:900;
-      color:#0f172a;
-    }
-    .done-banner p{
-      margin:0 0 14px;
-      color:#1f2937;
-      font-size:1.02rem;
-      line-height:1.7;
-    }
-    .done-actions{display:flex; flex-wrap:wrap; gap:10px;}
+    .done-banner h3{margin:0 0 10px;font-size:1.2rem;font-weight:900;color:#0f172a}
+    .done-banner p{margin:0 0 14px;color:#1f2937;font-size:1.02rem;line-height:1.7}
+    .done-actions{display:flex;flex-wrap:wrap;gap:10px}
     .done-actions a{
-      display:inline-flex; align-items:center; justify-content:center;
-      padding:12px 14px;
-      border-radius:12px;
-      font-weight:800;
-      text-decoration:none;
-      font-size:.95rem;
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:12px 14px;border-radius:12px;font-weight:800;text-decoration:none;font-size:.95rem;
       transition:transform .05s ease, filter .15s ease;
     }
-    .done-actions a:active{ transform:translateY(1px); }
-
-    /* 버튼 색상 */
-    .btn-review{ background:#6366f1; color:#fff; }       /* 📖 후기: 인디고 */
-    .btn-review:hover{ filter:brightness(0.95); }
-
-    .btn-thanks{ background:#E87722; color:#fff; }       /* 💌 감사카드: 브랜드 오렌지 */
-    .btn-thanks:hover{ filter:brightness(0.95); }
-
-    .btn-transparency{ background:#10b981; color:#fff; } /* 📑 후원내역: 에메랄드 */
-    .btn-transparency:hover{ filter:brightness(0.95); }
-
-    .btn-comments{ background:#6b7280; color:#fff; }     /* 💬 댓글: 그레이 */
-    .btn-comments:hover{ filter:brightness(0.95); }
+    .done-actions a:active{transform:translateY(1px)}
+    .btn-review{background:#6366f1;color:#fff}
+    .btn-review:hover{filter:brightness(0.95)}
+    .btn-thanks{background:#E87722;color:#fff}
+    .btn-thanks:hover{filter:brightness(0.95)}
+    .btn-transparency{background:#10b981;color:#fff}
+    .btn-transparency:hover{filter:brightness(0.95)}
+    .btn-comments{background:#6b7280;color:#fff}
+    .btn-comments:hover{filter:brightness(0.95)}
 
     /* 모달 */
     .paw-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:9999}
@@ -108,8 +86,7 @@
     .paw-dialog h3{margin:0 0 10px;font-size:20px;font-weight:900;color:#111}
     .paw-dialog p{margin:6px 0 12px;color:#333}
     .paw-close{border:0;background:transparent;font-size:28px;line-height:1;cursor:pointer;position:absolute;top:8px;right:12px}
-    /* 모달 내부 버튼도 동일 스타일 적용 */
-    #completedModal .done-actions a{ padding:12px 14px; border-radius:12px; font-size:.95rem; font-weight:800; }
+    #completedModal .done-actions a{padding:12px 14px;border-radius:12px;font-size:.95rem;font-weight:800}
 
     /* 댓글 */
     .c-actions{display:flex;gap:8px;margin-top:6px}
@@ -122,9 +99,9 @@
     /* CTA Dock */
     .cta-dock{position:fixed;right:20px;bottom:20px;display:flex;flex-direction:column;gap:10px;z-index:50}
     .cta-dock a{display:inline-block;padding:10px 14px;border-radius:10px;font-weight:700;font-size:.9rem;text-decoration:none;box-shadow:0 3px 8px rgba(0,0,0,0.12)}
-    .btn-insta{background:#E4405F;color:#fff;}
-    .cta-dock .btn-kakao{background:#FEE500;color:#111; width:auto; padding:10px 14px; border-radius:10px; display:inline-block; font-size:.9rem; margin-top:0;}
-    .cta-dock .btn-share{background:#6b7280;color:#fff; width:auto; padding:10px 14px; border-radius:10px; display:inline-block; font-size:.9rem; margin-top:0;}
+    .btn-insta{background:#E4405F;color:#fff}
+    .cta-dock .btn-kakao{background:#FEE500;color:#111;width:auto;padding:10px 14px;border-radius:10px;display:inline-block;font-size:.9rem;margin-top:0}
+    .cta-dock .btn-share{background:#6b7280;color:#fff;width:auto;padding:10px 14px;border-radius:10px;display:inline-block;font-size:.9rem;margin-top:0}
   </style>
 </head>
 <body>
@@ -150,8 +127,10 @@
         <code class="paw-acc-num" style="font-size:16px;font-weight:800;word-break:keep-all;color:#111">KB국민 831801-04-173073 프로젝트파우</code>
         <button type="button" class="paw-copy" style="border:0;border-radius:10px;padding:8px 12px;cursor:pointer">복사</button>
       </div>
-      <p class="paw-donor-msg" style="margin:12px 2px 0;font-size:14px;color:#333">보내주신 마음 100% 후원자에게 Direct로 전달됩니다</p>
-      <p class="paw-hint" id="pawAccGuide" style="margin:4px 2px 0;font-size:12px;color:#666"></p>
+      <!-- 메시지 1: 유지(문구 통일: Direct 삭제) -->
+      <p class="paw-donor-msg" style="margin:12px 2px 0;font-size:14px;color:#333">보내주신 마음 100% 후원자에게 전달됩니다</p>
+      <!-- 메시지 2: 동일 스타일(폰트/크기/색) 적용 -->
+      <p class="paw-hint" id="pawAccGuide" style="margin:4px 2px 0;font-size:14px;color:#333"></p>
       <div class="paw-toast" id="pawToast" hidden style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:#111;color:#fff;border-radius:999px;padding:6px 12px;font-size:12px">복사되었습니다</div>
     </div>
   </div>
@@ -218,11 +197,17 @@
             </div>` : '';
 
         const isCompleted = p.status==='completed';
+
+        /* ✅ 승인 여부에 따른 버튼 노출 제어 */
+        const canDonate = !!(p?.adminApproved && (p?.projectNumber!==undefined && p?.projectNumber!==null));
+        const donateBtnHtml = (!isCompleted && canDonate)
+          ? `<a href="#" class="btn-kakao" id="openDonate">💬 후원하러 가기${p.projectNumber ? ` (#${p.projectNumber})` : ''}</a>${p.kakaoChatUrl?`<a href="${p.kakaoChatUrl}" target="_blank" class="btn-share" style="margin-top:8px">오픈채팅 가기</a>`:''}`
+          : '';
+
         const completionMessage = p.completionMessage && p.completionMessage.trim()
           ? escapeHtml(p.completionMessage.trim())
           : '이 프로젝트는 완료되었습니다. 후기·감사카드·댓글을 통해 마지막까지 함께해 주세요.';
 
-        /* ✅ 완료 배너 (본문) - 버튼 이모지/색상 */
         const doneBanner = isCompleted ? `
           <div class="done-banner">
             <h3>✅ 프로젝트 완료</h3>
@@ -235,11 +220,6 @@
             </div>
           </div>
         ` : '';
-
-        // 패널의 버튼: 완료면 후원버튼 숨김
-        const donateBtnHtml = !isCompleted
-          ? `<a href="#" class="btn-kakao" id="openDonate">💬 후원하러 가기${p.projectNumber ? ` (#${p.projectNumber})` : ''}</a>${p.kakaoChatUrl?`<a href="${p.kakaoChatUrl}" target="_blank" class="btn-share" style="margin-top:8px">오픈채팅 가기</a>`:''}`
-          : '';
 
         $detail.innerHTML = `
           <section class="paw-head block headline">
@@ -326,22 +306,22 @@
         const copyBtn=accModal.querySelector('.paw-copy');
         const toast=document.getElementById('pawToast');
 
-        // ➕ 안내문 동적 세팅 (프로젝트 번호/예시)
+        // ➕ 안내문 동적 세팅 (프로젝트 번호/예시) — 폰트/크기 동일
         const guideEl = accModal.querySelector('#pawAccGuide');
         function formatGuide() {
           const num = p?.projectNumber;
-          const nm  = (p?.name || '').toString().trim() || '후원자명';
+          // “입금자명#6” 예시 고정 요구에 맞춤
           if (num) {
-            guideEl.textContent = `입금자명에 프로젝트번호 #${num} (예: ${nm}#${num})를 붙여주세요`;
+            guideEl.textContent = `입금자명에 프로젝트번호 #${num} (예: 입금자명#${num})를 붙여주세요`;
           } else {
-            guideEl.textContent = `입금자명에 프로젝트명 (${nm})을(를) 함께 적어주세요`;
+            guideEl.textContent = `입금자명에 프로젝트명(프로젝트명#예시)과 같이 표시해 주세요`;
           }
         }
 
         function openAcc(e){
           if(e) e.preventDefault();
           accEl.textContent = ACCOUNT_TEXT;
-          formatGuide(); // ← 프로젝트번호/예시 문구 주입
+          formatGuide();
           accModal.hidden=false;
           document.body.style.overflow='hidden';
         }
@@ -354,7 +334,8 @@
           }
           toast.textContent='계좌번호(숫자만) 복사됨'; toast.hidden=false; setTimeout(()=>{toast.hidden=true; toast.textContent='복사되었습니다';},1200);
         });
-        document.querySelector('.btn-kakao')?.addEventListener('click',(e)=>{ e.preventDefault(); openAcc(e); }, {passive:false});
+        // ⚠️ 오픈 대상은 “후원하기 버튼”만
+        document.getElementById('openDonate')?.addEventListener('click',(e)=>{ e.preventDefault(); openAcc(e); }, {passive:false});
 
         // 완료 팝업(세션당 1회)
         if(isCompleted){
@@ -436,7 +417,7 @@
 
         commentBtn?.addEventListener("click", async ()=>{
           const text = (commentInput?.value||"").trim(); if(!text) return;
-          if(text.length>500){ alert("500자 이내로 입력해주세요."); return; }
+          if(text.length>500){ alert("입력은 500자 이내로 부탁드려요."); return; }
           const nm = (nameInput?.value||"").trim().slice(0,30);
           await addComment(id, text, nm || null);
           if(nm){ try { localStorage.setItem('pawDisplayName', nm); } catch {} }
