@@ -176,7 +176,7 @@
       const d=new Date(v); return isNaN(d) ? null : d;}
     const fmtDate=(d)=>d?`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`:'';
 
-    // ✅ 댓글 텍스트를 안전하게 링크로 변환 (저장은 text 그대로, 출력만 linkify)
+    // ✅ 댓글/관리자한마디 텍스트를 안전하게 링크로 변환 (저장은 text 그대로, 출력만 linkify)
     function linkifyCommentSafe(text){
       const safe = escapeHtml(text || '');
 
@@ -216,9 +216,11 @@
         const thumbs = imgs.map((url,i)=>`<img src="${url}" data-index="${i}" class="${i===0?'active':''}"/>`).join('');
         const summaryHtml = p.summary ? `<p style="color:#555">${escapeHtml(p.summary)}</p>` : '';
         const keyMsgHtml = p.keyMessage ? `<p style="font-weight:700;color:#E87722">❝ ${escapeHtml(p.keyMessage)} ❞</p>` : '';
+
+        // ✅ 관리자 한마디도 자동 링크화 (admin.html에는 텍스트만 입력하면 됨)
         const adminMsgHtml = p.adminMessage
           ? `<div style="margin-top:18px;padding:14px;border-radius:12px;background:#fff8f2;border:1px solid #f4d0b5;font-weight:800;color:#d35400;font-size:1.05rem;">
-              📌 관리자 한마디: ${escapeHtml(p.adminMessage)}
+              📌 관리자 한마디: ${linkifyCommentSafe(p.adminMessage)}
             </div>` : '';
 
         const isCompleted = p.status==='completed';
