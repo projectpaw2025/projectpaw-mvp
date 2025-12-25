@@ -174,7 +174,32 @@
       if(typeof v==='object' && typeof v.seconds==='number') return new Date(v.seconds*1000);
       if(typeof v==='number') return new Date(v>1e12?v: v*1000);
       const d=new Date(v); return isNaN(d) ? null : d;}
-    const fmtDate=(d)=>d?`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`:''; 
+    const fmtDate=(d)=>d?`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`:'';
+
+    // ✅ 댓글 텍스트를 안전하게 링크로 변환 (저장은 text 그대로, 출력만 linkify)
+    function linkifyCommentSafe(text){
+      const safe = escapeHtml(text || '');
+
+      // 1) https://instagram.com/...
+      let html = safe.replace(
+        /(https?:\/\/(www\.)?instagram\.com\/[^\s<]+)/gi,
+        `<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>`
+      );
+
+      // 2) instagram.com/...
+      html = html.replace(
+        /(^|\s)(instagram\.com\/[^\s<]+)/gi,
+        `$1<a href="https://$2" target="_blank" rel="noopener noreferrer">$2</a>`
+      );
+
+      // 3) @username
+      html = html.replace(
+        /@([a-zA-Z0-9_.]{1,30})/g,
+        `<a href="https://instagram.com/$1" target="_blank" rel="noopener noreferrer">@$1</a>`
+      );
+
+      return html;
+    }
 
     async function render(){
       const id=getId(); if(!id){$detail.innerHTML='<div class="muted">잘못된 접근입니다.</div>';return;}
@@ -383,12 +408,16 @@
             const ts = when ? when.toLocaleString('ko-KR') : '';
             const who = c.name ? escapeHtml(c.name) : '익명';
             const mine = c.uid && myUid && c.uid===myUid;
+
+            // ✅ 텍스트를 링크로 변환하여 출력
+            const textHtml = linkifyCommentSafe(c.text || '');
+
             return `<div class="c-item" data-id="${escapeHtml(c.id)}" style="padding:10px 0;border-bottom:1px solid #eee;">
               <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;">
                 <div style="font-weight:700">${who}</div>
                 ${mine?'<div class="c-actions"><button class="c-del">삭제</button></div>':''}
               </div>
-              <div>${escapeHtml(c.text||'')}</div>
+              <div>${textHtml}</div>
               <div style="color:#888;font-size:12px;margin-top:2px">${ts}</div>
             </div>`;
           }).join('');
