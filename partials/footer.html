@@ -8,27 +8,41 @@
 
     <!-- 실험단계 안내 -->
     <p style="font-size:.8rem;color:#9ca3af;margin-top:4px">
-      ⚡  <strong>PAW = 개인과 개인의 연결</strong> 해피빈/같이가치 = 단체 중심 후원
+      ⚡ <strong>PAW = 개인과 개인의 연결</strong> · 해피빈/같이가치 = 단체 중심 후원
     </p>
 
-    <!-- 로그인 / 로그아웃 버튼 -->
+    <!-- 개인정보 / 약관 -->
+    <div style="margin-top:10px;">
+      <a href="privacy.html"
+         style="margin:0 8px;font-size:.8rem;color:#9ca3af;font-weight:500;text-decoration:none;">
+        개인정보처리방침
+      </a>
+      <span style="color:#d1d5db;">|</span>
+      <a href="terms.html"
+         style="margin:0 8px;font-size:.8rem;color:#9ca3af;font-weight:500;text-decoration:none;">
+        이용약관
+      </a>
+    </div>
+
+    <!-- 로그인 / 로그아웃 -->
     <div style="margin-top:12px;">
       <a href="login.html"
          style="margin:0 8px;font-size:.9rem;color:#2563eb;font-weight:600;text-decoration:none;">
-         로그인
+        로그인
       </a>
       <a href="#" onclick="logout()"
          style="margin:0 8px;font-size:.9rem;color:#ef4444;font-weight:600;text-decoration:none;">
-         로그아웃
+        로그아웃
       </a>
     </div>
+
   </div>
 </footer>
 
 <script type="module">
   import { auth, signOut } from "./js/firebase.js";
 
-  // 로그아웃 함수 (로그인 상태 확인 안 하고 그냥 실행)
+  // 로그아웃 함수
   window.logout = async () => {
     try {
       await signOut(auth);
